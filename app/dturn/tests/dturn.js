@@ -1,6 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/171
 
 const { initDiscussion, getConclusionIds, insertStatementId, getStatementIds, rankMostImportant, putGroupings, Discussions } = require('../dturn')
+import { proxyUser, proxyUserReturn } from '../test'
 
 import { Mongo } from '@enciv/mongo-collections'
 import { expect } from '@jest/globals'
@@ -9,6 +10,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 // Config
 const USER_ID = 110
 const DISCUSSION_ID = 1
+const DISCUSSION_ID2 = 10
 const nonexistentOptionErrorRegex = /'a_nonexistent_option' is not an option for initDiscussion()/
 
 let MemoryServer
@@ -34,8 +36,8 @@ test('Fail if discussion not initialized.', async () => {
 
 test('Succeed if all arguments are valid.', async () => {
   initDiscussion(DISCUSSION_ID, {
-    group_size: 10,
-    gmajority: 0.5,
+    group_size: 5,
+    gmajority: 0.9,
     max_rounds: 10,
     min_shown_count: 6,
     min_rank: 3,
@@ -61,8 +63,8 @@ test('Fail if at least 1 option is not valid.', async () => {
 test('Undefined if discussion not complete.', async () => {
   const props = []
 
-  // insert 20 statements
-  for (let i = 0; i < 20; i++) {
+  // insert statements
+  for (let i = 0; i < 4; i++) {
     props.push([DISCUSSION_ID, `user${i}`, `statement${i}`])
   }
   for await (const args of props) {
@@ -74,26 +76,44 @@ test('Undefined if discussion not complete.', async () => {
 })
 
 test('Return conclusion if discussion is complete.', async () => {
-  const props = []
+  initDiscussion(DISCUSSION_ID2, {
+    group_size: 5,
+    gmajority: 0.5,
+    max_rounds: 10,
+    min_shown_count: 1,
+    min_rank: 1,
+    updateUInfo: () => {},
+    getAllUInfo: async () => [],
+  })
 
-  // insert 20 statements
-  for (let count = 0; count < 20; count++) {
-    props.push([DISCUSSION_ID, `user${count}`, `statement${count}`])
+  const UserIds = []
+
+  for (let i = 0; i < 5; i++) {
+    process.stdout.write('new user ' + i + '\r')
+    await proxyUser(DISCUSSION_ID2)
+
+    //checkUInfo(DISCUSSION_ID) // only for debug
   }
-  for await (const args of props) {
-    await insertStatementId(...args)
+  process.stdout.write('\n')
+  let i = 0
+  for (const userId of UserIds) {
+    process.stdout.write('returning user ' + i++ + '\r')
+    await proxyUserReturn(userId, 0, DISCUSSION_ID2)
+    //checkUInfo(DISCUSSION_ID) // only for debug
   }
-
-  // Complete round
-  for (let count = 0; count < 20; count++) {
-    const statements = await getStatementIds(DISCUSSION_ID, 0, `user${count}`)
-    await putGroupings(DISCUSSION_ID, 0, `user${count}`, [])
-    statements && (await rankMostImportant(DISCUSSION_ID, 0, `user${count}`, statements[0], 1))
-    statements = await getStatementIds(DISCUSSION_ID, 0, `user${count}`)
+  if (Discussions[DISCUSSION_ID2].ShownStatements.at(-1).length > Discussions[DISCUSSION_ID2].group_size) {
+    console.info('before last round', Discussions[DISCUSSION_ID2].ShownStatements.length - 1, 'has', Discussions[DISCUSSION_ID2].ShownStatements.at(-1).length)
+    // need one last round
+    i = 0
+    const final = Discussions[DISCUSSION_ID2].ShownStatements.length - 1
+    process.stdout.write(`\nLastRound: ${final}\n`)
+    for (const userId of UserIds) {
+      process.stdout.write('returning user ' + i++ + '\r')
+      await proxyUserReturn(userId, final)
+    }
   }
+  console.info('after last round', Discussions[DISCUSSION_ID2].ShownStatements.length - 1, 'has', Discussions[DISCUSSION_ID2].ShownStatements.at(-1).length)
 
-  console.log(Discussions[DISCUSSION_ID].ShownStatements.at(-1))
-
-  const conclusions = await getConclusionIds(DISCUSSION_ID)
+  const conclusions = await getConclusionIds(DISCUSSION_ID2)
   expect(conclusions).toBeDefined()
 })

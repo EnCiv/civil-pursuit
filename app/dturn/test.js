@@ -73,7 +73,7 @@ function groupStatementsWithTheSameFloor(statements) {
 
 const UserIds = []
 
-async function proxyUser() {
+export async function proxyUser(DISCUSSION_ID = DISCUSSION_ID) {
   const userId = ObjectID().toString()
   UserIds.push(userId)
   let round = 0
@@ -85,6 +85,7 @@ async function proxyUser() {
   }
   Statements[statement._id] = statement
   await insertStatementId(DISCUSSION_ID, userId, statement._id)
+
   while (1) {
     const statementIdsForGrouping = await getStatementIds(DISCUSSION_ID, round, userId)
     if (!statementIdsForGrouping) return
@@ -101,9 +102,11 @@ async function proxyUser() {
     await rankMostImportant(DISCUSSION_ID, round, userId, rankMostId)
     round++
   }
+
+  return userId
 }
 
-async function proxyUserReturn(userId, final = 0) {
+export async function proxyUserReturn(userId, final = 0, DISCUSSION_ID = DISCUSSION_ID) {
   let ids
   let userRecord = getUserRecord(DISCUSSION_ID, userId) || []
   let round = userRecord.length - 1
@@ -235,4 +238,7 @@ function sortGitemsLowerStatementId(a, b) {
   if (b.lowerStatementId < a.lowerStatementId) return 1
   return 0
 }
-main()
+
+if (require.main === module) {
+  main()
+}

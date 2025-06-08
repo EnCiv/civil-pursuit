@@ -625,8 +625,7 @@ export async function getConclusionIds(discussionId) {
 
   let dis = Discussions[discussionId]
 
-  let isComplete = dis.ShownStatements.at(-1).length <= dis.group_size && dis.gmajority <= dis.ShownStatements.at(-1).length / dis.participants
-  //console.log(dis.ShownStatements.at(-1).length, '<=', dis.group_size, 'AND', dis.gmajority, '<=', dis.ShownStatements.at(-1).length, '/', dis.participants)
+  let isComplete = dis.ShownStatements.at(-1).length <= dis.group_size && dis.gmajority <= dis.ShownStatements.at(-1).length / dis.group_size
 
   if (!isComplete) {
     console.error(`Discussion ${discussionId} is not complete. Cannot generate conclusion.`)
