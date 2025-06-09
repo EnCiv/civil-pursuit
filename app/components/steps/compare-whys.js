@@ -37,9 +37,9 @@ export default function CompareWhysStep(props) {
         if (!result) return // there was an error
         const { ranks, whys } = result
         //if (!ranks.length && !whys.length) return // nothing to do
-        const whyRankByParentId = ranks.reduce((preRankByParentId, rank) => ((preRankByParentId[rank.parentId] = rank), preRankByParentId), {})
+        const whyRankByParentId = ranks.reduce((whyRankByParentId, rank) => ((whyRankByParentId[rank.parentId] = rank), whyRankByParentId), {})
         const randomWhyById = whys.reduce((randomWhyById, point) => ((randomWhyById[point._id] = point), randomWhyById), {})
-        upsert({ preRankByParentId, whyRankByParentId, randomWhyById })
+        upsert({ whyRankByParentId, randomWhyById })
       })
     })
   return <CompareWhys {...props} {...args} round={data.round} discussionId={data.discussionId} onDone={handleOnDone} />
