@@ -11,7 +11,7 @@ import StepBar from './step-bar'
 import StepFooter from './step-footer'
 
 export const StepSlider = props => {
-  const { children, onDone, steps, className, stepName, stepintro, ...otherProps } = props // stepName and stepIntro are not used but are passed to children
+  const { children, onDone, steps, className, stepName, stepIntro, ...otherProps } = props // stepName and stepIntro are not used but are passed to children
   const classes = useStyles(props)
   const stepBarRef = useRef()
   const stepFooterRef = useRef()
@@ -69,52 +69,33 @@ export const StepSlider = props => {
         return { ...state, transitions: false }
       case 'transitionsOn':
         return { ...state, transitions: true }
-      case 'moveTo': {
-        stepChildRapper.current.style.transition = ''
-        if (!cachedChildren[action.to]) return { ...state, transitions: false, nextStep: action.to }
-        const currentStep = action.to
-        const stepStatuses = state.stepStatuses.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus))
+      case 'moveTo':
+        return { ...state, transitions: false, nextStep: action.to }
+
+      case 'increment':
+        return {
+          ...state,
+          transitions: false,
+          nextStep: Math.min(state.currentStep + 1, children.length - 1),
+        }
+
+      case 'transitionBegin': {
         sendDoneToParent(state.currentStep)
         return {
           ...state,
-          stepStatuses,
-          currentStep,
+          transitions: true,
+          stepStatuses: state.stepStatuses?.map((stepStatus, i) => (i === state.currentStep ? { ...stepStatus, seen: true } : stepStatus)),
+          currentStep: state.nextStep,
         }
       }
-      case 'increment':
-        stepChildRapper.current.style.transition = ''
-        const nextStep = Math.min(state.currentStep + 1, children.length - 1)
-        if (!cachedChildren[nextStep]) {
-          return {
-            ...state,
-            transitions: false, // turn off transitions so the next step can render before the transition
-            nextStep,
-          }
-        }
-        sendDoneToParent(state.currentStep)
-        return {
-          ...state,
-          transitions: true,
-          stepStatuses: state.stepStatuses?.map((stepStatus, i) => (i === nextStep ? { ...stepStatus, seen: true } : stepStatus)),
-          currentStep: nextStep,
-        }
-      case 'finishIncrement': {
-        const currentStep = state.nextStep
-        sendDoneToParent(state.currentStep)
-        return {
-          ...state,
-          transitions: true,
-          stepStatuses: state.stepStatuses?.map((stepStatus, i) => (i === currentStep ? { ...stepStatus, seen: true } : stepStatus)),
-          currentStep,
-        }
+      case 'transitionComplete': {
+        return state // no need to rerender. leaving transitions on so that child components growing and shrinking will animate
       }
       case 'decrement': {
-        stepChildRapper.current.style.transition = ''
-        const step = Math.max(0, state.currentStep - 1)
-        sendDoneToParent(state.currentStep)
         return {
           ...state,
-          currentStep: step,
+          nextStep: Math.max(0, state.currentStep - 1),
+          transitions: false,
         }
       }
       case 'updateStatuses':
@@ -130,7 +111,6 @@ export const StepSlider = props => {
           return { ...state, stepStatuses: stepStatuses }
         } else if (valid) {
           // Just increment if no steps
-          stepChildRapper.current.style.transition = ''
           const nextStep = Math.min(state.currentStep + 1, children.length - 1)
           sendDoneToParent(state.currentStep)
           return {
@@ -139,7 +119,7 @@ export const StepSlider = props => {
             nextStep,
           }
         } else {
-          return { state, transitions: false }
+          return state
         }
     }
   }
@@ -163,7 +143,7 @@ export const StepSlider = props => {
       steps[index].complete = false
     })
   }
-  const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, stepStatuses: steps })
+  const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, transitions: false, stepStatuses: steps })
 
   function cloneChild(currentStep) {
     return React.cloneElement(children[currentStep], {
@@ -188,7 +168,7 @@ export const StepSlider = props => {
   }
   if (typeof window !== 'undefined')
     useLayoutEffect(() => {
-      if (state.nextStep > state.currentStep) dispatch({ type: 'finishIncrement' })
+      if (state.nextStep != state.currentStep) dispatch({ type: 'transitionBegin' })
     }, [state.nextStep])
 
   // ResizeObserver to update stepChildWrapper height when the current panel's height changes
@@ -197,7 +177,7 @@ export const StepSlider = props => {
     const panel = panelRefs.current[state.currentStep]
     const wrapper = stepChildRapper.current
     const updateHeight = () => {
-      wrapper.style.height = panel.offsetHeight + 'px'
+      if (wrapper.style.height !== panel.offsetHeight + 'px') wrapper.style.height = panel.offsetHeight + 'px'
     }
     updateHeight()
     const resizeObserver = new window.ResizeObserver(updateHeight)
@@ -207,13 +187,13 @@ export const StepSlider = props => {
     }
   }, [state.currentStep])
 
-  // Add event listener to set transition to none after transition is complete
+  // listen for transitionComplete
   useEffect(() => {
     const wrapper = stepChildRapper.current
     if (!wrapper) return
     const handleTransitionEnd = e => {
       if (e.propertyName === 'left') {
-        wrapper.style.transition = 'none'
+        dispatch({ type: 'transitionComplete' })
       }
     }
     wrapper.addEventListener('transitionend', handleTransitionEnd)
