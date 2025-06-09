@@ -308,11 +308,15 @@ export function derivePointRankGroupList(data) {
   }
 
   if (local.preRankByParentId !== preRankByParentId) {
-    for (const rank of Object.values(preRankByParentId)) {
-      if (rankPointsById[rank.parentId]) {
-        if (rankPointsById[rank.parentId].rank !== rank) {
-          rankPointsById[rank.parentId] = { ...rankPointsById[rank.parentId], rank }
-          updated = true
+    if (typeof preRankByParentId !== 'object') {
+      console.error('preRankByParentId is not an object', preRankByParentId)
+    } else {
+      for (const rank of Object.values(preRankByParentId)) {
+        if (rankPointsById[rank.parentId]) {
+          if (rankPointsById[rank.parentId].rank !== rank) {
+            rankPointsById[rank.parentId] = { ...rankPointsById[rank.parentId], rank }
+            updated = true
+          }
         }
       }
     }
