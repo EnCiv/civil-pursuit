@@ -309,7 +309,7 @@ export function derivePointRankGroupList(data) {
 
   if (local.preRankByParentId !== preRankByParentId) {
     if (typeof preRankByParentId !== 'object') {
-      console.error('preRankByParentId is not an object', preRankByParentId)
+      console.error('preRankByParentId is not an object', local.preRankByParentId, preRankByParentId)
     } else {
       for (const rank of Object.values(preRankByParentId)) {
         if (rankPointsById[rank.parentId]) {
