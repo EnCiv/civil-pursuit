@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react'
 import StepSlider from '../app/components/step-slider'
+import TopNavBar from '../app/components/top-nav-bar'
+import Footer from '../app/components/footer'
 
 export default {
   component: StepSlider,
@@ -49,6 +51,7 @@ const Template = args => {
         backgroundColor: backgroundColor,
       }}
     >
+      <TopNavBar />
       <div
         style={{
           width: '48em',
@@ -62,6 +65,7 @@ const Template = args => {
       >
         <StepSlider {...args} onDone={val => (val ? setBackgroundColor('black') : setBackgroundColor('white'))} />
       </div>
+      <Footer />
     </div>
   )
 }
@@ -100,5 +104,7 @@ WithSevenSteps.args = { steps: createPrimarySteps(7), children: createPanels(7) 
 
 const childrenWithNestedSlider = createPanels(5)
 childrenWithNestedSlider[2] = <StepSlider steps={createPrimarySteps(3)} children={createPanels(3)} />
-export const NestedSliders = Template.bind({})
-NestedSliders.args = { children: childrenWithNestedSlider }
+export const NestedSliders = {
+  args: { children: childrenWithNestedSlider },
+  render: Template,
+}
