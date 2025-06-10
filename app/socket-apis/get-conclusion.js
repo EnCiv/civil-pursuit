@@ -14,5 +14,10 @@ export default async function getConclusion(discussionId, cb) {
   // Gather conclusion points
   let statementIds = await getConclusionIds(discussionId)
 
-  return await getPointsOfIds.call({ synuser: this.synuser }, statementIds, cb)
+  if (!statementIds) {
+    console.error('getConclusion called but discussion not complete.')
+    return cb && cb(undefined)
+  } else {
+    return await getPointsOfIds.call(this.synuser, statementIds, cb)
+  }
 }
