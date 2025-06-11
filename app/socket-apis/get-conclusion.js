@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb'
 import { getConclusionIds } from '../dturn/dturn'
 
 import getPointsOfIds from '../socket-apis/get-points-of-ids'
+import getUserPostRanksAndTopRankedWhys from './get-user-post-ranks-and-top-ranked-whys'
 
 export default async function getConclusion(discussionId, cb) {
   if (!discussionId) {
@@ -18,6 +19,16 @@ export default async function getConclusion(discussionId, cb) {
     console.error('getConclusion called but discussion not complete.')
     return cb && cb(undefined)
   } else {
-    return await getPointsOfIds.call(this.synuser, statementIds, cb)
+    let pointDocs, myWhys
+    await getPointsOfIds.call(this.synuser, statementIds, result => {
+      pointDocs = result.points
+      myWhys = result.myWhys
+    })
+
+    const postRanksAndTopRankedWhys = await getUserPostRanksAndTopRankedWhys.call(this.synuser, discussionId, 0, statementIds, result => {
+      console.log('test', result)
+    })
+
+    return cb && cb({ rankResults: [{ parentId: '', category: '', count: 0 }], points: pointDocs, whys: [{}] })
   }
 }

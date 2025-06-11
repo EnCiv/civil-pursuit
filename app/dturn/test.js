@@ -12,6 +12,8 @@ const showDeepDiff = require('show-deep-diff')
 
 const ObjectID = require('bson-objectid')
 const { insertStatementId, getStatementIds, putGroupings, report, rankMostImportant, getUserRecord, initDiscussion, Discussions, getConclusionIds } = require('./dturn')
+import upsertPoint from '../socket-apis/upsert-point'
+
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
 const NUMBER_OF_PARTICIPANTS = process.argv[2] || 4096 //117649 // 4096 //240 // the number of simulated people in the discussion
@@ -80,11 +82,13 @@ export async function proxyUser(DISCUSSION_ID = DISCUSSION_ID) {
   const statement = {
     _id: ObjectID().toString(),
     subject: 'proxy random number',
-    description: Math.random() * MAX_ANSWER + 1,
+    description: (Math.random() * MAX_ANSWER + 1).toString(),
     userId,
   }
   Statements[statement._id] = statement
   await insertStatementId(DISCUSSION_ID, userId, statement._id)
+
+  await upsertPoint.call({ synuser: { id: userId } }, statement, res => {})
 
   while (1) {
     const statementIdsForGrouping = await getStatementIds(DISCUSSION_ID, round, userId)
@@ -106,7 +110,7 @@ export async function proxyUser(DISCUSSION_ID = DISCUSSION_ID) {
   return userId
 }
 
-export async function proxyUserReturn(userId, final = 0, DISCUSSION_ID = DISCUSSION_ID) {
+export async function proxyUserReturn(userId, DISCUSSION_ID = DISCUSSION_ID) {
   let ids
   let userRecord = getUserRecord(DISCUSSION_ID, userId) || []
   let round = userRecord.length - 1
