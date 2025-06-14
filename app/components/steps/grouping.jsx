@@ -54,7 +54,7 @@ export default function GroupingStep(props) {
 // pG stand for point group meaning {point, group}
 
 export function GroupPoints(props) {
-  const { reducedPointList, onDone = () => {}, className, discussionId, round, ...otherProps } = props
+  const { reducedPointList, onDone = () => {}, className, discussionId, round } = props
 
   const classes = useStylesFromThemeFunction(props)
   const delayedOnDone = value => setTimeout(() => onDone(value), 0)
@@ -208,7 +208,7 @@ export function GroupPoints(props) {
   }
 
   return (
-    <div className={cx(classes.groupingStep, className)} {...otherProps}>
+    <div className={cx(classes.groupingStep, className)}>
       <div className={classes.statusContainer}>
         <div className={classes.statusBadges}>
           <StatusBadge name="Groups Created" status={gs.yourGroups.length == 0 ? 'inactive' : 'complete'} number={gs.yourGroups.length} />

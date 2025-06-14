@@ -42,7 +42,8 @@ function StepBar(props) {
   // Reference to the select dropdown's options container. To track click event targets that are not in the options container.
   const optionsContainerRef = useRef(null)
   // State to determine whether to display the mobile or desktop view. Maintained by the window resize event listener.
-  const [isMobile, setIsMobile] = useState(window.innerWidth < mobileBreakpoint * 16)
+  //const [isMobile, setIsMobile] = useState(window.innerWidth < mobileBreakpoint * 16)
+  const isMobile = window.innerWidth < mobileBreakpoint * 16
   // State to handle the select input.
   const [isOpen, setIsOpen] = useState(false)
   // State to map each 'page' of the steps carousel to its steps.
@@ -93,7 +94,7 @@ function StepBar(props) {
   }
 
   const handleResize = () => {
-    setIsMobile(window.innerWidth < mobileBreakpoint * 16)
+    //setIsMobile(window.innerWidth < mobileBreakpoint * 16)
     setVisibleSteps([...steps, dummyStep])
     setTimeout(() => handleCarouselSetup()) // do this after the visibleSteps are rendered
   }
@@ -189,7 +190,7 @@ function StepBar(props) {
       window.removeEventListener('resize', handleResizeDebounced)
       window.removeEventListener('mouseup', handleClickOutside)
     }
-  })
+  }, [])
 
   /*
    Any changes in fonts, padding, etc after the width calculations could present visual issues in the step bar. 

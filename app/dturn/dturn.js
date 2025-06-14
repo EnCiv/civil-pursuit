@@ -142,7 +142,8 @@ module.exports.insertStatementId = insertStatementId
     
 */
 
-function getRandomUniqueList(max, count) {
+export function getRandomUniqueList(max, count) {
+  // exported for testing purposes
   // return list from 0 to (count - 1) if using jest test.
   if (process.env.JEST_TEST_ENV) {
     return [...Array(count).keys()]
@@ -213,16 +214,19 @@ async function getStatementIds(discussionId, round, userId) {
 
   const dis = Discussions[discussionId]
   const statementIds = []
-  let authoredId // id of statment the user authored -- if the shownGroup is incomplete
+  let authoredId // id of statement the user authored -- if the shownGroup is incomplete
   if (dis.Uitems?.[userId]?.[round]) {
     const sIds = Object.keys(dis.Uitems[userId][round].shownStatementIds)
     if (round === 0 && sIds.length === 1 && dis.Uitems[userId][round].shownStatementIds[sIds[0]].author) {
       statementIds.push(sIds[0])
       authoredId = sIds[0]
-    } else if (sIds.length >= dis.group_size) {
-      console.error('user has been here before', discussionId, userId, round)
+    } else if (sIds.length === dis.group_size) {
       return sIds
-    } else throw new Error(`getStatments unexpected number of statments ${JSON.stringify(dis.Uitems?.[userId]?.[round], null, 2)}`)
+    } else {
+      // this happened though it shouldn't. For the user, we need to do the best that we can. But we need to let the developers know that something is wrong.
+      console.error(`getStatements unexpected number of statements ${JSON.stringify(dis.Uitems?.[userId]?.[round], null, 2)}, returning ${sIds}`)
+      return sIds
+    }
   }
   if (dis.ShownGroups[round]?.at(-1)?.shownCount < Math.pow(dis.group_size, round + 1)) {
     if (authoredId && dis.ShownGroups[round].at(-1).statementIds.some(id => id === authoredId)) return // the user's statement is in the ShownGroup

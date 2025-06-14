@@ -10,7 +10,8 @@ import { Button } from './button'
 import StatusBox from '../components/status-box'
 
 function SignUp(props, ref) {
-  const { className, style, onDone = () => {}, startTab = 'login', submitted = false, tabIndex = 0, ...otherProps } = props
+  const { className, style, onDone = () => {}, startTab = 'login', submitted = false } = props
+  const tabIndex = 0
 
   // checks if start tab requests login or sign up page
   const [isLogIn, setIsLogIn] = useState(startTab.toLowerCase().includes('up') ? false : startTab.toLowerCase().includes('in') ? true : false)
@@ -91,7 +92,7 @@ function SignUp(props, ref) {
 
   // otherwise, continue showing login/sign up page
   return (
-    <div className={cx(className, classes.SignUp)} style={style} ref={ref} {...otherProps}>
+    <div className={cx(className, classes.SignUp)} style={style} ref={ref}>
       <div className={classes.tabs}>
         <div className={cx(classes.tab, !isLogIn && classes.tabSelected)}>
           <Button onDone={e => setIsLogIn(false)} className={cx(classes.btnClick, !isLogIn && classes.btnClickSelected)} tabIndex="1">
@@ -104,7 +105,8 @@ function SignUp(props, ref) {
           </Button>
         </div>
       </div>
-      <div className={cx(classes.inputContainer, isLogIn ? classes.tabRightSelected : classes.tabLeftSelected)}>
+      {/** this is a form to make it easier on password managers see https://goo.gl/9p2vKq */}
+      <form className={cx(classes.inputContainer, isLogIn ? classes.tabRightSelected : classes.tabLeftSelected)}>
         <div className={cx(classes.inputBoxes, !firstName && (clickedOnFirst || isSubmitted) && classes.invalid, isLogIn && classes.disabled)}>
           <p id="text">First Name</p>
           <input
@@ -113,6 +115,7 @@ function SignUp(props, ref) {
             className={cx(classes.input, !firstName && (clickedOnFirst || isSubmitted) && classes.invalidInput, isLogIn && classes.disabled)}
             onBlur={e => changeFirstName(e.target.value)}
             tabIndex={tabIndex}
+            autoComplete="given-name"
           />
         </div>
         <div className={cx(classes.inputBoxes, isLogIn && classes.disabled, !lastName && (clickedOnLast || isSubmitted) && classes.invalid)}>
@@ -123,11 +126,19 @@ function SignUp(props, ref) {
             className={cx(classes.input, isLogIn && classes.disabled, !lastName && (clickedOnLast || isSubmitted) && classes.invalidInput)}
             onBlur={e => changeLastName(e.target.value)}
             tabIndex={tabIndex}
+            autoComplete="family-name"
           />
         </div>
         <div className={cx(classes.inputBoxes, !state.email && (clickedOnEmail || isSubmitted) && classes.invalid)}>
           <p id="text">E-mail</p>
-          <input name="email" placeholder="Johndoe@gmail.com" className={cx(classes.input, !state.email && (clickedOnEmail || isSubmitted) && classes.invalidInput)} onBlur={e => changeEmail(e.target.value)} tabIndex={tabIndex} />
+          <input
+            autoComplete="email"
+            name="email"
+            placeholder="Johndoe@gmail.com"
+            className={cx(classes.input, !state.email && (clickedOnEmail || isSubmitted) && classes.invalidInput)}
+            onBlur={e => changeEmail(e.target.value)}
+            tabIndex={tabIndex}
+          />
         </div>
         <div className={cx(classes.inputBoxes, !state.password && (clickedOnPassword || isSubmitted) && classes.invalid)}>
           <p id="text">Password</p>
@@ -138,6 +149,7 @@ function SignUp(props, ref) {
             className={cx(classes.input, !state.password && (clickedOnPassword || isSubmitted) && classes.invalidInput)}
             onChange={e => changePassword(e.target.value)}
             tabIndex={tabIndex}
+            autoComplete={isLogIn ? 'current-password' : 'new-password'}
           />
         </div>
         <div className={cx(classes.inputBoxes, isLogIn && classes.disabled, !state.password && (clickedOnConfirm || isSubmitted) && classes.invalid)}>
@@ -149,6 +161,7 @@ function SignUp(props, ref) {
             className={cx(classes.input, !state.confirm && (clickedOnConfirm || isSubmitted) && classes.invalidInput, isLogIn && classes.disabled)}
             onChange={e => changeConfirm(e.target.value)}
             tabIndex={tabIndex}
+            autoComplete="new-password"
           />
         </div>
         <div className={cx(classes.agreeTermContainer, isLogIn && classes.disabled)}>
@@ -186,7 +199,7 @@ function SignUp(props, ref) {
             Send Reset Password
           </Button>
         </div>
-      </div>
+      </form>
     </div>
   )
 }

@@ -151,7 +151,7 @@ export const canUnGroup = {
     expect(onDoneResult(canvas)).toMatchObject({
       onDoneResult: {
         valid: true,
-        value: [
+        delta: [
           {
             point: {
               _id: 0,
@@ -375,7 +375,7 @@ export const canRemoveOnePointFromAGroup = {
     expect(onDoneResult(canvas)).toMatchObject({
       onDoneResult: {
         valid: true,
-        value: [
+        delta: [
           { point: { _id: 0, subject: 'Point 0', description: 'Point Description 0', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
           { point: { _id: 4, subject: 'Point 4', description: 'Point Description 4', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
           { point: { _id: 5, subject: 'Point 5', description: 'Point Description 5', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
@@ -386,10 +386,7 @@ export const canRemoveOnePointFromAGroup = {
           { point: { _id: 2, subject: 'Point 2', description: 'Point Description 2', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
           {
             point: { _id: 1, subject: 'Point 1', description: 'Point Description 1', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
-            group: [
-              { _id: 3, subject: 'Point 3', description: 'Point Description 3', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
-              { _id: 2, subject: 'Point 2', description: 'Point Description 2', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
-            ],
+            group: [{ _id: 3, subject: 'Point 3', description: 'Point Description 3', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }],
           },
         ],
       },

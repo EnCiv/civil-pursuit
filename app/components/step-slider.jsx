@@ -89,9 +89,11 @@ export const StepSlider = props => {
         }
       }
       case 'transitionComplete': {
+        stepChildRapper.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
         return state // no need to rerender. leaving transitions on so that child components growing and shrinking will animate
       }
       case 'decrement': {
+        console.log('decrementing', state.currentStep)
         return {
           ...state,
           nextStep: Math.max(0, state.currentStep - 1),
@@ -213,11 +215,7 @@ export const StepSlider = props => {
               className={classes.navBar}
               onDone={onDoneResult => {
                 if (onDoneResult.value) {
-                  // Skip to the clicked step, considering value is a count from 1 while currentStep is zero-indexed.
-                  let repetitions = Math.abs(state.currentStep - (onDoneResult.value - 1))
-                  for (let reps = 0; reps < repetitions; reps++) {
-                    dispatch({ type: onDoneResult.value <= state.currentStep ? 'decrement' : 'increment' })
-                  }
+                  dispatch({ type: 'moveTo', to: onDoneResult.value - 1 }) // onDoneResult.value is 1-indexed, so we need to subtract 1
                 }
               }}
             />
@@ -237,6 +235,7 @@ export const StepSlider = props => {
           {outerRect.width &&
             cachedChildren.map((child, i) => (
               <div
+                key={i}
                 style={{
                   width: outerRect.width + 'px',
                 }}

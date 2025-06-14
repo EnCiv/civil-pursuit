@@ -58,7 +58,7 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
 const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }]
 
 const MoreDetails = props => {
-  const { className = '', schema = {}, uischema = {}, onDone = () => {}, title, discussionId, ...otherProps } = props
+  const { className = '', schema = {}, uischema = {}, onDone = () => {}, title, discussionId } = props
   const [data, setData] = useState({})
   const classes = useStyles(props)
 
@@ -99,7 +99,7 @@ const MoreDetails = props => {
   const isValid = handleIsValid(data)
 
   return (
-    <div className={cx(classes.formContainer, className)} {...otherProps}>
+    <div className={cx(classes.formContainer, className)}>
       {title && <p className={classes.formTitle}>{title}</p>}
       <div className={classes.jsonFormContainer}>
         <JsonForms schema={schema} uischema={uischema} data={data} renderers={memoedRenderers} cells={vanillaCells} onChange={({ data }) => setData(data)} />
