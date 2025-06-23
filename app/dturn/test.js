@@ -11,9 +11,7 @@ const merge = require('lodash').merge
 const showDeepDiff = require('show-deep-diff')
 
 const ObjectID = require('bson-objectid')
-const { insertStatementId, getStatementIds, putGroupings, report, rankMostImportant, getUserRecord, initDiscussion, Discussions, getConclusionIds } = require('./dturn')
-import upsertPoint from '../socket-apis/upsert-point'
-
+const { insertStatementId, getStatementIds, putGroupings, report, rankMostImportant, getUserRecord, initDiscussion, Discussions } = require('./dturn')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
 const NUMBER_OF_PARTICIPANTS = process.argv[2] || 4096 //117649 // 4096 //240 // the number of simulated people in the discussion
@@ -75,21 +73,18 @@ function groupStatementsWithTheSameFloor(statements) {
 
 const UserIds = []
 
-export async function proxyUser(DISCUSSION_ID = DISCUSSION_ID) {
+async function proxyUser() {
   const userId = ObjectID().toString()
   UserIds.push(userId)
   let round = 0
   const statement = {
     _id: ObjectID().toString(),
     subject: 'proxy random number',
-    description: (Math.random() * MAX_ANSWER + 1).toString(),
+    description: Math.random() * MAX_ANSWER + 1,
     userId,
   }
   Statements[statement._id] = statement
   await insertStatementId(DISCUSSION_ID, userId, statement._id)
-
-  await upsertPoint.call({ synuser: { id: userId } }, statement, res => {})
-
   while (1) {
     const statementIdsForGrouping = await getStatementIds(DISCUSSION_ID, round, userId)
     if (!statementIdsForGrouping) return
@@ -106,11 +101,9 @@ export async function proxyUser(DISCUSSION_ID = DISCUSSION_ID) {
     await rankMostImportant(DISCUSSION_ID, round, userId, rankMostId)
     round++
   }
-
-  return userId
 }
 
-export async function proxyUserReturn(userId, DISCUSSION_ID = DISCUSSION_ID) {
+async function proxyUserReturn(userId, final = 0) {
   let ids
   let userRecord = getUserRecord(DISCUSSION_ID, userId) || []
   let round = userRecord.length - 1
@@ -149,7 +142,7 @@ export async function proxyUserReturn(userId, DISCUSSION_ID = DISCUSSION_ID) {
 }
 
 async function main() {
-  await initDiscussion(DISCUSSION_ID, { updateUInfo: updateUInfo })
+  await initDiscussion(DISCUSSION_ID, { updateUInfo: updateUInfo, group_size: parseInt(process.argv[3] || '10') })
   for (let i = 0; i < NUMBER_OF_PARTICIPANTS; i++) {
     process.stdout.write('new user ' + i + '\r')
     await proxyUser()
@@ -174,6 +167,7 @@ async function main() {
     }
   }
   console.info('after last round', Discussions[DISCUSSION_ID].ShownStatements.length - 1, 'has', Discussions[DISCUSSION_ID].ShownStatements.at(-1).length)
+  process.stdout.write('\n')
   report(DISCUSSION_ID, Statements)
   console.info('Initialising discussion 2')
   await initDiscussion(2, {
@@ -200,10 +194,6 @@ async function main() {
       round.byUpperId = byUpperId
     }
   }
-
-  console.info('Conclusion Ids: ', await getConclusionIds(DISCUSSION_ID))
-
-  process.stdout.write('\n')
   showDeepDiff(Discussions[1], Discussions[2])
 }
 
@@ -242,7 +232,4 @@ function sortGitemsLowerStatementId(a, b) {
   if (b.lowerStatementId < a.lowerStatementId) return 1
   return 0
 }
-
-if (require.main === module) {
-  main()
-}
+main()

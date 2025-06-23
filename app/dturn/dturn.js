@@ -8,6 +8,7 @@ function getInitOptions(options) {
     gmajority: options.gmajority || 0.5, // Group Majority - minimum percentage of group that votes for it to be part of the group
     max_rounds: options.max_rounds || 10, // maximum number of rounds to search down when clustering children
     min_shown_count: options.min_shown_count || Math.floor(7 / 2) + 1, // the minimum number of times an item pair is shown in order to decide if a majority have grouped it
+    min_shown_percent: options.min_shown_percent || 0.8, // the minimum percentage of users that must have seen the last round for the conclusion to be valid
     min_rank: options.min_rank || 2, // when filtering statements for the next round, they must at least have this number of users voting for it
     updates: options.updates || (() => []), // not async. socket.io will quere updates and send, if overflow, better to send latest than to catchup
     updateUInfo: options.updateUInfo || (async () => {}),
@@ -68,7 +69,8 @@ async function initDiscussion(discussionId, options = {}) {
   // Check if provided options are valid
   Object.keys(options).forEach(key => {
     if (!validOptionKeys.includes(key)) {
-      throw new Error(`'${key}' is not an option for initDiscussion() - valid options are: ${validOptionKeys}.`)
+      console.error(`'${key}' is not an option for initDiscussion() - valid options are: ${validOptionKeys}.`)
+      return undefined
     }
   })
 
@@ -78,6 +80,7 @@ async function initDiscussion(discussionId, options = {}) {
     Gitems: [],
     Uitems: {},
     ...initOptions,
+    participants: 0,
   }
   await reconstructDiscussionFromUInfo(discussionId)
 }
@@ -200,7 +203,8 @@ function sortLargestFirst(a, b) {
  */
 async function getStatementIds(discussionId, round, userId) {
   if (!Discussions[discussionId]) {
-    throw new Error(`Discussion ${discussionId} not initialized`)
+    console.error(`Discussion ${discussionId} not initialized`)
+    return undefined
   }
   if (!Discussions[discussionId]?.ShownStatements?.length) {
     console.error(`No ShownStatements found for discussion ${discussionId}`)
@@ -222,7 +226,10 @@ async function getStatementIds(discussionId, round, userId) {
     } else if (sIds.length >= dis.group_size) {
       console.error('user has been here before', discussionId, userId, round)
       return sIds
-    } else throw new Error(`getStatments unexpected number of statments ${JSON.stringify(dis.Uitems?.[userId]?.[round], null, 2)}`)
+    } else {
+      console.error(`getStatments unexpected number of statments ${JSON.stringify(dis.Uitems?.[userId]?.[round], null, 2)}`)
+      return undefined
+    }
   }
   if (dis.ShownGroups[round]?.at(-1)?.shownCount < Math.pow(dis.group_size, round + 1)) {
     if (authoredId && dis.ShownGroups[round].at(-1).statementIds.some(id => id === authoredId)) return // the user's statement is in the ShownGroup
@@ -548,7 +555,7 @@ async function reconstructDiscussionFromUInfo(discussionId) {
   let round = 0
   // users can only insert statement at round 0
   while (round < rounds_length) {
-    console.info('round', round, rounds_length)
+    console.info('round', round, rounds_length, discussionId)
     const shownGroups = {} // object for quick existence test, to array later
     const shownStatements = {} // object for quick existence test, to array later
     for (const uinfo of docs) {
@@ -590,7 +597,10 @@ async function reconstructDiscussionFromUInfo(discussionId) {
         groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
       } else {
         const id = shownStatementIds[0]
-        if (shownStatementIds.length !== 1) throw new Error(`no groupings by statementIds is not one ${uitem}`)
+        if (shownStatementIds.length !== 1) {
+          console.error(`no groupings by statementIds is not one ${uitem}`)
+          return undefined
+        }
         if (!shownStatements[id])
           shownStatements[id] = {
             statementId: id,
@@ -598,7 +608,10 @@ async function reconstructDiscussionFromUInfo(discussionId) {
             rank: 0,
           }
       }
-      if (!Discussions[discussionId].Uitems[userId]) Discussions[discussionId].Uitems[userId] = []
+      if (!Discussions[discussionId].Uitems[userId]) {
+        Discussions[discussionId].Uitems[userId] = []
+        Discussions[discussionId].participants++
+      }
       Discussions[discussionId].Uitems[userId][round] = { userId, ...uitem }
       // empty groupings is not sent to the db, but should be initiallized in memory
       if (!Discussions[discussionId].Uitems[userId][round].groupings) Discussions[discussionId].Uitems[userId][round].groupings = []
@@ -616,21 +629,22 @@ async function reconstructDiscussionFromUInfo(discussionId) {
 
 export async function getConclusionIds(discussionId) {
   if (!Discussions[discussionId]) {
-    throw new Error(`Discussion ${discussionId} not initialized`)
+    console.error(`getConclusionIds: Discussion ${discussionId} not initialized`)
   }
   if (!Discussions[discussionId]?.ShownStatements?.length) {
     console.error(`No ShownStatements found for discussion ${discussionId}`)
     return undefined
   }
-
   let dis = Discussions[discussionId]
-
-  let isComplete = dis.ShownStatements.at(-1).length <= dis.group_size && dis.gmajority <= dis.ShownStatements.at(-1).length / dis.group_size
-  console.log(dis.ShownStatements.at(-1).length, ' <= ', dis.group_size, ' && ', dis.gmajority, ' <= ', dis.ShownStatements.at(-1).length, ' / ', dis.group_size)
-  if (!isComplete) {
-    console.error(`Discussion ${discussionId} is not complete. Cannot generate conclusion.`)
-    return undefined
+  const lastRoundNotMoreThanGroupSize = dis.ShownStatements.at(-1).length <= dis.group_size
+  if (!lastRoundNotMoreThanGroupSize) return undefined
+  const [highestRank, leastShownCount] = dis.ShownStatements.at(-1).reduce(([highestRank, leastShownCount], sItem) => [Math.max(sItem.rank, highestRank), Math.min(leastShownCount, sItem.shownCount)], [-1, Infinity])
+  const shownCountMoreThanMin = leastShownCount >= dis.participants * dis.min_shown_percent
+  if (shownCountMoreThanMin && highestRank > 0) {
+    const conclusionIds = dis.ShownStatements.at(-1)
+      .filter(sItem => sItem.rank === highestRank)
+      .map(sItem => sItem.statementId) // if there is a single item with the highest rank, return it
+    return conclusionIds
   }
-
-  return dis.ShownStatements.at(-1).map(item => item.statementId)
+  return undefined
 }
