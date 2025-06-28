@@ -637,7 +637,10 @@ export async function getConclusionIds(discussionId) {
   }
   let dis = Discussions[discussionId]
   const lastRoundNotMoreThanGroupSize = dis.ShownStatements.at(-1).length <= dis.group_size
-  if (!lastRoundNotMoreThanGroupSize) return undefined
+  if (!lastRoundNotMoreThanGroupSize) {
+    console.error('last round more than group size ', dis.ShownStatements.at(-1).length, ' <= ', dis.group_size)
+    return undefined
+  }
   const [highestRank, leastShownCount] = dis.ShownStatements.at(-1).reduce(([highestRank, leastShownCount], sItem) => [Math.max(sItem.rank, highestRank), Math.min(leastShownCount, sItem.shownCount)], [-1, Infinity])
   const shownCountMoreThanMin = leastShownCount >= dis.participants * dis.min_shown_percent
   if (shownCountMoreThanMin && highestRank > 0) {
@@ -646,5 +649,7 @@ export async function getConclusionIds(discussionId) {
       .map(sItem => sItem.statementId) // if there is a single item with the highest rank, return it
     return conclusionIds
   }
+
+  console.error('shown count less than min or highest rank less than 1 ', leastShownCount, ' >= ', dis.participants * dis.min_shown_percent, ', highest rank', highestRank)
   return undefined
 }
