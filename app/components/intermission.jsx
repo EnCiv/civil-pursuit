@@ -1,24 +1,20 @@
 // https://github.com/EnCiv/civil-pursuit/issues/137
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { PrimaryButton, SecondaryButton } from './button'
 import Intermission_Icon from '../svgr/intermission-icon'
 import StatusBox from '../components/status-box'
+import DeliberationContext from './deliberation-context'
 
 const Intermission = props => {
-  const {
-    className = '',
-    user = {},
-    round = 1, // the round that the user has just completed
-    lastRound = 1,
-    onDone = () => {},
-    ...otherProps
-  } = props
+  const { className = '', onDone = () => {}, user } = props
   const classes = useStylesFromThemeFunction(props)
+  const { data, upsert } = useContext(DeliberationContext)
+  const { round, lastRound, finalRound } = data
 
-  const [validationError, setValidationError] = useState(null)
-  const [successMessage, setSuccessMessage] = useState(null)
+  const [validationError, setValidationError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
   const [email, setEmail] = useState('')
 
   const validateEmail = email => {
@@ -31,8 +27,8 @@ const Intermission = props => {
   }
 
   const handleEmail = () => {
-    setValidationError(null)
-    setSuccessMessage(null)
+    setValidationError('')
+    setSuccessMessage('')
     if (!validateEmail(email)) {
       setValidationError('email address not valid')
     } else {
@@ -40,56 +36,86 @@ const Intermission = props => {
         if (response.error) {
           setValidationError(response.error)
         } else {
-          setSuccessMessage('Email sent successfully!')
+          window.socket.emit('send-password', email, window.location.pathname, response => {
+            if (response && response.error) {
+              let { error } = response
+
+              if (error === 'User not found') {
+                error = 'Email not found'
+              }
+              setValidationError(error)
+            } else {
+              setSuccessMessage('Success, an email has been sent to ' + email + '. Please check your inbox and follow the instructions to continue.')
+            }
+          })
         }
       })
     }
   }
 
+  const roundCompleted = data.completedByRound?.[data.round]
+  const userIsRegistered = !!user?.email
+  const nextRoundAvailable = round < lastRound
+  const allRoundsCompleted = roundCompleted && round >= finalRound
+  useEffect(() => {
+    if (allRoundsCompleted) setTimeout(() => onDone({ valid: true, value: 'done' }), 500)
+  }, [allRoundsCompleted])
+
+  let conditionalResponse
+  if (!userIsRegistered)
+    conditionalResponse = (
+      <>
+        <div className={classes.headlineSmall}>Great! To continue we need to be able to invite you back. So now is the last change to associate your email with this discussion</div>
+        <input type="text" className={classes.input} value={email} onChange={e => setEmail(e.target.value)} placeholder="Please provide your email" />
+        <div className={classes.buttonContainer}>
+          <PrimaryButton onClick={handleEmail} title="Invite me back" disabled={false} disableOnClick={false}>
+            Invite me back
+          </PrimaryButton>
+        </div>
+        {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
+        {validationError && <StatusBox className={classes.errorMessage} status="error" subject={validationError} />}
+      </>
+    )
+  else if (allRoundsCompleted)
+    conditionalResponse = (
+      <>
+        <div className={classes.headlineSmall}>Wonderful, that concludes this deliberation. We will notify you when the conclusion is ready.</div>
+      </>
+    )
+  else if (!roundCompleted)
+    conditionalResponse = (
+      <>
+        <div className={classes.headlineSmall}>Great! You've answered the question, when we get answers from more people, we will invite you back to continue the deliberation.</div>
+      </>
+    )
+  else if (nextRoundAvailable)
+    conditionalResponse = (
+      <>
+        <div className={classes.headlineSmall}>Would you like to continue onto Round {round + 1}, or come back tomorrow? Sometimes it’s good to take a break and come back with fresh eyes. We will send you an email reminder</div>
+        <div className={classes.buttonContainer}>
+          <PrimaryButton title="Yes, Continue" disabled={false} disableOnClick={false} onClick={() => onDone({ valid: true, value: 'continue' })}>
+            Yes, Continue
+          </PrimaryButton>
+          <SecondaryButton title="Remind Me Later" disabled={false} disableOnClick={false} onClick={() => setSuccessMessage('We will send you a reminder email tomorrow')}>
+            Remind Me Later
+          </SecondaryButton>
+        </div>
+        {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
+      </>
+    )
+  else
+    conditionalResponse = (
+      <>
+        <div className={classes.headlineSmall}>{`Great you've completed Round ${round + 1}, we will send you an invite to continue the discussion after more people have made it this far.`}</div>
+      </>
+    )
+
   return (
-    <div className={cx(classes.container, className)} {...otherProps}>
+    <div className={cx(classes.intermission, className)}>
       <div className={classes.iconContainer}>
         <Intermission_Icon className={classes.icon} />
       </div>
-      <div className={classes.headline}>Awesome, you’ve completed Round {round}!</div>
-      {Object.keys(user).length !== 0 ? (
-        <>
-          {round < lastRound ? (
-            <>
-              <div className={classes.headlinesmall}>Would you like to continue onto Round {round + 1}?</div>
-              <div className={classes.buttonContainer}>
-                <PrimaryButton title="Yes, Continue" disabled={false} disableOnClick={false} onClick={() => onDone({ valid: true, value: 'continue' })}>
-                  Yes, Continue
-                </PrimaryButton>
-                <SecondaryButton title="Remind Me Later" disabled={false} disableOnClick={false} onClick={() => onDone({ valid: true, value: 'remind' })}>
-                  Remind Me Later
-                </SecondaryButton>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className={classes.headlinesmall}>We will notify you when the next round is available.</div>
-              <div className={classes.buttonContainer}>
-                <PrimaryButton title="Continue" disabled={true} disableOnClick={false}>
-                  Continue
-                </PrimaryButton>
-              </div>
-            </>
-          )}
-        </>
-      ) : (
-        <>
-          <div className={classes.headlinesmall}>When more people have gotten to this point we will invite you back to continue the deliberation.</div>
-          <input type="text" className={classes.input} value={email} onChange={e => setEmail(e.target.value)} placeholder="Please provide your email" />
-          <div className={classes.buttonContainer}>
-            <PrimaryButton onClick={handleEmail} title="Invite me back" disabled={false} disableOnClick={false}>
-              Invite me back
-            </PrimaryButton>
-          </div>
-          {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
-          {validationError && <StatusBox className={classes.errorMessage} status="error" subject={validationError} />}
-        </>
-      )}
+      {conditionalResponse}
     </div>
   )
 }
@@ -99,15 +125,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     width: '100%',
     display: 'flex',
     justifyContent: 'flex-start',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      display: 'none',
-    },
   },
   icon: {
     width: '3.125rem',
     height: '2.89rem',
   },
-  container: {
+  intermission: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -117,7 +140,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       width: '100%',
     },
   },
-
   headline: {
     fontFamily: 'Inter',
     fontWeight: 300,
@@ -125,10 +147,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     lineHeight: '2.9375rem',
     color: theme.colors.primaryButtonBlue,
     textAlign: 'left',
-    // whiteSpace: 'nowrap',
   },
-
-  headlinesmall: {
+  headlineSmall: {
     fontFamily: 'Inter',
     fontWeight: 400,
     fontSize: '1.25rem',
@@ -145,20 +165,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     border: '0.0625rem solid #ccc',
     boxSizing: 'border-box',
   },
-
-  checkboxContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem',
-    alignItems: 'flex-start',
-  },
-
-  checkboxWrapper: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: '0.5rem',
-  },
-
   text: {
     fontWeight: '400',
     fontFamily: 'Inter',
@@ -166,21 +172,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     lineHeight: '1.5rem',
     color: theme.colors.title,
   },
-  underline: {
-    textDecoration: 'underline',
-  },
   buttonContainer: {
     display: 'flex',
     alignItems: 'flex-start',
     gap: '1rem',
-  },
-  accountText: {
-    fontFamily: 'Inter',
-    fontWeight: '600',
-    fontSize: '1rem',
-    lineHeight: '1.5rem',
-    color: theme.colors.disableTextBlack,
-    textDecoration: 'underline',
   },
 }))
 

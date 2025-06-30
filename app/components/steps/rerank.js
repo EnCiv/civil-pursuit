@@ -15,7 +15,7 @@ export default function RerankStep(props) {
   const args = { ...derivePointMostsLeastsRankList(data) }
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
-      upsert({ postRankByParentId: { [delta.parentId]: delta } })
+      upsert({ postRankByParentId: { [delta.parentId]: delta }, completedByRound: { [data.round]: valid } })
       window.socket.emit('upsert-rank', delta)
     }
     if (valid) {

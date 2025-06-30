@@ -1,14 +1,14 @@
 // https://github.com/EnCiv/civil-pursuit/issues/137
 
-import React from 'react'
+import React, { useState } from 'react'
 import Intermission from '../app/components/intermission'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import { onDoneDecorator, onDoneResult } from './common'
+import { DeliberationContextDecorator, onDoneDecorator, onDoneResult, buildApiDecorator } from './common'
 import { within, userEvent, waitFor, expect } from '@storybook/test'
 
 export default {
   component: Intermission,
-  decorators: [onDoneDecorator],
+  decorators: [onDoneDecorator, DeliberationContextDecorator],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
@@ -16,89 +16,157 @@ export default {
   },
 }
 
-const validateEmail = email => {
-  var re =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  return re.test(String(email).toLowerCase())
+export const Empty = {
+  args: {},
+  decorators: [
+    buildApiDecorator('set-user-info', {}),
+    buildApiDecorator('send-password', (email, path, cb) => {
+      if (email === 'fail@email.com') return { error: 'could not send email' }
+      else return { error: '' }
+    }),
+  ],
 }
 
-const Template = args => {
-  window.socket = {
-    emit: (handle, data, cb) => {
-      console.log('User input email:', data.email)
-      if (handle !== 'set user info') {
-        console.error('emit expected set user info, got:', handle)
-      }
-      if (validateEmail(data.email)) {
-        setTimeout(() => cb({ error: '' }), 1000)
-        console.log('success!')
-      } else {
-        setTimeout(() => cb({ error: 'Something went wrong' }), 1000)
-        console.log('error')
-      }
-    },
-  }
-  return <Intermission {...args} />
+export const NoEmail = {
+  args: {
+    defaultValue: { user: {}, round: 1, lastRound: 1, finalRound: 1 },
+  },
+  decorators: [
+    buildApiDecorator('send-password', (email, path, cb) => {
+      if (email === 'fail@email.com') return { error: 'could not send email' }
+      else return { error: '' }
+    }),
+    buildApiDecorator('set-user-info', info => {
+      if (!info.email) return { error: 'email address not valid' }
+      return { error: '' }
+    }),
+  ],
 }
 
-export const Empty = Template.bind({})
-Empty.args = {}
+export const NoEmailSuccess = {
+  args: {
+    defaultValue: { user: {}, round: 1, lastRound: 1, finalRound: 1 },
+  },
+  decorators: [
+    buildApiDecorator('send-password', (email, path, cb) => {
+      if (email === 'fail@email.com') return { error: 'could not send email' }
+      else return { error: '' }
+    }),
+    buildApiDecorator('set-user-info', info => {
+      if (!info.email) return { error: 'email address not valid' }
+      return { error: '' }
+    }),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
 
-export const NoEmail = Template.bind({})
-NoEmail.args = {
-  user: {},
-  round: 1,
-  lastRound: 1,
-}
-
-export const NoEmailMobile = Template.bind({})
-NoEmailMobile.args = {
-  user: {},
-  round: 1,
-  lastRound: 1,
-}
-NoEmailMobile.parameters = {
-  viewport: {
-    defaultViewport: 'iphonex',
+    const emailInput = canvas.getByPlaceholderText('Please provide your email')
+    await userEvent.type(emailInput, 'success@email.com')
+    const continueButton = canvas.getByText('Invite me back')
+    await userEvent.click(continueButton)
+    await waitFor(async () => {
+      expect(window.socket._socketEmitHandlerResults['set-user-info']).toHaveLength(1)
+      expect(window.socket._socketEmitHandlerResults['set-user-info'][0][0]).toEqual({ email: 'success@email.com' })
+      expect(window.socket._socketEmitHandlerResults['send-password']).toHaveLength(1)
+      expect(window.socket._socketEmitHandlerResults['send-password'][0][0]).toEqual('success@email.com')
+      const successMessage = canvas.getByText('Success, an email has been sent to success@email.com. Please check your inbox and follow the instructions to continue.')
+      expect(successMessage).toBeInTheDocument()
+    })
   },
 }
 
-export const LastRound1 = Template.bind({})
-LastRound1.args = {
-  user: { email: 'example@gmail.com', tempid: '123456' },
-  round: 1,
-  lastRound: 1,
+export const NoEmailFail = {
+  args: {
+    defaultValue: { user: {}, round: 1, lastRound: 1, finalRound: 1 },
+  },
+  decorators: [
+    buildApiDecorator('send-password', (email, path, cb) => {
+      if (email === 'fail@email.com') return { error: 'could not send email' }
+      else return { error: '' }
+    }),
+    buildApiDecorator('set-user-info', info => {
+      if (!info.email) return { error: 'email address not valid' }
+      return { error: '' }
+    }),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    const emailInput = canvas.getByPlaceholderText('Please provide your email')
+    await userEvent.type(emailInput, 'fail@email.com')
+    const continueButton = canvas.getByText('Invite me back')
+    await userEvent.click(continueButton)
+    await waitFor(async () => {
+      expect(window.socket._socketEmitHandlerResults['set-user-info']).toHaveLength(1)
+      expect(window.socket._socketEmitHandlerResults['set-user-info'][0][0]).toEqual({ email: 'fail@email.com' })
+      expect(window.socket._socketEmitHandlerResults['send-password']).toHaveLength(1)
+      expect(window.socket._socketEmitHandlerResults['send-password'][0][0]).toEqual('fail@email.com')
+      const successMessage = canvas.getByText('could not send email')
+      expect(successMessage).toBeInTheDocument()
+    })
+  },
+}
+export const NoEmailMobile = {
+  args: {
+    defaultValue: { userId: '', round: 1, lastRound: 1, finalRound: 1, completedByRound: { 1: true } },
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphonex',
+    },
+  },
 }
 
-export const LastRound2 = Template.bind({})
-LastRound2.args = {
-  user: { email: 'example@gmail.com', tempid: '123456' },
-  round: 1,
-  lastRound: 2,
+export const CanContinueToNextRound = {
+  args: {
+    defaultValue: { round: 1, lastRound: 2, finalRound: 2, completedByRound: { 1: true } },
+    user: { id: '123456', email: 'user@email.com' },
+  },
 }
-LastRound2.play = async ({ canvasElement }) => {
-  const canvas = within(canvasElement)
+export const CanContinueToNextRoundOnDone = {
+  args: {
+    defaultValue: { round: 1, lastRound: 2, finalRound: 2, completedByRound: { 1: true } },
+    user: { id: '123456', email: 'user@email.com' },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
 
-  const continueButton = canvas.getByText('Yes, Continue')
-  await userEvent.click(continueButton)
-  await waitFor(() =>
-    expect(onDoneResult(canvas)).toMatchObject({
-      count: 1,
-      onDoneResult: {
-        valid: true,
-        value: 'continue',
-      },
+    const continueButton = canvas.getByText('Yes, Continue')
+    await userEvent.click(continueButton)
+    await waitFor(() =>
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 1,
+        onDoneResult: {
+          valid: true,
+          value: 'continue',
+        },
+      })
+    )
+    const remindButton = canvas.getByText('Remind Me Later')
+    await userEvent.click(remindButton)
+    await waitFor(() => {
+      const successMessage = canvas.getByText('We will send you a reminder email tomorrow')
+      expect(successMessage).toBeInTheDocument()
     })
-  )
-  const remindButton = canvas.getByText('Remind Me Later')
-  await userEvent.click(remindButton)
-  await waitFor(() =>
-    expect(onDoneResult(canvas)).toMatchObject({
-      count: 2,
-      onDoneResult: {
-        valid: true,
-        value: 'remind',
-      },
-    })
-  )
+  },
+}
+export const CanNotFinishTheRound = {
+  args: {
+    defaultValue: { round: 0, lastRound: 1, finalRound: 1, completedByRound: { 0: false } },
+    user: { id: '123456', email: 'user@email.com' },
+  },
+}
+
+export const CanNotContinueToNextRound = {
+  args: {
+    defaultValue: { round: 0, lastRound: 0, finalRound: 1, completedByRound: { 0: true } },
+    user: { id: '123456', email: 'user@email.com' },
+  },
+}
+
+export const DiscussionFinished = {
+  args: {
+    defaultValue: { round: 1, lastRound: 1, finalRound: 1, completedByRound: { 1: true } },
+    user: { id: '123456', email: 'user@email.com' },
+  },
 }
