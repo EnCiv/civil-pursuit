@@ -23,7 +23,6 @@ export default async function getConclusion(discussionId, cb) {
     await getPointsOfIds.call(this.synuser, statementIds, result => {
       pointDocs = result.points
       myWhys = result.myWhys
-      console.log('pointDocs', pointDocs)
     })
 
     const postRanksAndTopRankedWhys = await getUserPostRanksAndTopRankedWhys.call(this.synuser, discussionId, 0, statementIds, result => {

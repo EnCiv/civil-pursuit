@@ -13,8 +13,8 @@ const ObjectID = require('bson-objectid')
 
 let MemoryServer
 
-const DISCUSSION_ID = 1
-const DISCUSSION_ID2 = 10
+const DISCUSSION_ID = '1'
+const DISCUSSION_ID2 = '10'
 
 const userId = '6667d5a33da5d19ddc304a6b'
 const synuser = { synuser: { id: userId } }
@@ -126,7 +126,7 @@ test('Return data if discussion is complete.', async () => {
       const shownStatementIds = roundData['shownStatementIds']
       for (let statementId in shownStatementIds) {
         if (shownStatementIds[statementId]['rank'] == 1) {
-          await upsertRank.call({ synuser: { id: userId } }, { parentId: statementId, stage: 'post', round: round, discussionId: DISCUSSION_ID2, category: 'most', userId: userId }, () => {})
+          await upsertRank.call({ synuser: { id: userId } }, { parentId: statementId, stage: 'post', round: round, discussionId: DISCUSSION_ID2, category: 'most', userId: userId }, res => {})
         }
       }
     }
