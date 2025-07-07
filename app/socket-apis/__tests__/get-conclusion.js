@@ -13,14 +13,14 @@ const ObjectID = require('bson-objectid')
 
 let MemoryServer
 
-const DISCUSSION_ID = '1'
-const DISCUSSION_ID2 = '10'
+const DISCUSSION_ID = '101'
+const DISCUSSION_ID2 = '1'
 
 const userId = '6667d5a33da5d19ddc304a6b'
 const synuser = { synuser: { id: userId } }
 
 beforeEach(async () => {
-  jest.spyOn(console, 'error').mockImplementation(() => {})
+  jest.spyOn(console, 'error').mockImplementation(err => {})
 })
 
 afterEach(async () => {
@@ -34,15 +34,15 @@ beforeAll(async () => {
 
   initDiscussion(DISCUSSION_ID, {
     group_size: 5,
-    gmajority: 0.5,
+    gmajority: 0.7,
     max_rounds: 10,
-    min_shown_count: 6,
+    min_shown_count: 3,
     min_rank: 3,
     updateUInfo: () => {},
     getAllUInfo: async () => {
       const Uinfos = Object.keys(getTestUInfo()).map(uId => {
-        const rounds = getTestUInfo()[uId][1]
-        return { [uId]: { [DISCUSSION_ID2]: rounds } }
+        const rounds = getTestUInfo()[uId][DISCUSSION_ID]
+        return { [uId]: { [DISCUSSION_ID]: rounds } }
       })
       console.info('Uinfos.length', Uinfos.length)
       return Uinfos
@@ -96,7 +96,7 @@ test('Return data if discussion is complete.', async () => {
     updateUInfo: () => {},
     getAllUInfo: async () => {
       const Uinfos = Object.keys(getTestUInfo()).map(uId => {
-        const rounds = getTestUInfo()[uId][1]
+        const rounds = getTestUInfo()[uId][DISCUSSION_ID2]
         return { [uId]: { [DISCUSSION_ID2]: rounds } }
       })
       console.info('Uinfos.length', Uinfos.length)
@@ -109,6 +109,7 @@ test('Return data if discussion is complete.', async () => {
   console.log('inserting ', testStatements.length, ' statements')
 
   for (let statement of testStatements) {
+    statement.description = statement.description.toString()
     await upsertPoint.call({ synuser: { id: statement.userId } }, statement, () => {})
   }
 
@@ -117,7 +118,7 @@ test('Return data if discussion is complete.', async () => {
   console.log('inserting ', testStatements.length, ' uInfo (may take awhile)')
 
   for (let UInfoData of testUInfo) {
-    const allRounds = UInfoData['1']
+    const allRounds = UInfoData[DISCUSSION_ID2]
 
     for (let round of Object.keys(allRounds)) {
       const { userId, ...roundData } = allRounds[round]

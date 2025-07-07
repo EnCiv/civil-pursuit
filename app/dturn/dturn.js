@@ -638,7 +638,7 @@ export async function getConclusionIds(discussionId) {
   let dis = Discussions[discussionId]
 
   const lastRoundNotMoreThanGroupSize = dis.ShownStatements.at(-1).length <= dis.group_size
-  console.log('shownstatements', dis.ShownStatements.at(-1))
+
   if (!lastRoundNotMoreThanGroupSize) {
     console.error('last round more than group size ', dis.ShownStatements.at(-1).length, ' <= ', dis.group_size)
     return undefined

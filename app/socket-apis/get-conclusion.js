@@ -26,7 +26,7 @@ export default async function getConclusion(discussionId, cb) {
     })
 
     const postRanksAndTopRankedWhys = await getUserPostRanksAndTopRankedWhys.call(this.synuser, discussionId, 0, statementIds, result => {
-      console.log('test', result)
+      console.log(result)
     })
 
     return cb && cb({ rankResults: [{ parentId: '', category: '', count: 0 }], points: pointDocs, whys: [{}] })
