@@ -57,7 +57,6 @@ export function Why(props) {
     pointWhyList,
     category = '', // "most" or "least"
     onDone = () => {},
-    ...otherProps
   } = props
 
   const classes = useStylesFromThemeFunction()
@@ -112,15 +111,11 @@ export function Why(props) {
 
   if (!pointWhyList?.length) {
     setTimeout(() => onDone({ valid: true, value: 1 }), 0) // if there are no points, mark as done
-    return (
-      <div className={cx(classes.wrapper, className)} {...otherProps}>
-        Nothing to do here. Hit Next to continue.
-      </div>
-    )
+    return <div className={cx(classes.wrapper, className)}>Nothing to do here. Hit Next to continue.</div>
   }
 
   return (
-    <div className={cx(classes.wrapper, className)} {...otherProps}>
+    <div className={cx(classes.wrapper, className)}>
       <div className={classes.introContainer}>
         <H className={classes.introTitle}>{`Why it's ${category && category[0].toUpperCase() + category.slice(1)} Important`}</H>
         <div className={classes.introText}>{intro}</div>

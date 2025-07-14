@@ -84,7 +84,6 @@ export function RankPoints(props) {
     pointRankGroupList,
     round,
     discussionId,
-    ...otherProps
   } = props
 
   if (!pointRankGroupList) return null
@@ -204,7 +203,7 @@ export function RankPoints(props) {
   }
 
   return (
-    <div className={cx(classes.rankStep, className)} {...otherProps}>
+    <div className={cx(classes.rankStep, className)}>
       <div className={classes.buttonDiv}>
         <div className={classes.leftButtons}>
           <StatusBadge name={'Most Important'} number={`${mostCount()}/${targetMost}`} status={mostCount() == targetMost || (targetLeast == 0 && targetMost == 0) ? 'complete' : mostCount() > targetMost ? 'error' : 'progress'} />
@@ -250,7 +249,10 @@ export function RankPoints(props) {
   )
 }
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-  rankStep: {},
+  rankStep: {
+    paddingLeft: '1rem', // room for the shadow around the points
+    paddingRight: '1rem',
+  },
   buttonDiv: {
     padding: '2rem 0rem 3rem 0rem',
     display: 'flex',
@@ -308,11 +310,15 @@ export function derivePointRankGroupList(data) {
   }
 
   if (local.preRankByParentId !== preRankByParentId) {
-    for (const rank of Object.values(preRankByParentId)) {
-      if (rankPointsById[rank.parentId]) {
-        if (rankPointsById[rank.parentId].rank !== rank) {
-          rankPointsById[rank.parentId] = { ...rankPointsById[rank.parentId], rank }
-          updated = true
+    if (typeof preRankByParentId !== 'object') {
+      console.error('preRankByParentId is not an object', local.preRankByParentId, preRankByParentId)
+    } else {
+      for (const rank of Object.values(preRankByParentId)) {
+        if (rankPointsById[rank.parentId]) {
+          if (rankPointsById[rank.parentId].rank !== rank) {
+            rankPointsById[rank.parentId] = { ...rankPointsById[rank.parentId], rank }
+            updated = true
+          }
         }
       }
     }

@@ -54,9 +54,10 @@ export default function GroupingStep(props) {
 // pG stand for point group meaning {point, group}
 
 export function GroupPoints(props) {
-  const { reducedPointList, onDone = () => {}, className, discussionId, round, ...otherProps } = props
+  const { reducedPointList, onDone = () => {}, className, discussionId, round } = props
 
   const classes = useStylesFromThemeFunction(props)
+  const delayedOnDone = value => setTimeout(() => onDone(value), 0)
 
   // Don't render if list is missing
   if (!reducedPointList) return null
@@ -73,7 +74,7 @@ export function GroupPoints(props) {
 
   // on original render, notify parent this is done (if it is)
   useEffect(() => {
-    if (!gs.selectedIds.length && !gs.selectLead && !gs.yourGroupsSelected.length) onDone({ valid: true, value: {} })
+    if (!gs.selectedIds.length && !gs.selectLead && !gs.yourGroupsSelected.length) delayedOnDone({ valid: true, value: {} })
   }, [])
 
   const [prev] = useState({ reducedPointList })
@@ -93,7 +94,7 @@ export function GroupPoints(props) {
       const selectedIds = oldGs.selectedIds.filter(id => id !== _id)
       // if the _id wasn't in there, push it
       if (selectedIds.length === oldGs.selectedIds.length) selectedIds.push(_id)
-      if (selectedIds.length) onDone({ valid: false })
+      if (selectedIds.length) delayedOnDone({ valid: false })
 
       return { ...oldGs, selectedIds }
     })
@@ -121,7 +122,7 @@ export function GroupPoints(props) {
           yourGroups.push(pG)
         }
       }
-      onDone({ valid: false })
+      delayedOnDone({ valid: false })
       return {
         ...oldGs,
         pGsToGroup,
@@ -160,7 +161,7 @@ export function GroupPoints(props) {
         yourGroups.push(value.pointGroup)
         // we have to change it because the new one may have different children
       }
-      setTimeout(() => onDone({ valid: true, delta: yourGroups }))
+      delayedOnDone({ valid: true, delta: yourGroups })
       return { ...oldGs, pGsToGroup, yourGroups, yourGroupsSelected: [], selectLead: null }
     })
   }
@@ -201,13 +202,13 @@ export function GroupPoints(props) {
           }
         }
       }
-      onDone({ valid: true, delta: pGsToGroup.concat(yourGroups) })
+      delayedOnDone({ valid: true, delta: pGsToGroup.concat(yourGroups) })
       return { ...oldGs, pGsToGroup, yourGroups, selectedIds }
     })
   }
 
   return (
-    <div className={cx(classes.groupingStep, className)} {...otherProps}>
+    <div className={cx(classes.groupingStep, className)}>
       <div className={classes.statusContainer}>
         <div className={classes.statusBadges}>
           <StatusBadge name="Groups Created" status={gs.yourGroups.length == 0 ? 'inactive' : 'complete'} number={gs.yourGroups.length} />

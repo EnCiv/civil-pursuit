@@ -15,7 +15,7 @@ export default function RerankStep(props) {
   const args = { ...derivePointMostsLeastsRankList(data) }
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
-      upsert({ postRankByParentId: { [delta.parentId]: delta } })
+      upsert({ postRankByParentId: { [delta.parentId]: delta }, completedByRound: { [data.round]: valid } })
       window.socket.emit('upsert-rank', delta)
     }
     if (valid) {
@@ -68,7 +68,7 @@ const rankStringToCategory = Object.entries(toRankString).reduce((rS2C, [key, va
 }, {})
 
 export function Rerank(props) {
-  const { reviewPoints, onDone = () => {}, className, round, discussionId, ...otherProps } = props
+  const { reviewPoints, onDone = () => {}, className, round, discussionId } = props
   // this componet manages the rank doc so we keep a local copy
   // if it's changed from above, we use the setter to cause a rerender
   // if it's chagned from below (by the user) we mutate the state so we don't cause a rerender
@@ -150,7 +150,7 @@ export function Rerank(props) {
   if (!reviewPoints) return null // nothing ready yet
 
   return (
-    <div className={classes.reviewPointsContainer} {...otherProps}>
+    <div className={classes.reviewPointsContainer}>
       {reviewPoints.map((reviewPoint, idx) => (
         <div key={reviewPoint.point._id} className={classes.reviewPoint}>
           <ReviewPoint
@@ -171,6 +171,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
+    paddingLeft: '1rem', // room for the shadow around the points
+    paddingRight: '1rem',
   },
 }))
 

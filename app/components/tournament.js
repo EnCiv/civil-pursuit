@@ -31,8 +31,8 @@ const WebComponents = {
 
 function buildChildren(steps, round) {
   // don't do the Answer step after the first round
-  const filteredSteps = steps.filter(step => !(step === 'Answer' && round > 0))
-  return filteredSteps.map(step => {
+
+  return steps.map(step => {
     const { webComponent, ...props } = step
     const LookupResult = WebComponents[webComponent]
     if (LookupResult) {
@@ -46,25 +46,34 @@ function buildChildren(steps, round) {
 }
 
 function Tournament(props) {
-  const { className, steps = [], discussionId, user, ...otherProps } = props
+  const { className, steps = [], discussionId, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useContext(DeliberationContext)
-  const { round } = data
+  const { round, uInfo = {}, finalRound } = data
   const [state] = useState({ stepComponentsByRound: [] })
+  const filteredSteps = steps.filter(step => !(step.stepName === 'Answer' && round > 0)) // don't show Answer step after the first round
   if (typeof data.round === 'number' && !state.stepComponentsByRound[round]) {
-    state.stepComponentsByRound[round] = buildChildren(steps, round)
+    state.stepComponentsByRound[round] = buildChildren(filteredSteps, round)
   }
-
-  const stepInfo = steps.map(step => {
+  const stepInfo = filteredSteps.map(step => {
     return {
       name: step.stepName,
       title: step.stepIntro.description,
     }
   })
+  const roundsStatus = Object.values(uInfo).map((roundInfo, i, uInfos) => {
+    if (roundInfo.shownStatementIds && Object.values(roundInfo.shownStatementIds).some(shown => shown.rank > 0)) {
+      if (i + 1 < uInfos.length && uInfos[i + 1].shownStatementIds) return 'complete'
+      else return 'inProgress'
+    }
+    if (roundInfo.shownStatementIds) return 'inProgress'
+    return 'pending'
+  })
+  while (roundsStatus.length <= finalRound) roundsStatus.push('pending')
 
   return (
     <div className={cx(classes.tournament, className)}>
-      <RoundTracker className={classes.roundTracker} roundsStatus={['complete', 'complete', 'inProgress', 'pending', 'pending']} />
+      <RoundTracker className={classes.roundTracker} roundsStatus={roundsStatus} />
       {state.stepComponentsByRound[round] && (
         <StepSlider
           key={round}
@@ -73,6 +82,7 @@ function Tournament(props) {
           onDone={valid => {
             if (valid) upsert({ round: data.round + 1 })
           }}
+          {...otherProps}
         />
       )}
     </div>

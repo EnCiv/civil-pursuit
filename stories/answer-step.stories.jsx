@@ -29,6 +29,7 @@ const whyQuestion = 'Why should everyone consider solving this issue?'
 
 const startingPoint = { _id: '1', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', description: 'Starting Point Description', userId: 'a' }
 const whyPoint1 = { _id: '2', parentId: '1', subject: 'Congress', description: 'Congress is too slow', userId: 'a' }
+const discussionId = startingQuestion._id
 
 export const Empty = {
   args: { question: '', whyQuestion: '' },
@@ -36,6 +37,7 @@ export const Empty = {
 
 export const Default = {
   args: {
+    discussionId,
     question: startingQuestion,
     whyQuestion: whyQuestion,
     myAnswer: undefined,
@@ -45,6 +47,7 @@ export const Default = {
 
 export const Prefilled_1 = {
   args: {
+    discussionId,
     question: startingQuestion,
     whyQuestion: whyQuestion,
     myAnswer: startingPoint,
@@ -54,6 +57,7 @@ export const Prefilled_1 = {
 
 export const onDoneTestDefault = {
   args: {
+    discussionId,
     question: startingQuestion,
     whyQuestion: whyQuestion,
     myAnswer: undefined,
@@ -87,6 +91,7 @@ export const onDoneTestDefault = {
 
 export const onDoneTestSwap = {
   args: {
+    discussionId,
     question: startingQuestion,
     whyQuestion: whyQuestion,
   },
@@ -140,6 +145,7 @@ export const asyncUpdate = {
     },
   ],
   args: {
+    discussionId,
     question: startingQuestion,
     whyQuestion: whyQuestion,
     myAnswer: startingPoint,
@@ -185,7 +191,7 @@ function answerStepTemplate(args) {
 
 export const AnswerStepUserEntersData = {
   args: {
-    defaultValue: { userId: 'a', round: '0', deliberationId: startingQuestion._id }, // to deliberation context
+    defaultValue: { userId: 'a', round: '0', discussionId: startingQuestion._id }, // to deliberation context
     question: startingQuestion,
     whyQuestion: whyQuestion,
     myAnswer: undefined,
@@ -232,7 +238,7 @@ export const AnswerStepUserEntersData = {
       expect(deliberationContextData(canvas)).toMatchObject({
         myWhyByParentId: { [pointId]: { _id: whyId, description: 'This is the second description!', parentId: pointId, subject: 'This is the second subject!' } },
         pointById: { [pointId]: { _id: pointId, description: 'This is the first description!', parentId: '5d0137260dacd06732a1d814', subject: 'This is the first subject!' } },
-        reducedPointList: [],
+        reducedPointList: [{ point: { _id: pointId, description: 'This is the first description!', parentId: '5d0137260dacd06732a1d814', subject: 'This is the first subject!', userId: 'a' } }],
       })
     })
   },
@@ -240,7 +246,7 @@ export const AnswerStepUserEntersData = {
 
 export const AnswerStepPreviousDataComesFromServer = {
   args: {
-    defaultValue: { userId: 'a', round: '0', deliberationId: startingQuestion._id, uInfo: [{ statementIds: ['1'] }] }, // to deliberation context
+    defaultValue: { userId: 'a', round: '0', discussionId: startingQuestion._id, uInfo: [{ shownStatementIds: { [startingPoint._id]: { authored: true, rank: 0 } } }] }, // to deliberation context
     question: startingQuestion,
     whyQuestion: whyQuestion,
     myAnswer: startingPoint,
@@ -261,7 +267,7 @@ export const AnswerStepPreviousDataComesFromServer = {
       expect(deliberationContextData(canvas)).toMatchObject({
         myWhyByParentId: { [pointId]: { _id: whyId, description: 'Congress is too slow', parentId: pointId, subject: 'Congress', userId: 'a' } },
         pointById: { [pointId]: { _id: pointId, description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } },
-        reducedPointList: [],
+        reducedPointList: [{ point: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } }],
       })
     })
   },
