@@ -560,6 +560,12 @@ async function reconstructDiscussionFromUInfo(discussionId) {
     const shownStatements = {} // object for quick existence test, to array later
     for (const uinfo of docs) {
       const userId = Object.keys(uinfo)[0]
+
+      // User hasn't submitted any statements to discussion
+      if (!uinfo?.[userId]?.[discussionId]) {
+        continue
+      }
+
       if (round === 0) rounds_length = Math.max(rounds_length, Object.keys(uinfo[userId][discussionId]).length)
       const uitem = uinfo[userId][discussionId][round]
       if (!uitem) continue

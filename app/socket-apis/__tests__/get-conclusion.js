@@ -8,6 +8,7 @@ import { initDiscussion, insertStatementId, Discussions } from '../../dturn/dtur
 import upsertPoint from '../../socket-apis/upsert-point'
 import upsertRank from '../../socket-apis/upsert-rank'
 import Dturns from '../../models/dturns'
+import Ranks from '../../models/ranks'
 
 const ObjectID = require('bson-objectid')
 
@@ -122,12 +123,13 @@ test('Return data if discussion is complete.', async () => {
 
     for (let round of Object.keys(allRounds)) {
       const { userId, ...roundData } = allRounds[round]
-      await Dturns.upsert(userId, DISCUSSION_ID2, round, roundData)
+      //await Dturns.upsert(userId, DISCUSSION_ID2, round, roundData)
 
       const shownStatementIds = roundData['shownStatementIds']
       for (let statementId in shownStatementIds) {
         if (shownStatementIds[statementId]['rank'] == 1) {
-          await upsertRank.call({ synuser: { id: userId } }, { parentId: statementId, stage: 'post', round: round, discussionId: DISCUSSION_ID2, category: 'most', userId: userId }, res => {})
+          const rankData = { parentId: statementId, stage: 'post', round: round, discussionId: DISCUSSION_ID2, category: 'most', userId: userId }
+          await upsertRank.call({ synuser: { id: userId } }, rankData, res => {})
         }
       }
     }
@@ -136,7 +138,7 @@ test('Return data if discussion is complete.', async () => {
   await getConclusion.call({ synuser: synuser }, DISCUSSION_ID2, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  expect(cb).toHaveBeenCalledWith({})
+  expect(cb).toHaveBeenCalledWith([{ leasts: undefined, mosts: undefined, point: { _id: '6864611dda8eca6f38256713', description: '1.5870962407368285', subject: 'proxy random number', userId: '6864611dda8eca6f38256712' } }])
 }, 70000)
 
 function getTestUInfo() {
