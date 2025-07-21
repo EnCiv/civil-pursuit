@@ -252,7 +252,8 @@ export const StepSlider = props => {
           <StepFooter
             className={classes.stepFooter}
             onDone={() => {
-              dispatch({ type: 'increment' })
+              if (state.currentStep + 1 >= steps.length) onDone({ valid: true })
+              else dispatch({ type: 'increment' })
             }}
             onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
             active={state.stepStatuses[state.currentStep] && state.stepStatuses[state.currentStep]['complete']}

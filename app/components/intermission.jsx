@@ -8,10 +8,10 @@ import StatusBox from '../components/status-box'
 import DeliberationContext from './deliberation-context'
 
 const Intermission = props => {
-  const { className = '', onDone = () => {}, user } = props
+  const { className = '', onDone = () => {}, user, round } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useContext(DeliberationContext)
-  const { round, lastRound, finalRound } = data
+  const { lastRound, finalRound, uInfo = {} } = data
 
   const [validationError, setValidationError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
@@ -53,7 +53,7 @@ const Intermission = props => {
     }
   }
 
-  const roundCompleted = data.completedByRound?.[data.round]
+  const roundCompleted = uInfo[round]?.shownStatementIds && Object.values(uInfo[round].shownStatementIds).some(shown => shown.rank > 0)
   const userIsRegistered = !!user?.email
   const nextRoundAvailable = round < lastRound
   const allRoundsCompleted = roundCompleted && round >= finalRound
@@ -61,8 +61,9 @@ const Intermission = props => {
     if (allRoundsCompleted) setTimeout(() => onDone({ valid: true, value: 'done' }), 500)
   }, [allRoundsCompleted])
 
+  let valid
   let conditionalResponse
-  if (!userIsRegistered)
+  if (!userIsRegistered) {
     conditionalResponse = (
       <>
         <div className={classes.headlineSmall}>Great! To continue we need to be able to invite you back. So now is the last change to associate your email with this discussion</div>
@@ -76,19 +77,24 @@ const Intermission = props => {
         {validationError && <StatusBox className={classes.errorMessage} status="error" subject={validationError} />}
       </>
     )
-  else if (allRoundsCompleted)
+    valid = false
+  } else if (allRoundsCompleted) {
     conditionalResponse = (
       <>
         <div className={classes.headlineSmall}>Wonderful, that concludes this deliberation. We will notify you when the conclusion is ready.</div>
       </>
     )
-  else if (!roundCompleted)
-    conditionalResponse = (
-      <>
-        <div className={classes.headlineSmall}>Great! You've answered the question, when we get answers from more people, we will invite you back to continue the deliberation.</div>
-      </>
-    )
-  else if (nextRoundAvailable)
+    valid = true
+  } else if (!roundCompleted) {
+    if (round === 0)
+      conditionalResponse = (
+        <>
+          <div className={classes.headlineSmall}>Great! You've answered the question, when we get responses from more people, we will invite you back to continue the deliberation.</div>
+        </>
+      )
+    else conditionalResponse = <div className={classes.headlineSmall}>There are not enough responses yet proceed with round {round}. When we hear from more people, we will invite you back to continue the deliberation.</div>
+    valid = false
+  } else if (nextRoundAvailable) {
     conditionalResponse = (
       <>
         <div className={classes.headlineSmall}>Would you like to continue onto Round {round + 1}, or come back tomorrow? Sometimes it’s good to take a break and come back with fresh eyes. We will send you an email reminder</div>
@@ -103,13 +109,19 @@ const Intermission = props => {
         {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
       </>
     )
-  else
+    valid = false
+  } else {
     conditionalResponse = (
       <>
         <div className={classes.headlineSmall}>{`Great you've completed Round ${round + 1}, we will send you an invite to continue the discussion after more people have made it this far.`}</div>
       </>
     )
+    valid = false
+  }
 
+  useEffect(() => {
+    onDone({ valid, value: 'continue' })
+  }, [valid])
   return (
     <div className={cx(classes.intermission, className)}>
       <div className={classes.iconContainer}>

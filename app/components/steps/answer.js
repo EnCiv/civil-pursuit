@@ -12,17 +12,17 @@ import { isEqual } from 'lodash'
 
 // Step wrapper component: handles fetching, state, and interaction with context
 export default function AnswerStep(props) {
-  const { onDone = () => {}, ...otherProps } = props
+  const { onDone = () => {}, round, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
 
   // Fetch initial data and update context
   useEffect(() => {
-    const shownStatementIds = Object.keys(data?.uInfo?.[data?.round]?.shownStatementIds || {})
+    const shownStatementIds = Object.keys(data?.uInfo?.[round]?.shownStatementIds || {})
     if (shownStatementIds.length <= 0) return
     window.socket.emit('get-points-of-ids', shownStatementIds, ({ points, myWhys }) => {
       upsert({ ['pointById']: points.reduce((pById, point) => ((pById[point._id] = point), pById), {}), ['myWhyByParentId']: myWhys.reduce((wById, why) => ((wById[why.parentId] = why), wById), {}) })
     })
-  }, [data.uInfo, data.round])
+  }, [data.uInfo, round])
 
   function handleOnDone({ valid, value, delta }) {
     if (delta) {
@@ -38,7 +38,7 @@ export default function AnswerStep(props) {
     onDone({ valid, value })
   }
 
-  return <Answer {...deriveMyAnswerAndMyWhy(data)} round={data.round} userId={data.userId} discussionId={data.discussionId} {...otherProps} onDone={handleOnDone} />
+  return <Answer {...deriveMyAnswerAndMyWhy(data)} round={round} userId={data.userId} discussionId={data.discussionId} {...otherProps} onDone={handleOnDone} />
 }
 
 // Presentation component: only renders UI and handles local user interactions

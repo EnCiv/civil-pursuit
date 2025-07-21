@@ -73,6 +73,7 @@ function aEqual(a = [], b = []) {
 export function deriveReducedPointList(data, local) {
   const { pointById, groupIdsLists } = data
   if (!pointById) return data
+  if(!Object.keys(pointById).length) return data
   if (local.pointById === pointById && local.groupIdsList === groupIdsLists) return data // nothing to update
   const reducedPointTable = Object.entries(pointById).reduce((reducedPointTable, [id, point]) => ((reducedPointTable[id] = { point }), reducedPointTable), {})
   let updated = false
