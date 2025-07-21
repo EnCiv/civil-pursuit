@@ -8,6 +8,7 @@ function getInitOptions(options) {
     gmajority: options.gmajority || 0.5, // Group Majority - minimum percentage of group that votes for it to be part of the group
     max_rounds: options.max_rounds || 10, // maximum number of rounds to search down when clustering children
     min_shown_count: options.min_shown_count || Math.floor(7 / 2) + 1, // the minimum number of times an item pair is shown in order to decide if a majority have grouped it
+    min_shown_percent: options.min_shown_percent || 0.8, // the minimum percentage of users that must have seen the last round for the conclusion to be valid
     min_rank: options.min_rank || 2, // when filtering statements for the next round, they must at least have this number of users voting for it
     updates: options.updates || (() => []), // not async. socket.io will quere updates and send, if overflow, better to send latest than to catchup
     updateUInfo: options.updateUInfo || (async () => {}),
@@ -68,7 +69,8 @@ async function initDiscussion(discussionId, options = {}) {
   // Check if provided options are valid
   Object.keys(options).forEach(key => {
     if (!validOptionKeys.includes(key)) {
-      throw new Error(`'${key}' is not an option for initDiscussion() - valid options are: ${validOptionKeys}.`)
+      console.error(`'${key}' is not an option for initDiscussion() - valid options are: ${validOptionKeys}.`)
+      return undefined
     }
   })
 
@@ -78,6 +80,7 @@ async function initDiscussion(discussionId, options = {}) {
     Gitems: [],
     Uitems: {},
     ...initOptions,
+    participants: 0,
   }
   await reconstructDiscussionFromUInfo(discussionId)
 }
@@ -201,7 +204,8 @@ function sortLargestFirst(a, b) {
  */
 async function getStatementIds(discussionId, round, userId) {
   if (!Discussions[discussionId]) {
-    throw new Error(`Discussion ${discussionId} not initialized`)
+    console.error(`Discussion ${discussionId} not initialized`)
+    return undefined
   }
   if (!Discussions[discussionId]?.ShownStatements?.length) {
     console.error(`No ShownStatements found for discussion ${discussionId}`)
@@ -552,11 +556,17 @@ async function reconstructDiscussionFromUInfo(discussionId) {
   let round = 0
   // users can only insert statement at round 0
   while (round < rounds_length) {
-    console.info('round', round, rounds_length)
+    console.info('round', round, rounds_length, discussionId)
     const shownGroups = {} // object for quick existence test, to array later
     const shownStatements = {} // object for quick existence test, to array later
     for (const uinfo of docs) {
       const userId = Object.keys(uinfo)[0]
+
+      // User hasn't submitted any statements to discussion
+      if (!uinfo?.[userId]?.[discussionId]) {
+        continue
+      }
+
       if (round === 0) rounds_length = Math.max(rounds_length, Object.keys(uinfo[userId][discussionId]).length)
       const uitem = uinfo[userId][discussionId][round]
       if (!uitem) continue
@@ -594,7 +604,10 @@ async function reconstructDiscussionFromUInfo(discussionId) {
         groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
       } else {
         const id = shownStatementIds[0]
-        if (shownStatementIds.length !== 1) throw new Error(`no groupings by statementIds is not one ${uitem}`)
+        if (shownStatementIds.length !== 1) {
+          console.error(`no groupings by statementIds is not one ${uitem}`)
+          return undefined
+        }
         if (!shownStatements[id])
           shownStatements[id] = {
             statementId: id,
@@ -602,7 +615,10 @@ async function reconstructDiscussionFromUInfo(discussionId) {
             rank: 0,
           }
       }
-      if (!Discussions[discussionId].Uitems[userId]) Discussions[discussionId].Uitems[userId] = []
+      if (!Discussions[discussionId].Uitems[userId]) {
+        Discussions[discussionId].Uitems[userId] = []
+        Discussions[discussionId].participants++
+      }
       Discussions[discussionId].Uitems[userId][round] = { userId, ...uitem }
       // empty groupings is not sent to the db, but should be initiallized in memory
       if (!Discussions[discussionId].Uitems[userId][round].groupings) Discussions[discussionId].Uitems[userId][round].groupings = []
@@ -616,4 +632,33 @@ async function reconstructDiscussionFromUInfo(discussionId) {
 
   // Set lastRound but don't send updates
   Discussions[discussionId]['lastRound'] = Discussions[discussionId].ShownStatements.length
+}
+
+export async function getConclusionIds(discussionId) {
+  if (!Discussions[discussionId]) {
+    console.error(`getConclusionIds: Discussion ${discussionId} not initialized`)
+  }
+  if (!Discussions[discussionId]?.ShownStatements?.length) {
+    //console.info(`No ShownStatements found for discussion ${discussionId}`)
+    return undefined
+  }
+  let dis = Discussions[discussionId]
+
+  const lastRoundNotMoreThanGroupSize = dis.ShownStatements.at(-1).length <= dis.group_size
+
+  if (!lastRoundNotMoreThanGroupSize) {
+    //console.info('last round more than group size ', dis.ShownStatements.at(-1).length, ' <= ', dis.group_size)
+    return undefined
+  }
+  const [highestRank, leastShownCount] = dis.ShownStatements.at(-1).reduce(([highestRank, leastShownCount], sItem) => [Math.max(sItem.rank, highestRank), Math.min(leastShownCount, sItem.shownCount)], [-1, Infinity])
+  const shownCountMoreThanMin = leastShownCount >= dis.participants * dis.min_shown_percent
+  if (shownCountMoreThanMin && highestRank > 0) {
+    const conclusionIds = dis.ShownStatements.at(-1)
+      .filter(sItem => sItem.rank === highestRank)
+      .map(sItem => sItem.statementId) // if there is a single item with the highest rank, return it
+    return conclusionIds
+  }
+
+  //console.info('shown count less than min or highest rank less than 1 ', leastShownCount, ' >= ', dis.participants * dis.min_shown_percent, ', highest rank', highestRank)
+  return undefined
 }

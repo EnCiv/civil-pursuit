@@ -16,7 +16,7 @@ class Dturns extends Collection {
             description: "'discussionId' must be an ObjectId and is required",
           },
           userId: {
-            description: "'userId' must be an ObjectId",
+            description: "'userId' must be an string",
           },
           round: {
             description: "'round' must be a number",
