@@ -639,7 +639,7 @@ export async function getConclusionIds(discussionId) {
     console.error(`getConclusionIds: Discussion ${discussionId} not initialized`)
   }
   if (!Discussions[discussionId]?.ShownStatements?.length) {
-    console.error(`No ShownStatements found for discussion ${discussionId}`)
+    //console.info(`No ShownStatements found for discussion ${discussionId}`)
     return undefined
   }
   let dis = Discussions[discussionId]
@@ -647,7 +647,7 @@ export async function getConclusionIds(discussionId) {
   const lastRoundNotMoreThanGroupSize = dis.ShownStatements.at(-1).length <= dis.group_size
 
   if (!lastRoundNotMoreThanGroupSize) {
-    console.error('last round more than group size ', dis.ShownStatements.at(-1).length, ' <= ', dis.group_size)
+    //console.info('last round more than group size ', dis.ShownStatements.at(-1).length, ' <= ', dis.group_size)
     return undefined
   }
   const [highestRank, leastShownCount] = dis.ShownStatements.at(-1).reduce(([highestRank, leastShownCount], sItem) => [Math.max(sItem.rank, highestRank), Math.min(leastShownCount, sItem.shownCount)], [-1, Infinity])
@@ -659,6 +659,6 @@ export async function getConclusionIds(discussionId) {
     return conclusionIds
   }
 
-  console.error('shown count less than min or highest rank less than 1 ', leastShownCount, ' >= ', dis.participants * dis.min_shown_percent, ', highest rank', highestRank)
+  //console.info('shown count less than min or highest rank less than 1 ', leastShownCount, ' >= ', dis.participants * dis.min_shown_percent, ', highest rank', highestRank)
   return undefined
 }
