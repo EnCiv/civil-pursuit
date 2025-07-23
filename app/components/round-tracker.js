@@ -46,25 +46,31 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
     }
 
     const currentRoundIndex = roundsStatus.findIndex(status => status === 'inProgress')
+    const lastRound = roundsStatus.length - 1
 
-    let lowerIndex, upperIndex
+    let visibleRounds = []
 
-    if (currentRoundIndex === 0) {
-      lowerIndex = 0
-      upperIndex = isMobile ? 2 : 3 // Show the first two rounds on mobile, first 3 on full-width
-    } else if (currentRoundIndex === roundsStatus.length - 1) {
-      lowerIndex = roundsStatus.length - (isMobile ? 1 : 3)
-      upperIndex = roundsStatus.length - 1 // Show only the last round on mobile, last 3 on full-width
+    if (isMobile) {
+      // Just show the current round and the last round
+      if (currentRoundIndex == lastRound) {
+        visibleRounds = [lastRound - 1, lastRound]
+      } else {
+        visibleRounds = [currentRoundIndex, lastRound]
+      }
     } else {
-      // Show the current and next round on mobile.
-      // Previous, current, and next round on full-width
-      lowerIndex = isMobile ? currentRoundIndex : currentRoundIndex - 1
-      upperIndex = currentRoundIndex + 2
+      if (currentRoundIndex === 0) {
+        visibleRounds = [currentRoundIndex, currentRoundIndex + 1, lastRound]
+      } else if (currentRoundIndex === lastRound) {
+        visibleRounds = [currentRoundIndex - 2, currentRoundIndex - 1, currentRoundIndex]
+      } else {
+        visibleRounds = [currentRoundIndex - 1, currentRoundIndex, lastRound]
+      }
     }
+
     let visibleRoundCounter = 0
     return roundsStatus.map((status, index) => {
       // Only render visible rounds
-      if (lowerIndex <= index && index < upperIndex) {
+      if (visibleRounds.includes(index)) {
         const badgeInfo = statusToBadge[status.toLowerCase()]
         const thisVisibleRound = visibleRoundCounter
         visibleRoundCounter++

@@ -17,37 +17,37 @@ export default {
 
 export const OneRound = {
   args: {
-    roundsStatus: ['inProgress', 'pending', 'pending'],
+    roundsStatus: ['inProgress'],
   },
 }
 
 export const TwoRounds = {
   args: {
-    roundsStatus: ['complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'inProgress'],
   },
 }
 
 export const ThreeRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'complete', 'inProgress'],
   },
 }
 
-export const FourRounds = {
+export const FiveRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'inProgress', 'pending', 'pending', 'pending'],
   },
 }
 
 export const EightRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'complete', 'complete', 'complete', 'inProgress', 'pending', 'pending', 'pending'],
   },
 }
 
 export const TwelveRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress'],
+    roundsStatus: ['complete', 'complete', 'inProgress', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
   },
 }
 
