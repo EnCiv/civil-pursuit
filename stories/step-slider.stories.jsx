@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/112
+// https://github.com/EnCiv/civil-pursuit/issues/332
 
 import React, { useState } from 'react'
 import StepSlider from '../app/components/step-slider'

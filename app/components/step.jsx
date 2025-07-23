@@ -1,6 +1,7 @@
 'use strict'
 
 // https://github.com/EnCiv/civil-pursuit/issues/46
+// https://github.com/EnCiv/civil-pursuit/issues/332
 
 import React, { forwardRef, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'

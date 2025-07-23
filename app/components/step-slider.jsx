@@ -1,6 +1,7 @@
 'use strict'
 
 // https://github.com/EnCiv/civil-pursuit/issues/112
+// https://github.com/EnCiv/civil-pursuit/issues/332
 
 import React, { useState, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useCallback } from 'react'
 import { createUseStyles } from 'react-jss'
