@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/101
 // https://github.com/EnCiv/civil-pursuit/issues/243
+// https://github.com/EnCiv/civil-pursuit/issues/331
 
 'use strict'
 import React, { useState, useEffect } from 'react'
@@ -50,7 +51,9 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
 
     let visibleRounds = []
 
-    if (isMobile) {
+    if (roundsStatus.length === 1) {
+      visibleRounds = [0]
+    } else if (isMobile) {
       // Just show the current round and the last round
       if (currentRoundIndex == lastRound) {
         visibleRounds = [lastRound - 1, lastRound]
@@ -67,26 +70,32 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
       }
     }
 
-    let visibleRoundCounter = 0
     return roundsStatus.map((status, index) => {
       // Only render visible rounds
       if (visibleRounds.includes(index)) {
         const badgeInfo = statusToBadge[status.toLowerCase()]
-        const thisVisibleRound = visibleRoundCounter
-        visibleRoundCounter++
+
+        const metaIndex = visibleRounds.indexOf(index)
+
+        const nextRound = new Set(visibleRounds).size > 1 ? visibleRounds[metaIndex + 1] : undefined
+
+        let lineType = classes.lineInvisible
+
+        if (nextRound - index == 1) {
+          lineType = classes.lineSolid
+        } else {
+          lineType = classes.lineDashed
+        }
+
         return (
           <React.Fragment key={index}>
             <div className={classes.roundContainer}>
               <div className={classes.roundHeader}>
                 <div className={classes.roundNumber}>Round {index + 1}</div>
-                {!(thisVisibleRound === 2 && status.toLowerCase() === 'pending') && (
-                  <div
-                    className={cx(classes.lineBase, status.toLowerCase() === 'complete' && classes.lineComplete, status.toLowerCase() === 'inprogress' && classes.lineInProgress, status.toLowerCase() === 'pending' && classes.linePending)}
-                  />
-                )}
               </div>
               <StatusBadge name={badgeInfo.name} status={badgeInfo.status} className={classes.badge} />
             </div>
+            {nextRound > 0 && <div className={cx(classes.lineBase, lineType)} />}
           </React.Fragment>
         )
       }
@@ -120,7 +129,7 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: 'center',
     flexWrap: 'wrap',
     flexDirection: 'row',
-    margin: '1.625rem 6.0625rem 1.625rem 4.1875rem',
+    margin: '1.625rem 4.1875rem 1.625rem 4.1875rem',
     gap: '5.1875rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'row',
@@ -132,11 +141,11 @@ const useStyles = createUseStyles(theme => ({
   roundContainer: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     gap: '0.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'column',
-      alignItems: 'flex-start',
+      alignItems: 'center',
     },
   },
   roundHeader: {
@@ -146,10 +155,8 @@ const useStyles = createUseStyles(theme => ({
   roundNumber: {
     fontWeight: 'bold',
     textAlign: 'center',
-    marginRight: '1rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       marginBottom: '0.25rem',
-      marginRight: '0.75rem',
     },
   },
   lineBase: {
@@ -158,17 +165,20 @@ const useStyles = createUseStyles(theme => ({
     borderBottomWidth: '0.125rem',
     borderBottomColor: theme.colors.encivGray,
     borderBottomStyle: 'solid',
+    margin: '-3.75rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      margin: '-1.5rem',
+    },
   },
 
-  lineComplete: {
+  lineSolid: {
     borderBottomStyle: 'solid',
   },
-
-  lineInProgress: {
+  lineDashed: {
     borderBottomStyle: 'dashed',
   },
 
-  linePending: {
+  lineInvisible: {
     borderBottomColor: 'transparent',
   },
 

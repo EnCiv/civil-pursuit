@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/101
 // https://github.com/EnCiv/civil-pursuit/issues/243
+// https://github.com/EnCiv/civil-pursuit/issues/331
 
 import React from 'react'
 import RoundTracker from '../app/components/round-tracker'
@@ -60,7 +61,7 @@ export const EmptyRounds = {
 // Mobile views
 export const MobileOneRound = {
   args: {
-    roundsStatus: ['inProgress', 'pending'],
+    roundsStatus: ['inProgress'],
   },
   parameters: {
     viewport: {
@@ -71,7 +72,7 @@ export const MobileOneRound = {
 
 export const MobileTwoRounds = {
   args: {
-    roundsStatus: ['complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'inProgress'],
   },
   parameters: {
     viewport: {
@@ -82,7 +83,7 @@ export const MobileTwoRounds = {
 
 export const MobileThreeRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'inProgress', 'pending'],
   },
   parameters: {
     viewport: {
@@ -93,7 +94,7 @@ export const MobileThreeRounds = {
 
 export const MobileFourRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'inProgress', 'pending', 'pending'],
   },
   parameters: {
     viewport: {
@@ -104,7 +105,7 @@ export const MobileFourRounds = {
 
 export const MobileEightRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'inProgress', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
   },
   parameters: {
     viewport: {
@@ -115,7 +116,7 @@ export const MobileEightRounds = {
 
 export const MobileTwelveRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress'],
+    roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress', 'pending'],
   },
   parameters: {
     viewport: {
