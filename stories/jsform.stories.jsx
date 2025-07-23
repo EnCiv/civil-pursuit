@@ -3,7 +3,7 @@ import { userEvent, within } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import expect from 'expect'
 import { onDoneDecorator, onDoneResult, socketEmitDecorator } from './common'
-import Jsform from './../app/components/jsform'
+import Jsform from '../app/components/jsform'
 
 export default {
   component: Jsform,
@@ -269,7 +269,7 @@ export const FigmaInputMatch = {
   args: {
     schema: testSchema,
     uischema: testUIschema,
-    title: 'We just need a few more details about you to get started.',
+    stepIntro: { subject: 'We just need a few more details about you to get started.' },
   },
 }
 
@@ -278,7 +278,7 @@ export const InitialTestSchemaDetailsInput = {
     schema: testSchema,
     uischema: testUIschema,
     details: initialTestSchemaDetails,
-    title: 'We just need a few more details about you to get started.',
+    stepIntro: { subject: 'We just need a few more details about you to get started.' },
   },
 }
 
@@ -304,7 +304,7 @@ export const UserInputAndOnDoneCall = {
     schema: testSchema,
     uischema: testUIschema,
     details: initialTestSchemaDetails,
-    title: 'We just need a few more details about you to get started.',
+    stepIntro: { subject: 'We just need a few more details about you to get started.' },
     discussionId: '123456789012345678901234567890abcd',
   },
   decorators: [setupJsFormsApis],
