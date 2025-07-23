@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/89
+// https://github.com/EnCiv/civil-pursuit/issues/297
 
 'use strict'
 import React, { useEffect, useState, useMemo } from 'react'
@@ -57,7 +58,7 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
 
 const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }]
 
-const MoreDetails = props => {
+const JsForm = props => {
   const { className = '', schema = {}, uischema = {}, onDone = () => {}, title, discussionId } = props
   const [data, setData] = useState({})
   const classes = useStyles(props)
@@ -146,4 +147,4 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
-export default MoreDetails
+export default JsForm

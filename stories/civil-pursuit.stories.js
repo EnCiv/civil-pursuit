@@ -8,7 +8,7 @@ import { Default, useSetupTournament } from './tournament.stories'
 const testSteps = [
   { webComponent: 'SignUp', startTab: 'SignUp' },
   {
-    webComponent: 'Details',
+    webComponent: 'Jsform',
     questions: [['What party are you with']],
     schema: {
       type: 'object',

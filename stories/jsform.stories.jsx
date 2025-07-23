@@ -3,10 +3,10 @@ import { userEvent, within } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import expect from 'expect'
 import { onDoneDecorator, onDoneResult, socketEmitDecorator } from './common'
-import MoreDetails from './../app/components/more-details'
+import Jsform from './../app/components/jsform'
 
 export default {
-  component: MoreDetails,
+  component: Jsform,
   args: {},
   decorators: [onDoneDecorator, socketEmitDecorator],
   parameters: {

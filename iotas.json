@@ -23,7 +23,7 @@
       "steps": [
         { "webComponent": "SignUp", "startTab": "SignUp" },
         {
-          "webComponent": "Details",
+          "webComponent": "Jsform",
           "questions": [["What party are you with"]],
           "schema": {
             "type": "object",
