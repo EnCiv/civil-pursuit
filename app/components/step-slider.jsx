@@ -73,10 +73,19 @@ export const StepSlider = props => {
         return { ...state, transitions: false, nextStep: action.to }
 
       case 'increment':
+        let nextStep = Math.min(state.currentStep + 1, children.length - 1)
+
+        for (let i = state.currentStep + 1; i < children.length - 1; i++) {
+          if (!state.stepStatuses[i].skip) {
+            nextStep = i
+            break
+          }
+        }
+
         return {
           ...state,
           transitions: false,
-          nextStep: Math.min(state.currentStep + 1, children.length - 1),
+          nextStep: nextStep,
         }
 
       case 'transitionBegin': {
@@ -93,9 +102,19 @@ export const StepSlider = props => {
         return state // no need to rerender. leaving transitions on so that child components growing and shrinking will animate
       }
       case 'decrement': {
+        let nextStep = state.currentStep
+
+        // First step before currentStep that's not skipped
+        for (let i = state.currentStep - 1; i >= 0; i--) {
+          if (!state.stepStatuses[i].skip) {
+            nextStep = i
+            break
+          }
+        }
+
         return {
           ...state,
-          nextStep: Math.max(0, state.currentStep - 1),
+          nextStep: nextStep,
           transitions: false,
         }
       }
