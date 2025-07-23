@@ -221,6 +221,7 @@ function StepBar(props) {
                 complete={step.id < steps.length ? steps[step.id - 1].complete : false}
                 active={current === step.id ? true : false}
                 unlocked={steps[step.id - 2] ? steps[step.id - 2].complete : step?.seen}
+                skip={steps[step.id - 1]?.skip}
                 onDone={() => onDone({ valid: true, value: step.id })}
                 index={index}
                 {...otherProps}

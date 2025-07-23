@@ -76,6 +76,10 @@ const Panel = props => (
       <button onClick={() => props.onDone({ valid: true, value: props.backGroundColor })} style={{ position: 'absolute', top: '20vh' }}>
         Done
       </button>
+
+      <button onClick={() => props.onDone({ valid: true, value: 'skip' })} style={{ position: 'absolute', top: '40vh' }}>
+        Skip
+      </button>
     </div>
   </div>
 )

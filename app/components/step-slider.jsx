@@ -93,7 +93,6 @@ export const StepSlider = props => {
         return state // no need to rerender. leaving transitions on so that child components growing and shrinking will animate
       }
       case 'decrement': {
-        console.log('decrementing', state.currentStep)
         return {
           ...state,
           nextStep: Math.max(0, state.currentStep - 1),
@@ -101,15 +100,18 @@ export const StepSlider = props => {
         }
       }
       case 'updateStatuses':
-        let { valid, index } = action.payload
+        let { valid, index, skip } = action.payload
+
         if (steps) {
           const stepStatuses = state.stepStatuses.map((stepStatus, i) => {
             if (valid || valid === undefined) {
-              return i === index ? { ...stepStatus, complete: true } : stepStatus
+              return i === index ? { ...stepStatus, complete: true, skip: skip } : stepStatus
             }
+
             // Disable navigation to all steps after if invalid
-            else return i >= state.currentStep ? { ...stepStatus, complete: false } : stepStatus
+            else return i >= state.currentStep ? { ...stepStatus, complete: false, skip: skip } : stepStatus
           })
+
           return { ...state, stepStatuses: stepStatuses }
         } else if (valid) {
           // Just increment if no steps
@@ -143,6 +145,7 @@ export const StepSlider = props => {
     steps[0].seen = true
     steps.forEach((step, index) => {
       steps[index].complete = false
+      steps[index].skip = false
     })
   }
   const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, transitions: false, stepStatuses: steps })
@@ -153,8 +156,16 @@ export const StepSlider = props => {
       ...children[currentStep].props,
       key: currentStep,
       onDone: ({ valid, value }) => {
-        if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
-        else dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep } })
+        if (valid) {
+          if (value === 'skip') {
+            dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: true } })
+            dispatch({ type: 'increment' })
+          } else if (typeof stepNameToIndex[value] === 'number') {
+            dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
+          }
+        }
+
+        dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: value === 'skip' } })
       },
     })
   }

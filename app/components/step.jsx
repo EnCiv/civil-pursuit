@@ -8,7 +8,7 @@ import { createUseStyles } from 'react-jss'
 import { PositioningPortal } from '@codastic/react-positioning-portal/lib/legacy/index.js'
 
 const Step = forwardRef((props, ref) => {
-  const { name, title = '', complete, active, unlocked, onDone = () => {}, index, className, ...otherProps } = props
+  const { name, title = '', complete, active, unlocked, skip, onDone = () => {}, index, className, ...otherProps } = props
 
   const classes = useStylesFromThemeFunction()
 
@@ -30,8 +30,8 @@ const Step = forwardRef((props, ref) => {
   )
 
   const textStyle = cx(classes.sharedTextStyles, {
-    [classes.stepTextActive]: (active && !complete) || (!active && complete) || (!active && !complete && unlocked),
-    [classes.stepTextInactiveIncomplete]: !active && !complete && !unlocked,
+    [classes.stepTextActive]: !skip && ((active && !complete) || (!active && complete) || (!active && !complete && unlocked)),
+    [classes.stepTextInactiveIncomplete]: (!active && !complete && !unlocked) || skip,
   })
 
   // begin a timneout when the span wrapping the step is clicked
@@ -52,7 +52,7 @@ const Step = forwardRef((props, ref) => {
       e.stopPropagation()
       if (timeRef.current) clearTimeout(timeRef.current)
       timeRef.current = null
-      if (complete || active || unlocked) onDone(index)
+      if (!skip && (complete || active || unlocked)) onDone(index)
     }
   }
 
@@ -70,7 +70,7 @@ const Step = forwardRef((props, ref) => {
     <div
       className={containerStyle}
       onMouseDown={() => {
-        if (complete || active || unlocked) onDone(index)
+        if (!skip && (complete || active || unlocked)) onDone(index)
       }}
       onKeyDown={handleKeyDown}
       title={`${title}`}
