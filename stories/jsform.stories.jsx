@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import { userEvent, within } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import expect from 'expect'
-import { onDoneDecorator, onDoneResult, socketEmitDecorator } from './common'
+import { onDoneDecorator, onDoneResult, socketEmitDecorator, DeliberationContextDecorator } from './common'
 import Jsform from '../app/components/jsform'
 
 export default {
   component: Jsform,
   args: {},
-  decorators: [onDoneDecorator, socketEmitDecorator],
+  decorators: [DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,

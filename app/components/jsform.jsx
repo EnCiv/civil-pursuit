@@ -2,7 +2,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/297
 
 'use strict'
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useContext } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { JsonForms } from '@jsonforms/react'
@@ -11,6 +11,8 @@ import { PrimaryButton } from './button'
 import { rankWith, isControl } from '@jsonforms/core'
 import { withJsonFormsControlProps } from '@jsonforms/react'
 import StepIntro from '../components/step-intro'
+
+import DeliberationContext from './deliberation-context'
 
 const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
   const options = schema.enum || []
@@ -61,14 +63,14 @@ const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), 
 
 const JsForm = props => {
   const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, stepIntro = { subject: '', description: '' }, discussionId } = props
-  const [data, setData] = useState({})
+  const { data, upsert } = useContext(DeliberationContext)
   const classes = useStyles(props)
 
   useEffect(() => {
     window.socket.emit('get-jsform', discussionId, data => {
       if (data) {
         const moreDetails = data.moreDetails || {}
-        setData(moreDetails)
+        upsert(moreDetails)
         if (handleIsValid(moreDetails)) {
           onDone({ valid: true, value: moreDetails })
         }
@@ -77,11 +79,14 @@ const JsForm = props => {
   }, [])
 
   const handleSubmit = () => {
-    window.socket.emit('upsert-jsform', discussionId, 'moreDetails', data)
+    window.socket.emit('upsert-jsform', discussionId, name, data)
     onDone({ valid: handleIsValid(data), value: data })
   }
 
   const handleIsValid = data => {
+    console.log(data)
+    if (!data) return false
+
     const requiredData = schema.properties || {}
     return Object.keys(requiredData).every(key => {
       if (!requiredData[key].properties) return !!data[key]
@@ -104,7 +109,16 @@ const JsForm = props => {
     <div className={cx(classes.formContainer, className)}>
       <StepIntro {...stepIntro} />
       <div className={classes.jsonFormContainer}>
-        <JsonForms schema={schema} uischema={uischema} data={data} renderers={memoedRenderers} cells={vanillaCells} onChange={({ data }) => setData(data)} />
+        <JsonForms
+          schema={schema}
+          uischema={uischema}
+          data={data}
+          renderers={memoedRenderers}
+          cells={vanillaCells}
+          onChange={({ data }) => {
+            upsert(data)
+          }}
+        />
         <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
           Submit
         </PrimaryButton>
