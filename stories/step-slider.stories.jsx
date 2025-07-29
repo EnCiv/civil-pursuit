@@ -81,6 +81,10 @@ const Panel = props => (
       <button onClick={() => props.onDone({ valid: true, value: 'skip' })} style={{ position: 'absolute', top: '40vh' }}>
         Skip
       </button>
+
+      <button onClick={() => props.onDone({ valid: true, value: 'blue' })} style={{ position: 'absolute', top: '60vh' }}>
+        Move To Blue
+      </button>
     </div>
   </div>
 )
@@ -92,7 +96,7 @@ function createPanels(panels = 4) {
   const panelList = []
 
   for (let count = 0; count < panels; count++) {
-    panelList.push(<Panel backGroundColor={colors[count % colors.length]} />)
+    panelList.push(<Panel backGroundColor={colors[count % colors.length]} stepName={colors[count % colors.length]} />)
   }
 
   return panelList

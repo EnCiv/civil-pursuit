@@ -71,7 +71,14 @@ export const StepSlider = props => {
       case 'transitionsOn':
         return { ...state, transitions: true }
       case 'moveTo':
-        return { ...state, transitions: false, nextStep: action.to }
+        const newStepStatuses = state.stepStatuses?.map((stepStatus, i) => {
+          if (i > state.currentStep && i < action.to) {
+            return { ...stepStatus, skip: true }
+          }
+          return stepStatus
+        })
+
+        return { ...state, transitions: false, stepStatuses: newStepStatuses, nextStep: action.to }
 
       case 'increment':
         let nextStep = Math.min(state.currentStep + 1, children.length - 1)
