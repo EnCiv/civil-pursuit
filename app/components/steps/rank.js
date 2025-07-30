@@ -14,7 +14,7 @@ import PointGroup from '../point-group' // should be using PointGroup but it nee
 import { ModifierButton } from '../button'
 import StatusBadge from '../status-badge'
 import StatusBox from '../status-box.js'
-
+import StepIntro from '../step-intro'
 import Ranking from '../ranking'
 
 const minSelectionsTable = {
@@ -83,6 +83,7 @@ export function RankPoints(props) {
     pointRankGroupList,
     round,
     discussionId,
+    stepIntro,
   } = props
 
   if (!pointRankGroupList) return null
@@ -203,6 +204,7 @@ export function RankPoints(props) {
 
   return (
     <div className={cx(classes.rankStep, className)}>
+      <StepIntro {...stepIntro} />
       <div className={classes.buttonDiv}>
         <div className={classes.leftButtons}>
           <StatusBadge name={'Most Important'} number={`${mostCount()}/${targetMost}`} status={mostCount() == targetMost || (targetLeast == 0 && targetMost == 0) ? 'complete' : mostCount() > targetMost ? 'error' : 'progress'} />
@@ -243,7 +245,7 @@ export function RankPoints(props) {
           )
         })}
       </div>
-      <div className={classes.statusBoxDiv}>{errorMsg && <StatusBox status="error" subject="Oops!" description={errorMsg}></StatusBox>}</div>
+      <div className={errorMsg ? classes.statusBoxDiv : ''}>{errorMsg && <StatusBox status="error" subject="Oops!" description={errorMsg}></StatusBox>}</div>
     </div>
   )
 }
@@ -251,6 +253,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   rankStep: {
     paddingLeft: '1rem', // room for the shadow around the points
     paddingRight: '1rem',
+    marginBottom: '1rem', // for box shadow of children
   },
   buttonDiv: {
     padding: '2rem 0rem 3rem 0rem',

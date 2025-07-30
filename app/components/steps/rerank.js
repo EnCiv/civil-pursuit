@@ -8,6 +8,7 @@ import ReviewPoint from '../review-point'
 import DeliberationContext from '../deliberation-context'
 import { isEqual } from 'lodash'
 import ObjectId from 'bson-objectid'
+import StepIntro from '../step-intro'
 
 export default function RerankStep(props) {
   const { onDone, round } = props
@@ -72,7 +73,7 @@ const rankStringToCategory = Object.entries(toRankString).reduce((rS2C, [key, va
 }, {})
 
 export function Rerank(props) {
-  const { reviewPoints, onDone = () => {}, className, round, discussionId } = props
+  const { reviewPoints, onDone = () => {}, className, round, discussionId, stepIntro } = props
   // this componet manages the rank doc so we keep a local copy
   // if it's changed from above, we use the setter to cause a rerender
   // if it's chagned from below (by the user) we mutate the state so we don't cause a rerender
@@ -155,6 +156,7 @@ export function Rerank(props) {
 
   return (
     <div className={classes.reviewPointsContainer}>
+      <StepIntro {...stepIntro} />
       {reviewPoints.map((reviewPoint, idx) => (
         <div key={reviewPoint.point._id} className={classes.reviewPoint}>
           <ReviewPoint
@@ -177,6 +179,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '1rem',
     paddingLeft: '1rem', // room for the shadow around the points
     paddingRight: '1rem',
+    marginBottom: '1rem', // for box shadow of children
   },
 }))
 

@@ -12,6 +12,7 @@ import cx from 'classnames'
 import PointGroup from '../point-group'
 import { PrimaryButton } from '../button'
 import StatusBadge from '../status-badge'
+import StepIntro from '../step-intro'
 
 const MIN_GROUPS = 0 // the minimum number of groups the user has to make
 
@@ -57,7 +58,7 @@ export default function GroupingStep(props) {
 // pG stand for point group meaning {point, group}
 
 export function GroupPoints(props) {
-  const { reducedPointList, onDone = () => {}, className, discussionId, round } = props
+  const { reducedPointList, onDone = () => {}, className, discussionId, round, stepIntro } = props
 
   const classes = useStylesFromThemeFunction(props)
   const delayedOnDone = value => setTimeout(() => onDone(value), 0)
@@ -213,6 +214,7 @@ export function GroupPoints(props) {
 
   return (
     <div className={cx(classes.groupingStep, className)}>
+      <StepIntro {...stepIntro} />
       <div className={classes.statusContainer}>
         <div className={classes.statusBadges}>
           <StatusBadge name="Groups Created" status={gs.yourGroups.length == 0 ? 'inactive' : 'complete'} number={gs.yourGroups.length} />
@@ -271,7 +273,9 @@ export function GroupPoints(props) {
 }
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-  groupingStep: {},
+  groupingStep: {
+    marginBottom: '1rem', // for box shadow of children
+  },
   groupsContainer: {
     paddingLeft: '2rem',
     paddingRight: '2rem',

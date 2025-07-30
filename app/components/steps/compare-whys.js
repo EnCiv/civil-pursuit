@@ -6,6 +6,7 @@ import React, { useEffect, useState, useRef, useContext, useCallback } from 'rea
 import { createUseStyles } from 'react-jss'
 import PairCompare from '../pair-compare'
 import { H, Level } from 'react-accessible-headings'
+import StepIntro from '../step-intro'
 
 import DeliberationContext from '../deliberation-context'
 
@@ -46,7 +47,7 @@ export default function CompareWhysStep(props) {
 
 // pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]
 export function CompareWhys(props) {
-  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round } = props
+  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round, subject, description } = props
   const classes = useStyles()
   // completedByPointId does not effect rendering, so no need to set state, just mutate.
   const [completedByPointId] = useState(
@@ -83,6 +84,7 @@ export function CompareWhys(props) {
   }
   return (
     <div className={classes.container}>
+      <StepIntro subject={subject} description={description} />
       {!pointWithWhyRankListList ? (
         <div className={classes.headlineTitle}>Nothing to do here, hit Next to continue</div>
       ) : (
@@ -106,7 +108,6 @@ const useStyles = createUseStyles(theme => ({
   },
   headlinePoint: {
     borderTop: '0.0625rem solid #000000',
-    marginBottom: '4rem',
     paddingTop: '2rem',
     '&:first-child': {
       borderTop: 'none',
