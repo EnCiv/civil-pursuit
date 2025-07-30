@@ -221,7 +221,7 @@
               "stepName": "Answer",
               "stepIntro": {
                 "subject": "Answer",
-                "description": "Please provide a title and short description for your answer"
+                "description": "Please provide a number and repeat that as the description"
               },
               "question": {
                 "_id": "5d0137260dacd06732a1d814",
@@ -235,7 +235,7 @@
               "stepName": "Group",
               "stepIntro": {
                 "subject": "Group Responses",
-                "description": "Of these issues, please group similar responses to facilitate your decision-making by avoiding duplicates. If no duplicates are found, you may continue to the next section below."
+                "description": "Of these issues, please group similar responses to simplify future steps. If no duplicates are found, please continue to the next section."
               }
             },
             {
@@ -243,7 +243,7 @@
               "stepName": "Rank",
               "stepIntro": {
                 "subject": "Rank Responses",
-                "description": "Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important."
+                "description": "Please rate the following responses as Most, Neutral, or Least important. All responses need to be rated in order to continue."
               }
             },
             {

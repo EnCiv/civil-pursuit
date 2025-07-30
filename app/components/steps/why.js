@@ -8,6 +8,7 @@ import { H, Level } from 'react-accessible-headings'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { isEqual } from 'lodash'
+import StepIntro from '../step-intro'
 
 export default function WhyStep(props) {
   const { data, upsert } = useContext(DeliberationContext)
@@ -57,6 +58,7 @@ export function Why(props) {
     pointWhyList,
     category = '', // "most" or "least"
     onDone = () => {},
+    stepIntro,
   } = props
 
   const classes = useStylesFromThemeFunction()
@@ -116,6 +118,7 @@ export function Why(props) {
 
   return (
     <div className={cx(classes.wrapper, className)}>
+      <StepIntro {...stepIntro} />
       <div className={classes.introContainer}>
         <H className={classes.introTitle}>{`Why it's ${category && category[0].toUpperCase() + category.slice(1)} Important`}</H>
         <div className={classes.introText}>{intro}</div>
