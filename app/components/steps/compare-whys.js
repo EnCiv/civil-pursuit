@@ -10,7 +10,7 @@ import { H, Level } from 'react-accessible-headings'
 import DeliberationContext from '../deliberation-context'
 
 export default function CompareWhysStep(props) {
-  const { onDone, category } = props
+  const { onDone, round, category } = props
   const { data, upsert } = useContext(DeliberationContext)
   const args = { ...derivePointWithWhyRankListListByCategory(data, category) }
   const handleOnDone = ({ valid, value, delta }) => {
@@ -21,28 +21,27 @@ export default function CompareWhysStep(props) {
     onDone({ valid, value })
   }
   // fetch previous data
-  if (typeof window !== 'undefined')
-    useState(() => {
-      // on the browser, do this once and only once when this component is first rendered
-      const { discussionId, round, reducedPointList, preRankByParentId } = data
-      const { mostIds, leastIds } = Object.values(preRankByParentId ?? {}).reduce(
-        ({ mostIds, leastIds }, rank) => {
-          if (rank.category === 'most') mostIds.push(rank.parentId)
-          else if (rank.category === 'least') leastIds.push(rank.parentId)
-          return { mostIds, leastIds }
-        },
-        { mostIds: [], leastIds: [] }
-      )
-      window.socket.emit('get-why-ranks-and-points', discussionId, round, mostIds, leastIds, result => {
-        if (!result) return // there was an error
-        const { ranks, whys } = result
-        //if (!ranks.length && !whys.length) return // nothing to do
-        const whyRankByParentId = ranks.reduce((whyRankByParentId, rank) => ((whyRankByParentId[rank.parentId] = rank), whyRankByParentId), {})
-        const randomWhyById = whys.reduce((randomWhyById, point) => ((randomWhyById[point._id] = point), randomWhyById), {})
-        upsert({ whyRankByParentId, randomWhyById })
-      })
+  useEffect(() => {
+    // on the browser, do this once and only once when this component is first rendered
+    const { discussionId, preRankByParentId } = data
+    const { mostIds, leastIds } = Object.values(preRankByParentId ?? {}).reduce(
+      ({ mostIds, leastIds }, rank) => {
+        if (rank.category === 'most') mostIds.push(rank.parentId)
+        else if (rank.category === 'least') leastIds.push(rank.parentId)
+        return { mostIds, leastIds }
+      },
+      { mostIds: [], leastIds: [] }
+    )
+    window.socket.emit('get-why-ranks-and-points', discussionId, round, mostIds, leastIds, result => {
+      if (!result) return // there was an error
+      const { ranks, whys } = result
+      //if (!ranks.length && !whys.length) return // nothing to do
+      const whyRankByParentId = ranks.reduce((whyRankByParentId, rank) => ((whyRankByParentId[rank.parentId] = rank), whyRankByParentId), {})
+      const randomWhyById = whys.reduce((randomWhyById, point) => ((randomWhyById[point._id] = point), randomWhyById), {})
+      upsert({ whyRankByParentId, randomWhyById })
     })
-  return <CompareWhys {...props} {...args} round={data.round} discussionId={data.discussionId} onDone={handleOnDone} />
+  }, [round, data.preRankByParentId])
+  return <CompareWhys {...props} {...args} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
 }
 
 // pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]

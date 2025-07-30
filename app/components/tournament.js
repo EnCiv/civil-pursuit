@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/151
 
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
@@ -45,42 +45,112 @@ function buildChildren(steps, round) {
   })
 }
 
+function calculateRoundAndStatus(uInfo, finalRound) {
+  let round = 0
+  let roundFound = false
+  const roundsStatus = Object.values(uInfo || []).map((roundInfo, i) => {
+    if (roundFound) return 'pending' // if we already found an in-progress round, all subsequent rounds are complete
+    const shownStatements = Object.values(roundInfo.shownStatementIds || {})
+    if (shownStatements.length && shownStatements.some(shown => shown.rank > 0)) {
+      round = Math.min(i + 1, finalRound)
+      return 'complete'
+    } else if (shownStatements.length) {
+      round = i
+      roundFound = true
+      return 'inProgress'
+    } else {
+      round = i
+      roundFound = true
+      return 'inProgress' // if this is the first round and no statements are shown, it's still in progress
+    }
+  })
+  while (roundsStatus.length <= finalRound) {
+    if (roundFound) roundsStatus.push('pending')
+    else {
+      roundsStatus.push('inProgress')
+      roundFound = true
+    }
+  }
+  return { round: uInfo ? round : undefined, roundsStatus } // round should be undefined until uInfo is available
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'init': {
+      const { round, roundsStatus } = calculateRoundAndStatus(action.data.uInfo, action.data.finalRound)
+      // only set round the first time it's valid
+      if (round !== undefined && state.round === undefined) {
+        action.upsert({ round }) // deriveReducedPoints requires round to be set in context
+        return { ...state, round, roundsStatus }
+      } else return { ...state, roundsStatus }
+    }
+    case 'increment': {
+      const nextRound = Math.min(state.round + 1, action.data.finalRound)
+      // recalc roundsStatus based on new round
+      const { roundsStatus } = calculateRoundAndStatus(action.data.uInfo, action.data.finalRound)
+      const clearContextForNextRound = Object.keys(action.data).reduce((contextData, key) => ((contextData[key] = undefined), contextData), {})
+      ;['discussionId', 'user', 'userId', 'participants', 'finalRound', 'uInfo', 'lastRound'].forEach(key => delete clearContextForNextRound[key])
+      clearContextForNextRound.round = nextRound // set the next round to clear context for
+      setTimeout(() => action.upsert(clearContextForNextRound)) // can't update context while rendering this component
+      return { ...state, round: nextRound, roundsStatus, stepComponents: undefined }
+    }
+    case 'updateRounds': {
+      // recalc roundsStatus after uInfo change
+      const { roundsStatus } = calculateRoundAndStatus(action.data.uInfo, action.data.finalRound)
+      return { ...state, roundsStatus }
+    }
+    default:
+      return state
+  }
+}
+
 function Tournament(props) {
-  const { className, steps = [], discussionId, ...otherProps } = props
+  const { className, steps = [], discussionId, onDone, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useContext(DeliberationContext)
-  const { round, uInfo = {}, finalRound } = data
-  const [state] = useState({ stepComponentsByRound: [] })
-  const filteredSteps = steps.filter(step => !(step.stepName === 'Answer' && round > 0)) // don't show Answer step after the first round
-  if (typeof data.round === 'number' && !state.stepComponentsByRound[round]) {
-    state.stepComponentsByRound[round] = buildChildren(filteredSteps, round)
-  }
+  const { uInfo, finalRound } = data
+  const [prev] = useState({ uInfoSet: !!data.uInfo })
+  const [state, dispatch] = useReducer(reducer, { ...calculateRoundAndStatus(uInfo, finalRound), stepComponents: undefined })
+  const { round = 0, roundsStatus } = state
+
+  useEffect(() => {
+    if (prev.uInfoSet) {
+      dispatch({ type: 'updateRounds', data })
+      return
+    } else if (uInfo) {
+      // only update the first time uInfo is set
+      prev.uInfoSet = true
+      dispatch({ type: 'init', data, upsert })
+    } // if uInfo not set yet, don't do anything
+  }, [uInfo, finalRound])
+
+  const filteredSteps =
+    round < finalRound || (round === finalRound && roundsStatus[round] !== 'complete')
+      ? steps.filter(step => !(step.stepName === 'Answer' && round > 0)) // don't show Answer step after the first round
+      : steps.filter(step => step.stepName === 'Intermission') // all rounds done, just go to intermission
   const stepInfo = filteredSteps.map(step => {
     return {
       name: step.stepName,
       title: step.stepIntro.description,
     }
   })
-  const roundsStatus = Object.values(uInfo).map((roundInfo, i, uInfos) => {
-    if (roundInfo.shownStatementIds && Object.values(roundInfo.shownStatementIds).some(shown => shown.rank > 0)) {
-      if (i + 1 < uInfos.length && uInfos[i + 1].shownStatementIds) return 'complete'
-      else return 'inProgress'
-    }
-    if (roundInfo.shownStatementIds) return 'inProgress'
-    return 'pending'
-  })
-  while (roundsStatus.length <= finalRound) roundsStatus.push('pending')
+  if (state.round !== undefined && !state.stepComponents) {
+    // if state.round is undefined, round will be 0 but don't build children yet
+    state.stepComponents = buildChildren(filteredSteps, round)
+  }
 
   return (
     <div className={cx(classes.tournament, className)}>
       <RoundTracker className={classes.roundTracker} roundsStatus={roundsStatus} />
-      {state.stepComponentsByRound[round] && (
+      {state.stepComponents && (
         <StepSlider
           key={round}
           steps={stepInfo}
-          children={state.stepComponentsByRound[round]}
-          onDone={valid => {
-            if (valid) upsert({ round: data.round + 1 })
+          round={round}
+          children={state.stepComponents}
+          onDone={({ valid, value }) => {
+            if (valid && round + 1 > finalRound) onDone({ valid, value: 'done' })
+            else if (valid) dispatch({ type: 'increment', data, upsert })
           }}
           {...otherProps}
         />

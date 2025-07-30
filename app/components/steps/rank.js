@@ -34,7 +34,7 @@ const minSelectionsTable = {
 }
 
 export default function RankStep(props) {
-  const { onDone, ...otherProps } = props
+  const { onDone, round, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
 
   const args = derivePointRankGroupList(data)
@@ -48,19 +48,18 @@ export default function RankStep(props) {
   }
 
   // fetch previous data
-  if (typeof window !== 'undefined')
-    useState(() => {
-      const { discussionId, round } = data
+  useEffect(() => {
+    const { discussionId } = data
 
-      window.socket.emit('get-user-ranks', discussionId, round, 'pre', result => {
-        if (!result) return // there was an error
-        const ranks = result
-        const preRankByParentId = ranks.reduce((preRankByParentId, rank) => ((preRankByParentId[rank.parentId] = rank), preRankByParentId), {})
-        upsert({ preRankByParentId })
-      })
+    window.socket.emit('get-user-ranks', discussionId, round, 'pre', result => {
+      if (!result) return // there was an error
+      const ranks = result
+      const preRankByParentId = ranks.reduce((preRankByParentId, rank) => ((preRankByParentId[rank.parentId] = rank), preRankByParentId), {})
+      upsert({ preRankByParentId })
     })
+  }, [round])
 
-  return <RankPoints {...args} onDone={handleOnDone} discussionId={data.discussionId} round={data.round} {...otherProps} />
+  return <RankPoints {...args} onDone={handleOnDone} discussionId={data.discussionId} round={round} {...otherProps} />
 }
 
 const toRankString = {

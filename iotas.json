@@ -198,5 +198,113 @@
         { "webComponent": "Feedback" }
       ]
     }
+  },
+  {
+    "_id": {
+      "$oid": "68687cdeb4e0c47144419fde"
+    },
+    "path": "/whats-largest",
+    "subject": "What's the largest number",
+    "description": "What's the largest random number between 0 and 100. This is a test of the Civil Server.",
+    "webComponent": {
+      "webComponent": "CivilPursuit",
+      "dturn": { "group_size": 5 },
+      "participants": 0,
+      "finalRound": 2,
+      "steps": [
+        { "webComponent": "SignUp", "startTab": "SignUp" },
+        {
+          "webComponent": "Tournament",
+          "steps": [
+            {
+              "webComponent": "Answer",
+              "stepName": "Answer",
+              "stepIntro": {
+                "subject": "Answer",
+                "description": "Please provide a title and short description for your answer"
+              },
+              "question": {
+                "_id": "5d0137260dacd06732a1d814",
+                "subject": "What's the largest random number between 0 and 100?",
+                "description": "What's the largest random number between 0 and 100. This is a test of the Civil Server."
+              },
+              "whyQuestion": "Why should everyone consider solving this issue?"
+            },
+            {
+              "webComponent": "GroupingStep",
+              "stepName": "Group",
+              "stepIntro": {
+                "subject": "Group Responses",
+                "description": "Of these issues, please group similar responses to facilitate your decision-making by avoiding duplicates. If no duplicates are found, you may continue to the next section below."
+              }
+            },
+            {
+              "webComponent": "RankStep",
+              "stepName": "Rank",
+              "stepIntro": {
+                "subject": "Rank Responses",
+                "description": "Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important."
+              }
+            },
+            {
+              "webComponent": "WhyStep",
+              "category": "most",
+              "stepName": "Why Most",
+              "stepIntro": {
+                "subject": "Why it's Most Important",
+                "description": "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it."
+              },
+              "intro": "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it"
+            },
+            {
+              "webComponent": "WhyStep",
+              "category": "least",
+              "stepName": "Why Least",
+              "stepIntro": {
+                "subject": "Why it's Least Important",
+                "description": "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it."
+              },
+              "intro": "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it"
+            },
+            {
+              "webComponent": "CompareReasons",
+              "stepName": "Compare Why Most",
+              "stepIntro": {
+                "subject": "Compare Reasons Why It's Most Important",
+                "description": "Compare two responses and select a response that is most important for the community to consider."
+              },
+              "category": "most"
+            },
+            {
+              "webComponent": "CompareReasons",
+              "stepName": "Compare Why Least",
+              "stepIntro": {
+                "subject": "Compare Reasons Why It's Least Important",
+                "description": "Compare two responses and select a response that is most important for the community to consider."
+              },
+              "category": "least"
+            },
+            {
+              "webComponent": "ReviewPointList",
+              "stepName": "Review",
+              "stepIntro": {
+                "subject": "Review",
+                "description": "These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again."
+              }
+            },
+            {
+              "webComponent": "Intermission",
+              "stepName": "Intermission",
+              "stepIntro": {
+                "subject": "Intermission",
+                "description": "When more people have gotten to this point we will invite you back to continue the deliberation."
+              }
+            }
+          ]
+        },
+        { "webComponent": "Conclusion" },
+        { "webComponent": "Feedback" }
+      ]
+    }
   }
 ]

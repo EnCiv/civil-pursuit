@@ -10,46 +10,50 @@ import { isEqual } from 'lodash'
 import ObjectId from 'bson-objectid'
 
 export default function RerankStep(props) {
-  const { onDone } = props
+  const { onDone, round } = props
   const { data, upsert } = useContext(DeliberationContext)
   const args = { ...derivePointMostsLeastsRankList(data) }
   const handleOnDone = ({ valid, value, delta }) => {
+    console.info('RerankStep.onDone', { valid, value, delta })
     if (delta) {
-      upsert({ postRankByParentId: { [delta.parentId]: delta }, completedByRound: { [data.round]: valid } })
+      upsert({ postRankByParentId: { [delta.parentId]: delta } })
       window.socket.emit('upsert-rank', delta)
     }
     if (valid) {
+      const shownStatementIds = {}
       const rankByIds = data.reducedPointList.map(point_group => {
         const pointId = point_group.point._id
         const rank = data.postRankByParentId[pointId]?.category === 'most' ? 1 : 0
+        shownStatementIds[pointId] = { rank }
         return { [pointId]: rank }
       })
-      window.socket.emit('complete-round', data.discussionId, data.round, rankByIds, () => {})
+      upsert({ uInfo: { [round]: { shownStatementIds } } })
+      window.socket.emit('complete-round', data.discussionId, round, rankByIds, () => {})
     }
     onDone({ valid, value })
   }
 
   // fetch previous data
-  if (typeof window !== 'undefined')
-    useState(() => {
-      // on the browser, do this once and only once when this component is first rendered
-      const { discussionId, round, reducedPointList } = data
-      window.socket.emit(
-        'get-user-post-ranks-and-top-ranked-whys',
-        discussionId,
-        round,
-        reducedPointList.map(point_group => point_group.point._id),
-        result => {
-          if (!result) return // there was an error
-          const { ranks, whys } = result
-          //if (!ranks.length && !whys.length) return // nothing to do
-          const postRankByParentId = ranks.reduce((postRankByParentId, rank) => ((postRankByParentId[rank.parentId] = rank), postRankByParentId), {})
-          const topWhyById = whys.reduce((topWhyById, point) => ((topWhyById[point._id] = point), topWhyById), {})
-          upsert({ postRankByParentId, topWhyById })
-        }
-      )
-    })
-  return <Rerank {...props} {...args} round={data.round} discussionId={data.discussionId} onDone={handleOnDone} />
+  useEffect(() => {
+    // on the browser, do this once and only once when this component is first rendered
+    const { discussionId, reducedPointList } = data
+    if (!reducedPointList || !reducedPointList.length) return // nothing to do
+    window.socket.emit(
+      'get-user-post-ranks-and-top-ranked-whys',
+      discussionId,
+      round,
+      reducedPointList.map(point_group => point_group.point._id),
+      result => {
+        if (!result) return // there was an error
+        const { ranks, whys } = result
+        //if (!ranks.length && !whys.length) return // nothing to do
+        const postRankByParentId = ranks.reduce((postRankByParentId, rank) => ((postRankByParentId[rank.parentId] = rank), postRankByParentId), {})
+        const topWhyById = whys.reduce((topWhyById, point) => ((topWhyById[point._id] = point), topWhyById), {})
+        upsert({ postRankByParentId, topWhyById })
+      }
+    )
+  }, [round, data.reducedPointList])
+  return <Rerank {...props} {...args} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
 }
 
 // table to map from data model properties, to the Rank Strings shown in the UI

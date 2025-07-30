@@ -9,6 +9,7 @@ const schema = Joi.object({
 })
 
 export default async function postPointGroups(discussionId, round, groupings, cb) {
+  if (cb && typeof cb !== 'function') console.error('postPointGroups cb must be a function, received:', cb)
   // Anonymous functions to handle success/fail
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
@@ -28,8 +29,6 @@ export default async function postPointGroups(discussionId, round, groupings, cb
   if (groupings.length > 99) return cbFailure('groupings is too long')
   if (groupings.some(g => !Array.isArray(g))) return cbFailure('groupings contains a non-array element')
   if (groupings.some(g => g.length > 99)) return cbFailure('groupings contains a subarray that is too long')
-  if (cb && typeof cb !== 'function') return cbFailure('callback is not a function')
-
   // Validate inputs
   try {
     await schema.validateAsync({ discussionId: discussionId, groupings: groupings })
@@ -38,7 +37,7 @@ export default async function postPointGroups(discussionId, round, groupings, cb
   }
 
   // Ignore empty groupings, but call cb(true).
-  if (groupings == [] || groupings == [[]]) {
+  if (!groupings.length || groupings.every(g => !g.length)) {
     return cbSuccess()
   }
 

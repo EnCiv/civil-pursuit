@@ -90,6 +90,9 @@ function SignUp(props, ref) {
     return
   }, [user])
 
+  // if user is logged in, don't display a signup form - password managers trigger on it even if it's off screen
+  if (user?.id) return <div className={cx(className, classes.SignUp)}>{user.email + ' is signed in.'}</div>
+
   // otherwise, continue showing login/sign up page
   return (
     <div className={cx(className, classes.SignUp)} style={style} ref={ref}>

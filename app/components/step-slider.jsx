@@ -175,7 +175,10 @@ export const StepSlider = props => {
 
   // ResizeObserver to update stepChildWrapper height when the current panel's height changes
   useEffect(() => {
-    if (!panelRefs.current[state.currentStep] || !stepChildRapper.current) return
+    if (!panelRefs.current[state.currentStep] || !stepChildRapper.current) {
+      console.info('No panel or stepChildRapper found', state.currentStep, panelRefs.current[state.currentStep], stepChildRapper.current)
+      return
+    }
     const panel = panelRefs.current[state.currentStep]
     const wrapper = stepChildRapper.current
     const updateHeight = () => {
@@ -187,7 +190,7 @@ export const StepSlider = props => {
     return () => {
       resizeObserver.disconnect()
     }
-  }, [state.currentStep])
+  }, [state.currentStep, panelRefs.current[state.currentStep], stepChildRapper.current])
 
   // listen for transitionComplete
   useEffect(() => {
@@ -252,7 +255,8 @@ export const StepSlider = props => {
           <StepFooter
             className={classes.stepFooter}
             onDone={() => {
-              dispatch({ type: 'increment' })
+              if (state.currentStep + 1 >= steps.length) onDone({ valid: true })
+              else dispatch({ type: 'increment' })
             }}
             onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
             active={state.stepStatuses[state.currentStep] && state.stepStatuses[state.currentStep]['complete']}
