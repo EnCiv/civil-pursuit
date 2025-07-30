@@ -33,17 +33,23 @@ export default function GroupingStep(props) {
   // fetch previous data
   useEffect(() => {
     // on the browser, do this once and only once when this component is first rendered
-    const { discussionId } = data
+    const { discussionId, uInfo } = data
 
     window.socket.emit('get-points-for-round', discussionId, round, points => {
       if (!points) return onDone({ valid: true, value: 'Intermission' }) // there was an error
-
-      const pointById = points.reduce((pointById, point) => ((pointById[point._id] = point), pointById), {})
-      upsert({ pointById })
-
       if (points.length <= 1) {
         onDone({ valid: true, value: 'Intermission' })
       }
+      const pointById = {}
+      const uInfoRound = uInfo?.[round] || {}
+      if (!uInfoRound.shownStatementIds) uInfoRound.shownStatementIds = {}
+      for (const point of points) {
+        pointById[point._id] = point
+        if (!uInfoRound.shownStatementIds[point._id]) {
+          uInfoRound.shownStatementIds[point._id] = { rank: 0 } // initialize the shownStatementIds for this point
+        }
+      }
+      upsert({ pointById, uInfo: { ...uInfo, [round]: uInfoRound } })
     })
   }, [round])
   return <GroupPoints {...args} round={round} discussionId={data.discussionId} onDone={handleOnDone} {...otherProps} />
@@ -66,12 +72,9 @@ export function GroupPoints(props) {
     selectLead: null, // the new point group, with no point but with a group for selecting the Lead
   })
 
-  const onDoneIfOkToProceed = () => {
-    if (!gs.selectedIds.length && !gs.selectLead && !gs.yourGroupsSelected.length) delayedOnDone({ valid: true, value: {} })
-  }
   // on original render, notify parent this is done (if it is)
   useEffect(() => {
-    onDoneIfOkToProceed()
+    if (!gs.selectedIds.length && !gs.selectLead && !gs.yourGroupsSelected.length) delayedOnDone({ valid: true, value: {} })
   }, [])
 
   const [prev] = useState({ reducedPointList })
@@ -92,7 +95,8 @@ export function GroupPoints(props) {
       // if the _id wasn't in there, push it
       if (selectedIds.length === oldGs.selectedIds.length) selectedIds.push(_id)
       if (selectedIds.length) delayedOnDone({ valid: false })
-      onDoneIfOkToProceed()
+      const valid = !selectedIds.length && !oldGs.selectLead && !oldGs.yourGroupsSelected.length
+      delayedOnDone({ valid, value: {} })
       return { ...oldGs, selectedIds }
     })
   }

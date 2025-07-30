@@ -14,11 +14,11 @@ export default function RerankStep(props) {
   const { data, upsert } = useContext(DeliberationContext)
   const args = { ...derivePointMostsLeastsRankList(data) }
   const handleOnDone = ({ valid, value, delta }) => {
+    console.info('RerankStep.onDone', { valid, value, delta })
     if (delta) {
       upsert({ postRankByParentId: { [delta.parentId]: delta } })
       window.socket.emit('upsert-rank', delta)
     }
-    upsert({ completedByRound: { [round]: valid } })
     if (valid) {
       const shownStatementIds = {}
       const rankByIds = data.reducedPointList.map(point_group => {

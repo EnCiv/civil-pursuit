@@ -210,7 +210,7 @@
       "webComponent": "CivilPursuit",
       "dturn": { "group_size": 5 },
       "participants": 0,
-      "finalRound": 3,
+      "finalRound": 2,
       "steps": [
         { "webComponent": "SignUp", "startTab": "SignUp" },
         {

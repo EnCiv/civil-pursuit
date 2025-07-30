@@ -92,12 +92,12 @@ const Intermission = props => {
           <div className={classes.headlineSmall}>Great! You've answered the question, when we get responses from more people, we will invite you back to continue the deliberation.</div>
         </>
       )
-    else conditionalResponse = <div className={classes.headlineSmall}>There are not enough responses yet proceed with round {round}. When we hear from more people, we will invite you back to continue the deliberation.</div>
+    else conditionalResponse = <div className={classes.headlineSmall}>There are not enough responses yet to proceed to round {round + 1 + 1}. When we hear from more people, we will invite you back to continue the deliberation.</div>
     valid = false
   } else if (nextRoundAvailable) {
     conditionalResponse = (
       <>
-        <div className={classes.headlineSmall}>Would you like to continue onto Round {round + 1}, or come back tomorrow? Sometimes it’s good to take a break and come back with fresh eyes. We will send you an email reminder</div>
+        <div className={classes.headlineSmall}>Would you like to continue onto Round {round + 1 + 1}, or come back tomorrow? Sometimes it’s good to take a break and come back with fresh eyes. We will send you an email reminder</div>
         <div className={classes.buttonContainer}>
           <PrimaryButton title="Yes, Continue" disabled={false} disableOnClick={false} onClick={() => onDone({ valid: true, value: 'continue' })}>
             Yes, Continue
