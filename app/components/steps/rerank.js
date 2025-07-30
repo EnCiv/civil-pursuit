@@ -21,13 +21,20 @@ export default function RerankStep(props) {
       window.socket.emit('upsert-rank', delta)
     }
     if (valid) {
-      const shownStatementIds = {}
+      const shownStatementIds = {} // only change objects in shownStatementIds if they have changed
       const rankByIds = data.reducedPointList.map(point_group => {
         const pointId = point_group.point._id
         const rank = data.postRankByParentId[pointId]?.category === 'most' ? 1 : 0
-        shownStatementIds[pointId] = { rank }
+        if (data.uInfo[round]?.shownStatementIds?.[pointId]?.rank !== rank) {
+          shownStatementIds[pointId] = structuredClone(data.uInfo[round]?.shownStatementIds?.[pointId] || {})
+          shownStatementIds[pointId].rank = rank
+        }
         return { [pointId]: rank }
       })
+      if (delta) {
+        if (!shownStatementIds[delta.parentId]) shownStatementIds[delta.parentId] = structuredClone(data.uInfo[round]?.shownStatementIds?.[delta.parentId] || {})
+        shownStatementIds[delta.parentId].rank = delta.category === 'most' ? 1 : 0 // data doesn't have latest upsert from above
+      }
       upsert({ uInfo: { [round]: { shownStatementIds } } })
       window.socket.emit('complete-round', data.discussionId, round, rankByIds, () => {})
     }
