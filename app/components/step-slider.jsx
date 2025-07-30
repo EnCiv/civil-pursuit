@@ -1,6 +1,7 @@
 'use strict'
 
 // https://github.com/EnCiv/civil-pursuit/issues/112
+// https://github.com/EnCiv/civil-pursuit/issues/332
 
 import React, { useState, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useCallback } from 'react'
 import { createUseStyles } from 'react-jss'
@@ -70,13 +71,29 @@ export const StepSlider = props => {
       case 'transitionsOn':
         return { ...state, transitions: true }
       case 'moveTo':
-        return { ...state, transitions: false, nextStep: action.to }
+        const newStepStatuses = state.stepStatuses?.map((stepStatus, i) => {
+          if (i > state.currentStep && i < action.to) {
+            return { ...stepStatus, skip: true }
+          }
+          return stepStatus
+        })
+
+        return { ...state, transitions: false, stepStatuses: newStepStatuses, nextStep: action.to }
 
       case 'increment':
+        let nextStep = Math.min(state.currentStep + 1, children.length - 1)
+
+        for (let i = state.currentStep + 1; i < children.length - 1; i++) {
+          if (!state.stepStatuses[i].skip) {
+            nextStep = i
+            break
+          }
+        }
+
         return {
           ...state,
           transitions: false,
-          nextStep: Math.min(state.currentStep + 1, children.length - 1),
+          nextStep: nextStep,
         }
 
       case 'transitionBegin': {
@@ -93,23 +110,35 @@ export const StepSlider = props => {
         return state // no need to rerender. leaving transitions on so that child components growing and shrinking will animate
       }
       case 'decrement': {
-        console.log('decrementing', state.currentStep)
+        let nextStep = state.currentStep
+
+        // First step before currentStep that's not skipped
+        for (let i = state.currentStep - 1; i >= 0; i--) {
+          if (!state.stepStatuses[i].skip) {
+            nextStep = i
+            break
+          }
+        }
+
         return {
           ...state,
-          nextStep: Math.max(0, state.currentStep - 1),
+          nextStep: nextStep,
           transitions: false,
         }
       }
       case 'updateStatuses':
-        let { valid, index } = action.payload
+        let { valid, index, skip } = action.payload
+
         if (steps) {
           const stepStatuses = state.stepStatuses.map((stepStatus, i) => {
             if (valid || valid === undefined) {
-              return i === index ? { ...stepStatus, complete: true } : stepStatus
+              return i === index ? { ...stepStatus, complete: true, skip: skip } : stepStatus
             }
+
             // Disable navigation to all steps after if invalid
-            else return i >= state.currentStep ? { ...stepStatus, complete: false } : stepStatus
+            else return i >= state.currentStep ? { ...stepStatus, complete: false, skip: skip } : stepStatus
           })
+
           return { ...state, stepStatuses: stepStatuses }
         } else if (valid) {
           // Just increment if no steps
@@ -143,6 +172,7 @@ export const StepSlider = props => {
     steps[0].seen = true
     steps.forEach((step, index) => {
       steps[index].complete = false
+      steps[index].skip = false
     })
   }
   const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, transitions: false, stepStatuses: steps })
@@ -153,8 +183,16 @@ export const StepSlider = props => {
       ...children[currentStep].props,
       key: currentStep,
       onDone: ({ valid, value }) => {
-        if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
-        else dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep } })
+        if (valid) {
+          if (value === 'skip') {
+            dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: true } })
+            dispatch({ type: 'increment' })
+          } else if (typeof stepNameToIndex[value] === 'number') {
+            dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
+          }
+        }
+
+        dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: value === 'skip' } })
       },
     })
   }
