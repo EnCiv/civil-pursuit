@@ -14,6 +14,7 @@ export default function RerankStep(props) {
   const { onDone, round } = props
   const { data, upsert } = useContext(DeliberationContext)
   const args = { ...derivePointMostsLeastsRankList(data) }
+  let onNext
   const handleOnDone = ({ valid, value, delta }) => {
     console.info('RerankStep.onDone', { valid, value, delta })
     if (delta) {
@@ -24,21 +25,19 @@ export default function RerankStep(props) {
       const shownStatementIds = {} // only change objects in shownStatementIds if they have changed
       const rankByIds = data.reducedPointList.map(point_group => {
         const pointId = point_group.point._id
-        const rank = data.postRankByParentId[pointId]?.category === 'most' ? 1 : 0
+        const rank = delta?.parentId === pointId ? (delta.category === 'most' ? 1 : 0) : data.postRankByParentId[pointId]?.category === 'most' ? 1 : 0
         if (data.uInfo[round]?.shownStatementIds?.[pointId]?.rank !== rank) {
           shownStatementIds[pointId] = structuredClone(data.uInfo[round]?.shownStatementIds?.[pointId] || {})
           shownStatementIds[pointId].rank = rank
         }
         return { [pointId]: rank }
       })
-      if (delta) {
-        if (!shownStatementIds[delta.parentId]) shownStatementIds[delta.parentId] = structuredClone(data.uInfo[round]?.shownStatementIds?.[delta.parentId] || {})
-        shownStatementIds[delta.parentId].rank = delta.category === 'most' ? 1 : 0 // data doesn't have latest upsert from above
+      onNext = () => {
+        upsert({ uInfo: { [round]: { shownStatementIds } } })
+        window.socket.emit('complete-round', data.discussionId, round, rankByIds, () => {})
       }
-      upsert({ uInfo: { [round]: { shownStatementIds } } })
-      window.socket.emit('complete-round', data.discussionId, round, rankByIds, () => {})
     }
-    onDone({ valid, value })
+    onDone({ valid, value, onNext })
   }
 
   // fetch previous data
