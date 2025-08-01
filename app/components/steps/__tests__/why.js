@@ -30,25 +30,26 @@ describe('deriver function tests', () => {
   })
 
   test('input data undefined', () => {
-    const result = derivePointWhyListByCategory(undefined)
+    const result = derivePointWhyListByCategory(undefined, 'most')
     expect(result).toHaveProperty('pointWhyList')
     expect(result.pointWhyList).toBe(undefined)
   })
 
   test('input data empty', () => {
-    const result = derivePointWhyListByCategory({})
+    const result = derivePointWhyListByCategory({}, 'most')
     expect(result).toEqual({ pointWhyListByCategory: undefined })
   })
 
   test('input data present - output data not there yet', () => {
     data = {
       reducedPointList: [{ point: { _id: '64a81ca0cbad4414b3dc8d75', subject: 'Subject 1', description: 'Description 1' } }],
-      myWhyByParentId: {},
+      preRankByParentId: { '64a81ca0cbad4414b3dc8d75': { _id: '64a81ca0cbad4414b3dc8d75', category: 'most', stage: 'pre' } },
+      myWhyByCategoryByParentId: { most: {} },
       category: 'most',
       intro: 'This is the intro text.',
     }
 
-    const result = derivePointWhyListByCategory(data)
+    const result = derivePointWhyListByCategory(data, 'most')
 
     expect(result).toEqual({
       pointWhyList: [
@@ -75,20 +76,23 @@ describe('deriver function tests', () => {
           },
         },
       ],
-      myWhyByParentId: {
-        '64a81ca0cbad4414b3dc8d75': {
-          _id: '641f9b3dfb8ce2f3a42ed816',
-          parentId: '64a81ca0cbad4414b3dc8d75',
-          subject: 'Why Subject 1',
-          description: 'Why Description 1',
+      preRankByParentId: { '64a81ca0cbad4414b3dc8d75': { _id: '64a81ca0cbad4414b3dc8d75', category: 'most', stage: 'pre' } },
+      myWhyByCategoryByParentId: {
+        most: {
+          '64a81ca0cbad4414b3dc8d75': {
+            _id: '641f9b3dfb8ce2f3a42ed816',
+            parentId: '64a81ca0cbad4414b3dc8d75',
+            subject: 'Why Subject 1',
+            description: 'Why Description 1',
+          },
         },
       },
       category: 'most',
       intro: 'This is the intro text.',
     }
 
-    const result1 = derivePointWhyListByCategory(data).pointWhyList
-    const result2 = derivePointWhyListByCategory(data).pointWhyList
+    const result1 = derivePointWhyListByCategory(data, 'most').pointWhyList
+    const result2 = derivePointWhyListByCategory(data, 'most').pointWhyList
 
     expect(result2).toBe(result1)
 
@@ -127,35 +131,42 @@ describe('deriver function tests', () => {
           },
         },
       ],
-      myWhyByParentId: {
-        '64a81ca0cbad4414b3dc8d75': {
-          _id: '641f9b3dfb8ce2f3a42ed816',
-          parentId: '64a81ca0cbad4414b3dc8d75',
-          subject: 'Why Subject 1',
-          description: 'Why Description 1',
-        },
-        '64a81ca0cbad4414b3dc8d76': {
-          _id: '641f9b3dfb8ce2f3a42ed817',
-          parentId: '64a81ca0cbad4414b3dc8d76',
-          subject: 'Why Subject 2',
-          description: 'Why Description 2',
+      preRankByParentId: { '64a81ca0cbad4414b3dc8d75': { _id: '64a81ca0cbad4414b3dc8d75', category: 'most', stage: 'pre' }, '64a81ca0cbad4414b3dc8d76': { _id: '64a81ca0cbad4414b3dc8d76', category: 'most', stage: 'pre' } },
+
+      myWhyByCategoryByParentId: {
+        most: {
+          '64a81ca0cbad4414b3dc8d75': {
+            _id: '641f9b3dfb8ce2f3a42ed816',
+            parentId: '64a81ca0cbad4414b3dc8d75',
+            subject: 'Why Subject 1',
+            description: 'Why Description 1',
+          },
+          '64a81ca0cbad4414b3dc8d76': {
+            _id: '641f9b3dfb8ce2f3a42ed817',
+            parentId: '64a81ca0cbad4414b3dc8d76',
+            subject: 'Why Subject 2',
+            description: 'Why Description 2',
+          },
         },
       },
       category: 'most',
       intro: 'This is the intro text.',
     }
 
-    const result1 = derivePointWhyListByCategory(data)
+    const result1 = derivePointWhyListByCategory(data, 'most')
 
     data = {
       ...data,
-      myWhyByParentId: {
-        ...data.myWhyByParentId,
-        '64a81ca0cbad4414b3dc8d75': {
-          _id: '641f9b3dfb8ce2f3a42ed816',
-          parentId: '64a81ca0cbad4414b3dc8d75',
-          subject: 'Updated Why Subject 1',
-          description: 'Updated Why Description 1',
+      myWhyByCategoryByParentId: {
+        ...data.myWhyByCategoryByParentId,
+        most: {
+          ...data.myWhyByCategoryByParentId.most,
+          '64a81ca0cbad4414b3dc8d75': {
+            _id: '641f9b3dfb8ce2f3a42ed816',
+            parentId: '64a81ca0cbad4414b3dc8d75',
+            subject: 'Updated Why Subject 1',
+            description: 'Updated Why Description 1',
+          },
         },
       },
     }
@@ -163,7 +174,7 @@ describe('deriver function tests', () => {
     const savedPoints = result1.pointWhyList.map(pw => pw.point)
     const savedWhys = result1.pointWhyList.map(pw => pw.why)
 
-    const result2 = derivePointWhyListByCategory(data)
+    const result2 = derivePointWhyListByCategory(data, 'most')
 
     expect(result2).not.toBe(result1)
     expect(result2.pointWhyList[0]).not.toBe(result1.pointWhyList[0])

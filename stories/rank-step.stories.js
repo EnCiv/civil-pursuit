@@ -33,7 +33,7 @@ const rank1preMost = {
   category: 'most',
   parentId: '1',
   discussionId,
-  round: 0,
+  round: 1,
 }
 
 const rank2preNeutral = {
@@ -42,7 +42,7 @@ const rank2preNeutral = {
   category: 'neutral',
   parentId: '2',
   discussionId,
-  round: 0,
+  round: 1,
 }
 const rank3preLeast = {
   _id: '203',
@@ -50,7 +50,7 @@ const rank3preLeast = {
   category: 'least',
   parentId: '3',
   discussionId,
-  round: 0,
+  round: 1,
 }
 // different story cases want different combinations of reviewpoints and ranks
 function mergeRanksIntoReviewPoints(rankPoints, ranks) {
@@ -189,7 +189,7 @@ const rankStepTemplate = args => {
 }
 
 export const rankStepWithPartialDataAndUserUpdate = {
-  args: { ...getRankArgsFrom(mergeRanksIntoReviewPoints(rankPoints, [rank1preMost])) },
+  args: { ...getRankArgsFrom(mergeRanksIntoReviewPoints(rankPoints, [rank1preMost])), round: 1 },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: rankStepTemplate,
   play: async ({ canvasElement }) => {
@@ -213,11 +213,11 @@ export const rankStepWithPartialDataAndUserUpdate = {
         category: 'neutral',
         parentId: '1',
         discussionId: '1001',
-        round: 0,
+        round: 1,
       })
       expect(deliberationContextData(canvas)).toMatchObject({
         preRankByParentId: {
-          1: { _id: '201', stage: 'pre', category: 'neutral', parentId: '1', discussionId: '1001', round: 0 },
+          1: { _id: '201', stage: 'pre', category: 'neutral', parentId: '1', discussionId: '1001', round: 1 },
         },
       })
     })
@@ -235,7 +235,7 @@ export const rankStepWithTopDownUpdate = {
       setTimeout(() => {
         upsert({
           preRankByParentId: {
-            2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 0 },
+            2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 1 },
           },
         })
       }, 1000)
@@ -261,7 +261,7 @@ export const rankStepWithTopDownUpdate = {
             category: 'most',
             parentId: '1',
             discussionId: '1001',
-            round: 0,
+            round: 1,
           },
         },
       })
@@ -277,8 +277,8 @@ export const rankStepWithTopDownUpdate = {
     await waitFor(() => {
       expect(deliberationContextData(canvas)).toMatchObject({
         preRankByParentId: {
-          1: { _id: '201', stage: 'pre', category: 'most', parentId: '1', discussionId: '1001', round: 0 },
-          2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 0 },
+          1: { _id: '201', stage: 'pre', category: 'most', parentId: '1', discussionId: '1001', round: 1 },
+          2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 1 },
         },
       })
     })
@@ -296,7 +296,7 @@ export const rankStepWithClearRanks = {
       setTimeout(() => {
         upsert({
           preRankByParentId: {
-            2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 0 },
+            2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 1 },
           },
         })
       }, 1000)
@@ -324,7 +324,7 @@ export const rankStepWithClearRanks = {
             category: 'most',
             parentId: '1',
             discussionId: '1001',
-            round: 0,
+            round: 1,
           },
         },
       })
@@ -340,8 +340,8 @@ export const rankStepWithClearRanks = {
     await waitFor(() => {
       expect(deliberationContextData(canvas)).toMatchObject({
         preRankByParentId: {
-          1: { _id: '201', stage: 'pre', category: 'most', parentId: '1', discussionId: '1001', round: 0 },
-          2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 0 },
+          1: { _id: '201', stage: 'pre', category: 'most', parentId: '1', discussionId: '1001', round: 1 },
+          2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 1 },
         },
       })
     })
@@ -351,8 +351,8 @@ export const rankStepWithClearRanks = {
     await waitFor(() => {
       expect(deliberationContextData(canvas)).toMatchObject({
         preRankByParentId: {
-          1: { _id: '201', stage: 'pre', parentId: '1', discussionId: '1001', round: 0 },
-          2: { _id: '211', stage: 'pre', parentId: '2', discussionId: '1001', round: 0 },
+          1: { _id: '201', stage: 'pre', parentId: '1', discussionId: '1001', round: 1 },
+          2: { _id: '211', stage: 'pre', parentId: '2', discussionId: '1001', round: 1 },
         },
       })
     })
