@@ -94,7 +94,7 @@ const rank1postMost = {
   category: 'most',
   parentId: '1',
   discussionId,
-  round: 0,
+  round: 1,
 }
 
 const rank2postNeutral = {
@@ -103,7 +103,7 @@ const rank2postNeutral = {
   category: 'neutral',
   parentId: '2',
   discussionId,
-  round: 0,
+  round: 1,
 }
 const rank3postLeast = {
   _id: '203',
@@ -111,7 +111,7 @@ const rank3postLeast = {
   category: 'least',
   parentId: '3',
   discussionId,
-  round: 0,
+  round: 1,
 }
 // different story cases want different combinations of reviewpoints and ranks
 function mergeRanksIntoReviewPoints(reviewPoints, ranks) {
@@ -257,7 +257,7 @@ const rerankStepTemplate = args => {
 }
 
 export const rerankStepWithPartialDataAndUserUpdate = {
-  args: { ...getRerankArgsFrom(mergeRanksIntoReviewPoints(reviewPoints, [rank1postMost])) },
+  args: { ...getRerankArgsFrom(mergeRanksIntoReviewPoints(reviewPoints, [rank1postMost])), round },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: rerankStepTemplate,
   play: async ({ canvasElement, args }) => {
@@ -283,11 +283,11 @@ export const rerankStepWithPartialDataAndUserUpdate = {
         category: 'neutral',
         parentId: '1',
         discussionId: '1001',
-        round: 0,
+        round: 1,
       })
       expect(deliberationContextData(canvas)).toMatchObject({
         postRankByParentId: {
-          1: { _id: '201', stage: 'post', category: 'neutral', parentId: '1', discussionId: '1001', round: 0 },
+          1: { _id: '201', stage: 'post', category: 'neutral', parentId: '1', discussionId: '1001', round: 1 },
         },
       })
     })
@@ -295,7 +295,7 @@ export const rerankStepWithPartialDataAndUserUpdate = {
 }
 
 export const rerankStepWithTopDownUpdate = {
-  args: { ...getRerankArgsFrom(mergeRanksIntoReviewPoints(reviewPoints, [rank1postMost])) },
+  args: { ...getRerankArgsFrom(mergeRanksIntoReviewPoints(reviewPoints, [rank1postMost])), round },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: args => {
     // simulate a top down update after the component initially renders
@@ -305,7 +305,7 @@ export const rerankStepWithTopDownUpdate = {
       setTimeout(() => {
         upsert({
           postRankByParentId: {
-            2: { _id: '211', stage: 'post', category: 'least', parentId: '2', discussionId: '1001', round: 0 },
+            2: { _id: '211', stage: 'post', category: 'least', parentId: '2', discussionId: '1001', round: 1 },
           },
         })
       }, 1000)
@@ -330,7 +330,7 @@ export const rerankStepWithTopDownUpdate = {
             category: 'most',
             parentId: '1',
             discussionId: '1001',
-            round: 0,
+            round: 1,
           },
         },
       })
@@ -349,8 +349,8 @@ export const rerankStepWithTopDownUpdate = {
     await waitFor(() => {
       expect(deliberationContextData(canvas)).toMatchObject({
         postRankByParentId: {
-          1: { _id: '201', stage: 'post', category: 'most', parentId: '1', discussionId: '1001', round: 0 },
-          2: { _id: '211', stage: 'post', category: 'least', parentId: '2', discussionId: '1001', round: 0 },
+          1: { _id: '201', stage: 'post', category: 'most', parentId: '1', discussionId: '1001', round: 1 },
+          2: { _id: '211', stage: 'post', category: 'least', parentId: '2', discussionId: '1001', round: 1 },
         },
       })
     })

@@ -133,7 +133,8 @@ const useStyles = createUseStyles(theme => ({
 export function derivePointWithWhyRankListListByCategory(data, category) {
   // pointWithWhyRankListList shouldn't default to [], it should be undefined until data is fetched from the server. But then, [] is ok
   const local = useRef({ pointWithWhyRankListList: undefined, pointWithWhyRankByWhyIdByPointId: {} }).current
-  const { reducedPointList, preRankByParentId = {}, randomWhyById, whyRankByParentId, myWhyByParentId } = data
+  const { reducedPointList, preRankByParentId = {}, randomWhyById, whyRankByParentId, myWhyByCategoryByParentId = {} } = data
+  const myWhyByParentId = myWhyByCategoryByParentId[category] || {}
   const { pointWithWhyRankListList, pointWithWhyRankByWhyIdByPointId } = local
   let updatedPoints = {}
   if (local.reducedPointList !== reducedPointList) {

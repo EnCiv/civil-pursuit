@@ -57,11 +57,9 @@ const Intermission = props => {
   const userIsRegistered = !!user?.email
   const nextRoundAvailable = round < lastRound
   const allRoundsCompleted = roundCompleted && round >= finalRound
-  useEffect(() => {
-    if (allRoundsCompleted) setTimeout(() => onDone({ valid: true, value: 'done' }), 500)
-  }, [allRoundsCompleted])
 
   let valid
+  let onNext
   let conditionalResponse
   if (!userIsRegistered) {
     conditionalResponse = (
@@ -85,6 +83,7 @@ const Intermission = props => {
       </>
     )
     valid = true
+    onNext = () => location.replace('https://enciv.org/')
   } else if (!roundCompleted) {
     if (round === 0)
       conditionalResponse = (
@@ -94,6 +93,7 @@ const Intermission = props => {
       )
     else conditionalResponse = <div className={classes.headlineSmall}>There are not enough responses yet to proceed to round {round + 1 + 1}. When we hear from more people, we will invite you back to continue the deliberation.</div>
     valid = false
+    onNext = () => location.replace('https://enciv.org/')
   } else if (nextRoundAvailable) {
     conditionalResponse = (
       <>
@@ -109,18 +109,22 @@ const Intermission = props => {
         {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
       </>
     )
-    valid = false
+    if (successMessage) {
+      valid = true
+      onNext = () => location.replace('https://enciv.org/')
+    } else valid = false
   } else {
     conditionalResponse = (
       <>
         <div className={classes.headlineSmall}>{`Great you've completed Round ${round + 1}, we will send you an invite to continue the discussion after more people have made it this far.`}</div>
       </>
     )
-    valid = false
+    valid = true
+    onNext = () => location.replace('https://enciv.org/')
   }
 
   useEffect(() => {
-    onDone({ valid, value: 'continue' })
+    onDone({ valid, value: 'continue', onNext })
   }, [valid])
   return (
     <div className={cx(classes.intermission, className)}>

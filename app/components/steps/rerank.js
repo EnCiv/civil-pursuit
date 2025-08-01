@@ -14,6 +14,7 @@ export default function RerankStep(props) {
   const { onDone, round } = props
   const { data, upsert } = useContext(DeliberationContext)
   const args = { ...derivePointMostsLeastsRankList(data) }
+  let onNext
   const handleOnDone = ({ valid, value, delta }) => {
     console.info('RerankStep.onDone', { valid, value, delta })
     if (delta) {
@@ -21,17 +22,22 @@ export default function RerankStep(props) {
       window.socket.emit('upsert-rank', delta)
     }
     if (valid) {
-      const shownStatementIds = {}
+      const shownStatementIds = {} // only change objects in shownStatementIds if they have changed
       const rankByIds = data.reducedPointList.map(point_group => {
         const pointId = point_group.point._id
-        const rank = data.postRankByParentId[pointId]?.category === 'most' ? 1 : 0
-        shownStatementIds[pointId] = { rank }
+        const rank = delta?.parentId === pointId ? (delta.category === 'most' ? 1 : 0) : data.postRankByParentId[pointId]?.category === 'most' ? 1 : 0
+        if (data.uInfo[round]?.shownStatementIds?.[pointId]?.rank !== rank) {
+          shownStatementIds[pointId] = structuredClone(data.uInfo[round]?.shownStatementIds?.[pointId] || {})
+          shownStatementIds[pointId].rank = rank
+        }
         return { [pointId]: rank }
       })
-      upsert({ uInfo: { [round]: { shownStatementIds } } })
-      window.socket.emit('complete-round', data.discussionId, round, rankByIds, () => {})
+      onNext = () => {
+        upsert({ uInfo: { [round]: { shownStatementIds } } })
+        window.socket.emit('complete-round', data.discussionId, round, rankByIds, () => {})
+      }
     }
-    onDone({ valid, value })
+    onDone({ valid, value, onNext })
   }
 
   // fetch previous data
@@ -208,7 +214,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 // to make is possible to test with jest, this is exported
 export function derivePointMostsLeastsRankList(data) {
   const local = useRef({ reviewPointsById: {} }).current
-  const { reducedPointList, postRankByParentId, topWhyById, myWhyByParentId } = data
+  const { reducedPointList, postRankByParentId, topWhyById, myWhyByCategoryByParentId = {} } = data
   let updated = false
 
   const { reviewPointsById } = local
@@ -247,9 +253,16 @@ export function derivePointMostsLeastsRankList(data) {
     }
     Object.entries(categoiesToUpdateByParentId).forEach(([parentId, categories]) => categories.forEach(category => (reviewPointsById[parentId][category + 's'] = [...reviewPointsById[parentId][category + 's']])))
   }
-  if (local.myWhyByParentId !== myWhyByParentId) {
-    addWhysToReviewPointsById(Object.values(myWhyByParentId))
-    local.myWhyByParentId = myWhyByParentId
+  // Add whys for both 'most' and 'least' categories
+  const myWhyMost = myWhyByCategoryByParentId['most'] || {}
+  const myWhyLeast = myWhyByCategoryByParentId['least'] || {}
+  if (local.myWhyByParentIdMost !== myWhyMost) {
+    addWhysToReviewPointsById(Object.values(myWhyMost))
+    local.myWhyByParentIdMost = myWhyMost
+  }
+  if (local.myWhyByParentIdLeast !== myWhyLeast) {
+    addWhysToReviewPointsById(Object.values(myWhyLeast))
+    local.myWhyByParentIdLeast = myWhyLeast
   }
   if (local.topWhyById !== topWhyById) {
     local.topWhyById = topWhyById

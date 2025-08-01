@@ -20,7 +20,12 @@ export default function AnswerStep(props) {
     const shownStatementIds = Object.keys(data?.uInfo?.[round]?.shownStatementIds || {})
     if (shownStatementIds.length <= 0) return
     window.socket.emit('get-points-of-ids', shownStatementIds, ({ points, myWhys }) => {
-      upsert({ ['pointById']: points.reduce((pById, point) => ((pById[point._id] = point), pById), {}), ['myWhyByParentId']: myWhys.reduce((wById, why) => ((wById[why.parentId] = why), wById), {}) })
+      upsert({
+        pointById: points.reduce((pById, point) => ((pById[point._id] = point), pById), {}),
+        myWhyByCategoryByParentId: {
+          most: myWhys.filter(why => why.category === 'most').reduce((wById, why) => ((wById[why.parentId] = why), wById), {}),
+        },
+      })
     })
   }, [data.uInfo, round])
 
@@ -31,8 +36,9 @@ export default function AnswerStep(props) {
         window.socket.emit('insert-dturn-statement', delta.myAnswer.parentId, delta.myAnswer) // Push changes to server
       }
       if (delta.myWhy) {
-        upsert({ myWhyByParentId: { [delta.myWhy.parentId]: delta.myWhy } }) // Update context with delta changes
-        window.socket.emit('upsert-why', delta.myWhy) // Push changes to server
+        // Only upsert the changed value for 'most', do not expand the whole object
+        upsert({ myWhyByCategoryByParentId: { most: { [delta.myWhy.parentId]: delta.myWhy } } })
+        window.socket.emit('upsert-why', delta.myWhy)
       }
     }
     onDone({ valid, value })
@@ -94,16 +100,18 @@ export function Answer(props) {
 
 // Logic for deriving props from data
 export function deriveMyAnswerAndMyWhy(data) {
-  const local = useRef({}).current // Initialize pointByPart to null
+  const local = useRef({}).current
   if (data.pointById !== local.pointById) {
     const myAnswer = Object.values(data.pointById).find(p => p.userId === data.userId)
     local.myAnswer = myAnswer
     local.pointById = data.pointById
   }
-  if (local.myAnswer && data.myWhyByParentId !== local.myWhyByParentId) {
-    const myWhy = data.myWhyByParentId[local.myAnswer._id]
+  // In AnswerStep, category is always 'most'
+  const myWhyByCategoryByParentId = data.myWhyByCategoryByParentId || {}
+  if (local.myAnswer && myWhyByCategoryByParentId.most !== local.myWhyByCategoryByParentIdMost) {
+    const myWhy = myWhyByCategoryByParentId['most']?.[local.myAnswer._id]
     local.myWhy = myWhy
-    local.myWhyByParentId = data.myWhyByParentId
+    local.myWhyByCategoryByParentIdMost = myWhyByCategoryByParentId['most']
   }
   return { myAnswer: local.myAnswer, myWhy: local.myWhy }
 }

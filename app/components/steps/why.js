@@ -15,26 +15,42 @@ export default function WhyStep(props) {
   const { category, onDone, ...otherProps } = props
 
   useEffect(() => {
-    if (!data?.myWhyByParentId && data?.reducedPointList?.length > 0) {
+    if (!data?.myWhyByCategoryByParentId && data?.reducedPointList?.length > 0) {
       const ids = data.reducedPointList.map(pG => pG.point._id)
       window.socket.emit('get-user-whys', ids, results => {
-        const myWhyByParentId = results.reduce((acc, point) => {
-          acc[point.parentId] = point
-          return acc
-        }, {})
-        upsert({ myWhyByParentId })
+        // Group whys by category, then by parentId
+        const myWhyByCategoryByParentId = {}
+        for (const point of results) {
+          if (!myWhyByCategoryByParentId[point.category]) myWhyByCategoryByParentId[point.category] = {}
+          myWhyByCategoryByParentId[point.category][point.parentId] = point
+        }
+        upsert({ myWhyByCategoryByParentId })
       })
     }
   }, [])
 
   function handleOnDone({ valid, value, delta }) {
     if (delta) {
-      const newData = upsert({ myWhyByParentId: { [delta.parentId]: delta } })
+      // Upsert only the changed value for the correct category
+      const category = delta.category || props.category
+      const newData = upsert({
+        myWhyByCategoryByParentId: {
+          [category]: {
+            [delta.parentId]: delta,
+          },
+        },
+      })
       if (newData === data) return // if no change, don't send up
       window.socket.emit('upsert-why', delta, updatedDoc => {
         if (updatedDoc) {
           if (!isEqual(updatedDoc, delta)) {
-            upsert({ myWhyByParentId: { [delta.parentId]: updatedDoc } })
+            upsert({
+              myWhyByCategoryByParentId: {
+                [category]: {
+                  [delta.parentId]: updatedDoc,
+                },
+              },
+            })
           }
         } else {
           console.error('Failed to upsert why')
@@ -145,7 +161,8 @@ export function derivePointWhyListByCategory(data, category) {
     pointWhyList: undefined,
   }).current
 
-  const { reducedPointList = [], myWhyByParentId = {}, preRankByParentId = {} } = data || {}
+  const { reducedPointList = [], myWhyByCategoryByParentId = {}, preRankByParentId = {} } = data || {}
+  const myWhyByParentId = myWhyByCategoryByParentId[category] || {}
 
   let updated = false
 
