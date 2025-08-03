@@ -197,7 +197,7 @@ export function GroupPoints(props) {
           // lead point is changed - find the old one
           index = yourGroups.findIndex(pGD => pGD.group.some(p => p._id === value.pointGroup.point._id))
           if (index >= 0) {
-            yourGroups.splice(index, 1, pointGroup)
+            yourGroups.splice(index, 1, value.pointGroup)
           } else {
             console.info("got new pointDoc don't know why")
             yourGroups.push(value.pointGroup)
