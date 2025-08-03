@@ -86,8 +86,6 @@ export function RankPoints(props) {
     stepIntro,
   } = props
 
-  if (!pointRankGroupList) return null
-
   const [rankByParentId, setRankByParentId] = useState(
     (pointRankGroupList || []).reduce((rankByParentId, rankPoint) => {
       if (rankPoint.rank && rankByParentId[rankPoint.point._id]) rankByParentId[rankPoint.point._id] = rankPoint.rank
@@ -165,7 +163,7 @@ export function RankPoints(props) {
   const leastCount = () => getRankCount('least')
 
   const getRankCount = rankName => {
-    return Object.values(rankByParentId).filter(rankedPoint => rankedPoint.category?.toLowerCase() === rankName?.toLowerCase()).length
+    return pointRankGroupList.filter(pointRank => rankByParentId[pointRank.point._id]?.category?.toLowerCase() === rankName?.toLowerCase()).length
   }
 
   useEffect(() => {
@@ -175,10 +173,9 @@ export function RankPoints(props) {
   const validAndPercentDone = () => {
     let doneCount = 0
 
-    for (const rankedPoint of Object.values(rankByParentId)) {
-      if (rankedPoint.category) doneCount++
+    for (const pointRank of pointRankGroupList) {
+      if (rankByParentId[pointRank.point._id]?.category) doneCount++
     }
-
     // Check for difference in expected most/least counts
     const mostDiscrepancy = mostCount() - targetMost
     const leastDiscrepancy = leastCount() - targetLeast
@@ -201,7 +198,8 @@ export function RankPoints(props) {
       errorMsg = `You've rated too many responses as "Least Important." Please edit.`
     }
   }
-
+  // can't return null before all the hooks are called
+  if (!pointRankGroupList) return null
   return (
     <div className={cx(classes.rankStep, className)}>
       <StepIntro {...stepIntro} />
@@ -238,7 +236,7 @@ export function RankPoints(props) {
                 className={classes.rank}
                 defaultValue={toRankString[rankByParentId[point._id]?.category]}
                 onDone={({ valid, value }) => {
-                  handleRankPoint(point, { valid: valid, value: value })
+                  handleRankPoint(point, { valid, value })
                 }}
               />
             </Point>
@@ -291,23 +289,29 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 }))
 
 export function derivePointRankGroupList(data) {
-  const local = useRef({ rankPointsById: {} }).current
+  const local = useRef({ pointRankGroupById: {} }).current
   const { reducedPointList, preRankByParentId } = data
 
   let updated = false
 
-  const { rankPointsById } = local
+  const { pointRankGroupById } = local
   if (local.reducedPointList !== reducedPointList) {
+    const oldPointSet = new Set(Object.keys(pointRankGroupById))
     for (const { point, group } of reducedPointList) {
-      if (!rankPointsById[point._id]) {
-        rankPointsById[point._id] = { point, group }
+      if (!pointRankGroupById[point._id]) {
+        pointRankGroupById[point._id] = { point, group }
         updated = true
-      } else if (rankPointsById[point._id].point != point) {
-        rankPointsById[point._id] = { ...rankPointsById[point._id], point }
+      } else if (pointRankGroupById[point._id].point != point) {
+        oldPointSet.delete(point._id)
+        pointRankGroupById[point._id] = { ...pointRankGroupById[point._id], point, group }
         updated = true
-      }
+      } else oldPointSet.delete(point._id)
     }
-
+    // grouping in previous step may remove points that were once there
+    for (const oldPointId of oldPointSet) {
+      delete pointRankGroupById[oldPointId]
+      updated = true
+    }
     local.reducedPointList = reducedPointList
   }
 
@@ -316,17 +320,17 @@ export function derivePointRankGroupList(data) {
       console.error('preRankByParentId is not an object', local.preRankByParentId, preRankByParentId)
     } else {
       for (const rank of Object.values(preRankByParentId)) {
-        if (rankPointsById[rank.parentId]) {
-          if (rankPointsById[rank.parentId].rank !== rank) {
-            rankPointsById[rank.parentId] = { ...rankPointsById[rank.parentId], rank }
+        if (pointRankGroupById[rank.parentId]) {
+          if (pointRankGroupById[rank.parentId].rank !== rank) {
+            pointRankGroupById[rank.parentId] = { ...pointRankGroupById[rank.parentId], rank }
             updated = true
           }
-        }
+        } // there may be ranks for which there is no point anymore, because it was grouped out in the previous step
       }
     }
     local.preRankByParentId = preRankByParentId
   }
 
-  if (updated) local.pointRankGroupList = Object.values(local.rankPointsById)
+  if (updated) local.pointRankGroupList = Object.values(local.pointRankGroupById)
   return { pointRankGroupList: local.pointRankGroupList }
 }
