@@ -67,7 +67,7 @@ const JsForm = props => {
   useEffect(() => {
     window.socket.emit('get-jsform', discussionId, data => {
       if (data) {
-        const moreDetails = data.moreDetails || {}
+        const moreDetails = data[name] || {}
         setData(moreDetails)
         if (handleIsValid(moreDetails)) {
           onDone({ valid: true, value: moreDetails })
@@ -77,7 +77,7 @@ const JsForm = props => {
   }, [])
 
   const handleSubmit = () => {
-    window.socket.emit('upsert-jsform', discussionId, 'moreDetails', data)
+    window.socket.emit('upsert-jsform', discussionId, name, data)
     onDone({ valid: handleIsValid(data), value: data })
   }
 
@@ -104,7 +104,16 @@ const JsForm = props => {
     <div className={cx(classes.formContainer, className)}>
       <StepIntro {...stepIntro} />
       <div className={classes.jsonFormContainer}>
-        <JsonForms schema={schema} uischema={uischema} data={data} renderers={memoedRenderers} cells={vanillaCells} onChange={({ data }) => setData(data)} />
+        <JsonForms
+          schema={schema}
+          uischema={uischema}
+          data={data}
+          renderers={memoedRenderers}
+          cells={vanillaCells}
+          onChange={({ data }) => {
+            setData(data)
+          }}
+        />
         <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
           Submit
         </PrimaryButton>

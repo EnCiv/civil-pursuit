@@ -288,7 +288,9 @@ const setupJsFormsApis = Story => {
     // the api call will provide the new data for this step
     window.socket._socketEmitHandlers['get-jsform'] = (discussionId, cb) => {
       window.socket._socketEmitHandlerResults['get-jsform'].push[[discussionId]]
-      setTimeout(() => cb?.())
+      setTimeout(() => {
+        cb?.()
+      })
     }
     window.socket._socketEmitHandlerResults['get-jsform'] = []
     window.socket._socketEmitHandlers['upsert-jsform'] = (discussionId, name, data, cb) => {
@@ -305,6 +307,7 @@ export const UserInputAndOnDoneCall = {
     uischema: testUIschema,
     details: initialTestSchemaDetails,
     stepIntro: { subject: 'We just need a few more details about you to get started.' },
+    name: 'moreDetails',
     discussionId: '123456789012345678901234567890abcd',
   },
   decorators: [setupJsFormsApis],
