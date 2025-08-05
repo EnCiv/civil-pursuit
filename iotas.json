@@ -195,7 +195,36 @@
           ]
         },
         { "webComponent": "Conclusion" },
-        { "webComponent": "Feedback" }
+        {
+          "webComponent": "Jsform",
+          "questions": [["How would you rate your overall experience with our product/service?", "What aspects of our product/service do you believe can be improved?"]],
+          "schema": {
+            "type": "object",
+            "properties": {
+              "experience": {
+                "title": "Description",
+                "type": "string"
+              },
+              "improvements": {
+                "title": "Description",
+                "type": "string"
+              }
+            }
+          },
+          "uischema": {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/experience"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/improvements"
+              }
+            ]
+          }
+        }
       ]
     }
   }

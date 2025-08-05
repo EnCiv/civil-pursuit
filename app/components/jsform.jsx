@@ -69,8 +69,8 @@ const JsForm = props => {
   useEffect(() => {
     window.socket.emit('get-jsform', discussionId, data => {
       if (data) {
-        const moreDetails = data.moreDetails || {}
-        upsert(moreDetails)
+        const moreDetails = data[name] || {}
+        setData(moreDetails)
         if (handleIsValid(moreDetails)) {
           onDone({ valid: true, value: moreDetails })
         }
@@ -116,7 +116,7 @@ const JsForm = props => {
           renderers={memoedRenderers}
           cells={vanillaCells}
           onChange={({ data }) => {
-            upsert(data)
+            setData(data)
           }}
         />
         <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
