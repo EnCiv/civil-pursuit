@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import { userEvent, within } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import expect from 'expect'
-import { onDoneDecorator, onDoneResult, socketEmitDecorator } from './common'
-import MoreDetails from './../app/components/more-details'
+import { onDoneDecorator, onDoneResult, socketEmitDecorator, DeliberationContextDecorator } from './common'
+import Jsform from '../app/components/jsform'
 
 export default {
-  component: MoreDetails,
+  component: Jsform,
   args: {},
-  decorators: [onDoneDecorator, socketEmitDecorator],
+  decorators: [DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
@@ -269,7 +269,7 @@ export const FigmaInputMatch = {
   args: {
     schema: testSchema,
     uischema: testUIschema,
-    title: 'We just need a few more details about you to get started.',
+    stepIntro: { subject: 'We just need a few more details about you to get started.' },
   },
 }
 
@@ -278,7 +278,7 @@ export const InitialTestSchemaDetailsInput = {
     schema: testSchema,
     uischema: testUIschema,
     details: initialTestSchemaDetails,
-    title: 'We just need a few more details about you to get started.',
+    stepIntro: { subject: 'We just need a few more details about you to get started.' },
   },
 }
 
@@ -288,7 +288,9 @@ const setupJsFormsApis = Story => {
     // the api call will provide the new data for this step
     window.socket._socketEmitHandlers['get-jsform'] = (discussionId, cb) => {
       window.socket._socketEmitHandlerResults['get-jsform'].push[[discussionId]]
-      setTimeout(() => cb?.())
+      setTimeout(() => {
+        cb?.()
+      })
     }
     window.socket._socketEmitHandlerResults['get-jsform'] = []
     window.socket._socketEmitHandlers['upsert-jsform'] = (discussionId, name, data, cb) => {
@@ -304,7 +306,8 @@ export const UserInputAndOnDoneCall = {
     schema: testSchema,
     uischema: testUIschema,
     details: initialTestSchemaDetails,
-    title: 'We just need a few more details about you to get started.',
+    stepIntro: { subject: 'We just need a few more details about you to get started.' },
+    name: 'moreDetails',
     discussionId: '123456789012345678901234567890abcd',
   },
   decorators: [setupJsFormsApis],

@@ -10,12 +10,12 @@ import { DeliberationContextProvider } from '../components/deliberation-context'
 import QuestionBox from '../components/question-box'
 import StepSlider from '../components/step-slider'
 import SignUp from '../components/sign-up'
-import MoreDetails from '../components/more-details'
+import Jsform from '../components/jsform'
 import Tournament from '../components/tournament'
 
 const WebComponents = {
   SignUp: SubWrap(SignUp),
-  Details: SubWrap(MoreDetails),
+  Jsform: SubWrap(Jsform),
   Tournament: Tournament,
   Conclusion: undefined, // TODO: Import the Conclusion component
   Feedback: undefined, // TODO: Import the Feedback component
