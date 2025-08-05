@@ -6,11 +6,12 @@ import React, { useEffect, useState, useRef, useContext, useCallback } from 'rea
 import { createUseStyles } from 'react-jss'
 import PairCompare from '../pair-compare'
 import { H, Level } from 'react-accessible-headings'
+import StepIntro from '../step-intro'
 
 import DeliberationContext from '../deliberation-context'
 
 export default function CompareWhysStep(props) {
-  const { onDone, category } = props
+  const { onDone, round, category } = props
   const { data, upsert } = useContext(DeliberationContext)
   const args = { ...derivePointWithWhyRankListListByCategory(data, category) }
   const handleOnDone = ({ valid, value, delta }) => {
@@ -21,33 +22,32 @@ export default function CompareWhysStep(props) {
     onDone({ valid, value })
   }
   // fetch previous data
-  if (typeof window !== 'undefined')
-    useState(() => {
-      // on the browser, do this once and only once when this component is first rendered
-      const { discussionId, round, reducedPointList, preRankByParentId } = data
-      const { mostIds, leastIds } = Object.values(preRankByParentId ?? {}).reduce(
-        ({ mostIds, leastIds }, rank) => {
-          if (rank.category === 'most') mostIds.push(rank.parentId)
-          else if (rank.category === 'least') leastIds.push(rank.parentId)
-          return { mostIds, leastIds }
-        },
-        { mostIds: [], leastIds: [] }
-      )
-      window.socket.emit('get-why-ranks-and-points', discussionId, round, mostIds, leastIds, result => {
-        if (!result) return // there was an error
-        const { ranks, whys } = result
-        //if (!ranks.length && !whys.length) return // nothing to do
-        const whyRankByParentId = ranks.reduce((whyRankByParentId, rank) => ((whyRankByParentId[rank.parentId] = rank), whyRankByParentId), {})
-        const randomWhyById = whys.reduce((randomWhyById, point) => ((randomWhyById[point._id] = point), randomWhyById), {})
-        upsert({ whyRankByParentId, randomWhyById })
-      })
+  useEffect(() => {
+    // on the browser, do this once and only once when this component is first rendered
+    const { discussionId, preRankByParentId } = data
+    const { mostIds, leastIds } = Object.values(preRankByParentId ?? {}).reduce(
+      ({ mostIds, leastIds }, rank) => {
+        if (rank.category === 'most') mostIds.push(rank.parentId)
+        else if (rank.category === 'least') leastIds.push(rank.parentId)
+        return { mostIds, leastIds }
+      },
+      { mostIds: [], leastIds: [] }
+    )
+    window.socket.emit('get-why-ranks-and-points', discussionId, round, mostIds, leastIds, result => {
+      if (!result) return // there was an error
+      const { ranks, whys } = result
+      //if (!ranks.length && !whys.length) return // nothing to do
+      const whyRankByParentId = ranks.reduce((whyRankByParentId, rank) => ((whyRankByParentId[rank.parentId] = rank), whyRankByParentId), {})
+      const randomWhyById = whys.reduce((randomWhyById, point) => ((randomWhyById[point._id] = point), randomWhyById), {})
+      upsert({ whyRankByParentId, randomWhyById })
     })
-  return <CompareWhys {...props} {...args} round={data.round} discussionId={data.discussionId} onDone={handleOnDone} />
+  }, [round, data.preRankByParentId])
+  return <CompareWhys {...props} {...args} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
 }
 
 // pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]
 export function CompareWhys(props) {
-  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round } = props
+  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round, subject, description } = props
   const classes = useStyles()
   // completedByPointId does not effect rendering, so no need to set state, just mutate.
   const [completedByPointId] = useState(
@@ -84,6 +84,7 @@ export function CompareWhys(props) {
   }
   return (
     <div className={classes.container}>
+      <StepIntro subject={subject} description={description} />
       {!pointWithWhyRankListList ? (
         <div className={classes.headlineTitle}>Nothing to do here, hit Next to continue</div>
       ) : (
@@ -107,7 +108,6 @@ const useStyles = createUseStyles(theme => ({
   },
   headlinePoint: {
     borderTop: '0.0625rem solid #000000',
-    marginBottom: '4rem',
     paddingTop: '2rem',
     '&:first-child': {
       borderTop: 'none',
@@ -133,7 +133,8 @@ const useStyles = createUseStyles(theme => ({
 export function derivePointWithWhyRankListListByCategory(data, category) {
   // pointWithWhyRankListList shouldn't default to [], it should be undefined until data is fetched from the server. But then, [] is ok
   const local = useRef({ pointWithWhyRankListList: undefined, pointWithWhyRankByWhyIdByPointId: {} }).current
-  const { reducedPointList, preRankByParentId = {}, randomWhyById, whyRankByParentId, myWhyByParentId } = data
+  const { reducedPointList, preRankByParentId = {}, randomWhyById, whyRankByParentId, myWhyByCategoryByParentId = {} } = data
+  const myWhyByParentId = myWhyByCategoryByParentId[category] || {}
   const { pointWithWhyRankListList, pointWithWhyRankByWhyIdByPointId } = local
   let updatedPoints = {}
   if (local.reducedPointList !== reducedPointList) {

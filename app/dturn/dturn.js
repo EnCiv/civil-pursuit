@@ -128,6 +128,8 @@ async function insertStatementId(discussionId, userId, statementId) {
   const lastRound = Discussions[discussionId].lastRound ?? Object.keys(Discussions[discussionId].ShownStatements).length - 1
 
   if (lastRound != Discussions[discussionId].lastRound || participants != Discussions[discussionId].participants) {
+    Discussions[discussionId].participants = participants
+    Discussions[discussionId].lastRound = lastRound
     Discussions[discussionId].updates({ participants: participants, lastRound: lastRound })
   }
 
@@ -566,8 +568,9 @@ async function reconstructDiscussionFromUInfo(discussionId) {
       if (!uinfo?.[userId]?.[discussionId]) {
         continue
       }
-
-      if (round === 0) rounds_length = Math.max(rounds_length, Object.keys(uinfo[userId][discussionId]).length)
+      // uinfo[userId[discussionId] could have one round, per doc, or multipe rounds in the same doc
+      const maxRound = Object.keys(uinfo[userId][discussionId]).reduce((max, r) => Math.max(max, parseInt(r)), 0)
+      rounds_length = Math.max(rounds_length, maxRound + 1) // rounds start at 0, so we need to add 1 to get length
       const uitem = uinfo[userId][discussionId][round]
       if (!uitem) continue
       const shownStatementIds = Object.keys(uitem.shownStatementIds)

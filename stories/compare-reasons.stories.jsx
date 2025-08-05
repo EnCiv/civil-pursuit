@@ -103,16 +103,16 @@ const preRankByParentId = {
   41: { _id: '54', stage: 'pre', category: 'least', parentId: '41' },
 }
 
-export const threePointLists = { args: { pointWithWhyRankListList, side: 'most' } }
+export const threePointLists = { args: { pointWithWhyRankListList, side: 'most', round: 1 } }
 
-export const emptyPointList = { args: { pointWithWhyRankListList: [] } }
+export const emptyPointList = { args: { pointWithWhyRankListList: [], round: 1 } }
 
 export const emptyArgs = { args: {} }
 
-export const withFirstItemRanked = { args: { pointWithWhyRankListList: pointWithWhyRankListListWithRanks, side: 'most' } }
+export const withFirstItemRanked = { args: { pointWithWhyRankListList: pointWithWhyRankListListWithRanks, side: 'most', round: 1 } }
 
 export const twoPointListsPlayThrough = {
-  args: { pointWithWhyRankListList: [pointWithWhyRankListList[0], pointWithWhyRankListList[1]], side: 'least' },
+  args: { pointWithWhyRankListList: [pointWithWhyRankListList[0], pointWithWhyRankListList[1]], side: 'least', round: 1 },
   play: async ({ canvasElement, args }) => {
     const { onDone } = args
     const canvas = within(canvasElement)
@@ -197,19 +197,19 @@ const StepTemplate = args => {
   return <CompareWhysStep {...otherArgs} />
 }
 export const BeginStepMost = {
-  args: { ...getStepArgsFrom(pointWithWhyRankListList), category: 'most' },
+  args: { ...getStepArgsFrom(pointWithWhyRankListList), category: 'most', round: 1 },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: props => <StepTemplate {...props} />,
 }
 
 export const BeginStepLeast = {
-  args: { ...getStepArgsFrom(pointWithWhyRankListList), category: 'least' },
+  args: { ...getStepArgsFrom(pointWithWhyRankListList), category: 'least', round: 1 },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: props => <StepTemplate {...props} />,
 }
 
 export const FirstMostFetchFromApi = {
-  args: { ...getStepArgsFrom(pointWithWhyRankListListWithRanks), category: 'most' },
+  args: { ...getStepArgsFrom(pointWithWhyRankListListWithRanks), category: 'most', round: 1 },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: props => <StepTemplate {...props} />,
   play: async ({ canvasElement, args }) => {
@@ -222,7 +222,7 @@ export const FirstMostFetchFromApi = {
 }
 
 export const FirstMostFetchFromApiTheUserCompletes = {
-  args: { ...getStepArgsFrom(pointWithWhyRankListListWithRanks), category: 'most' },
+  args: { ...getStepArgsFrom(pointWithWhyRankListListWithRanks), category: 'most', round: 1 },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: props => <StepTemplate {...props} />,
   play: async ({ canvasElement, args }) => {

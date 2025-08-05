@@ -8,32 +8,49 @@ import { H, Level } from 'react-accessible-headings'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { isEqual } from 'lodash'
+import StepIntro from '../step-intro'
 
 export default function WhyStep(props) {
   const { data, upsert } = useContext(DeliberationContext)
   const { category, onDone, ...otherProps } = props
 
   useEffect(() => {
-    if (!data?.myWhyByParentId && data?.reducedPointList?.length > 0) {
-      const ids = data.reducedPointList.map(point => point._id)
+    if (!data?.myWhyByCategoryByParentId && data?.reducedPointList?.length > 0) {
+      const ids = data.reducedPointList.map(pG => pG.point._id)
       window.socket.emit('get-user-whys', ids, results => {
-        const myWhyByParentId = results.reduce((acc, point) => {
-          acc[point.parentId] = point
-          return acc
-        }, {})
-        upsert({ myWhyByParentId })
+        // Group whys by category, then by parentId
+        const myWhyByCategoryByParentId = {}
+        for (const point of results) {
+          if (!myWhyByCategoryByParentId[point.category]) myWhyByCategoryByParentId[point.category] = {}
+          myWhyByCategoryByParentId[point.category][point.parentId] = point
+        }
+        upsert({ myWhyByCategoryByParentId })
       })
     }
   }, [])
 
   function handleOnDone({ valid, value, delta }) {
     if (delta) {
-      const newData = upsert({ myWhyByParentId: { [delta.parentId]: delta } })
+      // Upsert only the changed value for the correct category
+      const category = delta.category || props.category
+      const newData = upsert({
+        myWhyByCategoryByParentId: {
+          [category]: {
+            [delta.parentId]: delta,
+          },
+        },
+      })
       if (newData === data) return // if no change, don't send up
       window.socket.emit('upsert-why', delta, updatedDoc => {
         if (updatedDoc) {
           if (!isEqual(updatedDoc, delta)) {
-            upsert({ myWhyByParentId: { [delta.parentId]: updatedDoc } })
+            upsert({
+              myWhyByCategoryByParentId: {
+                [category]: {
+                  [delta.parentId]: updatedDoc,
+                },
+              },
+            })
           }
         } else {
           console.error('Failed to upsert why')
@@ -57,6 +74,7 @@ export function Why(props) {
     pointWhyList,
     category = '', // "most" or "least"
     onDone = () => {},
+    stepIntro,
   } = props
 
   const classes = useStylesFromThemeFunction()
@@ -116,6 +134,7 @@ export function Why(props) {
 
   return (
     <div className={cx(classes.wrapper, className)}>
+      <StepIntro {...stepIntro} />
       <div className={classes.introContainer}>
         <H className={classes.introTitle}>{`Why it's ${category && category[0].toUpperCase() + category.slice(1)} Important`}</H>
         <div className={classes.introText}>{intro}</div>
@@ -142,7 +161,8 @@ export function derivePointWhyListByCategory(data, category) {
     pointWhyList: undefined,
   }).current
 
-  const { reducedPointList = [], myWhyByParentId = {}, preRankByParentId = {} } = data || {}
+  const { reducedPointList = [], myWhyByCategoryByParentId = {}, preRankByParentId = {} } = data || {}
+  const myWhyByParentId = myWhyByCategoryByParentId[category] || {}
 
   let updated = false
 

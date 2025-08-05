@@ -8,48 +8,59 @@ import ReviewPoint from '../review-point'
 import DeliberationContext from '../deliberation-context'
 import { isEqual } from 'lodash'
 import ObjectId from 'bson-objectid'
+import StepIntro from '../step-intro'
 
 export default function RerankStep(props) {
-  const { onDone } = props
+  const { onDone, round } = props
   const { data, upsert } = useContext(DeliberationContext)
   const args = { ...derivePointMostsLeastsRankList(data) }
+  let onNext
   const handleOnDone = ({ valid, value, delta }) => {
+    console.info('RerankStep.onDone', { valid, value, delta })
     if (delta) {
-      upsert({ postRankByParentId: { [delta.parentId]: delta }, completedByRound: { [data.round]: valid } })
+      upsert({ postRankByParentId: { [delta.parentId]: delta } })
       window.socket.emit('upsert-rank', delta)
     }
     if (valid) {
+      const shownStatementIds = {} // only change objects in shownStatementIds if they have changed
       const rankByIds = data.reducedPointList.map(point_group => {
         const pointId = point_group.point._id
-        const rank = data.postRankByParentId[pointId]?.category === 'most' ? 1 : 0
+        const rank = delta?.parentId === pointId ? (delta.category === 'most' ? 1 : 0) : data.postRankByParentId[pointId]?.category === 'most' ? 1 : 0
+        if (data.uInfo[round]?.shownStatementIds?.[pointId]?.rank !== rank) {
+          shownStatementIds[pointId] = structuredClone(data.uInfo[round]?.shownStatementIds?.[pointId] || {})
+          shownStatementIds[pointId].rank = rank
+        }
         return { [pointId]: rank }
       })
-      window.socket.emit('complete-round', data.discussionId, data.round, rankByIds, () => {})
+      onNext = () => {
+        upsert({ uInfo: { [round]: { shownStatementIds } } })
+        window.socket.emit('complete-round', data.discussionId, round, rankByIds, () => {})
+      }
     }
-    onDone({ valid, value })
+    onDone({ valid, value, onNext })
   }
 
   // fetch previous data
-  if (typeof window !== 'undefined')
-    useState(() => {
-      // on the browser, do this once and only once when this component is first rendered
-      const { discussionId, round, reducedPointList } = data
-      window.socket.emit(
-        'get-user-post-ranks-and-top-ranked-whys',
-        discussionId,
-        round,
-        reducedPointList.map(point_group => point_group.point._id),
-        result => {
-          if (!result) return // there was an error
-          const { ranks, whys } = result
-          //if (!ranks.length && !whys.length) return // nothing to do
-          const postRankByParentId = ranks.reduce((postRankByParentId, rank) => ((postRankByParentId[rank.parentId] = rank), postRankByParentId), {})
-          const topWhyById = whys.reduce((topWhyById, point) => ((topWhyById[point._id] = point), topWhyById), {})
-          upsert({ postRankByParentId, topWhyById })
-        }
-      )
-    })
-  return <Rerank {...props} {...args} round={data.round} discussionId={data.discussionId} onDone={handleOnDone} />
+  useEffect(() => {
+    // on the browser, do this once and only once when this component is first rendered
+    const { discussionId, reducedPointList } = data
+    if (!reducedPointList || !reducedPointList.length) return // nothing to do
+    window.socket.emit(
+      'get-user-post-ranks-and-top-ranked-whys',
+      discussionId,
+      round,
+      reducedPointList.map(point_group => point_group.point._id),
+      result => {
+        if (!result) return // there was an error
+        const { ranks, whys } = result
+        //if (!ranks.length && !whys.length) return // nothing to do
+        const postRankByParentId = ranks.reduce((postRankByParentId, rank) => ((postRankByParentId[rank.parentId] = rank), postRankByParentId), {})
+        const topWhyById = whys.reduce((topWhyById, point) => ((topWhyById[point._id] = point), topWhyById), {})
+        upsert({ postRankByParentId, topWhyById })
+      }
+    )
+  }, [round, data.reducedPointList])
+  return <Rerank {...props} {...args} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
 }
 
 // table to map from data model properties, to the Rank Strings shown in the UI
@@ -68,7 +79,7 @@ const rankStringToCategory = Object.entries(toRankString).reduce((rS2C, [key, va
 }, {})
 
 export function Rerank(props) {
-  const { reviewPoints, onDone = () => {}, className, round, discussionId } = props
+  const { reviewPoints, onDone = () => {}, className, round, discussionId, stepIntro } = props
   // this componet manages the rank doc so we keep a local copy
   // if it's changed from above, we use the setter to cause a rerender
   // if it's chagned from below (by the user) we mutate the state so we don't cause a rerender
@@ -151,6 +162,7 @@ export function Rerank(props) {
 
   return (
     <div className={classes.reviewPointsContainer}>
+      <StepIntro {...stepIntro} />
       {reviewPoints.map((reviewPoint, idx) => (
         <div key={reviewPoint.point._id} className={classes.reviewPoint}>
           <ReviewPoint
@@ -173,6 +185,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '1rem',
     paddingLeft: '1rem', // room for the shadow around the points
     paddingRight: '1rem',
+    marginBottom: '1rem', // for box shadow of children
   },
 }))
 
@@ -201,7 +214,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 // to make is possible to test with jest, this is exported
 export function derivePointMostsLeastsRankList(data) {
   const local = useRef({ reviewPointsById: {} }).current
-  const { reducedPointList, postRankByParentId, topWhyById, myWhyByParentId } = data
+  const { reducedPointList, postRankByParentId, topWhyById, myWhyByCategoryByParentId = {} } = data
   let updated = false
 
   const { reviewPointsById } = local
@@ -240,9 +253,16 @@ export function derivePointMostsLeastsRankList(data) {
     }
     Object.entries(categoiesToUpdateByParentId).forEach(([parentId, categories]) => categories.forEach(category => (reviewPointsById[parentId][category + 's'] = [...reviewPointsById[parentId][category + 's']])))
   }
-  if (local.myWhyByParentId !== myWhyByParentId) {
-    addWhysToReviewPointsById(Object.values(myWhyByParentId))
-    local.myWhyByParentId = myWhyByParentId
+  // Add whys for both 'most' and 'least' categories
+  const myWhyMost = myWhyByCategoryByParentId['most'] || {}
+  const myWhyLeast = myWhyByCategoryByParentId['least'] || {}
+  if (local.myWhyByParentIdMost !== myWhyMost) {
+    addWhysToReviewPointsById(Object.values(myWhyMost))
+    local.myWhyByParentIdMost = myWhyMost
+  }
+  if (local.myWhyByParentIdLeast !== myWhyLeast) {
+    addWhysToReviewPointsById(Object.values(myWhyLeast))
+    local.myWhyByParentIdLeast = myWhyLeast
   }
   if (local.topWhyById !== topWhyById) {
     local.topWhyById = topWhyById

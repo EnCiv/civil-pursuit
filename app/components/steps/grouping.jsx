@@ -12,14 +12,15 @@ import cx from 'classnames'
 import PointGroup from '../point-group'
 import { PrimaryButton } from '../button'
 import StatusBadge from '../status-badge'
+import StepIntro from '../step-intro'
 
 const MIN_GROUPS = 0 // the minimum number of groups the user has to make
 
 export default function GroupingStep(props) {
-  const { onDone, ...otherProps } = props
+  const { onDone, round, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
 
-  const { discussionId, round } = data
+  const { discussionId } = data
   const args = deriveReducedPointList(data, useRef({}).current)
 
   const handleOnDone = ({ valid, delta }) => {
@@ -31,36 +32,36 @@ export default function GroupingStep(props) {
     onDone({ valid })
   }
   // fetch previous data
-  if (typeof window !== 'undefined')
-    useState(() => {
-      // on the browser, do this once and only once when this component is first rendered
-      const { discussionId, round } = data
+  useEffect(() => {
+    // on the browser, do this once and only once when this component is first rendered
+    const { discussionId, uInfo } = data
 
-      window.socket.emit('get-points-for-round', discussionId, round, result => {
-        if (!result) return onDone({ valid: true, value: 'Intermission' }) // there was an error
-
-        const points = result
-        const pointById = points.reduce((pointById, point) => ((pointById[point._id] = point), pointById), {})
-        upsert({ pointById })
-
-        if (points.length <= 1) {
-          onDone({ valid: true, value: 'Intermission' })
+    window.socket.emit('get-points-for-round', discussionId, round, points => {
+      if (!points) return onDone({ valid: true, value: 'Intermission' }) // there was an error
+      if (points.length <= 1) {
+        onDone({ valid: true, value: 'Intermission' })
+      }
+      const pointById = {}
+      const uInfoRound = uInfo?.[round] || {}
+      if (!uInfoRound.shownStatementIds) uInfoRound.shownStatementIds = {}
+      for (const point of points) {
+        pointById[point._id] = point
+        if (!uInfoRound.shownStatementIds[point._id]) {
+          uInfoRound.shownStatementIds[point._id] = { rank: 0 } // initialize the shownStatementIds for this point
         }
-      })
+      }
+      upsert({ pointById, uInfo: { ...uInfo, [round]: uInfoRound } })
     })
-  return <GroupPoints {...args} round={data.round} discussionId={data.discussionId} onDone={handleOnDone} {...otherProps} />
+  }, [round])
+  return <GroupPoints {...args} round={round} discussionId={data.discussionId} onDone={handleOnDone} {...otherProps} />
 }
-
 // pG stand for point group meaning {point, group}
 
 export function GroupPoints(props) {
-  const { reducedPointList, onDone = () => {}, className, discussionId, round } = props
+  const { reducedPointList, onDone = () => {}, className, discussionId, round, stepIntro } = props
 
   const classes = useStylesFromThemeFunction(props)
   const delayedOnDone = value => setTimeout(() => onDone(value), 0)
-
-  // Don't render if list is missing
-  if (!reducedPointList) return null
 
   // using an object for gs (grouping-state) makes it easier understand which variable in the code refers to the new value being generated, and which refers to the old
   // also reduces the number of different set-somethings that have to be called each time.
@@ -95,7 +96,8 @@ export function GroupPoints(props) {
       // if the _id wasn't in there, push it
       if (selectedIds.length === oldGs.selectedIds.length) selectedIds.push(_id)
       if (selectedIds.length) delayedOnDone({ valid: false })
-
+      const valid = !selectedIds.length && !oldGs.selectLead && !oldGs.yourGroupsSelected.length
+      delayedOnDone({ valid, value: {} })
       return { ...oldGs, selectedIds }
     })
   }
@@ -207,8 +209,12 @@ export function GroupPoints(props) {
     })
   }
 
+  // Don't render if list is missing, but do call all the hooks because they can't change after the first render
+  if (!reducedPointList) return null
+
   return (
     <div className={cx(classes.groupingStep, className)}>
+      <StepIntro {...stepIntro} />
       <div className={classes.statusContainer}>
         <div className={classes.statusBadges}>
           <StatusBadge name="Groups Created" status={gs.yourGroups.length == 0 ? 'inactive' : 'complete'} number={gs.yourGroups.length} />
@@ -267,7 +273,9 @@ export function GroupPoints(props) {
 }
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-  groupingStep: {},
+  groupingStep: {
+    marginBottom: '1rem', // for box shadow of children
+  },
   groupsContainer: {
     paddingLeft: '2rem',
     paddingRight: '2rem',

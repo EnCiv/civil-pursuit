@@ -19,7 +19,7 @@ export const StepSlider = props => {
   const panelRefs = useRef([])
   const stepChildRapper = useRef()
   const [outerRect, setOuterRect] = useState({ height: 0, width: 0 })
-  const [_this] = useState({ timeout: 0, otherProps }) // _this object will exist through life of component so there is no setter it's like 'this'
+  const [_this] = useState({ timeout: 0, otherProps, onNexts: [] }) // _this object will exist through life of component so there is no setter it's like 'this'
   // resizeHandler needs to access outerRef and setOuterRec but never change so that the event can be removed
   // FTI resizeHandler gets called on initial render
   const resizeHandler = useCallback(() => {
@@ -152,9 +152,11 @@ export const StepSlider = props => {
       ...otherProps,
       ...children[currentStep].props,
       key: currentStep,
-      onDone: ({ valid, value }) => {
+      onDone: ({ valid, value, onNext }) => {
         if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
         else dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep } })
+        if (valid && onNext) _this.onNexts[currentStep] = onNext // save onNext for later use
+        else delete _this.onNexts[currentStep] // delete onNext if not valid
       },
     })
   }
@@ -175,7 +177,10 @@ export const StepSlider = props => {
 
   // ResizeObserver to update stepChildWrapper height when the current panel's height changes
   useEffect(() => {
-    if (!panelRefs.current[state.currentStep] || !stepChildRapper.current) return
+    if (!panelRefs.current[state.currentStep] || !stepChildRapper.current) {
+      console.info('No panel or stepChildRapper found', state.currentStep, panelRefs.current[state.currentStep], stepChildRapper.current)
+      return
+    }
     const panel = panelRefs.current[state.currentStep]
     const wrapper = stepChildRapper.current
     const updateHeight = () => {
@@ -187,7 +192,7 @@ export const StepSlider = props => {
     return () => {
       resizeObserver.disconnect()
     }
-  }, [state.currentStep])
+  }, [state.currentStep, panelRefs.current[state.currentStep], stepChildRapper.current])
 
   // listen for transitionComplete
   useEffect(() => {
@@ -252,7 +257,13 @@ export const StepSlider = props => {
           <StepFooter
             className={classes.stepFooter}
             onDone={() => {
-              dispatch({ type: 'increment' })
+              if (_this.onNexts[state.currentStep]) {
+                const onNext = _this.onNexts[state.currentStep]
+                delete _this.onNexts[state.currentStep] // only do it once
+                setTimeout(onNext)
+              }
+              if (state.currentStep + 1 >= steps.length) onDone({ valid: true, value: 'done' })
+              else dispatch({ type: 'increment' })
             }}
             onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
             active={state.stepStatuses[state.currentStep] && state.stepStatuses[state.currentStep]['complete']}

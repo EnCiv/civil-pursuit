@@ -73,6 +73,7 @@ function aEqual(a = [], b = []) {
 export function deriveReducedPointList(data, local) {
   const { pointById, groupIdsLists } = data
   if (!pointById) return data
+  if (!Object.keys(pointById).length) return data
   if (local.pointById === pointById && local.groupIdsList === groupIdsLists) return data // nothing to update
   const reducedPointTable = Object.entries(pointById).reduce((reducedPointTable, [id, point]) => ((reducedPointTable[id] = { point }), reducedPointTable), {})
   let updated = false
@@ -86,7 +87,8 @@ export function deriveReducedPointList(data, local) {
   }
   // if there are any pointWithGroup elements in the new table, that have equal contents with those in the old reducedPointList
   // then copy them over so they are unchanged
-  for (const pointWithGroup of data.reducedPointList) {
+  const oldReducedPointList = data.reducedPointList || []
+  for (const pointWithGroup of oldReducedPointList) {
     const ptid = pointWithGroup.point._id
     if (reducedPointTable[ptid]?.point === pointWithGroup.point && aEqual(reducedPointTable[ptid]?.group, pointWithGroup.group)) reducedPointTable[ptid] = pointWithGroup // if contentss are unchanged - unchange the ref
     else updated = true
@@ -94,7 +96,7 @@ export function deriveReducedPointList(data, local) {
   const newReducedPointList = Object.values(reducedPointTable)
   local.pointById = pointById
   local.groupIdsList = groupIdsLists
-  if (!(newReducedPointList.length === data.reducedPointList.length && !updated)) {
+  if (!(newReducedPointList.length === oldReducedPointList.length && !updated)) {
     data.reducedPointList = newReducedPointList
     return { ...data }
   }

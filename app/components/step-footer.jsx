@@ -43,6 +43,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   wrapper: {
     background: theme.colorPrimary,
     padding: '1rem',
+    marginTop: '4rem',
   },
   footerContainer: {},
   footerDiv: {

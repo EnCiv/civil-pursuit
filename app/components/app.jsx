@@ -22,10 +22,7 @@ class App extends React.Component {
                 <title>{iota?.subject || 'EnCiv'}</title>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
-                <link
-                  href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-                  rel="stylesheet"
-                />
+                <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
                 <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
                 {/* Adding this script, though not using it, as experiment to convince google ads that the tag is here */}
                 <script>
@@ -49,7 +46,7 @@ class App extends React.Component {
                 </script>
               </Helmet>
               <GlobalStyles />
-              <TopNavWrap />
+              <TopNavWrap {...this.props} />
               <WebComponents key="web-component" webComponent={this.props.iota.webComponent} {...newProps} />
               <Footer mode="dark" key="footer" />
             </div>
@@ -69,47 +66,44 @@ class App extends React.Component {
 }
 
 function TopNavWrap(props) {
-  return (
-    <TopNavBar
-      mode={'dark'}
-      menu={[
-        {
-          name: 'Home',
-          func: () => {
-            window.location.href = '/'
-          },
+  const menu = [
+    {
+      name: 'Home',
+      func: () => {
+        window.location.href = '/'
+      },
+    },
+    [
+      {
+        name: 'About',
+        func: () => {}, // this will get called in mobile mode when user clicks to expand the about selection - don't do anything
+      },
+      {
+        name: 'Our Mission',
+        func: () => {
+          window.location.href = '/about'
         },
-        [
-          {
-            name: 'About',
-            func: () => {}, // this will get called in mobile mode when user clicks to expand the about selection - don't do anything
-          },
-          {
-            name: 'Our Mission',
-            func: () => {
-              window.location.href = '/about'
-            },
-          },
-          {
-            name: 'IRS Forms',
-            func: () => {
-              window.location.href = '/irs-forms'
-            },
-          },
-        ],
-        {
-          name: 'Our Tools',
-          func: () => (window.location.href = '/our-tools'),
+      },
+      {
+        name: 'IRS Forms',
+        func: () => {
+          window.location.href = '/irs-forms'
         },
-        {
-          name: 'Articles',
-          func: () => {
-            window.location.href = '/articles'
-          },
-        },
-      ]}
-    />
-  )
+      },
+    ],
+    {
+      name: 'Our Tools',
+      func: () => (window.location.href = '/our-tools'),
+    },
+    {
+      name: 'Articles',
+      func: () => {
+        window.location.href = '/articles'
+      },
+    },
+  ]
+  if (props?.user?.id) menu.push({ name: 'Logout', func: () => (window.location.href = '/sign/out') })
+  return <TopNavBar mode={'dark'} menu={menu} />
 }
 
 export default hot(module)(App)

@@ -5,6 +5,7 @@ import { getStatementIds } from '../dturn/dturn'
 import { ObjectId } from 'mongodb'
 
 export default async function getPointsForRound(discussionId, round, cb) {
+  if (cb && typeof cb !== 'function') console.error('getPointsForRound cb must be a function, received:', cb)
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
     if (cb) cb(undefined)
