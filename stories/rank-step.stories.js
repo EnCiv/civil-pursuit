@@ -6,7 +6,7 @@ import RankStep, { RankPoints } from '../app/components/steps/rank'
 
 import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator } from './common'
 import { within, userEvent, expect, waitFor } from '@storybook/test'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, reduce } from 'lodash'
 
 export default {
   component: RankPoints,
@@ -81,7 +81,8 @@ export const Empty = {
 
 export const Desktop = {
   args: {
-    pointRankGroupList: mergeRanksIntoReviewPoints(rankPoints, []),
+    reducedPointList: rankPoints,
+    preRankByParentId: {},
     discussionId,
     round,
   },
@@ -89,7 +90,8 @@ export const Desktop = {
 
 export const Mobile = {
   args: {
-    pointRankGroupList: mergeRanksIntoReviewPoints(rankPoints, []),
+    reducedPointList: rankPoints,
+    preRankByParentId: {},
     discussionId,
     round,
   },
@@ -102,7 +104,8 @@ export const Mobile = {
 
 export const AllWithInitialRank = {
   args: {
-    pointRankGroupList: mergeRanksIntoReviewPoints(rankPoints, [rank1preMost, rank2preNeutral, rank3preLeast]),
+    reducedPointList: rankPoints,
+    preRankByParentId: { [rank1preMost.parentId]: rank1preMost, [rank2preNeutral.parentId]: rank2preNeutral, [rank3preLeast.parentId]: rank3preLeast },
     discussionId,
     round,
   },
@@ -110,7 +113,8 @@ export const AllWithInitialRank = {
 
 export const PartialWithInitialRank = {
   args: {
-    pointRankGroupList: mergeRanksIntoReviewPoints(rankPoints, [rank1preMost, rank2preNeutral]),
+    reducedPointList: rankPoints,
+    preRankByParentId: { [rank1preMost.parentId]: rank1preMost, [rank2preNeutral.parentId]: rank2preNeutral },
     discussionId,
     round,
   },
@@ -118,7 +122,8 @@ export const PartialWithInitialRank = {
 
 export const onDoneIsCalledIfInitialData = {
   args: {
-    pointRankGroupList: mergeRanksIntoReviewPoints(rankPoints, [rank1preMost]),
+    reducedPointList: rankPoints,
+    preRankByParentId: { [rank1preMost.parentId]: rank1preMost },
     discussionId,
     round,
   },
@@ -137,7 +142,8 @@ export const onDoneIsCalledIfInitialData = {
 
 export const onDoneIsCalledAfterUserChangesRank = {
   args: {
-    pointRankGroupList: mergeRanksIntoReviewPoints(rankPoints, [rank1preMost]),
+    reducedPointList: rankPoints,
+    preRankByParentId: { [rank1preMost.parentId]: rank1preMost },
     discussionId,
     round,
   },
@@ -238,7 +244,7 @@ export const rankStepWithTopDownUpdate = {
             2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 1 },
           },
         })
-      }, 1000)
+      }, 100)
     })
     return rankStepTemplate(args)
   },
@@ -299,7 +305,7 @@ export const rankStepWithClearRanks = {
             2: { _id: '211', stage: 'pre', category: 'least', parentId: '2', discussionId: '1001', round: 1 },
           },
         })
-      }, 1000)
+      }, 100)
     })
     return rankStepTemplate(args)
   },

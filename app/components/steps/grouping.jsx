@@ -26,7 +26,7 @@ export default function GroupingStep(props) {
   const handleOnDone = ({ valid, delta }) => {
     if (delta) {
       const groupings = delta.map(pG => [pG.point._id, ...(pG.group || []).map(gp => gp._id)]).filter(g => g.length > 1)
-      upsert({ groupIdsLists: groupings })
+      upsert({ groupIdsLists: groupings, uInfo: { [round]: { groupings } } })
       window.socket.emit('post-point-groups', discussionId, round, groupings)
     }
     onDone({ valid })
@@ -197,7 +197,7 @@ export function GroupPoints(props) {
           // lead point is changed - find the old one
           index = yourGroups.findIndex(pGD => pGD.group.some(p => p._id === value.pointGroup.point._id))
           if (index >= 0) {
-            yourGroups.splice(index, 1, pointGroup)
+            yourGroups.splice(index, 1, value.pointGroup)
           } else {
             console.info("got new pointDoc don't know why")
             yourGroups.push(value.pointGroup)

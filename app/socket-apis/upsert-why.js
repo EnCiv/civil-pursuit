@@ -16,6 +16,8 @@ export default async function upsertWhy(pointObj, cb) {
   const userId = this.synuser.id
   pointObj.userId = userId // Add userId to the document
 
+  const correctedPointObj = { ...pointObj, _id: new Points.ObjectId(pointObj._id) }
+
   // Joi validation for the category
   const { error } = schema.validate({ category: pointObj.category })
   if (error) {
@@ -23,15 +25,15 @@ export default async function upsertWhy(pointObj, cb) {
     return cb?.(undefined) // Return validation error
   }
 
-  const validation = Points.validate(pointObj)
+  const validation = Points.validate(correctedPointObj)
   if (validation.error) {
     console.error(validation.error)
     return cb?.(undefined) // Return validation error
   }
 
   try {
-    await Points.updateOne({ _id: pointObj._id }, { $set: pointObj }, { upsert: true })
-    const updatedDoc = await Points.findOne({ _id: pointObj._id })
+    await Points.updateOne({ _id: correctedPointObj._id }, { $set: correctedPointObj }, { upsert: true })
+    const updatedDoc = await Points.findOne({ _id: correctedPointObj._id })
     cb?.(updatedDoc)
   } catch (error) {
     console.error(error)

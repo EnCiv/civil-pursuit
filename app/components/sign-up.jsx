@@ -376,6 +376,7 @@ const useStyles = createUseStyles(theme => ({
     margin: '0 auto',
     textAlign: 'left',
     alignItems: 'left',
+    paddingLeft: '1rem', // so when the checkbox is in focus, the border box is not clipped
   },
   checkTermBox: {
     margin: 0,

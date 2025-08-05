@@ -70,7 +70,6 @@ export default function WhyStep(props) {
 export function Why(props) {
   const {
     className = '',
-    intro = '',
     pointWhyList,
     category = '', // "most" or "least"
     onDone = () => {},
@@ -135,15 +134,11 @@ export function Why(props) {
   return (
     <div className={cx(classes.wrapper, className)}>
       <StepIntro {...stepIntro} />
-      <div className={classes.introContainer}>
-        <H className={classes.introTitle}>{`Why it's ${category && category[0].toUpperCase() + category.slice(1)} Important`}</H>
-        <div className={classes.introText}>{intro}</div>
-      </div>
       <Level>
         <div className={classes.pointsContainer}>
-          {pointWhyList.map(({ point, why }) => (
+          {pointWhyList.map(({ point, why }, i) => (
             <div key={point._id}>
-              <hr className={classes.pointsHr}></hr>
+              {i > 0 && <hr className={classes.pointsHr}></hr>}
               <WhyInput point={point} value={why} onDone={handleOnDone} />
             </div>
           ))}

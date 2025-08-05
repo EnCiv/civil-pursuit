@@ -2,10 +2,9 @@
 // https://github.com/EnCiv/civil-pursuit/issues/191
 // https://github.com/EnCiv/civil-pursuit/issues/199
 
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import { isEqual } from 'lodash'
 import ObjectId from 'bson-objectid'
 
 import DeliberationContext from '../deliberation-context.js'
@@ -37,8 +36,6 @@ export default function RankStep(props) {
   const { onDone, round, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
 
-  const args = derivePointRankGroupList(data)
-
   function handleOnDone({ valid, value, delta }) {
     if (delta) {
       upsert({ preRankByParentId: { [delta.parentId]: delta } })
@@ -59,7 +56,7 @@ export default function RankStep(props) {
     })
   }, [round])
 
-  return <RankPoints {...args} onDone={handleOnDone} discussionId={data.discussionId} round={round} {...otherProps} />
+  return <RankPoints reducedPointList={data.reducedPointList} preRankByParentId={data.preRankByParentId} onDone={handleOnDone} discussionId={data.discussionId} round={round} {...otherProps} />
 }
 
 const toRankString = {
@@ -80,43 +77,41 @@ export function RankPoints(props) {
   const {
     className = '', // may or may not be passed. Should be applied to the outer most tag, after local classNames
     onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
-    pointRankGroupList,
+    reducedPointList,
+    preRankByParentId,
     round,
     discussionId,
     stepIntro,
   } = props
 
-  if (!pointRankGroupList) return null
-
   const [rankByParentId, setRankByParentId] = useState(
-    (pointRankGroupList || []).reduce((rankByParentId, rankPoint) => {
-      if (rankPoint.rank && rankByParentId[rankPoint.point._id]) rankByParentId[rankPoint.point._id] = rankPoint.rank
+    (reducedPointList || []).reduce((rankByParentId, pointGroup) => {
+      rankByParentId[pointGroup.point._id] = preRankByParentId?.[pointGroup.point._id]
       return rankByParentId
     }, {})
   )
 
   useEffect(() => {
     const newRankByParentId = {}
-    pointRankGroupList?.forEach(rankPoint => {
-      if (rankPoint.rank) {
-        newRankByParentId[rankPoint.point._id] = rankPoint.rank
+    let updated = false
+    reducedPointList?.forEach(({ point, group }) => {
+      if (preRankByParentId?.[point._id]) {
+        if (preRankByParentId?.[point._id] !== rankByParentId[point._id]) {
+          newRankByParentId[point._id] = preRankByParentId?.[point._id]
+          updated = true
+        } else {
+          newRankByParentId[point._id] = rankByParentId[point._id] // keep the old rank
+        }
       }
     })
-
-    let updated = false
-    for (const rankDoc of Object.values(newRankByParentId)) {
-      if (isEqual(rankDoc, rankByParentId[rankDoc.parentId])) {
-        newRankByParentId[rankDoc.parentId] = rankByParentId[rankDoc.parentId]
-      } else updated = true
-    }
 
     if (updated) {
       setRankByParentId(newRankByParentId)
     }
-  }, [pointRankGroupList])
+  }, [reducedPointList, preRankByParentId])
 
   useEffect(() => {
-    if (pointRankGroupList) {
+    if (reducedPointList) {
       onDone(validAndPercentDone())
     }
   }, [])
@@ -153,19 +148,19 @@ export function RankPoints(props) {
         const { valid, percentDone } = validAndPercentDone()
         setTimeout(() => onDone({ valid: valid, value: percentDone, delta: rank }))
       } // don't call onDone from within a setter - because onDone's may call other react hooks and react causes errors
-      return rankByParentId // about the setter
+      return rankByParentId // abort the setter
     })
   }
 
   const [rankDiscrepancies, setRankDiscrepancies] = useState({})
 
-  const table = minSelectionsTable[pointRankGroupList.length] ?? { least: 0, most: 0 }
+  const table = minSelectionsTable[reducedPointList?.length] ?? { least: 0, most: 0 }
   const { least: targetLeast, most: targetMost } = table
   const mostCount = () => getRankCount('most')
   const leastCount = () => getRankCount('least')
 
   const getRankCount = rankName => {
-    return Object.values(rankByParentId).filter(rankedPoint => rankedPoint.category?.toLowerCase() === rankName?.toLowerCase()).length
+    return reducedPointList.filter(pointGroup => rankByParentId[pointGroup.point._id]?.category?.toLowerCase() === rankName?.toLowerCase()).length
   }
 
   useEffect(() => {
@@ -173,21 +168,21 @@ export function RankPoints(props) {
   }, [rankByParentId])
 
   const validAndPercentDone = () => {
+    if (!reducedPointList) return { valid: false, percentDone: 0 } // no points to rank
     let doneCount = 0
 
-    for (const rankedPoint of Object.values(rankByParentId)) {
-      if (rankedPoint.category) doneCount++
+    for (const pointGroup of reducedPointList) {
+      if (rankByParentId[pointGroup.point._id]?.category) doneCount++
     }
-
     // Check for difference in expected most/least counts
     const mostDiscrepancy = mostCount() - targetMost
     const leastDiscrepancy = leastCount() - targetLeast
 
-    const valid = (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === pointRankGroupList.length) || (doneCount === pointRankGroupList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
+    const valid = (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === reducedPointList.length) || (doneCount === reducedPointList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
 
     setRankDiscrepancies({ most: mostDiscrepancy, least: leastDiscrepancy })
 
-    return { valid: valid, percentDone: pointRankGroupList.length ? doneCount / pointRankGroupList.length : 0 } // value should be 0 if not points in list not null
+    return { valid: valid, percentDone: reducedPointList.length ? doneCount / reducedPointList.length : 0 } // value should be 0 if not points in list not null
   }
 
   // Set the status box error message
@@ -201,7 +196,8 @@ export function RankPoints(props) {
       errorMsg = `You've rated too many responses as "Least Important." Please edit.`
     }
   }
-
+  // can't return null before all the hooks are called
+  if (!reducedPointList) return null
   return (
     <div className={cx(classes.rankStep, className)}>
       <StepIntro {...stepIntro} />
@@ -227,18 +223,19 @@ export function RankPoints(props) {
         </div>
       </div>
       <div className={cx(classes.pointDiv)}>
-        {pointRankGroupList.map((rankedPoint, i) => {
-          const { point, rank } = rankedPoint
+        {reducedPointList.map((pointGroup, i) => {
+          const { point, group } = pointGroup
+          const rank = rankByParentId[point._id]
 
-          const rankInvalid = (rankDiscrepancies.most > 0 && rankedPoint.rank == 'Most' && targetMost > 0) || (rankDiscrepancies.least > 0 && rankedPoint.rank == 'Least' && targetLeast > 0)
+          const rankInvalid = (rankDiscrepancies.most > 0 && rank == 'Most' && targetMost > 0) || (rankDiscrepancies.least > 0 && rank == 'Least' && targetLeast > 0)
 
           return (
             <Point key={point._id} point={point} vState="default" className={rankInvalid ? classes.invalidBackground : classes.validBackground} isInvalid={rankInvalid} data-testid={`point`}>
               <Ranking
                 className={classes.rank}
-                defaultValue={toRankString[rankByParentId[point._id]?.category]}
+                defaultValue={toRankString[rank?.category]}
                 onDone={({ valid, value }) => {
-                  handleRankPoint(point, { valid: valid, value: value })
+                  handleRankPoint(point, { valid, value })
                 }}
               />
             </Point>
@@ -289,44 +286,3 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     textAlign: 'center',
   },
 }))
-
-export function derivePointRankGroupList(data) {
-  const local = useRef({ rankPointsById: {} }).current
-  const { reducedPointList, preRankByParentId } = data
-
-  let updated = false
-
-  const { rankPointsById } = local
-  if (local.reducedPointList !== reducedPointList) {
-    for (const { point, group } of reducedPointList) {
-      if (!rankPointsById[point._id]) {
-        rankPointsById[point._id] = { point, group }
-        updated = true
-      } else if (rankPointsById[point._id].point != point) {
-        rankPointsById[point._id] = { ...rankPointsById[point._id], point }
-        updated = true
-      }
-    }
-
-    local.reducedPointList = reducedPointList
-  }
-
-  if (local.preRankByParentId !== preRankByParentId) {
-    if (typeof preRankByParentId !== 'object') {
-      console.error('preRankByParentId is not an object', local.preRankByParentId, preRankByParentId)
-    } else {
-      for (const rank of Object.values(preRankByParentId)) {
-        if (rankPointsById[rank.parentId]) {
-          if (rankPointsById[rank.parentId].rank !== rank) {
-            rankPointsById[rank.parentId] = { ...rankPointsById[rank.parentId], rank }
-            updated = true
-          }
-        }
-      }
-    }
-    local.preRankByParentId = preRankByParentId
-  }
-
-  if (updated) local.pointRankGroupList = Object.values(local.rankPointsById)
-  return { pointRankGroupList: local.pointRankGroupList }
-}
