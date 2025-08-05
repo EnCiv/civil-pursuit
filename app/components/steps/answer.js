@@ -22,9 +22,11 @@ export default function AnswerStep(props) {
     window.socket.emit('get-points-of-ids', shownStatementIds, ({ points, myWhys }) => {
       upsert({
         pointById: points.reduce((pById, point) => ((pById[point._id] = point), pById), {}),
-        myWhyByCategoryByParentId: {
-          most: myWhys.filter(why => why.category === 'most').reduce((wById, why) => ((wById[why.parentId] = why), wById), {}),
-        },
+        myWhyByCategoryByParentId: myWhys.reduce((myWhyByCategoryByParentId, why) => {
+          if (!myWhyByCategoryByParentId[why.category]) myWhyByCategoryByParentId[why.category] = {}
+          myWhyByCategoryByParentId[why.category][why.parentId] = why
+          return myWhyByCategoryByParentId
+        }, {}),
       })
     })
   }, [data.uInfo, round])

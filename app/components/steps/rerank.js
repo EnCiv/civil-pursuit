@@ -16,25 +16,24 @@ export default function RerankStep(props) {
   const args = { ...derivePointMostsLeastsRankList(data) }
   let onNext
   const handleOnDone = ({ valid, value, delta }) => {
-    console.info('RerankStep.onDone', { valid, value, delta })
     if (delta) {
       upsert({ postRankByParentId: { [delta.parentId]: delta } })
       window.socket.emit('upsert-rank', delta)
     }
     if (valid) {
       const shownStatementIds = {} // only change objects in shownStatementIds if they have changed
-      const rankByIds = data.reducedPointList.map(point_group => {
+      const idRanks = data.reducedPointList.map(point_group => {
         const pointId = point_group.point._id
-        const rank = delta?.parentId === pointId ? (delta.category === 'most' ? 1 : 0) : data.postRankByParentId[pointId]?.category === 'most' ? 1 : 0
+        const rank = (delta?.parentId === pointId ? delta.rank : data.postRankByParentId[pointId])?.category === 'most' ? 1 : 0
         if (data.uInfo[round]?.shownStatementIds?.[pointId]?.rank !== rank) {
           shownStatementIds[pointId] = structuredClone(data.uInfo[round]?.shownStatementIds?.[pointId] || {})
           shownStatementIds[pointId].rank = rank
-        }
+        } // else only need to change what's different
         return { [pointId]: rank }
       })
       onNext = () => {
         upsert({ uInfo: { [round]: { shownStatementIds } } })
-        window.socket.emit('complete-round', data.discussionId, round, rankByIds, () => {})
+        window.socket.emit('complete-round', data.discussionId, round, idRanks, () => {})
       }
     }
     onDone({ valid, value, onNext })

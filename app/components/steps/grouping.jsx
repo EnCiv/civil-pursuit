@@ -26,7 +26,7 @@ export default function GroupingStep(props) {
   const handleOnDone = ({ valid, delta }) => {
     if (delta) {
       const groupings = delta.map(pG => [pG.point._id, ...(pG.group || []).map(gp => gp._id)]).filter(g => g.length > 1)
-      upsert({ groupIdsLists: groupings })
+      upsert({ groupIdsLists: groupings, uInfo: { [round]: { groupings } } })
       window.socket.emit('post-point-groups', discussionId, round, groupings)
     }
     onDone({ valid })

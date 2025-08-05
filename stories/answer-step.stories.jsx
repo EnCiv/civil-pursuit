@@ -133,13 +133,13 @@ export const asyncUpdate = {
             description: 'This is the first description!',
           }
           setUpdated(true)
-        }, 1000)
+        }, 100)
         // resetting so the test will pass on retest
         setTimeout(() => {
           context.args.myWhy.subject = subject0
           context.args.myWhy.description = description0
           setUpdated(true)
-        }, 2000)
+        }, 200)
       }, [])
       return <Story thisTestIsDone={updated} />
     },
