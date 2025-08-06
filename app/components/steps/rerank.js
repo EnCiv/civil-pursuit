@@ -24,7 +24,7 @@ export default function RerankStep(props) {
       const shownStatementIds = {} // only change objects in shownStatementIds if they have changed
       const idRanks = data.reducedPointList.map(point_group => {
         const pointId = point_group.point._id
-        const rank = (delta?.parentId === pointId ? delta.rank : data.postRankByParentId[pointId])?.category === 'most' ? 1 : 0
+        const rank = (delta?.parentId === pointId ? delta : data.postRankByParentId[pointId])?.category === 'most' ? 1 : 0
         if (data.uInfo[round]?.shownStatementIds?.[pointId]?.rank !== rank) {
           shownStatementIds[pointId] = structuredClone(data.uInfo[round]?.shownStatementIds?.[pointId] || {})
           shownStatementIds[pointId].rank = rank
