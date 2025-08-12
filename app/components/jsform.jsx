@@ -12,8 +12,6 @@ import { rankWith, isControl } from '@jsonforms/core'
 import { withJsonFormsControlProps } from '@jsonforms/react'
 import StepIntro from '../components/step-intro'
 
-import DeliberationContext from './deliberation-context'
-
 const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
   const options = schema.enum || []
   const label = schema.title || uischema.label
@@ -63,7 +61,7 @@ const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), 
 
 const JsForm = props => {
   const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, stepIntro = { subject: '', description: '' }, discussionId } = props
-  const { data, upsert } = useContext(DeliberationContext)
+  const [data, setData] = useState({})
   const classes = useStyles(props)
 
   useEffect(() => {
@@ -84,7 +82,6 @@ const JsForm = props => {
   }
 
   const handleIsValid = data => {
-    console.log(data)
     if (!data) return false
 
     const requiredData = schema.properties || {}
