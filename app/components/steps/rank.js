@@ -72,49 +72,38 @@ const rankStringToCategory = Object.entries(toRankString).reduce((rS2C, [key, va
   return rS2C
 }, {})
 
-export function RankPoints(props) {
-  const classes = useStylesFromThemeFunction()
-  const {
-    className = '', // may or may not be passed. Should be applied to the outer most tag, after local classNames
-    onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
-    reducedPointList,
-    preRankByParentId,
-    round,
-    discussionId,
-    stepIntro,
-  } = props
-
+// also used by Rerank
+export function useRankByParentId(discussionId, round, stage, reducedPointList, stageRankByParentId, validAndPercentDone, onDone) {
   const [rankByParentId, setRankByParentId] = useState(
     (reducedPointList || []).reduce((rankByParentId, pointGroup) => {
-      rankByParentId[pointGroup.point._id] = preRankByParentId?.[pointGroup.point._id]
+      rankByParentId[pointGroup.point._id] = stageRankByParentId?.[pointGroup.point._id]
       return rankByParentId
     }, {})
   )
+
+  const [prev] = useState({ reducedPointList })
 
   useEffect(() => {
     const newRankByParentId = {}
     let updated = false
     reducedPointList?.forEach(({ point, group }) => {
-      if (preRankByParentId?.[point._id]) {
-        if (preRankByParentId?.[point._id] !== rankByParentId[point._id]) {
-          newRankByParentId[point._id] = preRankByParentId?.[point._id]
+      if (stageRankByParentId?.[point._id]) {
+        if (stageRankByParentId?.[point._id] !== rankByParentId[point._id]) {
+          newRankByParentId[point._id] = stageRankByParentId?.[point._id]
           updated = true
         } else {
           newRankByParentId[point._id] = rankByParentId[point._id] // keep the old rank
         }
       }
     })
-
     if (updated) {
       setRankByParentId(newRankByParentId)
     }
-  }, [reducedPointList, preRankByParentId])
-
-  useEffect(() => {
-    if (reducedPointList) {
-      onDone(validAndPercentDone())
+    if (updated || prev.reducedPointList !== reducedPointList) {
+      prev.reducedPointList = reducedPointList
+      setTimeout(() => onDone(validAndPercentDone(reducedPointList, newRankByParentId)))
     }
-  }, [])
+  }, [reducedPointList, stageRankByParentId])
 
   const handleRankPoint = (point, result) => {
     const rankString = result.value
@@ -128,31 +117,71 @@ export function RankPoints(props) {
         if (rankByParentId[point._id].category !== newCategory) {
           rank = { ...rankByParentId[point._id], category: newCategory }
           rankByParentId[point._id] = rank
-        } else {
-          rank = rankByParentId[point._id]
         }
       } else {
         rank = {
           _id: ObjectId().toString(),
-          stage: 'pre',
+          stage,
           category: newCategory,
           parentId: point._id,
           round,
           discussionId,
         }
-
         rankByParentId[point._id] = rank
       }
-
       if (rank) {
-        const { valid, percentDone } = validAndPercentDone()
-        setTimeout(() => onDone({ valid: valid, value: percentDone, delta: rank }))
-      } // don't call onDone from within a setter - because onDone's may call other react hooks and react causes errors
+        const { valid, value } = validAndPercentDone(reducedPointList, rankByParentId)
+        setTimeout(() => onDone({ valid: valid, value: value, delta: rank }))
+      }
+      // don't call onDone from within a setter - because onDone's may call other react hooks and react causes errors
       return rankByParentId // abort the setter
     })
   }
 
+  return [rankByParentId, handleRankPoint]
+}
+
+export function RankPoints(props) {
+  const classes = useStylesFromThemeFunction()
+  const {
+    className = '', // may or may not be passed. Should be applied to the outer most tag, after local classNames
+    onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
+    reducedPointList,
+    preRankByParentId,
+    round,
+    discussionId,
+    stepIntro,
+  } = props
   const [rankDiscrepancies, setRankDiscrepancies] = useState({})
+  const validAndPercentDone = (reducedPointList, rankByParentId) => {
+    if (!reducedPointList) return { valid: false, value: 0 } // no points to rank
+    const target = minSelectionsTable[reducedPointList?.length] ?? { least: 0, most: 0 }
+    let doneCount = 0
+    const countByCategory = {}
+    for (const pointGroup of reducedPointList) {
+      if (rankByParentId[pointGroup.point._id]?.category) {
+        doneCount++
+        if (!countByCategory[rankByParentId[pointGroup.point._id]?.category]) countByCategory[rankByParentId[pointGroup.point._id].category] = 1
+        else countByCategory[rankByParentId[pointGroup.point._id].category]++
+      }
+    }
+    // Check for difference in expected most/least counts
+    const mostDiscrepancy = countByCategory.most - target.most
+    const leastDiscrepancy = countByCategory.least - target.least
+
+    const valid = (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === reducedPointList.length) || (doneCount === reducedPointList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
+
+    setRankDiscrepancies({ most: mostDiscrepancy, least: leastDiscrepancy })
+
+    return { valid: valid, value: reducedPointList.length ? doneCount / reducedPointList.length : 0 } // value should be 0 if not points in list not null
+  }
+  const [rankByParentId, handleRankPoint] = useRankByParentId(discussionId, round, 'pre', reducedPointList, preRankByParentId, validAndPercentDone, onDone)
+
+  useEffect(() => {
+    if (reducedPointList) {
+      onDone(validAndPercentDone(reducedPointList, rankByParentId))
+    }
+  }, [])
 
   const table = minSelectionsTable[reducedPointList?.length] ?? { least: 0, most: 0 }
   const { least: targetLeast, most: targetMost } = table
@@ -161,28 +190,6 @@ export function RankPoints(props) {
 
   const getRankCount = rankName => {
     return reducedPointList.filter(pointGroup => rankByParentId[pointGroup.point._id]?.category?.toLowerCase() === rankName?.toLowerCase()).length
-  }
-
-  useEffect(() => {
-    onDone(validAndPercentDone())
-  }, [rankByParentId])
-
-  const validAndPercentDone = () => {
-    if (!reducedPointList) return { valid: false, percentDone: 0 } // no points to rank
-    let doneCount = 0
-
-    for (const pointGroup of reducedPointList) {
-      if (rankByParentId[pointGroup.point._id]?.category) doneCount++
-    }
-    // Check for difference in expected most/least counts
-    const mostDiscrepancy = mostCount() - targetMost
-    const leastDiscrepancy = leastCount() - targetLeast
-
-    const valid = (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === reducedPointList.length) || (doneCount === reducedPointList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
-
-    setRankDiscrepancies({ most: mostDiscrepancy, least: leastDiscrepancy })
-
-    return { valid: valid, percentDone: reducedPointList.length ? doneCount / reducedPointList.length : 0 } // value should be 0 if not points in list not null
   }
 
   // Set the status box error message
@@ -215,7 +222,7 @@ export function RankPoints(props) {
               const clearedRanks = Object.values(rankByParentId).reduce((rankByParentId, rank) => ((rankByParentId[rank.parentId] = { ...rank, category: '' }), rankByParentId), {})
 
               for (let rank of Object.values(clearedRanks)) {
-                const { valid, percentDone } = validAndPercentDone()
+                const { valid, percentDone } = validAndPercentDone(reducedPointList, rankByParentId)
                 setTimeout(() => onDone({ valid: valid, value: percentDone, delta: rank }))
               }
             }}

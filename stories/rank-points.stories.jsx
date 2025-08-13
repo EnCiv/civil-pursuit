@@ -7,9 +7,11 @@ import { userEvent, within, expect } from '@storybook/test'
 import { reduce } from 'lodash'
 
 const discussionId = '1101'
+const round = 0
 
 export default {
   component: RankPoints,
+  args: { round, discussionId },
   decorators: [onDoneDecorator],
   parameters: {
     layout: 'fullscreen',
@@ -152,17 +154,24 @@ export const tenRanksTooManyMost = {
       [point7.point._id]: createRank('Neutral', point7.point._id),
       [point8.point._id]: createRank('Neutral', point8.point._id),
       [point9.point._id]: createRank('Neutral', point9.point._id),
-      [point10.point._id]: createRank('Neutral', point10.point._id),
+      [point10.point._id]: createRank('Most', point10.point._id),
     },
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const points = await canvas.findAllByTestId('point')
+    const { onDone } = args
+    expect(onDone.mock.calls[0][0]).toMatchObject({
+      valid: false,
+      value: 1,
+    })
+    const point10Heading = await canvas.findByRole('heading', { level: 2, name: 'Point 10' })
+    const point10Div = point10Heading.closest('div')
+    await userEvent.click(within(point10Div).getByText('Neutral'))
 
-    await clickSelections(points, ['Most', 'Neutral', 'Most', 'Most', 'Least', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral'])
     expect(onDoneResult(canvas)).toMatchObject({
+      count: 2,
       onDoneResult: {
-        valid: false,
+        valid: true,
         value: 1,
         delta: {
           _id: '100',
@@ -197,18 +206,18 @@ export const tenRanksTooManyLeast = {
     const canvas = within(canvasElement)
     const points = await canvas.findAllByTestId('point')
 
-    await clickSelections(points, ['Most', 'Least', 'Least', 'Most', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral'])
+    await clickSelections(points, ['Most', 'Most', 'Least', 'Least', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral'])
 
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 24,
+      count: 2,
       onDoneResult: {
         valid: false,
         value: 1,
         delta: {
           _id: '100',
           stage: 'pre',
-          category: 'neutral',
-          parentId: '10',
+          category: 'least',
+          parentId: '4',
           discussionId: '1101',
           round: 0,
         },
@@ -240,15 +249,15 @@ export const tenRanksTooManyMostAndLeast = {
     await clickSelections(points, ['Most', 'Least', 'Least', 'Most', 'Neutral', 'Neutral', 'Most', 'Least', 'Neutral', 'Neutral'])
 
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 26,
+      count: 5,
       onDoneResult: {
         valid: false,
         value: 1,
         delta: {
           _id: '100',
           stage: 'pre',
-          category: 'neutral',
-          parentId: '10',
+          category: 'least',
+          parentId: '8',
           discussionId: '1101',
           round: 0,
         },

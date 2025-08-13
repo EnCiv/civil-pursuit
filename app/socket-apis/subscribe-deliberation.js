@@ -43,12 +43,14 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
         },
         getAllUInfo: async () => {
           const allUInfo = await Dturns.getAllFromDiscussion(deliberationId)
-          const all = allUInfo.map(({ discussionId, userId, round, shownStatementIds = {}, groupings = [] }) => ({
+          const all = allUInfo.map(({ discussionId, userId, round, shownStatementIds = {}, groupings = [], _id, ...otherProps }) => ({
+            // do not put _id into the UInfo
             [userId]: {
               [discussionId]: {
                 [round]: {
                   shownStatementIds,
                   groupings: Object.values(groupings).map(group => Object.values(group)), // convert from plain object with nested objects to array of arrays
+                  ...otherProps,
                 },
               },
             },

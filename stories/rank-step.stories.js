@@ -248,17 +248,14 @@ export const rankStepWithTopDownUpdate = {
     })
     return rankStepTemplate(args)
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
+    const { onDone } = args
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        onDoneResult: {
-          valid: false,
-          value: 0.3333333333333333,
-        },
+      expect(onDone.mock.calls[1][0]).toMatchObject({
+        valid: false,
+        value: 0.3333333333333333,
       })
-    })
-    await waitFor(() => {
       expect(deliberationContextData(canvas)).toMatchObject({
         preRankByParentId: {
           1: {
@@ -273,14 +270,10 @@ export const rankStepWithTopDownUpdate = {
       })
     })
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        onDoneResult: {
-          valid: false,
-          value: 0.6666666666666666,
-        },
+      expect(onDone.mock.calls[2][0]).toMatchObject({
+        valid: false,
+        value: 0.6666666666666666,
       })
-    })
-    await waitFor(() => {
       expect(deliberationContextData(canvas)).toMatchObject({
         preRankByParentId: {
           1: { _id: '201', stage: 'pre', category: 'most', parentId: '1', discussionId: '1001', round: 1 },
@@ -298,7 +291,7 @@ export const rankStepWithClearRanks = {
     // simulate a top down update after the component initially renders
     const { data = {}, upsert } = useContext(DeliberationContext)
     useState(() => {
-      // execute this code once, before the component is initally rendered
+      // execute this code once, before the component is initially rendered
       setTimeout(() => {
         upsert({
           preRankByParentId: {
@@ -309,19 +302,16 @@ export const rankStepWithClearRanks = {
     })
     return rankStepTemplate(args)
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
+    const { onDone } = args
     const clearButton = canvas.getAllByText('Clear All')
 
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        onDoneResult: {
-          valid: false,
-          value: 0.3333333333333333,
-        },
+      expect(onDone.mock.calls[1][0]).toMatchObject({
+        valid: false,
+        value: 0.3333333333333333,
       })
-    })
-    await waitFor(() => {
       expect(deliberationContextData(canvas)).toMatchObject({
         preRankByParentId: {
           1: {
@@ -336,14 +326,10 @@ export const rankStepWithClearRanks = {
       })
     })
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        onDoneResult: {
-          valid: false,
-          value: 0.6666666666666666,
-        },
+      expect(onDone.mock.calls[2][0]).toMatchObject({
+        valid: false,
+        value: 0.6666666666666666,
       })
-    })
-    await waitFor(() => {
       expect(deliberationContextData(canvas)).toMatchObject({
         preRankByParentId: {
           1: { _id: '201', stage: 'pre', category: 'most', parentId: '1', discussionId: '1001', round: 1 },
@@ -355,6 +341,10 @@ export const rankStepWithClearRanks = {
     await userEvent.click(clearButton[0])
 
     await waitFor(() => {
+      expect(onDone.mock.calls[10][0]).toMatchObject({
+        valid: false,
+        value: 0,
+      })
       expect(deliberationContextData(canvas)).toMatchObject({
         preRankByParentId: {
           1: { _id: '201', stage: 'pre', parentId: '1', discussionId: '1001', round: 1 },
