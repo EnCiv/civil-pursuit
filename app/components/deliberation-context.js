@@ -36,7 +36,8 @@ export function DeliberationContextProvider(props) {
           if (r.shownStatementIds && Object.values(r.shownStatementIds).some(s => s.rank > 0)) currentRound++
           else break
         }
-        if (data.uInfo[currentRound]?.groupings?.length > 0) data.groupIdsLists = structuredClone(data.uInfo[currentRound].groupings)
+        if (data.uInfo[currentRound]?.finished && data.uInfo[currentRound]?.groupings) data.groupIdsLists = structuredClone(data.uInfo[currentRound].groupings)
+        else if (!data.groupIdsLists) data.groupIdsLists = [] // don't overwrite existing groupings on a resubscribe
       }
       upsert(data)
     }
