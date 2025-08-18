@@ -11,6 +11,7 @@ class Dturns extends Collection {
         bsonType: 'object',
         title: 'Dturn Object Validation',
         required: ['discussionId', 'userId'],
+        additionalProperties: true,
         properties: {
           discussionId: {
             description: "'discussionId' must be an ObjectId and is required",
@@ -26,6 +27,9 @@ class Dturns extends Collection {
           },
           groupings: {
             description: "'groupings' must be an array",
+          },
+          finished: {
+            description: 'true if all user input for the round has been completed',
           },
         },
       },

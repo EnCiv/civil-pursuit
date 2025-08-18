@@ -103,14 +103,8 @@ export const StepSlider = props => {
       case 'updateStatuses':
         let { valid, index } = action.payload
         if (steps) {
-          const stepStatuses = state.stepStatuses.map((stepStatus, i) => {
-            if (valid || valid === undefined) {
-              return i === index ? { ...stepStatus, complete: true } : stepStatus
-            }
-            // Disable navigation to all steps after if invalid
-            else return i >= state.currentStep ? { ...stepStatus, complete: false } : stepStatus
-          })
-          return { ...state, stepStatuses: stepStatuses }
+          const newState = { ...state, stepStatuses: state.stepStatuses.toSpliced(index, 1, { ...state.stepStatuses[index], complete: valid }) }
+          return newState
         } else if (valid) {
           // Just increment if no steps
           const nextStep = Math.min(state.currentStep + 1, children.length - 1)
@@ -183,8 +177,11 @@ export const StepSlider = props => {
     }
     const panel = panelRefs.current[state.currentStep]
     const wrapper = stepChildRapper.current
-    const updateHeight = () => {
-      if (wrapper.style.height !== panel.offsetHeight + 'px') wrapper.style.height = panel.offsetHeight + 'px'
+    const updateHeight = entries => {
+      if (wrapper.style.height === panel.offsetHeight + 'px') return
+      window.requestAnimationFrame(() => {
+        wrapper.style.height = panel.offsetHeight + 'px'
+      })
     }
     updateHeight()
     const resizeObserver = new window.ResizeObserver(updateHeight)

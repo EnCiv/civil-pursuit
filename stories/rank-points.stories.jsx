@@ -4,11 +4,14 @@ import { RankPoints } from '../app/components/steps/rank'
 import React from 'react'
 import { onDoneDecorator, onDoneResult } from './common'
 import { userEvent, within, expect } from '@storybook/test'
+import { reduce } from 'lodash'
 
 const discussionId = '1101'
+const round = 0
 
 export default {
   component: RankPoints,
+  args: { round, discussionId },
   decorators: [onDoneDecorator],
   parameters: {
     layout: 'fullscreen',
@@ -51,12 +54,12 @@ const point11 = createPointObj('11', 'Point 11', 'Point 11 Description')
 const point12 = createPointObj('12', 'Point 12', 'Point 12 Description')
 const point13 = createPointObj('13', 'Point 13', 'Point 13 Description')
 
-function createRank(category) {
+function createRank(category, parentId = '200') {
   return {
     _id: '100',
     stage: 'pre',
-    category: category,
-    parentId: '200',
+    category: category.toLowerCase(),
+    parentId,
     discussionId,
     round: 0,
   }
@@ -72,30 +75,38 @@ export const Empty = { args: {} }
 
 export const emptyRank = {
   args: {
-    pointRankGroupList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    reducedPointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    preRankByParentId: {},
   },
 }
 
 export const oneRankNeutral = {
   args: {
-    pointRankGroupList: [{ ...point1, rank: createRank('Neutral') }],
+    reducedPointList: [point1],
+    preRankByParentId: { [point1.point._id]: createRank('Neutral', point1.point._id) },
   },
 }
 
 export const sevenPointsWith3Ranked = {
   args: {
-    pointRankGroupList: [{ ...point1, rank: createRank('Most') }, { ...point2, rank: createRank('Most') }, { ...point3, rank: createRank('Least') }, point4, point5, point6, point7],
+    reducedPointList: [point1, point2, point3, point4, point5, point6, point7],
+    preRankByParentId: {
+      [point1.point._id]: createRank('Most', point1.point._id),
+      [point2.point._id]: createRank('Most', point2.point._id),
+      [point3.point._id]: createRank('Least', point3.point._id),
+    },
   },
 }
 
 export const threePoints = {
   args: {
     style: {},
-    pointRankGroupList: [
-      { ...point1, rank: createRank('Most') },
-      { ...point2, rank: createRank('Neutral') },
-      { ...point3, rank: createRank('Least') },
-    ],
+    reducedPointList: [point1, point2, point3],
+    preRankByParentId: {
+      [point1.point._id]: createRank('Most', point1.point._id),
+      [point2.point._id]: createRank('Neutral', point2.point._id),
+      [point3.point._id]: createRank('Least', point3.point._id),
+    },
   },
 }
 
@@ -114,29 +125,59 @@ const tenRankPoints = [
 
 export const tenRanksCorrect = {
   args: {
-    pointRankGroupList: tenRankPoints,
+    reducedPointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    preRankByParentId: {
+      [point1.point._id]: createRank('Most', point1.point._id),
+      [point2.point._id]: createRank('Most', point2.point._id),
+      [point3.point._id]: createRank('Least', point3.point._id),
+      [point4.point._id]: createRank('Neutral', point4.point._id),
+      [point5.point._id]: createRank('Neutral', point5.point._id),
+      [point6.point._id]: createRank('Neutral', point6.point._id),
+      [point7.point._id]: createRank('Neutral', point7.point._id),
+      [point8.point._id]: createRank('Neutral', point8.point._id),
+      [point9.point._id]: createRank('Neutral', point9.point._id),
+      [point10.point._id]: createRank('Neutral', point10.point._id),
+    },
   },
 }
 
 export const tenRanksTooManyMost = {
   args: {
-    pointRankGroupList: tenRankPoints,
+    reducedPointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    preRankByParentId: {
+      [point1.point._id]: createRank('Most', point1.point._id),
+      [point2.point._id]: createRank('Most', point2.point._id),
+      [point3.point._id]: createRank('Least', point3.point._id),
+      [point4.point._id]: createRank('Neutral', point4.point._id),
+      [point5.point._id]: createRank('Neutral', point5.point._id),
+      [point6.point._id]: createRank('Neutral', point6.point._id),
+      [point7.point._id]: createRank('Neutral', point7.point._id),
+      [point8.point._id]: createRank('Neutral', point8.point._id),
+      [point9.point._id]: createRank('Neutral', point9.point._id),
+      [point10.point._id]: createRank('Most', point10.point._id),
+    },
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const points = await canvas.findAllByTestId('point')
+    const { onDone } = args
+    expect(onDone.mock.calls[0][0]).toMatchObject({
+      valid: false,
+      value: 1,
+    })
+    const point10Heading = await canvas.findByRole('heading', { level: 2, name: 'Point 10' })
+    const point10Div = point10Heading.closest('div')
+    await userEvent.click(within(point10Div).getByText('Neutral'))
 
-    await clickSelections(points, ['Most', 'Neutral', 'Most', 'Most', 'Least', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral'])
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 23,
+      count: 2,
       onDoneResult: {
-        valid: false,
+        valid: true,
         value: 1,
         delta: {
           _id: '100',
           stage: 'pre',
           category: 'neutral',
-          parentId: '200',
+          parentId: '10',
           discussionId: '1101',
           round: 0,
         },
@@ -147,24 +188,36 @@ export const tenRanksTooManyMost = {
 
 export const tenRanksTooManyLeast = {
   args: {
-    pointRankGroupList: tenRankPoints,
+    reducedPointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    preRankByParentId: {
+      [point1.point._id]: createRank('Most', point1.point._id),
+      [point2.point._id]: createRank('Most', point2.point._id),
+      [point3.point._id]: createRank('Least', point3.point._id),
+      [point4.point._id]: createRank('Neutral', point4.point._id),
+      [point5.point._id]: createRank('Neutral', point5.point._id),
+      [point6.point._id]: createRank('Neutral', point6.point._id),
+      [point7.point._id]: createRank('Neutral', point7.point._id),
+      [point8.point._id]: createRank('Neutral', point8.point._id),
+      [point9.point._id]: createRank('Neutral', point9.point._id),
+      [point10.point._id]: createRank('Neutral', point10.point._id),
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const points = await canvas.findAllByTestId('point')
 
-    await clickSelections(points, ['Most', 'Least', 'Least', 'Most', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral'])
+    await clickSelections(points, ['Most', 'Most', 'Least', 'Least', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral'])
 
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 23,
+      count: 2,
       onDoneResult: {
         valid: false,
         value: 1,
         delta: {
           _id: '100',
           stage: 'pre',
-          category: 'neutral',
-          parentId: '200',
+          category: 'least',
+          parentId: '4',
           discussionId: '1101',
           round: 0,
         },
@@ -175,7 +228,19 @@ export const tenRanksTooManyLeast = {
 
 export const tenRanksTooManyMostAndLeast = {
   args: {
-    pointRankGroupList: tenRankPoints,
+    reducedPointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10],
+    preRankByParentId: {
+      [point1.point._id]: createRank('Most', point1.point._id),
+      [point2.point._id]: createRank('Most', point2.point._id),
+      [point3.point._id]: createRank('Least', point3.point._id),
+      [point4.point._id]: createRank('Neutral', point4.point._id),
+      [point5.point._id]: createRank('Neutral', point5.point._id),
+      [point6.point._id]: createRank('Neutral', point6.point._id),
+      [point7.point._id]: createRank('Neutral', point7.point._id),
+      [point8.point._id]: createRank('Neutral', point8.point._id),
+      [point9.point._id]: createRank('Neutral', point9.point._id),
+      [point10.point._id]: createRank('Neutral', point10.point._id),
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -184,15 +249,15 @@ export const tenRanksTooManyMostAndLeast = {
     await clickSelections(points, ['Most', 'Least', 'Least', 'Most', 'Neutral', 'Neutral', 'Most', 'Least', 'Neutral', 'Neutral'])
 
     expect(onDoneResult(canvas)).toMatchObject({
-      count: 23,
+      count: 5,
       onDoneResult: {
         valid: false,
         value: 1,
         delta: {
           _id: '100',
           stage: 'pre',
-          category: 'neutral',
-          parentId: '200',
+          category: 'least',
+          parentId: '8',
           discussionId: '1101',
           round: 0,
         },
@@ -203,20 +268,6 @@ export const tenRanksTooManyMostAndLeast = {
 
 export const numRanksNotInLookup = {
   args: {
-    pointRankGroupList: [
-      { ...point1, rank: createRank('Most') },
-      { ...point2, rank: createRank('Least') },
-      { ...point3, rank: createRank('Least') },
-      { ...point4, rank: createRank('Neutral') },
-      { ...point5, rank: createRank('Neutral') },
-      { ...point6, rank: createRank('Most') },
-      { ...point7, rank: createRank('Most') },
-      { ...point8, rank: createRank('Least') },
-      { ...point9, rank: createRank('Neutral') },
-      { ...point10, rank: createRank('Neutral') },
-      { ...point11, rank: createRank('Neutral') },
-      { ...point12, rank: createRank('Neutral') },
-      { ...point13, rank: createRank('Neutral') },
-    ],
+    reducedPointList: [point1, point2, point3, point4, point5, point6, point7, point8, point9, point10, point11, point12, point13],
   },
 }

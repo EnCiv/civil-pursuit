@@ -11,7 +11,7 @@ const merge = require('lodash').merge
 const showDeepDiff = require('show-deep-diff')
 
 const ObjectID = require('bson-objectid')
-const { insertStatementId, getStatementIds, putGroupings, report, rankMostImportant, getUserRecord, initDiscussion, Discussions } = require('./dturn')
+const { insertStatementId, getStatementIds, putGroupings, report, rankMostImportant, getUserRecord, initDiscussion, Discussions, finishRound } = require('./dturn')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
 const NUMBER_OF_PARTICIPANTS = process.argv[2] || 4096 //117649 // 4096 //240 // the number of simulated people in the discussion
@@ -90,15 +90,15 @@ async function proxyUser() {
     if (!statementIdsForGrouping) return
     const statementsForGrouping = statementIdsForGrouping.map(id => Statements[id])
     const [groupings, ungrouped] = groupStatementsWithTheSameFloor(statementsForGrouping)
-    await putGroupings(
+    const forRanking = groupings.map(group => group[0]).concat(ungrouped)
+    const rankMostId = forRanking.sort(sortLowestDescriptionFirst)[0]._id
+    await finishRound(
       DISCUSSION_ID,
       round,
       userId,
+      [{ [rankMostId]: 1 }],
       groupings.map(group => group.map(statement => statement._id))
     )
-    const forRanking = groupings.map(group => group[0]).concat(ungrouped)
-    const rankMostId = forRanking.sort(sortLowestDescriptionFirst)[0]._id
-    await rankMostImportant(DISCUSSION_ID, round, userId, rankMostId)
     round++
   }
 }
@@ -126,15 +126,15 @@ async function proxyUserReturn(userId, final = 0) {
   }
   while (statementsForGrouping.length) {
     const [groupings, ungrouped] = groupStatementsWithTheSameFloor(statementsForGrouping)
-    await putGroupings(
+    const forRanking = groupings.map(group => group[0]).concat(ungrouped)
+    const rankMostId = forRanking.sort(sortLowestDescriptionFirst)[0]._id
+    await finishRound(
       DISCUSSION_ID,
       round,
       userId,
+      [{ [rankMostId]: 1 }],
       groupings.map(group => group.map(statement => statement._id))
     )
-    const forRanking = groupings.map(group => group[0]).concat(ungrouped)
-    const rankMostId = forRanking.sort(sortLowestDescriptionFirst)[0]._id
-    await rankMostImportant(DISCUSSION_ID, round, userId, rankMostId)
     round++
     const statementIdsForGrouping = (await getStatementIds(DISCUSSION_ID, round, userId)) || []
     statementsForGrouping = statementIdsForGrouping.map(id => Statements[id])
@@ -171,6 +171,7 @@ async function main() {
   report(DISCUSSION_ID, Statements)
   console.info('Initialising discussion 2')
   await initDiscussion(2, {
+    group_size: parseInt(process.argv[3] || '10'),
     getAllUInfo: async () => {
       const Uinfos = Object.keys(UserInfo).map(uId => {
         const rounds = UserInfo[uId][1]

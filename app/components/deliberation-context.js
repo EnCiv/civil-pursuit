@@ -14,8 +14,8 @@ export function DeliberationContextProvider(props) {
   })
   const upsert = useCallback(
     obj => {
-      let messages = data._showUpsertDeltas ? [] : undefined
       setData(data => {
+        let messages = data._showUpsertDeltas ? [] : undefined
         let newData = setOrDeleteByMutatePath(data, obj, messages)
         if (messages) console.info('context update:', messages)
         newData = deriveReducedPointList(newData, local)
@@ -30,10 +30,14 @@ export function DeliberationContextProvider(props) {
     upsert({ discussionId, userId })
 
     function onSubscribeHandler(data) {
+      let currentRound = 0
       if (data.uInfo) {
-        let round = data.uInfo.length - 1
-        data.round = round
-        if (data.uInfo[round].groupings?.length > 0) data.groupIdsLists = structuredClone(data.uInfo[round].groupings)
+        for (const r of data.uInfo) {
+          if (r.shownStatementIds && Object.values(r.shownStatementIds).some(s => s.rank > 0)) currentRound++
+          else break
+        }
+        if (data.uInfo[currentRound]?.finished && data.uInfo[currentRound]?.groupings) data.groupIdsLists = structuredClone(data.uInfo[currentRound].groupings)
+        else if (!data.groupIdsLists) data.groupIdsLists = [] // don't overwrite existing groupings on a resubscribe
       }
       upsert(data)
     }

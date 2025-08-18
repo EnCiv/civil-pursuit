@@ -51,7 +51,7 @@ function calculateRoundAndStatus(uInfo, finalRound) {
   const roundsStatus = Object.values(uInfo || []).map((roundInfo, i) => {
     if (roundFound) return 'pending' // if we already found an in-progress round, all subsequent rounds are complete
     const shownStatements = Object.values(roundInfo.shownStatementIds || {})
-    if (shownStatements.length && shownStatements.some(shown => shown.rank > 0)) {
+    if (roundInfo.finished) {
       round = Math.min(i + 1, finalRound)
       return 'complete'
     } else if (shownStatements.length) {

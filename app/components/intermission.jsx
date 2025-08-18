@@ -53,7 +53,7 @@ const Intermission = props => {
     }
   }
 
-  const roundCompleted = uInfo[round]?.shownStatementIds && Object.values(uInfo[round].shownStatementIds).some(shown => shown.rank > 0)
+  const roundCompleted = uInfo[round]?.finished
   const userIsRegistered = !!user?.email
   const nextRoundAvailable = round < lastRound
   const allRoundsCompleted = roundCompleted && round >= finalRound

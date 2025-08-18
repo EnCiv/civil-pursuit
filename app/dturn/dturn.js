@@ -111,8 +111,11 @@ async function insertStatementId(discussionId, userId, statementId) {
     return undefined
   }
   if (!Discussions[discussionId].ShownStatements[round]) Discussions[discussionId].ShownStatements[round] = []
+  const uInfo = initUitems(discussionId, userId, round)
+  if (uInfo[round].finished) return undefined
+  if (uInfo[round].shownStatementIds[statementId]) return statementId // it's already there.
+  if (Object.values(uInfo[round].shownStatementIds).some(s => s.author)) return undefined // user has already inserted a statement
   Discussions[discussionId].ShownStatements[round].push(shownItem)
-  initUitems(discussionId, userId, round)
 
   Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId] = { rank: 0, author: true }
   await Discussions[discussionId].updateUInfo({
@@ -456,6 +459,7 @@ async function putGroupings(discussionId, round, userId, groupings) {
   if (!dis) return false
   const uitem = Discussions[discussionId].Uitems[userId][round]
   if (!uitem) return false
+  if (uitem.finished) return false
 
   //?? if there is already a groupins, should we uncount the groupins in gitems before overriding it - in the real world groupins may get resubmitted
   if (uitem?.groupings?.length) console.error('putGroupings already there', round, userId, groupings, uitem)
@@ -478,10 +482,57 @@ async function putGroupings(discussionId, round, userId, groupings) {
 }
 module.exports.putGroupings = putGroupings
 
+async function finishRound(discussionId, round, userId, rankings, groupings) {
+  const dis = Discussions[discussionId]
+  if (!dis) return false
+  const uitem = Discussions[discussionId].Uitems?.[userId]?.[round]
+  if (!uitem) return false
+  if (uitem.finished) return false // already finished this round
+
+  const shownStatementIds = Object.keys(uitem.shownStatementIds)
+  if (shownStatementIds.length <= 1) {
+    console.error(`finishRound: user ${userId} tried to finish round ${round} with no shown statements`, uitem)
+    return false
+  }
+  const idrankPairs = rankings.map(idrank => Object.entries(idrank)[0]) // convert to [statementId, rank] pairs
+  for (const [statementId, rank] of idrankPairs) {
+    if (!uitem.shownStatementIds[statementId]) {
+      console.error(`finishRound: user ${userId} tried to rank a statement ${statementId} that was not shown to them in round ${round}`)
+      return false
+    }
+  }
+  const groupingIds = groupings.flat(Infinity)
+  for (const statementId of groupingIds) {
+    if (!uitem.shownStatementIds[statementId]) {
+      console.error(`finishRound: user ${userId} tried to group a statement ${statementId} that was not shown to them in round ${round}`)
+      return false
+    }
+  }
+
+  for (const id of shownStatementIds) incrementShownItems(discussionId, round, id)
+  iteratePairs(discussionId, round, shownStatementIds, gitem => gitem.shownCount++)
+  groupings.forEach(group => iteratePairs(discussionId, round, group, gitem => gitem.groupedCount++))
+  uitem.groupings = structuredClone(groupings)
+  for (const [statementId, rank] of idrankPairs) {
+    if (rank > 0) {
+      deltaShownItemsRank(discussionId, round, statementId, rank)
+      Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId].rank = rank
+    }
+  }
+  uitem.finished = true
+  await Discussions[discussionId].updateUInfo({
+    [userId]: {
+      [discussionId]: {
+        [round]: structuredClone(Discussions[discussionId].Uitems[userId][round]),
+      },
+    },
+  })
+  return true
+}
+module.exports.finishRound = finishRound
+
 async function rankMostImportant(discussionId, round, userId, statementId, rank = 1) {
-  /* this is where we will write it to the database
-    Ranks.push({statementId,round,ranking: 'most', userId, parentId: discussionId})
-    */
+  if (Discussions[discussionId].Uitems[userId][round].finished) return
   deltaShownItemsRank(discussionId, round, statementId, rank)
   Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId].rank = rank
   await Discussions[discussionId].updateUInfo({
