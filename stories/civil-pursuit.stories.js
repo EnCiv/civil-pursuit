@@ -6,7 +6,7 @@ import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator } fr
 import { Default, useSetupTournament } from './tournament.stories'
 
 const testSteps = [
-  { webComponent: 'SignUp', startTab: 'SignUp' },
+  //{ webComponent: 'SignUp', startTab: 'SignUp' }, // signup mock actions failing
   {
     webComponent: 'Jsform',
     questions: [['What party are you with']],
@@ -35,7 +35,7 @@ const testSteps = [
     webComponent: 'Tournament',
     steps: Default.args.testSteps,
   },
-  { webComponent: 'Conclusion' },
+  // uncomment when implemented { webComponent: 'Conclusion' },
   { webComponent: 'Feedback' },
 ]
 
@@ -44,7 +44,7 @@ export default {
   parameters: {
     layout: 'fullscreen',
   },
-  decorators: [DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator],
+  decorators: [onDoneDecorator, socketEmitDecorator],
 }
 
 export const Normal = {
@@ -53,10 +53,53 @@ export const Normal = {
     description:
       'This is a large scale online discussion with the purpose of starting unbiased, and thoughtful conversations, that lead to amazing new solutions. **But here, we are asking about concerns**, we will get to the solutions later.',
     steps: testSteps,
-    defaultValue: Default.args.defaultValue,
+    user: { email: 'success@email.com', id: '67bf9d6ae49200d1349ab34a' },
+    userId: '67bf9d6ae49200d1349ab34a',
+    participants: 1,
+    ...Default.args.defaultValue,
   },
   render: args => {
     useSetupTournament()
     return <CivilPursuit {...args} />
+  },
+}
+
+export const WithoutTournament = {
+  args: {
+    subject: 'What One Issue Should We The People Unite and Solve First?',
+    description:
+      'This is a large scale online discussion with the purpose of starting unbiased, and thoughtful conversations, that lead to amazing new solutions. **But here, we are asking about concerns**, we will get to the solutions later.',
+    steps: testSteps,
+    user: { email: 'success@email.com', id: '67bf9d6ae49200d1349ab34a' },
+    userId: '67bf9d6ae49200d1349ab34a',
+    participants: 1,
+    steps: [
+      //{ webComponent: 'SignUp', startTab: 'SignUp' }, // signup mock actions failing
+      {
+        webComponent: 'Jsform',
+        questions: [['What party are you with']],
+        schema: {
+          type: 'object',
+          properties: {
+            dateOfBirth: {
+              title: 'Date of Birth',
+              type: 'string',
+              format: 'date',
+            },
+          },
+        },
+        uischema: {
+          type: 'VerticalLayout',
+          elements: [
+            {
+              type: 'Control',
+              scope: '#/properties/dateOfBirth',
+            },
+          ],
+        },
+      },
+      // uncomment when implemented { webComponent: 'Conclusion' },
+      { webComponent: 'Feedback' },
+    ],
   },
 }
