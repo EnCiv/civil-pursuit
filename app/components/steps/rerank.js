@@ -141,8 +141,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
-    paddingLeft: '1rem', // room for the shadow around the points
-    paddingRight: '1rem',
+    paddingLeft: '0.2rem', // room for the shadow around the points
+    paddingRight: '0.8rem',
     marginBottom: '1rem', // for box shadow of children
   },
 }))

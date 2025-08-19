@@ -34,6 +34,7 @@ export const StepSlider = props => {
           if (outerRef.current) {
             // just to make sure
             let rect = outerRef.current.getBoundingClientRect()
+            rect.clientWidth = outerRef.current.clientWidth // there may be a scrollbar on the right
             if (rect.height && rect.width) setOuterRect(rect)
           }
           dispatch({ type: 'transitionsOn' })
@@ -239,7 +240,7 @@ export const StepSlider = props => {
               <div
                 key={i}
                 style={{
-                  width: outerRect.width + 'px',
+                  width: outerRect.clientWidth + 'px',
                 }}
                 className={classes.panel}
                 ref={el => (panelRefs.current[i] = el)}

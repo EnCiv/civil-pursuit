@@ -147,6 +147,7 @@ function Tournament(props) {
           key={round}
           steps={stepInfo}
           round={round}
+          className={classes.stepClass}
           children={state.stepComponents}
           onDone={({ valid, value }) => {
             if (valid && round + 1 > finalRound) onDone({ valid, value: 'done' })
@@ -165,6 +166,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   roundTracker: {
     marginBottom: '3.6875rem',
+  },
+  stepClass: {
+    marginLeft: '1rem',
+    marginRight: '1rem',
   },
 }))
 
