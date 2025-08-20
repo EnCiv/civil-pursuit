@@ -42,7 +42,7 @@ const Step = forwardRef((props, ref) => {
   }
 
   // clear the timeout when the click is finished
-  const handleMouseUp = () => {
+  const handleMouseUp = event => {
     clearTimeout(timeRef.current)
     setTimeout(() => setIsPortalOpen(false), displayTime)
   }
@@ -69,7 +69,8 @@ const Step = forwardRef((props, ref) => {
   return (
     <div
       className={containerStyle}
-      onMouseDown={() => {
+      onMouseUp={e => {
+        e.stopPropagation()
         if (complete || active || unlocked) onDone(index)
       }}
       onKeyDown={handleKeyDown}
