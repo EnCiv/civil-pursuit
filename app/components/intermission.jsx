@@ -91,7 +91,7 @@ const Intermission = props => {
           <div className={classes.headlineSmall}>Great! You've answered the question, when we get responses from more people, we will invite you back to continue the deliberation.</div>
         </>
       )
-    else conditionalResponse = <div className={classes.headlineSmall}>There are not enough responses yet to proceed to round {round + 1 + 1}. When we hear from more people, we will invite you back to continue the deliberation.</div>
+    else conditionalResponse = <div className={classes.headlineSmall}>There are not enough responses yet to proceed with round {round + 1}. When we hear from more people, we will invite you back to continue the deliberation.</div>
     valid = false
     onNext = () => location.replace('https://enciv.org/')
   } else if (nextRoundAvailable) {
