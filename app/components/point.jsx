@@ -203,6 +203,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1rem',
     fontWeight: '400',
     lineHeight: '1.5rem',
+    whiteSpace: 'pre-wrap',
   },
   invalidText: {
     color: theme.colors.rankInvalidText,
