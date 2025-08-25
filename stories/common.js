@@ -19,8 +19,10 @@ export const buildApiDecorator = (handle, result) => {
         const cb = args.pop() // call back is the last argument
         window.socket._socketEmitHandlerResults[handle].push(args)
         setTimeout(() => {
-          if (typeof result === 'function') cb(result(...args))
-          else cb(result)
+          if (typeof result === 'function') {
+            args.push(cb)
+            result(...args)
+          } else cb(result)
         })
       }
     })

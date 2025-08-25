@@ -187,8 +187,6 @@ const testSteps = [
       description: 'When more people have gotten to this point we will invite you back to continue the deliberation.',
     },
     user: { email: 'example@gmail.com', tempid: '123456' },
-    round: 1,
-    lastRound: 2,
   },
 ]
 
@@ -228,6 +226,16 @@ export function useSetupTournament() {
         whys: [],
       })
     }
+    window.socket._socketEmitHandlerResults['subscribe-deliberation'] = []
+    window.socket._socketEmitHandlers['subscribe-deliberation'] = (discussionId, cb) => {
+      window.socket._socketEmitHandlerResults['subscribe-deliberation'].push([discussionId])
+      cb && cb({ uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }], lastRound: 0, participants: 1 })
+    }
+    window.socket._socketEmitHandlerResults['get-conclusion'] = []
+    window.socket._socketEmitHandlers['get-conclusion'] = (discussionId, cb) => {
+      window.socket._socketEmitHandlerResults['get-conclusion'].push([discussionId])
+      cb && cb({ point: pointList[0], mosts: make5Whys([pointList[0]], 'most').flat(), leasts: make5Whys([pointList[0]], 'least').flat() })
+    }
     window.socket._socketOnHandlers = {}
     window.socket.on = (event, cb) => {
       window.socket._socketOnHandlers[event] = cb
@@ -247,20 +255,30 @@ function make5Whys(points, category) {
 function byId(docs) {
   return docs.reduce((byId, doc) => ((byId[doc._id] = doc), byId), {})
 }
+
+function byParentIdList(docs) {
+  return docs.reduce((byPId, doc) => (byPId[doc.parentId] ? byPId[doc.parentId].push(doc) : (byPId[doc.parentId] = [doc]), byPId), {})
+}
 export const Default = {
   args: {
     testSteps,
     defaultValue: {
+      finalRound: 0,
       // this goes into the deliberation context
       userId: '67bf9d6ae49200d1349ab34a',
       discussionId: '5d0137260dacd06732a1d814',
-      round: 0,
+      lastRound: 0,
       pointById: byId(pointList),
       groupIdsLists: [],
       randomWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
       whyRankByParentId: {},
-      topWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
+      //topWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
+      whysByCategoryByParentId: {
+        most: byParentIdList(make5Whys(pointList, 'most').flat()),
+        least: byParentIdList(make5Whys(pointList, 'least').flat()),
+      },
       postRankByParentId: {},
+      uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }],
     },
   },
   render: args => {
