@@ -9,6 +9,7 @@ import { vanillaCells, vanillaRenderers } from '@jsonforms/vanilla-renderers'
 import { PrimaryButton } from './button'
 import { rankWith, isControl } from '@jsonforms/core'
 import { withJsonFormsControlProps } from '@jsonforms/react'
+import StepIntro from './step-intro'
 
 const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
   const options = schema.enum || []
@@ -58,7 +59,7 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
 const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }]
 
 const MoreDetails = props => {
-  const { className = '', schema = {}, uischema = {}, onDone = () => {}, title, discussionId } = props
+  const { className = '', schema = {}, uischema = {}, onDone = () => {}, title, discussionId, stepIntro } = props
   const [data, setData] = useState({})
   const classes = useStyles(props)
 
@@ -101,6 +102,7 @@ const MoreDetails = props => {
   return (
     <div className={cx(classes.formContainer, className)}>
       {title && <p className={classes.formTitle}>{title}</p>}
+      {stepIntro && <StepIntro {...stepIntro} />}
       <div className={classes.jsonFormContainer}>
         <JsonForms schema={schema} uischema={uischema} data={data} renderers={memoedRenderers} cells={vanillaCells} onChange={({ data }) => setData(data)} />
         <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
@@ -130,6 +132,7 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     marginBottom: '1rem',
     lineHeight: '2.25rem',
+    marginTop: '4rem',
   },
   formInput: props => ({
     width: '100%',

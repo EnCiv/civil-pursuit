@@ -51,7 +51,7 @@ export default function AnswerStep(props) {
 
 // Presentation component: only renders UI and handles local user interactions
 export function Answer(props) {
-  const { className = '', question = {}, whyQuestion = '', onDone = () => {}, myAnswer, myWhy, discussionId, userId, stepIntro } = props
+  const { className = '', question = {}, whyQuestion = '', onDone = () => {}, myAnswer, myWhy, discussionId, userId, stepIntro, maxWordCount, maxCharCount } = props
   const classes = useStylesFromThemeFunction()
   const [validByType, setValidByType] = useState({ myAnswer: false, myWhy: false })
   // myAnswer could be undefined initially, if so it needs to be initialized with an _id, and if the user types in the WhyAnswer first, it's parentId needs to be the answers _id
@@ -89,11 +89,11 @@ export function Answer(props) {
       <StepIntro {...stepIntro} />
       <div className={classes.answersContainer}>
         <div key="question">
-          <WhyInput point={{ ...question, _id: discussionId }} value={_myAnswer} onDone={updateResponse('myAnswer')} />
+          <WhyInput point={{ ...question, _id: discussionId }} value={_myAnswer} maxWordCount={maxWordCount} maxCharCount={maxCharCount} onDone={updateResponse('myAnswer')} />
         </div>
         <div key="why">
           <hr className={classes.pointsHr} />
-          <WhyInput point={{ description: '', subject: whyQuestion, _id: _myAnswer?._id }} value={_myWhy} onDone={updateResponse('myWhy')} />
+          <WhyInput point={{ description: '', subject: whyQuestion, _id: _myAnswer?._id }} value={_myWhy} maxWordCount={maxWordCount} maxCharCount={maxCharCount} onDone={updateResponse('myWhy')} />
         </div>
       </div>
     </div>

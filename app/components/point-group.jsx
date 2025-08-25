@@ -54,7 +54,7 @@ const PointGroup = props => {
   }, [pointGroup]) // could be changed by parent component, or within this component
 
   return (
-    <div className={cx(className)} {...otherProps}>
+    <div className={cx(classes.pointGroup, className)} {...otherProps}>
       {vs === 'collapsed' && (
         <div className={cx(classes.borderStyle, classes.collapsedBorder, classes.contentContainer, classes.informationGrid)}>{subject && <H className={cx(classes.subjectStyle, classes.collapsedSubject)}>{subject}</H>}</div>
       )}
@@ -331,6 +331,9 @@ const PointGroup = props => {
 }
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
+  pointGroup: {
+    display: 'flex',
+  },
   borderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: theme.boxShadow,

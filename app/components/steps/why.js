@@ -74,6 +74,8 @@ export function Why(props) {
     category = '', // "most" or "least"
     onDone = () => {},
     stepIntro,
+    maxWordCount,
+    maxCharCount,
   } = props
 
   const classes = useStylesFromThemeFunction()
@@ -139,7 +141,7 @@ export function Why(props) {
           {pointWhyList.map(({ point, why }, i) => (
             <div key={point._id}>
               {i > 0 && <hr className={classes.pointsHr}></hr>}
-              <WhyInput point={point} value={why} onDone={handleOnDone} />
+              <WhyInput point={point} value={why} onDone={handleOnDone} maxWordCount={maxWordCount} maxCharCount={maxCharCount} />
             </div>
           ))}
         </div>
