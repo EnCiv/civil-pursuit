@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { userEvent, within } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import expect from 'expect'
-import { onDoneDecorator, onDoneResult, socketEmitDecorator } from './common'
+import { onDoneDecorator, onDoneResult, buildApiDecorator, socketEmitDecorator } from './common'
 import MoreDetails from './../app/components/more-details'
 
 export default {
@@ -14,6 +14,7 @@ export default {
       viewports: INITIAL_VIEWPORTS,
     },
   },
+  excludeStories: ['jsFormDecorators'],
 }
 
 // Base test schema
@@ -282,23 +283,8 @@ export const InitialTestSchemaDetailsInput = {
   },
 }
 
-const setupJsFormsApis = Story => {
-  useState(() => {
-    // execute this code once, before the component is initally rendered
-    // the api call will provide the new data for this step
-    window.socket._socketEmitHandlers['get-jsform'] = (discussionId, cb) => {
-      window.socket._socketEmitHandlerResults['get-jsform'].push[[discussionId]]
-      setTimeout(() => cb?.())
-    }
-    window.socket._socketEmitHandlerResults['get-jsform'] = []
-    window.socket._socketEmitHandlers['upsert-jsform'] = (discussionId, name, data, cb) => {
-      window.socket._socketEmitHandlerResults['upsert-jsform'].push([[discussionId, name, data]])
-      setTimeout(() => cb?.())
-    }
-    window.socket._socketEmitHandlerResults['upsert-jsform'] = []
-  })
-  return <Story />
-}
+export const jsFormDecorators = [buildApiDecorator('get-jsform', (discussionId, cb) => () => {}), buildApiDecorator('upsert-jsform', (discussionId, name, data, cb) => () => {})]
+
 export const UserInputAndOnDoneCall = {
   args: {
     schema: testSchema,
@@ -307,14 +293,14 @@ export const UserInputAndOnDoneCall = {
     title: 'We just need a few more details about you to get started.',
     discussionId: '123456789012345678901234567890abcd',
   },
-  decorators: [setupJsFormsApis],
+  decorators: jsFormDecorators,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await userEvent.selectOptions(canvas.getByLabelText(/Household Income/i), '10000-20000')
     await userEvent.selectOptions(canvas.getByLabelText(/Housing/i), 'House')
     await userEvent.selectOptions(canvas.getByLabelText(/Number of Siblings/i), '1')
     await userEvent.click(canvas.getByRole('button', { name: /Submit/i }))
-    expect(window.socket._socketEmitHandlerResults['upsert-jsform'][0]).toMatchObject([['123456789012345678901234567890abcd', 'moreDetails', { householdIncome: '10000-20000', housing: 'House', numberOfSiblings: '1' }]])
+    expect(window.socket._socketEmitHandlerResults['upsert-jsform'][0]).toMatchObject(['123456789012345678901234567890abcd', 'moreDetails', { householdIncome: '10000-20000', housing: 'House', numberOfSiblings: '1' }])
     expect(onDoneResult(canvas)).toMatchObject({
       count: 1,
       onDoneResult: {
