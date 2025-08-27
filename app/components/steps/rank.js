@@ -166,8 +166,8 @@ export function RankPoints(props) {
       }
     }
     // Check for difference in expected most/least counts
-    const mostDiscrepancy = countByCategory.most - target.most
-    const leastDiscrepancy = countByCategory.least - target.least
+    const mostDiscrepancy = (countByCategory.most ?? 0) - target.most
+    const leastDiscrepancy = (countByCategory.least ?? 0) - target.least
 
     const valid = (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === reducedPointList.length) || (doneCount === reducedPointList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
 

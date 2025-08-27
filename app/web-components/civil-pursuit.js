@@ -53,7 +53,7 @@ function CivilPursuit(props) {
   const [children, setChildren] = useState(buildChildren(steps)) // just do this once so we don't get rerenders
 
   return (
-    <DeliberationContextProvider defaultValue={{ discussionId: _id, user, userId: user?.id, participants, finalRound }}>
+    <DeliberationContextProvider defaultValue={{ discussionId: _id, user, userId: user?.id, participants, finalRound, ...otherProps }}>
       <div className={cx(classes.civilPursuit, className)}>
         <QuestionBox className={classes.question} subject={subject} description={description} />
         <Level>

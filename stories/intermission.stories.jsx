@@ -13,7 +13,18 @@ const uInfoRound1Complete = { 0: { shownStatementIds: { 123: { rank: 1 }, 234: {
 
 export default {
   component: Intermission,
-  decorators: [onDoneDecorator, DeliberationContextDecorator],
+  decorators: [
+    onDoneDecorator,
+    DeliberationContextDecorator,
+    buildApiDecorator('send-password', (email, path, cb) => {
+      if (email === 'fail@email.com') cb({ error: 'could not send email' })
+      else cb({ error: '' })
+    }),
+    buildApiDecorator('set-user-info', (info, cb) => {
+      if (!info.email) cb({ error: 'email address not valid' })
+      else cb({ error: '' })
+    }),
+  ],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
@@ -23,13 +34,6 @@ export default {
 
 export const Empty = {
   args: {},
-  decorators: [
-    buildApiDecorator('set-user-info', {}),
-    buildApiDecorator('send-password', (email, path, cb) => {
-      if (email === 'fail@email.com') return { error: 'could not send email' }
-      else return { error: '' }
-    }),
-  ],
 }
 
 export const NoEmail = {
@@ -38,16 +42,7 @@ export const NoEmail = {
     user: {},
     round: 1,
   },
-  decorators: [
-    buildApiDecorator('send-password', (email, path, cb) => {
-      if (email === 'fail@email.com') return { error: 'could not send email' }
-      else return { error: '' }
-    }),
-    buildApiDecorator('set-user-info', info => {
-      if (!info.email) return { error: 'email address not valid' }
-      return { error: '' }
-    }),
-  ],
+  decorators: [],
 }
 
 export const NoEmailSuccess = {
@@ -56,16 +51,6 @@ export const NoEmailSuccess = {
     user: {},
     round: 1,
   },
-  decorators: [
-    buildApiDecorator('send-password', (email, path, cb) => {
-      if (email === 'fail@email.com') return { error: 'could not send email' }
-      else return { error: '' }
-    }),
-    buildApiDecorator('set-user-info', info => {
-      if (!info.email) return { error: 'email address not valid' }
-      return { error: '' }
-    }),
-  ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
@@ -90,16 +75,6 @@ export const NoEmailFail = {
     user: {},
     round: 1,
   },
-  decorators: [
-    buildApiDecorator('send-password', (email, path, cb) => {
-      if (email === 'fail@email.com') return { error: 'could not send email' }
-      else return { error: '' }
-    }),
-    buildApiDecorator('set-user-info', info => {
-      if (!info.email) return { error: 'email address not valid' }
-      return { error: '' }
-    }),
-  ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
@@ -183,8 +158,23 @@ export const CanNotContinueToNextRound = {
 
 export const DiscussionFinished = {
   args: {
-    defaultValue: { lastRound: 1, finalRound: 1, uInfo: uInfoRound1Complete },
+    defaultValue: { discussionId: '123456', lastRound: 1, finalRound: 1, uInfo: uInfoRound1Complete },
     user: { id: '123456', email: 'user@email.com' },
     round: 1,
   },
+  decorators: [
+    buildApiDecorator('get-conclusion', (discussionId, cb) => {
+      cb({
+        point: { _id: '123', subject: 'Conclusion Point', description: 'This is the conclusion of the discussion.' },
+        mosts: [
+          { _id: '1', text: 'Most Why 1' },
+          { _id: '2', text: 'Most Why 2' },
+        ],
+        leasts: [
+          { _id: '3', text: 'Least Why 1' },
+          { _id: '4', text: 'Least Why 2' },
+        ],
+      })
+    }),
+  ],
 }
