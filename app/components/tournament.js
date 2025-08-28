@@ -15,6 +15,7 @@ import WhyStep from './steps/why'
 import CompareReasons from './steps/compare-whys'
 import Intermission from './intermission'
 import DeliberationContext from './deliberation-context'
+import Conclusion from './steps/conclusion'
 
 const WebComponents = {
   StepBar: StepBar,
@@ -27,6 +28,7 @@ const WebComponents = {
   WhyStep: WhyStep,
   CompareReasons: CompareReasons,
   Intermission: Intermission,
+  Conclusion: Conclusion,
 }
 
 function buildChildren(steps, round) {

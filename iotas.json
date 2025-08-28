@@ -525,7 +525,13 @@
             }
           ]
         },
-        { "webComponent": "Conclusion" },
+        {
+          "webComponent": "Conclusion",
+          "stepIntro": {
+            "subject": "Conclusion",
+            "description": "This is the end of the deliberation. Thank you for your participation!"
+          }
+        },
         { "webComponent": "Feedback" }
       ]
     }
