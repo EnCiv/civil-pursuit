@@ -1,17 +1,24 @@
 // https://github.com/EnCiv/civil-pursuit/issues/298
 
 import React from 'react'
-import { onDoneDecorator, socketEmitDecorator } from './common'
+import { onDoneDecorator, socketEmitDecorator, buildApiDecorator } from './common'
 import { useState } from 'react'
+import { userEvent, within } from '@storybook/test'
+import expect from 'expect'
 
 import Conclusion from '../app/components/steps/conclusion'
 
 // sets up the socket api mocks and renders the component
 const conclusionStepTemplate = args => {
   const { discussionId, stepIntro, ...otherArgs } = args
+}
 
-  const conclusionInfo = {
-    101: {
+const decorators = [
+  onDoneDecorator,
+  socketEmitDecorator,
+  buildApiDecorator('upsert-jsform', (discussionId, name, data, cb) => () => {}),
+  buildApiDecorator('get-conclusion', (discussionId, cb) => {
+    cb({
       leasts: [
         {
           _id: '6864611dda8eca6f38256714',
@@ -58,31 +65,28 @@ const conclusionStepTemplate = args => {
         subject: 'proxy random number',
         userId: '6864611dda8eca6f38256712',
       },
-    },
-  }
-
-  useState(() => {
-    window.socket._socketEmitHandlers['get-conclusion'] = (discussionId, cb) => {
-      window.socket._socketEmitHandlerResults['get-conclusion'] = [discussionId]
-      setTimeout(() => {
-        cb(conclusionInfo[discussionId])
-      })
-    }
-  })
-  return <Conclusion discussionId={discussionId} stepIntro={stepIntro} {...otherArgs} />
-}
+    })
+  }),
+]
 
 export default {
   title: 'conclusion',
   component: Conclusion,
-  decorators: [onDoneDecorator, socketEmitDecorator],
+  decorators: decorators,
   parameters: {
     layout: 'fullscreen',
   },
 }
 
 export const renderTest = {
-  args: { discussionId: 101, stepIntro: { subject: 'Conclusion', description: 'The group decided this was the most important issue:' } },
-  decorators: [onDoneDecorator, socketEmitDecorator],
-  render: conclusionStepTemplate,
+  args: { discussionId: 110, stepIntro: { subject: 'Conclusion', description: 'The next group decided this was the most important issue:' } },
+}
+
+export const playTest = {
+  args: { discussionId: 111, stepIntro: { subject: 'Conclusion', description: 'The third group decided this was the most important issue:' } },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByText('Awesome!'))
+    expect(window.socket._socketEmitHandlerResults['upsert-jsform'][0]).toMatchObject([args.discussionId, 'conclusion', { howDoYouFeel: 'Awesome!' }])
+  },
 }

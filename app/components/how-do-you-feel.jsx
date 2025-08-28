@@ -8,6 +8,7 @@ const responseOptions = ['Awesome!', 'Just Okay', 'Unsatisfied']
 export default function HowDoYouFeel(props) {
   const { disabled = false, className, onDone, title = 'How do you feel about it', ...otherProps } = props
   const styleClasses = rankingStyleClasses(props)
+
   return (
     <div className={cx(styleClasses.wrapper, className)} {...otherProps}>
       <p className={styleClasses.textStyle}>{title}</p>

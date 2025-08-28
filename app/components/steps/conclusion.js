@@ -18,14 +18,19 @@ export default function Conclusion(props) {
 
   useEffect(() => {
     window.socket.emit('get-conclusion', discussionId, data => {
-      console.log('Conclusion data loaded:', data)
       if (data) {
         const conclusion = data
         setData(conclusion)
       }
     })
   }, [])
-  console.log(data.point)
+
+  const handleOnDone = ({ valid, value }) => {
+    window.socket.emit('upsert-jsform', discussionId, 'conclusion', { howDoYouFeel: value })
+
+    onDone({ valid })
+  }
+
   return (
     <div className={cx(classes.conclusion, className)} {...otherProps}>
       <div className={cx(classes.mostAndLeastsWrapper)}>
@@ -57,7 +62,7 @@ export default function Conclusion(props) {
         </div>
       </div>
       <div className={cx(classes.howDoYouFeelWrapper)}>
-        <HowDoYouFeel title={'How do you feel about the results?'} />
+        <HowDoYouFeel title={'How do you feel about the results?'} onDone={handleOnDone} />
       </div>
     </div>
   )
