@@ -69,6 +69,14 @@ const whyQuestionAnswerStep = 'Why should everyone consider solving this issue?'
 
 export const tournamentSteps = [
   {
+    webComponent: 'Conclusion',
+    stepName: 'Conclusion',
+    stepIntro: {
+      subject: 'Conclusion',
+      description: 'This is the end of the deliberation. Thank you for your participation!',
+    },
+  },
+  {
     webComponent: 'Answer',
     stepName: 'Answer',
     stepIntro: {

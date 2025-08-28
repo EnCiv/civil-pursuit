@@ -64,7 +64,6 @@ const conclusionStepTemplate = args => {
   useState(() => {
     window.socket._socketEmitHandlers['get-conclusion'] = (discussionId, cb) => {
       window.socket._socketEmitHandlerResults['get-conclusion'] = [discussionId]
-      console.log('Socket emit for get-conclusion:', discussionId)
       setTimeout(() => {
         cb(conclusionInfo[discussionId])
       })

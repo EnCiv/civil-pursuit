@@ -28,17 +28,19 @@ export default function Conclusion(props) {
   console.log(data.point)
   return (
     <div className={cx(classes.conclusion, className)} {...otherProps}>
-      <StepIntro {...stepIntro} />
-      <div>
-        <div className={cx(classes.subject)}>
-          <H>{data.point?.subject}</H>
+      <div className={cx(classes.mostAndLeastsWrapper)}>
+        <StepIntro {...stepIntro} />
+        <div>
+          <div className={cx(classes.subject)}>
+            <H>{data.point?.subject}</H>
+          </div>
+          <div className={cx(classes.description)}>
+            <text>{data.point?.description}</text>
+          </div>
         </div>
-        <div className={cx(classes.description)}>
-          <text>{data.point?.description}</text>
+        <div className={cx(classes.dualPointList)}>
+          <ShowDualPointList leftPoints={data.mosts} leftHeader={"Why It's Most Important"} rightPoints={data.leasts} rightHeader={"Why It's Least Important"} vState={undefined} />
         </div>
-      </div>
-      <div className={cx(classes.dualPointList)}>
-        <ShowDualPointList leftPoints={data.mosts} leftHeader={"Why It's Most Important"} rightPoints={data.leasts} rightHeader={"Why It's Least Important"} vState={undefined} />
       </div>
       <div className={cx(classes.rankingResultsWrapper)}>
         <div className={cx(classes.votingResultsText)}>
@@ -85,8 +87,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   rankingResultsWrapper: {
     backgroundColor: '#EBEBEBB2',
-    padding: '2rem 0 2rem 0',
-    borderRadius: '0.938rem',
+    padding: '2rem',
   },
   rankingResults: {
     backgroundColor: '#D9D9D999',
@@ -96,10 +97,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontWeight: 300,
     fontSize: '2.25rem',
     lineHeight: '2.938rem',
-    padding: '2rem 2rem 3rem 2rem',
+    padding: '2rem 0rem 3rem 2rem',
     color: theme.colors.primaryButtonBlue,
   },
   howDoYouFeelWrapper: {
-    padding: '3rem',
+    padding: '5rem 2rem 5rem 2rem',
   },
+  mostAndLeastsWrapper: { padding: '0 4rem 0 4rem' },
 }))
