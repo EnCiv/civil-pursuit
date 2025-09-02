@@ -24,7 +24,7 @@ function StepFooter(props) {
         <div className={classes.footerDiv}>
           {onBack ? (
             <TextButton className={classes.back} onDone={onBack}>
-              &lt; Back
+              <div className={classes.backText}>&lt; Back</div>
             </TextButton>
           ) : (
             <div></div>
@@ -60,6 +60,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   back: {
     margin: '0.5rem 2rem',
+  },
+  backText: {
+    width: 'max-content',
   },
   next: {
     margin: '1rem 2rem',
