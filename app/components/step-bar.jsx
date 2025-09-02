@@ -50,21 +50,16 @@ function StepBar(props) {
   const optionsContainerRef = useRef(null)
   // State to determine whether to display the mobile or desktop view. Maintained by the window resize event listener.
   // State to handle the select input.
+  const selectItemsContainerRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   // State to map each 'page' of the steps carousel to its steps.
   const [pages, setPages] = useState(new Map())
-  // State to hold the steps that should be rendered on each page.
-  const [visibleSteps, setVisibleSteps] = useState([...steps, dummyStep].map((step, i) => ({ ...step, id: i + 1 })))
   // State to manage the current page of the step bar.
   const [currentPage, setCurrentPage] = useState(1)
   // add a unique numerical identifier to each step
-  const stepsWithIds = useMemo(() => {
-    let newSteps = []
-    for (let i = 0; i < steps.length; i++) {
-      newSteps.push({ ...steps[i], id: i + 1 })
-    }
-    return newSteps
-  }, [steps])
+  const stepsWithIds = useMemo(() => steps.map((step, i) => ({ ...step, id: i + 1 })), [steps])
+  // State to hold the steps that should be rendered on each page.
+  const [visibleSteps, setVisibleSteps] = useState([...stepsWithIds, dummyStep])
 
   const handleClickOutside = event => {
     // this function is added to the mouseup event handler on initial render. Rerenders will rewrite the function with the latest values of state variables,
@@ -94,7 +89,7 @@ function StepBar(props) {
 
   const handleResize = () => {
     //setIsMobile(window.innerWidth < mobileBreakpoint * 16)
-    setVisibleSteps([...steps, dummyStep])
+    setVisibleSteps([...stepsWithIds, dummyStep])
     setTimeout(() => handleCarouselSetup()) // do this after the visibleSteps are rendered
   }
 
@@ -198,7 +193,7 @@ function StepBar(props) {
   */
   useLayoutEffect(() => {
     if (!isMobile()) {
-      setVisibleSteps([...steps, dummyStep])
+      setVisibleSteps([...stepsWithIds, dummyStep])
       setTimeout(() => handleCarouselSetup()) // do this after the visibleSteps are rendered
     }
   }, [isMobile(), current])
@@ -218,6 +213,7 @@ function StepBar(props) {
               <Step
                 name={step.name}
                 title={step.title}
+                stepIndex={step.id}
                 complete={step.id < steps.length ? steps[step.id - 1].complete : false}
                 active={current === step.id ? true : false}
                 unlocked={steps[step.id - 2] ? steps[step.id - 2].complete : step?.seen}
@@ -236,39 +232,41 @@ function StepBar(props) {
   ) : (
     // MOBILE view
     <div className={classes.mobileContainer}>
+      <div className={classes.goTo}>Go To</div>
       <div className={cx(classes.resetButtonStyling, classes.selectInput)} ref={selectRef} tabIndex={0} data-testid="mobile-select-bar">
-        <div className={classes.selectItemsContainer}>
-          <div className={classes.selectText}>{steps[current - 1].name}</div>
+        <div className={classes.selectItemsContainer} ref={selectItemsContainerRef}>
+          <div className={classes.selectText}>{current + ': ' + steps[current - 1].name}</div>
           {isOpen ? <SvgStepBarArrowMobile style={{ transform: 'rotate(180deg)', flexShrink: '0' }} width="13" height="13" /> : <SvgStepBarArrowMobile width="13" height="13" style={{ flexShrink: '0' }} />}
         </div>
-      </div>
-      {isOpen && (
-        <div className={cx(classes.dropdownContainer, classes.customScrollbar)} ref={optionsContainerRef}>
-          <div className={classes.dropdownContent}>
-            <div className={classes.stepsContainerMobile}>
-              {stepsWithIds.map((step, index) => {
-                return (
-                  <Step
-                    key={index}
-                    name={step.name}
-                    title={step.title}
-                    complete={steps[index].complete}
-                    active={current === step.id ? true : false}
-                    unlocked={index > 0 && steps[index - 1].complete}
-                    onDone={() => {
-                      setIsOpen(false) // close the dropdown when a step is selected
-                      onDone({ valid: true, value: step.id })
-                    }}
-                    index={index}
-                    {...otherProps}
-                    ref={stepRefs[index]}
-                  />
-                )
-              })}
+        {isOpen && (
+          <div className={cx(classes.dropdownContainer, classes.customScrollbar)} ref={optionsContainerRef} style={{ width: selectItemsContainerRef.current ? `calc( ${selectItemsContainerRef.current.clientWidth}px - 3rem )` : 'auto' }}>
+            <div className={classes.dropdownContent}>
+              <div className={classes.stepsContainerMobile}>
+                {stepsWithIds.map((step, index) => {
+                  return (
+                    <Step
+                      key={index}
+                      stepIndex={step.id}
+                      name={step.name}
+                      title={step.title}
+                      complete={steps[index].complete}
+                      active={current === step.id ? true : false}
+                      unlocked={index > 0 && steps[index - 1].complete}
+                      onDone={() => {
+                        setIsOpen(false) // close the dropdown when a step is selected
+                        onDone({ valid: true, value: step.id })
+                      }}
+                      index={index}
+                      {...otherProps}
+                      ref={stepRefs[index]}
+                    />
+                  )
+                })}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
       <div className={classes.breakStyle} />
     </div>
   )
@@ -333,6 +331,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexDirection: 'column',
     background: theme.colors.white,
   },
+  goTo: {
+    marginLeft: '1.56rem',
+  },
   selectInput: {
     margin: '0.44rem 1.56rem 0rem',
     display: 'flex',
@@ -367,10 +368,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     border: '0.125rem solid #EBEBEB',
     background: theme.colors.white,
     margin: '0rem 1.56rem',
-    overflowY: 'scroll',
     position: 'absolute',
     left: '0',
-    width: '100%',
     zIndex: '1000',
   },
   dropdownContent: {
