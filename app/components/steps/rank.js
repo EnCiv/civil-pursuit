@@ -263,9 +263,30 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '2rem 0rem 3rem 0rem',
     display: 'flex',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: '1.25rem',
   },
-  leftButtons: { display: 'flex', alignItems: 'center', gap: '1rem' },
-  rightButtons: {},
+  leftButtons: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+    flexGrow: 1,
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      justifyContent: 'space-around',
+    },
+  },
+  rightButtons: {
+    display: 'flex',
+    flexGrow: 1,
+    justifyContent: 'flex-end',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      '& button': {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        flexGrow: 0.8,
+      },
+    },
+  },
   pointDiv: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
