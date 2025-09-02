@@ -94,7 +94,6 @@ export const StepSlider = props => {
         return state // no need to rerender. leaving transitions on so that child components growing and shrinking will animate
       }
       case 'decrement': {
-        console.log('decrementing', state.currentStep)
         return {
           ...state,
           nextStep: Math.max(0, state.currentStep - 1),
@@ -173,7 +172,6 @@ export const StepSlider = props => {
   // ResizeObserver to update stepChildWrapper height when the current panel's height changes
   useEffect(() => {
     if (!panelRefs.current[state.currentStep] || !stepChildRapper.current) {
-      console.info('No panel or stepChildRapper found', state.currentStep, panelRefs.current[state.currentStep], stepChildRapper.current)
       return
     }
     const panel = panelRefs.current[state.currentStep]
@@ -230,7 +228,7 @@ export const StepSlider = props => {
           ref={stepChildRapper}
           style={{
             left: -outerRect.width * state.currentStep + 'px',
-            width: outerRect.width * cachedChildren.length + 'px',
+            width: Math.max(outerRect.width, outerRect.clientWidth) * cachedChildren.length + 'px', // clientWidth is an integer and may get rounded up vs width in cases (desktop scaled monitor)
             height: panelRefs.current[state.currentStep]?.offsetHeight + 'px',
           }}
           className={cx(classes.stepChildWrapper, state.transitions && classes.transitions)}
