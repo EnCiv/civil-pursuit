@@ -8,7 +8,7 @@ import { createUseStyles } from 'react-jss'
 import { PositioningPortal } from '@codastic/react-positioning-portal/lib/legacy/index.js'
 
 const Step = forwardRef((props, ref) => {
-  const { name, title = '', complete, active, unlocked, onDone = () => {}, index, className, ...otherProps } = props
+  const { name, title = '', complete, active, unlocked, onDone = () => {}, index, stepIndex, className, ...otherProps } = props
 
   const classes = useStylesFromThemeFunction()
 
@@ -82,7 +82,7 @@ const Step = forwardRef((props, ref) => {
     >
       <span onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
         <PositioningPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
-          <div className={textStyle}>{name}</div>
+          <div className={textStyle}>{stepIndex + ': ' + name}</div>
         </PositioningPortal>
       </span>
     </div>
