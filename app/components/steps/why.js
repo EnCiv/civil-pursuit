@@ -163,7 +163,7 @@ export function derivePointWhyListByCategory(data, category) {
 
   let updated = false
 
-  if (local.reducedPointList !== reducedPointList) {
+  if (local.reducedPointList !== reducedPointList || local.preRankByParentId !== preRankByParentId) {
     const pointsInCategory = reducedPointList.filter(item => {
       const pId = item.point?._id
       return pId && preRankByParentId[pId]?.category === category
@@ -191,6 +191,7 @@ export function derivePointWhyListByCategory(data, category) {
     }
 
     local.reducedPointList = reducedPointList
+    local.preRankByParentId = preRankByParentId
   }
 
   if (local.myWhyByParentId !== myWhyByParentId) {
