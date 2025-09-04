@@ -197,6 +197,7 @@
         { "webComponent": "Conclusion" },
         {
           "webComponent": "Jsform",
+          "name": "moreDetails",
           "questions": [["How would you rate your overall experience with our product/service?", "What aspects of our product/service do you believe can be improved?"]],
           "schema": {
             "type": "object",
