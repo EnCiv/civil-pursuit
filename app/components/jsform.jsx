@@ -10,7 +10,7 @@ import { vanillaCells, vanillaRenderers } from '@jsonforms/vanilla-renderers'
 import { PrimaryButton } from './button'
 import { rankWith, isControl } from '@jsonforms/core'
 import { withJsonFormsControlProps } from '@jsonforms/react'
-import StepIntro from '../components/step-intro'
+import StepIntro from './step-intro'
 
 const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
   const options = schema.enum || []
@@ -60,7 +60,7 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
 const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }]
 
 const JsForm = props => {
-  const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, stepIntro = { subject: '', description: '' }, discussionId } = props
+  const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, title, stepIntro, discussionId } = props
   const [data, setData] = useState({})
   const classes = useStyles(props)
 
@@ -104,7 +104,8 @@ const JsForm = props => {
 
   return (
     <div className={cx(classes.formContainer, className)}>
-      <StepIntro {...stepIntro} />
+      {title && <p className={classes.formTitle}>{title}</p>}
+      {stepIntro && <StepIntro {...stepIntro} />}
       <div className={classes.jsonFormContainer}>
         <JsonForms
           schema={schema}
@@ -143,6 +144,7 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     marginBottom: '1rem',
     lineHeight: '2.25rem',
+    marginTop: '4rem',
   },
   formInput: props => ({
     width: '100%',

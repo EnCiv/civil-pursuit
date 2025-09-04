@@ -2,8 +2,11 @@
 
 import React from 'react'
 import CivilPursuit from '../app/web-components/civil-pursuit'
-import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator } from './common'
-import { Default, useSetupTournament } from './tournament.stories'
+import { onDoneDecorator } from './common'
+// it's weird that these things have to be imported from the story, and they can't be accessed though Normal.args....
+// it seems like in StoryBook tournament.storied is being lazy loaded and aren't define at the time this file is being evaluated at the top level
+import { tournamentSteps, tournamentDecorators, tournamentDefaultValue } from './tournament.stories'
+import { jsFormDecorators } from './jsform.stories'
 
 const testSteps = [
   //{ webComponent: 'SignUp', startTab: 'SignUp' }, // signup mock actions failing
@@ -33,7 +36,7 @@ const testSteps = [
   // Copy paste the data from tournament.stories.js to make things easy
   {
     webComponent: 'Tournament',
-    steps: Default.args.testSteps,
+    steps: tournamentSteps,
   },
   // uncomment when implemented { webComponent: 'Conclusion' },
   { webComponent: 'Feedback' },
@@ -44,10 +47,10 @@ export default {
   parameters: {
     layout: 'fullscreen',
   },
-  decorators: [onDoneDecorator, socketEmitDecorator],
+  decorators: [onDoneDecorator],
 }
 
-export const Normal = {
+export const Full = {
   args: {
     subject: 'What One Issue Should We The People Unite and Solve First?',
     description:
@@ -56,12 +59,10 @@ export const Normal = {
     user: { email: 'success@email.com', id: '67bf9d6ae49200d1349ab34a' },
     userId: '67bf9d6ae49200d1349ab34a',
     participants: 1,
-    ...Default.args.defaultValue,
+    ...tournamentDefaultValue,
+    _id: '5d0137260dacd06732a1d814',
   },
-  render: args => {
-    useSetupTournament()
-    return <CivilPursuit {...args} />
-  },
+  decorators: [...tournamentDecorators, ...jsFormDecorators],
 }
 
 export const WithoutTournament = {

@@ -166,8 +166,8 @@ export function RankPoints(props) {
       }
     }
     // Check for difference in expected most/least counts
-    const mostDiscrepancy = countByCategory.most - target.most
-    const leastDiscrepancy = countByCategory.least - target.least
+    const mostDiscrepancy = (countByCategory.most ?? 0) - target.most
+    const leastDiscrepancy = (countByCategory.least ?? 0) - target.least
 
     const valid = (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === reducedPointList.length) || (doneCount === reducedPointList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
 
@@ -263,9 +263,30 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '2rem 0rem 3rem 0rem',
     display: 'flex',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: '1.25rem',
   },
-  leftButtons: { display: 'flex', alignItems: 'center', gap: '1rem' },
-  rightButtons: {},
+  leftButtons: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+    flexGrow: 1,
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      justifyContent: 'space-around',
+    },
+  },
+  rightButtons: {
+    display: 'flex',
+    flexGrow: 1,
+    justifyContent: 'flex-end',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      '& button': {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        flexGrow: 0.8,
+      },
+    },
+  },
   pointDiv: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',

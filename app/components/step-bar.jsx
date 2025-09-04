@@ -8,6 +8,13 @@ import { createUseStyles } from 'react-jss'
 import Step from './step'
 import SvgStepBarArrowDesktop from '../svgr/step-bar-arrow-desktop'
 import SvgStepBarArrowMobile from '../svgr/step-bar-arrow-mobile'
+import Theme from './theme'
+import { set } from 'lodash'
+import { optionIs } from '@jsonforms/core'
+
+function isMobile() {
+  return window.innerWidth < parseInt(Theme.condensedWidthBreakPoint) * 16 // 40rem is the mobile breakpoint
+}
 
 function StepBar(props) {
   const { className, style, steps = [], current = 0, onDone = () => {}, ...otherProps } = props
@@ -42,60 +49,47 @@ function StepBar(props) {
   // Reference to the select dropdown's options container. To track click event targets that are not in the options container.
   const optionsContainerRef = useRef(null)
   // State to determine whether to display the mobile or desktop view. Maintained by the window resize event listener.
-  //const [isMobile, setIsMobile] = useState(window.innerWidth < mobileBreakpoint * 16)
-  const isMobile = window.innerWidth < mobileBreakpoint * 16
   // State to handle the select input.
+  const selectItemsContainerRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   // State to map each 'page' of the steps carousel to its steps.
   const [pages, setPages] = useState(new Map())
-  // State to hold the steps that should be rendered on each page.
-  const [visibleSteps, setVisibleSteps] = useState([...steps, dummyStep].map((step, i) => ({ ...step, id: i + 1 })))
   // State to manage the current page of the step bar.
   const [currentPage, setCurrentPage] = useState(1)
   // add a unique numerical identifier to each step
-  const stepsWithIds = useMemo(() => {
-    let newSteps = []
-    for (let i = 0; i < steps.length; i++) {
-      newSteps.push({ ...steps[i], id: i + 1 })
-    }
-    return newSteps
-  }, [steps])
+  const stepsWithIds = useMemo(() => steps.map((step, i) => ({ ...step, id: i + 1 })), [steps])
+  // State to hold the steps that should be rendered on each page.
+  const [visibleSteps, setVisibleSteps] = useState([...stepsWithIds, dummyStep])
 
   const handleClickOutside = event => {
-    if (!isMobile) return
+    // this function is added to the mouseup event handler on initial render. Rerenders will rewrite the function with the latest values of state variables,
+    // but only the first render of this was added to the event listener. so don't depend on state variables, but their setters won't change so use those
+    if (!isMobile()) return
     // If the menu is closed then check for the existence of select input reference.
     // If it exists and contains the click event target, then open the menu.
     // In other words, the user has clicked the input to open the menu.
-    if (!isOpen) {
-      if (selectRef?.current && selectRef?.current.contains(event?.target)) {
-        setIsOpen(true)
-      }
-      // If the menu is open, then check for the existence of all the references.
-      // If non-existent, then return.
-    } else {
-      if (selectRef?.current && optionsContainerRef?.current) {
-        // If the user clicks an incomplete option that isn't active and it is inside of the
-        // dropdowon container, then the menu stays open.
-        // Otherwise, then menu closes. Note that only complete steps will call onDone.
-        for (let i = 0; i < stepRefs.length; i++) {
-          if (stepRefs[i]?.current) {
-            if (!stepRefs[i]?.current?.contains(event?.target) && optionsContainerRef?.current?.contains(event?.target)) {
-              continue
-            } else {
-              setIsOpen(false)
-              return
-            }
-          }
+    setIsOpen(isOpen => {
+      if (!isOpen) {
+        if (selectRef?.current && selectRef?.current.contains(event?.target)) {
+          if (event.type === 'keyup' && event.key === 'Tab') return false // don't open the menu on tab key
+          return true
         }
+        // If the menu is open, then check for the existence of all the references.
+        // If non-existent, then return.
       } else {
-        return
+        if (selectRef?.current && optionsContainerRef?.current) {
+          if (optionsContainerRef?.current?.contains(event?.target)) return isOpen // let the active menu item close it, and the inactive one leaves it open
+          else return false // if the click is outside the select input and options container, close the menu
+        } else {
+          return isOpen
+        }
       }
-    }
+    })
   }
 
   const handleResize = () => {
     //setIsMobile(window.innerWidth < mobileBreakpoint * 16)
-    setVisibleSteps([...steps, dummyStep])
+    setVisibleSteps([...stepsWithIds, dummyStep])
     setTimeout(() => handleCarouselSetup()) // do this after the visibleSteps are rendered
   }
 
@@ -135,7 +129,7 @@ function StepBar(props) {
   To handle the setup of the carousel, the width of each step is calculated and compared to the total width of the container
   */
   const handleCarouselSetup = () => {
-    if (isMobile) return
+    if (isMobile()) return
     // before calling handleCarouselSetup render all the steps so that all the widths can be measured
 
     if (!stepContainerRef?.current) return
@@ -185,6 +179,7 @@ function StepBar(props) {
 
     window.addEventListener('resize', handleResizeDebounced)
     window.addEventListener('mouseup', handleClickOutside)
+    window.addEventListener('keyup', handleClickOutside) // to close the select input when the user presses escape
 
     return () => {
       window.removeEventListener('resize', handleResizeDebounced)
@@ -197,16 +192,16 @@ function StepBar(props) {
    UseLayoutEffect ensures that widths are calculated after the layout is rendered. 
   */
   useLayoutEffect(() => {
-    if (!isMobile) {
-      setVisibleSteps([...steps, dummyStep])
+    if (!isMobile()) {
+      setVisibleSteps([...stepsWithIds, dummyStep])
       setTimeout(() => handleCarouselSetup()) // do this after the visibleSteps are rendered
     }
-  }, [isMobile, current])
+  }, [isMobile(), current])
 
   /*
   NOTE that index refers to the index of the step within its array, while step.id refers to the step #. I.e, Step 2 has an id of 2.
   */
-  return !isMobile ? (
+  return !isMobile() ? (
     <div className={cx(classes.container, className)} style={style}>
       <button onClick={leftClick} className={cx(classes.resetButtonStyling, classes.svgContainer)} data-testid="leftclick" tabIndex={currentPage !== 1 ? 0 : -1}>
         <SvgStepBarArrowDesktop className={cx({ [classes.svgColor]: currentPage === 1 })} width="1rem" height="1.2rem" style={{ transform: 'rotate(180deg)' }} />
@@ -218,6 +213,7 @@ function StepBar(props) {
               <Step
                 name={step.name}
                 title={step.title}
+                stepIndex={step.id}
                 complete={step.id < steps.length ? steps[step.id - 1].complete : false}
                 active={current === step.id ? true : false}
                 unlocked={steps[step.id - 2] ? steps[step.id - 2].complete : step?.seen}
@@ -236,38 +232,41 @@ function StepBar(props) {
   ) : (
     // MOBILE view
     <div className={classes.mobileContainer}>
+      <div className={classes.goTo}>Go To</div>
       <div className={cx(classes.resetButtonStyling, classes.selectInput)} ref={selectRef} tabIndex={0} data-testid="mobile-select-bar">
-        <div className={classes.selectItemsContainer}>
-          <div className={classes.selectText}>{steps[current - 1].name}</div>
+        <div className={classes.selectItemsContainer} ref={selectItemsContainerRef}>
+          <div className={classes.selectText}>{current + ': ' + steps[current - 1].name}</div>
           {isOpen ? <SvgStepBarArrowMobile style={{ transform: 'rotate(180deg)', flexShrink: '0' }} width="13" height="13" /> : <SvgStepBarArrowMobile width="13" height="13" style={{ flexShrink: '0' }} />}
         </div>
-      </div>
-
-      {isOpen && (
-        <div className={cx(classes.dropdownContainer, classes.customScrollbar)} ref={optionsContainerRef}>
-          <div className={classes.dropdownContent}>
-            <div className={classes.stepsContainerMobile}>
-              {stepsWithIds.map((step, index) => {
-                return (
-                  <Step
-                    key={index}
-                    name={step.name}
-                    title={step.title}
-                    complete={steps[index].complete}
-                    active={current === step.id ? true : false}
-                    unlocked={index > 0 && steps[index - 1].complete}
-                    onDone={() => onDone({ valid: true, value: step.id })}
-                    index={index}
-                    {...otherProps}
-                    ref={stepRefs[index]}
-                  />
-                )
-              })}
+        {isOpen && (
+          <div className={cx(classes.dropdownContainer, classes.customScrollbar)} ref={optionsContainerRef} style={{ width: selectItemsContainerRef.current ? `calc( ${selectItemsContainerRef.current.clientWidth}px - 3rem )` : 'auto' }}>
+            <div className={classes.dropdownContent}>
+              <div className={classes.stepsContainerMobile}>
+                {stepsWithIds.map((step, index) => {
+                  return (
+                    <Step
+                      key={index}
+                      stepIndex={step.id}
+                      name={step.name}
+                      title={step.title}
+                      complete={steps[index].complete}
+                      active={current === step.id ? true : false}
+                      unlocked={index > 0 && steps[index - 1].complete}
+                      onDone={() => {
+                        setIsOpen(false) // close the dropdown when a step is selected
+                        onDone({ valid: true, value: step.id })
+                      }}
+                      index={index}
+                      {...otherProps}
+                      ref={stepRefs[index]}
+                    />
+                  )
+                })}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-
+        )}
+      </div>
       <div className={classes.breakStyle} />
     </div>
   )
@@ -332,6 +331,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexDirection: 'column',
     background: theme.colors.white,
   },
+  goTo: {
+    marginLeft: '1.56rem',
+  },
   selectInput: {
     margin: '0.44rem 1.56rem 0rem',
     display: 'flex',
@@ -366,11 +368,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     border: '0.125rem solid #EBEBEB',
     background: theme.colors.white,
     margin: '0rem 1.56rem',
-    overflowY: 'scroll',
     position: 'absolute',
-    top: '100%',
     left: '0',
-    width: '100%',
     zIndex: '1000',
   },
   dropdownContent: {

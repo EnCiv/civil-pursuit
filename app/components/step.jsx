@@ -8,7 +8,7 @@ import { createUseStyles } from 'react-jss'
 import { PositioningPortal } from '@codastic/react-positioning-portal/lib/legacy/index.js'
 
 const Step = forwardRef((props, ref) => {
-  const { name, title = '', complete, active, unlocked, onDone = () => {}, index, className, ...otherProps } = props
+  const { name, title = '', complete, active, unlocked, onDone = () => {}, index, stepIndex, className, ...otherProps } = props
 
   const classes = useStylesFromThemeFunction()
 
@@ -42,7 +42,7 @@ const Step = forwardRef((props, ref) => {
   }
 
   // clear the timeout when the click is finished
-  const handleMouseUp = () => {
+  const handleMouseUp = event => {
     clearTimeout(timeRef.current)
     setTimeout(() => setIsPortalOpen(false), displayTime)
   }
@@ -69,7 +69,8 @@ const Step = forwardRef((props, ref) => {
   return (
     <div
       className={containerStyle}
-      onMouseDown={() => {
+      onMouseUp={e => {
+        e.stopPropagation()
         if (complete || active || unlocked) onDone(index)
       }}
       onKeyDown={handleKeyDown}
@@ -81,7 +82,7 @@ const Step = forwardRef((props, ref) => {
     >
       <span onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
         <PositioningPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
-          <div className={textStyle}>{name}</div>
+          <div className={textStyle}>{stepIndex + ': ' + name}</div>
         </PositioningPortal>
       </span>
     </div>

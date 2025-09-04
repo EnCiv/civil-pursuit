@@ -2,29 +2,7 @@
 
 import React, { useState } from 'react'
 import Tournament from '../app/components/tournament'
-import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator } from './common'
-
-const createPointDoc = (
-  _id,
-  subject,
-  description = 'Point Description',
-  groupedPoints = [],
-  demInfo = {
-    dob: '1990-10-20T00:00:00.000Z',
-    state: 'NY',
-    party: 'Independent',
-  },
-  userId = '1000'
-) => {
-  return {
-    _id,
-    subject,
-    description,
-    groupedPoints,
-    demInfo,
-    userId,
-  }
-}
+import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator, buildApiDecorator } from './common'
 
 const pointItems = Array.from({ length: 30 }, (_, index) => ({
   _id: index + 'a', //
@@ -32,13 +10,6 @@ const pointItems = Array.from({ length: 30 }, (_, index) => ({
   description: 'Point Description ' + index,
   userId: '1000' + index,
 }))
-
-const defaultSharedPointsWhyStep = {
-  mosts: [pointItems[1], pointItems[2]],
-  leasts: [pointItems[3], pointItems[4]],
-  whyMosts: [pointItems[1], pointItems[2]],
-  whyLeasts: [pointItems[3], pointItems[4]],
-}
 
 const reviewPoint1 = {
   point: pointItems[0],
@@ -96,7 +67,7 @@ const startingQuestionAnswerStep = {
 
 const whyQuestionAnswerStep = 'Why should everyone consider solving this issue?'
 
-const testSteps = [
+export const tournamentSteps = [
   {
     webComponent: 'Answer',
     stepName: 'Answer',
@@ -193,54 +164,13 @@ const testSteps = [
 export default {
   component: Tournament,
   args: {
-    steps: testSteps,
+    steps: tournamentSteps,
   },
   parameters: {
     layout: 'fullscreen',
   },
   decorators: [DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator],
-  excludeStories: /useSetup.+/,
-}
-
-export function useSetupTournament() {
-  return useState(() => {
-    if (!window.logger) window.logger = console
-    // execute this code once, before the component is initially rendered
-    // the api call will provide the new data for this step
-    window.socket._socketEmitHandlerResults['get-user-ranks'] = []
-    window.socket._socketEmitHandlers['get-user-ranks'] = (discussionId, round, ids, cb) => {
-      window.socket._socketEmitHandlerResults['get-user-ranks'].push([discussionId, round, ids])
-      setTimeout(() => {
-        cb([]) // return empty ranks
-      })
-    }
-    window.socket._socketEmitHandlerResults['get-points-of-ids'] = []
-    window.socket._socketEmitHandlers['upsert-rank'] = (rank, cb) => {
-      window.socket._socketEmitHandlerResults['upsert-rank'].push([rank])
-      cb && cb()
-    }
-    window.socket._socketEmitHandlerResults['upsert-rank'] = []
-    window.socket._socketEmitHandlers['get-why-ranks-and-points'] = (discussionId, round, mostIds, leastIds, cb) => {
-      cb({
-        ranks: [],
-        whys: [],
-      })
-    }
-    window.socket._socketEmitHandlerResults['subscribe-deliberation'] = []
-    window.socket._socketEmitHandlers['subscribe-deliberation'] = (discussionId, cb) => {
-      window.socket._socketEmitHandlerResults['subscribe-deliberation'].push([discussionId])
-      cb && cb({ uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }], lastRound: 0, participants: 1 })
-    }
-    window.socket._socketEmitHandlerResults['get-conclusion'] = []
-    window.socket._socketEmitHandlers['get-conclusion'] = (discussionId, cb) => {
-      window.socket._socketEmitHandlerResults['get-conclusion'].push([discussionId])
-      cb && cb({ point: pointList[0], mosts: make5Whys([pointList[0]], 'most').flat(), leasts: make5Whys([pointList[0]], 'least').flat() })
-    }
-    window.socket._socketOnHandlers = {}
-    window.socket.on = (event, cb) => {
-      window.socket._socketOnHandlers[event] = cb
-    }
-  })
+  excludeStories: ['tournamentDecorators', 'tournamentDefaultValue', 'tournamentSteps'],
 }
 
 function makePoints(n) {
@@ -259,30 +189,42 @@ function byId(docs) {
 function byParentIdList(docs) {
   return docs.reduce((byPId, doc) => (byPId[doc.parentId] ? byPId[doc.parentId].push(doc) : (byPId[doc.parentId] = [doc]), byPId), {})
 }
-export const Default = {
+
+// export so they can be used in other stories like civil-pursuit
+export const tournamentDecorators = [
+  buildApiDecorator('subscribe-deliberation', (discussionId, requestHandler, updateHandler) => {
+    requestHandler({ uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }], lastRound: 0, participants: 1 })
+  }),
+  buildApiDecorator('get-user-ranks', []),
+  buildApiDecorator('get-points-of-ids', []),
+  buildApiDecorator('get-why-ranks-and-points', { ranks: [], whys: [] }),
+  buildApiDecorator('upsert-rank', () => {}),
+  buildApiDecorator('get-conclusion', (discussionId, cb) => {
+    cb && cb({ point: pointList[0], mosts: make5Whys([pointList[0]], 'most').flat(), leasts: make5Whys([pointList[0]], 'least').flat() })
+  }),
+]
+
+export const tournamentDefaultValue = {
+  // this goes into the deliberation context
+  userId: '67bf9d6ae49200d1349ab34a',
+  discussionId: '5d0137260dacd06732a1d814',
+  finalRound: 2,
+  pointById: byId(pointList),
+  groupIdsLists: [],
+  randomWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
+  whyRankByParentId: {},
+  //topWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
+  whysByCategoryByParentId: {
+    most: byParentIdList(make5Whys(pointList, 'most').flat()),
+    least: byParentIdList(make5Whys(pointList, 'least').flat()),
+  },
+  postRankByParentId: {},
+}
+
+export const Normal = {
   args: {
-    testSteps,
-    defaultValue: {
-      finalRound: 0,
-      // this goes into the deliberation context
-      userId: '67bf9d6ae49200d1349ab34a',
-      discussionId: '5d0137260dacd06732a1d814',
-      lastRound: 0,
-      pointById: byId(pointList),
-      groupIdsLists: [],
-      randomWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
-      whyRankByParentId: {},
-      //topWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
-      whysByCategoryByParentId: {
-        most: byParentIdList(make5Whys(pointList, 'most').flat()),
-        least: byParentIdList(make5Whys(pointList, 'least').flat()),
-      },
-      postRankByParentId: {},
-      uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }],
-    },
+    testSteps: tournamentSteps,
+    defaultValue: tournamentDefaultValue,
   },
-  render: args => {
-    useSetupTournament()
-    return <Tournament {...args} />
-  },
+  decorators: tournamentDecorators,
 }

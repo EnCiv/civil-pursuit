@@ -74,6 +74,8 @@ export function Why(props) {
     category = '', // "most" or "least"
     onDone = () => {},
     stepIntro,
+    maxWordCount,
+    maxCharCount,
   } = props
 
   const classes = useStylesFromThemeFunction()
@@ -139,7 +141,7 @@ export function Why(props) {
           {pointWhyList.map(({ point, why }, i) => (
             <div key={point._id}>
               {i > 0 && <hr className={classes.pointsHr}></hr>}
-              <WhyInput point={point} value={why} onDone={handleOnDone} />
+              <WhyInput point={point} value={why} onDone={handleOnDone} maxWordCount={maxWordCount} maxCharCount={maxCharCount} />
             </div>
           ))}
         </div>
@@ -161,7 +163,7 @@ export function derivePointWhyListByCategory(data, category) {
 
   let updated = false
 
-  if (local.reducedPointList !== reducedPointList) {
+  if (local.reducedPointList !== reducedPointList || local.preRankByParentId !== preRankByParentId) {
     const pointsInCategory = reducedPointList.filter(item => {
       const pId = item.point?._id
       return pId && preRankByParentId[pId]?.category === category
@@ -189,6 +191,7 @@ export function derivePointWhyListByCategory(data, category) {
     }
 
     local.reducedPointList = reducedPointList
+    local.preRankByParentId = preRankByParentId
   }
 
   if (local.myWhyByParentId !== myWhyByParentId) {

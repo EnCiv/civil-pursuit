@@ -105,8 +105,16 @@ export const threePoints = {
     preRankByParentId: {
       [point1.point._id]: createRank('Most', point1.point._id),
       [point2.point._id]: createRank('Neutral', point2.point._id),
-      [point3.point._id]: createRank('Least', point3.point._id),
+      [point3.point._id]: createRank('Neutral', point3.point._id),
     },
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const { onDone } = args
+    expect(onDone.mock.calls[0][0]).toMatchObject({
+      valid: true,
+      value: 1,
+    })
   },
 }
 

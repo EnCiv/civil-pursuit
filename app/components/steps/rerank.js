@@ -60,7 +60,7 @@ export default function RerankStep(props) {
   }, [round, data.reducedPointList])
 
   const topWhysByCategoryByParentId = useMemo(() => {
-    const topWhysByCategoryByParentId = data.reducedPointList.reduce(
+    const topWhysByCategoryByParentId = data.reducedPointList?.reduce(
       (tWxCxP, { point, group }) => {
         ;['most', 'least'].forEach(category => {
           tWxCxP[category][point._id] = data.whysByCategoryByParentId?.[category]?.[point._id] || []
@@ -69,7 +69,7 @@ export default function RerankStep(props) {
         return tWxCxP
       },
       { most: {}, least: {} }
-    )
+    ) || { most: {}, least: {} }
     return topWhysByCategoryByParentId
   }, [data.reducedPointList, data.whysByCategoryByParentId, data.myWhyByCategoryByParentId])
   return (
@@ -141,8 +141,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
-    paddingLeft: '1rem', // room for the shadow around the points
-    paddingRight: '1rem',
+    paddingLeft: '0.2rem', // room for the shadow around the points
+    paddingRight: '0.8rem',
     marginBottom: '1rem', // for box shadow of children
   },
 }))

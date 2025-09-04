@@ -48,6 +48,7 @@ function setupSocketEmitHandlers() {
     else console.info('socketEmitDecorator window.socket.on replacing handler', handle)
     window.socket._onHandlers[handle] = fn
   }
+  if (!window.logger) window.logger = console
 }
 
 export const socketEmitDecorator = Story => {
