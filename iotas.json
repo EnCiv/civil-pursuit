@@ -23,7 +23,8 @@
       "steps": [
         { "webComponent": "SignUp", "startTab": "SignUp" },
         {
-          "webComponent": "Details",
+          "webComponent": "Jsform",
+          "name": "moreDetails",
           "title": "Some Details",
           "schema": {
             "type": "object",
@@ -195,7 +196,37 @@
           ]
         },
         { "webComponent": "Conclusion" },
-        { "webComponent": "Feedback" }
+        {
+          "webComponent": "Jsform",
+          "name": "moreDetails",
+          "questions": [["How would you rate your overall experience with our product/service?", "What aspects of our product/service do you believe can be improved?"]],
+          "schema": {
+            "type": "object",
+            "properties": {
+              "experience": {
+                "title": "Description",
+                "type": "string"
+              },
+              "improvements": {
+                "title": "Description",
+                "type": "string"
+              }
+            }
+          },
+          "uischema": {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/experience"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/improvements"
+              }
+            ]
+          }
+        }
       ]
     }
   },
@@ -322,7 +353,8 @@
       "steps": [
         { "webComponent": "SignUp", "startTab": "SignUp" },
         {
-          "webComponent": "Details",
+          "webComponent": "Jsform",
+          "name": "moreDetails",
           "stepIntro": {
             "subject": "Some details",
             "description": "We ask these questions about participants to help us engage diverse participation.  In order to find the best possible solutions, and the ones that unite the nation, all views need to be represented if not participating directly.  This details are specific to this conversations. For other conversations, we will ask again."

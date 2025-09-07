@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { userEvent, within } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import expect from 'expect'
+import Jsform from '../app/components/jsform'
 import { onDoneDecorator, onDoneResult, buildApiDecorator, socketEmitDecorator } from './common'
-import MoreDetails from './../app/components/more-details'
 
 export default {
-  component: MoreDetails,
+  component: Jsform,
   args: {},
   decorators: [onDoneDecorator, socketEmitDecorator],
   parameters: {
@@ -270,7 +270,7 @@ export const FigmaInputMatch = {
   args: {
     schema: testSchema,
     uischema: testUIschema,
-    title: 'We just need a few more details about you to get started.',
+    stepIntro: { subject: 'We just need a few more details about you to get started.' },
   },
 }
 
@@ -279,10 +279,45 @@ export const InitialTestSchemaDetailsInput = {
     schema: testSchema,
     uischema: testUIschema,
     details: initialTestSchemaDetails,
-    title: 'We just need a few more details about you to get started.',
+    stepIntro: { subject: 'We just need a few more details about you to get started.' },
   },
 }
 
+const setupJsFormsApisWithData = Story => {
+  useState(() => {
+    // execute this code once, before the component is initally rendered
+    // the api call will provide the new data for this step
+    window.socket._socketEmitHandlers['get-jsform'] = (discussionId, cb) => {
+      window.socket._socketEmitHandlerResults['get-jsform'].push([discussionId])
+      setTimeout(() => {
+        // Just simulating a response with some data
+        cb?.({
+          loadData: {
+            stringExample: 'Test String',
+            integerExample: 42,
+            numberExample: 3.14,
+            checkboxExample: true,
+            selectionExample: 'option 2',
+            dateExample: '2023-01-01',
+            objectExample: {
+              fieldOne: 'A',
+              fieldTwo: 'B',
+              fieldThree: 'C',
+              fieldFour: 'D',
+            },
+          },
+        })
+      }, 0)
+    }
+    window.socket._socketEmitHandlerResults['get-jsform'] = []
+    window.socket._socketEmitHandlers['upsert-jsform'] = (discussionId, name, data, cb) => {
+      window.socket._socketEmitHandlerResults['upsert-jsform'].push([[discussionId, name, data]])
+      setTimeout(() => cb?.())
+    }
+    window.socket._socketEmitHandlerResults['upsert-jsform'] = []
+  })
+  return <Story />
+}
 export const jsFormDecorators = [buildApiDecorator('get-jsform', (discussionId, cb) => () => {}), buildApiDecorator('upsert-jsform', (discussionId, name, data, cb) => () => {})]
 
 export const UserInputAndOnDoneCall = {
@@ -290,7 +325,8 @@ export const UserInputAndOnDoneCall = {
     schema: testSchema,
     uischema: testUIschema,
     details: initialTestSchemaDetails,
-    title: 'We just need a few more details about you to get started.',
+    stepIntro: { subject: 'We just need a few more details about you to get started.' },
+    name: 'moreDetails',
     discussionId: '123456789012345678901234567890abcd',
   },
   decorators: jsFormDecorators,
@@ -317,15 +353,22 @@ export const UserInputAndOnDoneCall = {
 
 export const StateOfResidenceSelection = {
   args: {
+    name: 'moreDetails',
+    discussionId: '123456789012345678901234567890abcd',
     schema: testStateOfResidenceSchema,
     uischema: testStateOfResidenceUIschema,
   },
 }
 
 export const BirthDateInput = {
-  args: { schema: testDobSchema, uischema: testDobUISchema },
+  args: { name: 'moreDetails', discussionId: '123456789012345678901234567890abcd', schema: testDobSchema, uischema: testDobUISchema },
 }
 
 export const AllInputTypes = {
-  args: { schema: testAllInputsSchema, uischema: testAllInputsUISchema },
+  args: { name: 'moreDetails', discussionId: '123456789012345678901234567890abcd', schema: testAllInputsSchema, uischema: testAllInputsUISchema },
+}
+
+export const LoadPreviousFilledData = {
+  decorators: [setupJsFormsApisWithData],
+  args: { name: 'loadData', discussionId: '123456789012345678901234567890abcd', schema: testAllInputsSchema, uischema: testAllInputsUISchema },
 }

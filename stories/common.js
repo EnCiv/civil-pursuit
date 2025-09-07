@@ -227,11 +227,14 @@ export function onBackResult() {
 
 // Create the level adjustment decorator
 export const levelDecorator = (Story, context) => {
-  return (
-    <Level>
-      <Story {...context} />
-    </Level>
-  )
+  // The CivilPursuit component renders it's own initial Level
+  if (context?.component?.name === 'CivilPursuit') return <Story {...context} />
+  else
+    return (
+      <Level>
+        <Story {...context} />
+      </Level>
+    )
 }
 
 export default {
