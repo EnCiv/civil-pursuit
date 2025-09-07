@@ -8,7 +8,7 @@ import Markdown from 'markdown-to-jsx'
 import DeliberationContext from './deliberation-context'
 
 const QuestionBox = props => {
-  const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', ...otherProps } = props
+  const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', minParticipants = 0, ...otherProps } = props
   const classes = useStylesFromThemeFunction({ ...props, contentAlign })
   const { data } = React.useContext(DeliberationContext)
   const participants = data?.participants ?? 0
@@ -23,9 +23,11 @@ const QuestionBox = props => {
           <Markdown>{description}</Markdown>
         </div>
       </div>
-      <div className={classes.participants}>
-        <StatusBadge name={badgeName} status="" />
-      </div>
+      {participants >= minParticipants && (
+        <div className={classes.participants}>
+          <StatusBadge name={badgeName} status="" />
+        </div>
+      )}
     </div>
   )
 }
