@@ -57,11 +57,28 @@ const Intermission = props => {
   const userIsRegistered = !!user?.email
   const nextRoundAvailable = round < lastRound
   const allRoundsCompleted = roundCompleted && round >= finalRound
+  const conclusionAvailable = data.topPointAndWhys
+
+  useEffect(() => {
+    if (!conclusionAvailable && allRoundsCompleted && userIsRegistered) {
+      window.socket.emit('get-conclusion', data.discussionId, topPointAndWhys => {
+        if (topPointAndWhys) upsert({ topPointAndWhys })
+      })
+    }
+  }, [allRoundsCompleted])
 
   let valid
   let onNext
   let conditionalResponse
-  if (!userIsRegistered) {
+  if (conclusionAvailable) {
+    conditionalResponse = (
+      <>
+        <div className={classes.headlineSmall}>Great! You have completed the deliberation, and the conclusion is ready!</div>
+      </>
+    )
+    valid = true
+    onNext = null
+  } else if (!userIsRegistered) {
     conditionalResponse = (
       <>
         <div className={classes.headlineSmall}>Great! To continue we need to be able to invite you back. So now is the last change to associate your email with this discussion</div>
