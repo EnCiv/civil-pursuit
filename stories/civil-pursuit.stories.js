@@ -39,7 +39,43 @@ const testSteps = [
     steps: tournamentSteps,
   },
   // uncomment when implemented { webComponent: 'Conclusion' },
-  { webComponent: 'Feedback' },
+  {
+    webComponent: 'Jsform',
+    name: 'feedback',
+    stepName: 'Feedback',
+    stepIntro: {
+      subject: 'Feedback',
+      description: 'Please provide your feedback below',
+    },
+    schema: {
+      type: 'object',
+      properties: {
+        experience: {
+          title: 'Description',
+          type: 'string',
+        },
+        improvements: {
+          title: 'Description',
+          type: 'string',
+        },
+      },
+    },
+    uischema: {
+      type: 'VerticalLayout',
+      elements: [
+        { type: 'Label', text: 'How would you rate your overall experience using this?' },
+        {
+          type: 'Control',
+          scope: '#/properties/experience',
+        },
+        { type: 'Label', text: 'What aspects of this discussion tool do you believe can be improved?' },
+        {
+          type: 'Control',
+          scope: '#/properties/improvements',
+        },
+      ],
+    },
+  },
 ]
 
 export default {
@@ -100,7 +136,44 @@ export const WithoutTournament = {
         },
       },
       // uncomment when implemented { webComponent: 'Conclusion' },
-      { webComponent: 'Feedback' },
+      {
+        webComponent: 'Jsform',
+        name: 'feedback',
+        stepName: 'Feedback',
+        stepIntro: {
+          subject: 'Feedback',
+          description: 'Please provide your feedback below',
+        },
+        schema: {
+          type: 'object',
+          properties: {
+            experience: {
+              title: 'Description',
+              type: 'string',
+            },
+            improvements: {
+              title: 'Description',
+              type: 'string',
+            },
+          },
+        },
+        uischema: {
+          type: 'VerticalLayout',
+          elements: [
+            { type: 'H', text: 'How would you rate your overall experience using this?' },
+            {
+              type: 'Control',
+              scope: '#/properties/experience',
+            },
+            { type: 'H', text: 'What aspects of this discussion tool do you believe can be improved?' },
+            {
+              type: 'Control',
+              scope: '#/properties/improvements',
+            },
+          ],
+        },
+      },
     ],
   },
+  decorators: [...jsFormDecorators],
 }

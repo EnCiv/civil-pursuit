@@ -11,6 +11,7 @@ import { PrimaryButton } from './button'
 import { rankWith, isControl } from '@jsonforms/core'
 import { withJsonFormsControlProps } from '@jsonforms/react'
 import StepIntro from './step-intro'
+import { H, Level } from 'react-accessible-headings'
 
 const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
   const options = schema.enum || []
@@ -57,7 +58,14 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
   )
 })
 
-const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }]
+/* new renderer for H uischema elements */
+const HRenderer = ({ uischema, path }) => {
+  const text = (uischema && uischema.text) || ''
+  return <H>{text}</H>
+}
+
+/* customRenderers:*/
+const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }, { tester: rankWith(2, uischema => !!(uischema && uischema.type === 'H')), renderer: HRenderer }]
 
 const JsForm = props => {
   const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, title, stepIntro, discussionId } = props
@@ -106,21 +114,23 @@ const JsForm = props => {
     <div className={cx(classes.formContainer, className)}>
       {title && <p className={classes.formTitle}>{title}</p>}
       {stepIntro && <StepIntro {...stepIntro} />}
-      <div className={classes.jsonFormContainer}>
-        <JsonForms
-          schema={schema}
-          uischema={uischema}
-          data={data}
-          renderers={memoedRenderers}
-          cells={vanillaCells}
-          onChange={({ data }) => {
-            setData(data)
-          }}
-        />
-        <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
-          Submit
-        </PrimaryButton>
-      </div>
+      <Level>
+        <div className={classes.jsonFormContainer}>
+          <JsonForms
+            schema={schema}
+            uischema={uischema}
+            data={data}
+            renderers={memoedRenderers}
+            cells={vanillaCells}
+            onChange={({ data }) => {
+              setData(data)
+            }}
+          />
+          <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
+            Submit
+          </PrimaryButton>
+        </div>
+      </Level>
     </div>
   )
 }
@@ -129,7 +139,7 @@ const useStyles = createUseStyles(theme => ({
   formContainer: props => ({
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'left',
     width: '100%',
     backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.white,
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.black,
