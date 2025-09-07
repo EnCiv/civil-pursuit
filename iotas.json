@@ -464,7 +464,7 @@
               "stepName": "Rank",
               "stepIntro": {
                 "subject": "Rank Responses",
-                "description": "Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important."
+                "description": "Please rate the following responses as Most, Neutral, or Least important to discuss further. All need to be rated, and in future steps you will be asked to explain why you rated them that way. See below for how many must be rated Most and Least important."
               }
             },
             {
@@ -473,7 +473,7 @@
               "stepName": "Why Most",
               "stepIntro": {
                 "subject": "Why it's Most Important",
-                "description": "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it."
+                "description": "Of the issues you thought were Most important to discuss further, please give a brief explanation of why it's important for everyone to consider it."
               },
               "maxWordCount": 300,
               "maxCharCount": 80
@@ -484,7 +484,7 @@
               "stepName": "Why Least",
               "stepIntro": {
                 "subject": "Why it's Least Important",
-                "description": "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it."
+                "description": "Of the issues you thought were least important to discuss further, please give a brief explanation of why it's least important for everyone to consider it."
               },
               "maxWordCount": 300,
               "maxCharCount": 80
