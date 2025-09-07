@@ -222,7 +222,7 @@ export function GroupPoints(props) {
         </div>
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
-            <PrimaryButton disabled={gs.selectedIds.length < MIN_GROUPS} className={`${classes.primaryButton} ${gs.selectedIds.length < MIN_GROUPS ? classes.createGroupDisabled : ''}`} onClick={handleCreateGroupClick}>
+            <PrimaryButton disabled={gs.selectedIds.length < 2} className={`${classes.primaryButton} ${gs.selectedIds.length < 2 ? classes.createGroupDisabled : ''}`} onClick={handleCreateGroupClick}>
               Create Group
             </PrimaryButton>
           </div>
@@ -236,17 +236,19 @@ export function GroupPoints(props) {
           </SecondaryButton> */}
         </div>
       </div>
-      {gs.selectLead != null ? (
+      {gs.selectLead && (
         <div className={classes.selectLead}>
           <PointGroup pointGroup={gs.selectLead} vState={'selectLead'} onDone={onSelectLeadDone} />
         </div>
-      ) : null}
-      <div className={classes.groupsContainer}>
-        {gs.pGsToGroup.map(pGD => (
-          <PointGroup key={pGD.point._id} pointGroup={pGD} vState="default" select={gs.selectedIds.some(id => id === pGD.point._id)} onClick={() => togglePointSelection(pGD.point._id)} />
-        ))}
-      </div>
-      {!!gs.yourGroups.length && (
+      )}
+      {!gs.selectLead && (
+        <div className={classes.groupsContainer}>
+          {gs.pGsToGroup.map(pGD => (
+            <PointGroup key={pGD.point._id} pointGroup={pGD} vState="default" select={gs.selectedIds.some(id => id === pGD.point._id)} onClick={() => togglePointSelection(pGD.point._id)} />
+          ))}
+        </div>
+      )}
+      {!gs.selectLead && !!gs.yourGroups.length && (
         <div className={classes.yourGroupsWrapper}>
           <div className={classes.yourGroupsTitle}>{'Your Groups'}</div>
           <div className={classes.groupsContainer}>

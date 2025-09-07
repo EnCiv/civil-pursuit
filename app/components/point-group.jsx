@@ -53,6 +53,18 @@ const PointGroup = props => {
     setPg(pointGroup)
   }, [pointGroup]) // could be changed by parent component, or within this component
 
+  const ungroupAndClose = () => {
+    setPg({})
+    onDone({
+      valid: true,
+      value: {
+        pointGroup: undefined,
+        removedPgs: group.map(point => ({
+          point,
+        })),
+      },
+    })
+  }
   return (
     <div className={cx(classes.pointGroup, className)} {...otherProps}>
       {vs === 'collapsed' && (
@@ -62,21 +74,7 @@ const PointGroup = props => {
         <div className={cx(classes.borderStyle, classes.contentContainer)}>
           <H className={classes.titleGroup}>Please select the response you want to lead with</H>
           <div className={classes.SvgContainer}>
-            <TextButton
-              title="Ungroup and close"
-              onClick={() => {
-                setPg({})
-                onDone({
-                  valid: true,
-                  value: {
-                    pointGroup: undefined,
-                    removedPgs: group.map(point => ({
-                      point,
-                    })),
-                  },
-                })
-              }}
-            >
+            <TextButton title="Ungroup and close" onClick={ungroupAndClose}>
               <span className={classes.chevronButton}>
                 <SvgClose />
               </span>
@@ -122,7 +120,7 @@ const PointGroup = props => {
             </Level>
           )}
           <div className={cx(classes.bottomButtons, classes.bottomButtonsOne)}>
-            <span>
+            <span className={classes.buttonSpan}>
               <SecondaryButton
                 disabled={selected === ''}
                 title="Done"
@@ -152,6 +150,7 @@ const PointGroup = props => {
                   setExpanded(false)
                 }}
               />
+              <SecondaryButton title="Ungroup" children="Ungroup" onDone={ungroupAndClose} />
             </span>
           </div>
         </div>
@@ -389,6 +388,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
     width: '100%',
     boxSizing: 'border-box',
+    marginLeft: '0.5rem',
+    marginRight: '0.5rem',
   },
 
   defaultWidth: {
@@ -408,6 +409,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '7rem',
     },
+  },
+
+  buttonSpan: {
+    display: 'flex',
+    gap: '1rem',
+    justifyContent: 'center',
   },
 
   ungroupButton: {},
