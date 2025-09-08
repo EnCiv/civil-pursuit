@@ -60,7 +60,7 @@ export function CompareWhys(props) {
   useEffect(() => {
     // if new points get added, mark them as incomplete
     if (!pointWithWhyRankListList) {
-      onDone({ valid: true, value: 1 })
+      onDone({ valid: true, value: 'skip' })
       return
     }
     for (const pointWithWhyRankList of pointWithWhyRankListList) {
