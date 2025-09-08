@@ -1,6 +1,7 @@
 'use strict'
 
 // https://github.com/EnCiv/civil-pursuit/issues/112
+// https://github.com/EnCiv/civil-pursuit/issues/332
 
 import React, { useState, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useCallback } from 'react'
 import { createUseStyles } from 'react-jss'
@@ -71,13 +72,19 @@ export const StepSlider = props => {
       case 'transitionsOn':
         return { ...state, transitions: true }
       case 'moveTo':
-        return { ...state, transitions: false, nextStep: action.to }
+        const newStepStatuses = state.stepStatuses?.map((stepStatus, i) => {
+          if (i > state.currentStep && i < action.to) return { ...stepStatus, skip: true }
+          else return stepStatus
+        })
+        return { ...state, transitions: false, stepStatuses: newStepStatuses, nextStep: action.to }
 
       case 'increment':
+        let nextStep = Math.min(state.currentStep + 1, children.length - 1)
+        while (state.stepStatuses[nextStep].skip && nextStep < children.length - 1) nextStep++
         return {
           ...state,
           transitions: false,
-          nextStep: Math.min(state.currentStep + 1, children.length - 1),
+          nextStep: nextStep,
         }
 
       case 'transitionBegin': {
@@ -101,9 +108,10 @@ export const StepSlider = props => {
         }
       }
       case 'updateStatuses':
-        let { valid, index } = action.payload
+        let { valid, index, skip } = action.payload
+
         if (steps) {
-          const newState = { ...state, stepStatuses: state.stepStatuses.toSpliced(index, 1, { ...state.stepStatuses[index], complete: valid }) }
+          const newState = { ...state, stepStatuses: state.stepStatuses.toSpliced(index, 1, { ...state.stepStatuses[index], complete: valid, skip }) }
           return newState
         } else if (valid) {
           // Just increment if no steps
@@ -133,13 +141,9 @@ export const StepSlider = props => {
   }
   // Keep track of each step's seen/completion status
   // Populate statuses with initial values
-  if (steps) {
-    steps[0].seen = true
-    steps.forEach((step, index) => {
-      steps[index].complete = false
-    })
-  }
-  const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, transitions: false, stepStatuses: steps })
+  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i === 0, complete: false, skip: false })) : undefined
+
+  const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, transitions: false, stepStatuses: initialStepStatuses })
 
   function cloneChild(currentStep) {
     return React.cloneElement(children[currentStep], {
@@ -147,8 +151,11 @@ export const StepSlider = props => {
       ...children[currentStep].props,
       key: currentStep,
       onDone: ({ valid, value, onNext }) => {
-        if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
-        else dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep } })
+        if (valid && value === 'skip') {
+          dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: true } })
+          dispatch({ type: 'increment' })
+        } else if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
+        else dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: value === 'skip' } })
         if (valid && onNext) _this.onNexts[currentStep] = onNext // save onNext for later use
         else delete _this.onNexts[currentStep] // delete onNext if not valid
       },

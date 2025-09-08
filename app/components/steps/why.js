@@ -129,7 +129,7 @@ export function Why(props) {
   }
 
   if (!pointWhyList?.length) {
-    setTimeout(() => onDone({ valid: true, value: 1 }), 0) // if there are no points, mark as done
+    setTimeout(() => onDone({ valid: true, value: 'skip' }), 0) // if there are no points, mark as done
     return <div className={cx(classes.wrapper, className)}>Nothing to do here. Hit Next to continue.</div>
   }
 
