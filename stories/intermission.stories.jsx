@@ -6,9 +6,25 @@ import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { DeliberationContextDecorator, onDoneDecorator, onDoneResult, buildApiDecorator } from './common'
 import { within, userEvent, waitFor, expect } from '@storybook/test'
 
+const uInfoRound0Incomplete = { 0: { shownStatementIds: { 123: { rank: 0 }, 234: { rank: 0 } } } }
+const uInfoRound0Complete = { 0: { shownStatementIds: { 123: { rank: 1 }, 234: { rank: 0 } }, finished: true } }
+const uInfoRound1Incomplete = { 0: { shownStatementIds: { 123: { rank: 1 }, 234: { rank: 0 } } }, 1: { shownStatementIds: { 345: { rank: 0 }, 456: { rank: 0 } } } }
+const uInfoRound1Complete = { 0: { shownStatementIds: { 123: { rank: 1 }, 234: { rank: 0 } }, finished: true }, 1: { shownStatementIds: { 345: { rank: 1 }, 456: { rank: 0 } }, finished: true } }
+
 export default {
   component: Intermission,
-  decorators: [onDoneDecorator, DeliberationContextDecorator],
+  decorators: [
+    onDoneDecorator,
+    DeliberationContextDecorator,
+    buildApiDecorator('send-password', (email, path, cb) => {
+      if (email === 'fail@email.com') cb({ error: 'could not send email' })
+      else cb({ error: '' })
+    }),
+    buildApiDecorator('set-user-info', (info, cb) => {
+      if (!info.email) cb({ error: 'email address not valid' })
+      else cb({ error: '' })
+    }),
+  ],
   parameters: {
     viewport: {
       viewports: INITIAL_VIEWPORTS,
@@ -18,45 +34,23 @@ export default {
 
 export const Empty = {
   args: {},
-  decorators: [
-    buildApiDecorator('set-user-info', {}),
-    buildApiDecorator('send-password', (email, path, cb) => {
-      if (email === 'fail@email.com') return { error: 'could not send email' }
-      else return { error: '' }
-    }),
-  ],
 }
 
 export const NoEmail = {
   args: {
-    defaultValue: { user: {}, round: 1, lastRound: 1, finalRound: 1 },
+    defaultValue: { lastRound: 1, finalRound: 1 },
+    user: {},
+    round: 1,
   },
-  decorators: [
-    buildApiDecorator('send-password', (email, path, cb) => {
-      if (email === 'fail@email.com') return { error: 'could not send email' }
-      else return { error: '' }
-    }),
-    buildApiDecorator('set-user-info', info => {
-      if (!info.email) return { error: 'email address not valid' }
-      return { error: '' }
-    }),
-  ],
+  decorators: [],
 }
 
 export const NoEmailSuccess = {
   args: {
-    defaultValue: { user: {}, round: 1, lastRound: 1, finalRound: 1 },
+    defaultValue: { lastRound: 1, finalRound: 1 },
+    user: {},
+    round: 1,
   },
-  decorators: [
-    buildApiDecorator('send-password', (email, path, cb) => {
-      if (email === 'fail@email.com') return { error: 'could not send email' }
-      else return { error: '' }
-    }),
-    buildApiDecorator('set-user-info', info => {
-      if (!info.email) return { error: 'email address not valid' }
-      return { error: '' }
-    }),
-  ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
@@ -77,18 +71,10 @@ export const NoEmailSuccess = {
 
 export const NoEmailFail = {
   args: {
-    defaultValue: { user: {}, round: 1, lastRound: 1, finalRound: 1 },
+    defaultValue: { lastRound: 1, finalRound: 1 },
+    user: {},
+    round: 1,
   },
-  decorators: [
-    buildApiDecorator('send-password', (email, path, cb) => {
-      if (email === 'fail@email.com') return { error: 'could not send email' }
-      else return { error: '' }
-    }),
-    buildApiDecorator('set-user-info', info => {
-      if (!info.email) return { error: 'email address not valid' }
-      return { error: '' }
-    }),
-  ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
@@ -108,7 +94,9 @@ export const NoEmailFail = {
 }
 export const NoEmailMobile = {
   args: {
-    defaultValue: { userId: '', round: 1, lastRound: 1, finalRound: 1, completedByRound: { 1: true } },
+    defaultValue: { lastRound: 1, finalRound: 1, uInfo: uInfoRound0Incomplete },
+    user: {},
+    round: 1,
   },
   parameters: {
     viewport: {
@@ -119,14 +107,16 @@ export const NoEmailMobile = {
 
 export const CanContinueToNextRound = {
   args: {
-    defaultValue: { round: 1, lastRound: 2, finalRound: 2, completedByRound: { 1: true } },
+    defaultValue: { lastRound: 2, finalRound: 2, uInfo: uInfoRound1Complete },
     user: { id: '123456', email: 'user@email.com' },
+    round: 1,
   },
 }
 export const CanContinueToNextRoundOnDone = {
   args: {
-    defaultValue: { round: 1, lastRound: 2, finalRound: 2, completedByRound: { 1: true } },
+    defaultValue: { lastRound: 2, finalRound: 2, uInfo: uInfoRound1Complete },
     user: { id: '123456', email: 'user@email.com' },
+    round: 1,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -135,7 +125,7 @@ export const CanContinueToNextRoundOnDone = {
     await userEvent.click(continueButton)
     await waitFor(() =>
       expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
+        count: 2,
         onDoneResult: {
           valid: true,
           value: 'continue',
@@ -152,21 +142,39 @@ export const CanContinueToNextRoundOnDone = {
 }
 export const CanNotFinishTheRound = {
   args: {
-    defaultValue: { round: 0, lastRound: 1, finalRound: 1, completedByRound: { 0: false } },
+    defaultValue: { lastRound: 1, finalRound: 1, uInfo: uInfoRound0Incomplete },
     user: { id: '123456', email: 'user@email.com' },
+    round: 0,
   },
 }
 
 export const CanNotContinueToNextRound = {
   args: {
-    defaultValue: { round: 0, lastRound: 0, finalRound: 1, completedByRound: { 0: true } },
+    defaultValue: { lastRound: 0, finalRound: 1, uInfo: uInfoRound0Complete },
     user: { id: '123456', email: 'user@email.com' },
+    round: 0,
   },
 }
 
 export const DiscussionFinished = {
   args: {
-    defaultValue: { round: 1, lastRound: 1, finalRound: 1, completedByRound: { 1: true } },
+    defaultValue: { discussionId: '123456', lastRound: 1, finalRound: 1, uInfo: uInfoRound1Complete },
     user: { id: '123456', email: 'user@email.com' },
+    round: 1,
   },
+  decorators: [
+    buildApiDecorator('get-conclusion', (discussionId, cb) => {
+      cb({
+        point: { _id: '123', subject: 'Conclusion Point', description: 'This is the conclusion of the discussion.' },
+        mosts: [
+          { _id: '1', text: 'Most Why 1' },
+          { _id: '2', text: 'Most Why 2' },
+        ],
+        leasts: [
+          { _id: '3', text: 'Least Why 1' },
+          { _id: '4', text: 'Least Why 2' },
+        ],
+      })
+    }),
+  ],
 }

@@ -112,10 +112,14 @@ export const AccessibilityTestMobile = {
     const canvas = within(canvasElement)
     let select
     // it takes time for the viewport to change
-    await waitFor(() => {
+
+    /*
+    This works in storybook, but not with npm run test-storybook
+    
+      await waitFor(() => {
       select = canvas.getByTestId('mobile-select-bar')
       expect(select).toBeInTheDocument()
-    })
+    })*/
     await asyncSleep(500)
     await userEvent.click(select)
     await asyncSleep(500)

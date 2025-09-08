@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/101
 // https://github.com/EnCiv/civil-pursuit/issues/243
+// https://github.com/EnCiv/civil-pursuit/issues/331
 
 import React from 'react'
 import RoundTracker from '../app/components/round-tracker'
@@ -17,37 +18,37 @@ export default {
 
 export const OneRound = {
   args: {
-    roundsStatus: ['inProgress', 'pending', 'pending'],
+    roundsStatus: ['inProgress'],
   },
 }
 
 export const TwoRounds = {
   args: {
-    roundsStatus: ['complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'inProgress'],
   },
 }
 
 export const ThreeRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'complete', 'inProgress'],
   },
 }
 
-export const FourRounds = {
+export const FiveRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'inProgress', 'pending', 'pending', 'pending'],
   },
 }
 
 export const EightRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'complete', 'complete', 'complete', 'inProgress', 'pending', 'pending', 'pending'],
   },
 }
 
 export const TwelveRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress'],
+    roundsStatus: ['complete', 'complete', 'inProgress', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
   },
 }
 
@@ -60,7 +61,7 @@ export const EmptyRounds = {
 // Mobile views
 export const MobileOneRound = {
   args: {
-    roundsStatus: ['inProgress', 'pending'],
+    roundsStatus: ['inProgress'],
   },
   parameters: {
     viewport: {
@@ -71,7 +72,7 @@ export const MobileOneRound = {
 
 export const MobileTwoRounds = {
   args: {
-    roundsStatus: ['complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'inProgress'],
   },
   parameters: {
     viewport: {
@@ -82,7 +83,7 @@ export const MobileTwoRounds = {
 
 export const MobileThreeRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'inProgress', 'pending'],
   },
   parameters: {
     viewport: {
@@ -93,7 +94,7 @@ export const MobileThreeRounds = {
 
 export const MobileFourRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'inProgress', 'pending', 'pending'],
   },
   parameters: {
     viewport: {
@@ -104,7 +105,7 @@ export const MobileFourRounds = {
 
 export const MobileEightRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress', 'pending'],
+    roundsStatus: ['complete', 'inProgress', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
   },
   parameters: {
     viewport: {
@@ -115,7 +116,7 @@ export const MobileEightRounds = {
 
 export const MobileTwelveRounds = {
   args: {
-    roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress'],
+    roundsStatus: ['complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'complete', 'inProgress', 'pending'],
   },
   parameters: {
     viewport: {

@@ -20,7 +20,7 @@ export const StepSlider = props => {
   const panelRefs = useRef([])
   const stepChildRapper = useRef()
   const [outerRect, setOuterRect] = useState({ height: 0, width: 0 })
-  const [_this] = useState({ timeout: 0, otherProps }) // _this object will exist through life of component so there is no setter it's like 'this'
+  const [_this] = useState({ timeout: 0, otherProps, onNexts: [] }) // _this object will exist through life of component so there is no setter it's like 'this'
   // resizeHandler needs to access outerRef and setOuterRec but never change so that the event can be removed
   // FTI resizeHandler gets called on initial render
   const resizeHandler = useCallback(() => {
@@ -35,6 +35,7 @@ export const StepSlider = props => {
           if (outerRef.current) {
             // just to make sure
             let rect = outerRef.current.getBoundingClientRect()
+            rect.clientWidth = outerRef.current.clientWidth // there may be a scrollbar on the right
             if (rect.height && rect.width) setOuterRect(rect)
           }
           dispatch({ type: 'transitionsOn' })
@@ -72,24 +73,14 @@ export const StepSlider = props => {
         return { ...state, transitions: true }
       case 'moveTo':
         const newStepStatuses = state.stepStatuses?.map((stepStatus, i) => {
-          if (i > state.currentStep && i < action.to) {
-            return { ...stepStatus, skip: true }
-          }
-          return stepStatus
+          if (i > state.currentStep && i < action.to) return { ...stepStatus, skip: true }
+          else return stepStatus
         })
-
         return { ...state, transitions: false, stepStatuses: newStepStatuses, nextStep: action.to }
 
       case 'increment':
         let nextStep = Math.min(state.currentStep + 1, children.length - 1)
-
-        for (let i = state.currentStep + 1; i < children.length - 1; i++) {
-          if (!state.stepStatuses[i].skip) {
-            nextStep = i
-            break
-          }
-        }
-
+        while (state.stepStatuses[nextStep].skip && nextStep < children.length - 1) nextStep++
         return {
           ...state,
           transitions: false,
@@ -110,19 +101,9 @@ export const StepSlider = props => {
         return state // no need to rerender. leaving transitions on so that child components growing and shrinking will animate
       }
       case 'decrement': {
-        let nextStep = state.currentStep
-
-        // First step before currentStep that's not skipped
-        for (let i = state.currentStep - 1; i >= 0; i--) {
-          if (!state.stepStatuses[i].skip) {
-            nextStep = i
-            break
-          }
-        }
-
         return {
           ...state,
-          nextStep: nextStep,
+          nextStep: Math.max(0, state.currentStep - 1),
           transitions: false,
         }
       }
@@ -130,16 +111,8 @@ export const StepSlider = props => {
         let { valid, index, skip } = action.payload
 
         if (steps) {
-          const stepStatuses = state.stepStatuses.map((stepStatus, i) => {
-            if (valid || valid === undefined) {
-              return i === index ? { ...stepStatus, complete: true, skip: skip } : stepStatus
-            }
-
-            // Disable navigation to all steps after if invalid
-            else return i >= state.currentStep ? { ...stepStatus, complete: false, skip: skip } : stepStatus
-          })
-
-          return { ...state, stepStatuses: stepStatuses }
+          const newState = { ...state, stepStatuses: state.stepStatuses.toSpliced(index, 1, { ...state.stepStatuses[index], complete: valid, skip }) }
+          return newState
         } else if (valid) {
           // Just increment if no steps
           const nextStep = Math.min(state.currentStep + 1, children.length - 1)
@@ -168,31 +141,23 @@ export const StepSlider = props => {
   }
   // Keep track of each step's seen/completion status
   // Populate statuses with initial values
-  if (steps) {
-    steps[0].seen = true
-    steps.forEach((step, index) => {
-      steps[index].complete = false
-      steps[index].skip = false
-    })
-  }
-  const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, transitions: false, stepStatuses: steps })
+  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i === 0, complete: false, skip: false })) : undefined
+
+  const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, transitions: false, stepStatuses: initialStepStatuses })
 
   function cloneChild(currentStep) {
     return React.cloneElement(children[currentStep], {
       ...otherProps,
       ...children[currentStep].props,
       key: currentStep,
-      onDone: ({ valid, value }) => {
-        if (valid) {
-          if (value === 'skip') {
-            dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: true } })
-            dispatch({ type: 'increment' })
-          } else if (typeof stepNameToIndex[value] === 'number') {
-            dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
-          }
-        }
-
-        dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: value === 'skip' } })
+      onDone: ({ valid, value, onNext }) => {
+        if (valid && value === 'skip') {
+          dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: true } })
+          dispatch({ type: 'increment' })
+        } else if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
+        else dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: value === 'skip' } })
+        if (valid && onNext) _this.onNexts[currentStep] = onNext // save onNext for later use
+        else delete _this.onNexts[currentStep] // delete onNext if not valid
       },
     })
   }
@@ -213,11 +178,16 @@ export const StepSlider = props => {
 
   // ResizeObserver to update stepChildWrapper height when the current panel's height changes
   useEffect(() => {
-    if (!panelRefs.current[state.currentStep] || !stepChildRapper.current) return
+    if (!panelRefs.current[state.currentStep] || !stepChildRapper.current) {
+      return
+    }
     const panel = panelRefs.current[state.currentStep]
     const wrapper = stepChildRapper.current
-    const updateHeight = () => {
-      if (wrapper.style.height !== panel.offsetHeight + 'px') wrapper.style.height = panel.offsetHeight + 'px'
+    const updateHeight = entries => {
+      if (wrapper.style.height === panel.offsetHeight + 'px') return
+      window.requestAnimationFrame(() => {
+        wrapper.style.height = panel.offsetHeight + 'px'
+      })
     }
     updateHeight()
     const resizeObserver = new window.ResizeObserver(updateHeight)
@@ -225,7 +195,7 @@ export const StepSlider = props => {
     return () => {
       resizeObserver.disconnect()
     }
-  }, [state.currentStep])
+  }, [state.currentStep, panelRefs.current[state.currentStep], stepChildRapper.current])
 
   // listen for transitionComplete
   useEffect(() => {
@@ -265,7 +235,7 @@ export const StepSlider = props => {
           ref={stepChildRapper}
           style={{
             left: -outerRect.width * state.currentStep + 'px',
-            width: outerRect.width * cachedChildren.length + 'px',
+            width: Math.max(outerRect.width, outerRect.clientWidth) * cachedChildren.length + 'px', // clientWidth is an integer and may get rounded up vs width in cases (desktop scaled monitor)
             height: panelRefs.current[state.currentStep]?.offsetHeight + 'px',
           }}
           className={cx(classes.stepChildWrapper, state.transitions && classes.transitions)}
@@ -275,7 +245,7 @@ export const StepSlider = props => {
               <div
                 key={i}
                 style={{
-                  width: outerRect.width + 'px',
+                  width: outerRect.clientWidth + 'px',
                 }}
                 className={classes.panel}
                 ref={el => (panelRefs.current[i] = el)}
@@ -290,7 +260,13 @@ export const StepSlider = props => {
           <StepFooter
             className={classes.stepFooter}
             onDone={() => {
-              dispatch({ type: 'increment' })
+              if (_this.onNexts[state.currentStep]) {
+                const onNext = _this.onNexts[state.currentStep]
+                delete _this.onNexts[state.currentStep] // only do it once
+                setTimeout(onNext)
+              }
+              if (state.currentStep + 1 >= steps.length) onDone({ valid: true, value: 'done' })
+              else dispatch({ type: 'increment' })
             }}
             onBack={state.currentStep > 0 ? () => dispatch({ type: 'decrement' }) : null}
             active={state.stepStatuses[state.currentStep] && state.stepStatuses[state.currentStep]['complete']}

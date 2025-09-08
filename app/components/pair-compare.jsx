@@ -10,11 +10,12 @@ import { SecondaryButton } from './button'
 import ObjectId from 'bson-objectid'
 import cx from 'classnames'
 
+const blankPoint = { subject: '     ', description: '     ' } // used to reset the next point when transitioning
 function PairCompare(props) {
   const { whyRankList = [], onDone = () => {}, mainPoint = { subject: '', description: '' }, discussionId, round, ...otherProps } = props
 
-  const [nextLeftPoint, setNextLeftPoint] = useState(null)
-  const [nextRightPoint, setNextRightPoint] = useState(null)
+  const [nextLeftPoint, setNextLeftPoint] = useState(blankPoint)
+  const [nextRightPoint, setNextRightPoint] = useState(blankPoint)
   const [isRightTransitioning, setIsRightTransitioning] = useState(false)
   const [isLeftTransitioning, setIsLeftTransitioning] = useState(false)
   const classes = useStyles()
@@ -104,7 +105,7 @@ function PairCompare(props) {
 
     setTimeout(() => {
       setIsLeftTransitioning(false)
-      setNextRightPoint(null)
+      setNextRightPoint(blankPoint) // reset next point
       setIdxRight(nextRightIdx)
     }, 500)
   }
@@ -123,7 +124,7 @@ function PairCompare(props) {
 
     setTimeout(() => {
       setIsRightTransitioning(false)
-      setNextLeftPoint(null)
+      setNextLeftPoint(blankPoint)
       setIdxLeft(nextLeftIdx)
     }, 500)
   }
@@ -179,22 +180,18 @@ function PairCompare(props) {
       <span className={isSelectionComplete ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length} out of ${whyRankList.length}`}</span>
       <div className={classes.lowerContainer}>
         <div className={classes.hiddenPointContainer}>
-          <div className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden)}>
-            <Point className={cx(classes.emptyPoint, isRightTransitioning && classes.transitioningDown)} point={nextLeftPoint} />
-          </div>
-          <div className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden)}>
-            <Point className={cx(classes.emptyPoint, isLeftTransitioning && classes.transitioningDown)} point={nextRightPoint} />
-          </div>
+          <Point vState="disabled" className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden, isRightTransitioning && classes.transitioningDown)} point={nextLeftPoint} />
+          <Point vState="disabled" className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden, isLeftTransitioning && classes.transitioningDown)} point={nextRightPoint} />
         </div>
         <div className={classes.visiblePointsContainer}>
           {idxLeft < whyRankList.length && (
-            <button className={cx(classes.visiblePoint, isRightTransitioning && classes.transitioningLeft)} onClick={handleLeftPointClick} tabIndex={0} title={`Choose as more important: ${whyRankList[idxLeft]?.why.subject}`}>
-              {<Point point={whyRankList[idxLeft].why} />}
+            <button className={cx(classes.visiblePointButton)} onClick={handleLeftPointClick} tabIndex={0} title={`Choose as more important: ${whyRankList[idxLeft]?.why.subject}`}>
+              {<Point className={cx(classes.visiblePoint, isRightTransitioning && classes.transitioningLeft)} point={whyRankList[idxLeft].why} />}
             </button>
           )}
           {idxRight < whyRankList.length && (
-            <button className={cx(classes.visiblePoint, isLeftTransitioning && classes.transitioningRight)} onClick={handleRightPointClick} tabIndex={0} title={`Choose as more important: ${whyRankList[idxRight]?.why.subject}`}>
-              {<Point point={whyRankList[idxRight].why} />}
+            <button className={cx(classes.visiblePointButton)} onClick={handleRightPointClick} tabIndex={0} title={`Choose as more important: ${whyRankList[idxRight]?.why.subject}`}>
+              {<Point className={cx(classes.visiblePoint, isLeftTransitioning && classes.transitioningRight)} point={whyRankList[idxRight].why} />}
             </button>
           )}
         </div>
@@ -260,25 +257,59 @@ const useStyles = createUseStyles(theme => ({
     overflow: 'visible',
     paddingTop: '4rem',
     clipPath: 'xywh(0 0 100% 500%)',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      gap: '1rem',
+    },
   },
   hidden: {
     display: 'none',
   },
   hiddenPoint: {
-    width: '30%',
+    width: '100%',
+    position: 'relative',
+    background: 'white',
+    opacity: 1,
+    border: 'none',
+    //top: '-5rem',
+    transform: 'translateY(-5rem)',
   },
   emptyPoint: {
-    position: 'absolute',
-    width: '30%',
-    top: '-2rem',
+    position: 'relative',
+    top: '0rem',
+    //position: 'absolute',
+    //width: '30%',
+    //top: '-2rem',
   },
   visiblePointsContainer: {
     display: 'flex',
     justifyContent: 'center',
     gap: '3rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      gap: '1rem',
+    },
+  },
+  visiblePointButton: {
+    position: 'relative',
+    width: '100%',
+    cursor: 'pointer',
+    borderRadius: '0.9375rem',
+    '&:focus': {
+      outline: `${theme.focusOutline}`,
+    },
+    background: 'none',
+    border: 'none',
+    padding: '0',
+    textAlign: 'left',
+    '&:hover': {
+      background: 'none',
+      border: 'none',
+    },
   },
   visiblePoint: {
-    width: '30%',
+    position: 'relative',
+    left: '0%',
+    right: '0%',
+    width: '100%',
     cursor: 'pointer',
     borderRadius: '0.9375rem',
     '&:focus': {
@@ -288,9 +319,15 @@ const useStyles = createUseStyles(theme => ({
   },
   lowerContainer: {
     marginTop: '2rem',
+    paddingLeft: '3rem',
+    paddingRight: '3rem',
     backgroundColor: theme.colors.cardOutline,
     borderRadius: '1rem',
     border: `${theme.border.width.thin} solid ${theme.colors.borderGray}`,
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      paddingLeft: '0.5rem',
+      paddingRight: '0.5rem',
+    },
   },
   buttonsContainer: {
     display: 'flex',
@@ -300,19 +337,23 @@ const useStyles = createUseStyles(theme => ({
     gap: '3rem',
   },
   transitioningDown: {
-    position: 'absolute',
+    //position: 'absolute',
     transform: 'translateY(8.25rem)',
-    transition: 'transform 0.5s linear',
+    //transition: 'transform 0.5s linear',
+    //top: '9rem',
+    transition: 'all 0.5s linear',
   },
   transitioningLeft: {
-    position: 'relative',
-    transform: 'translateX(-200%)',
-    transition: 'transform 0.5s linear',
+    //position: 'relative',
+    //transform: 'translateX(-200%)',
+    left: '-200%',
+    transition: 'all 0.5s linear',
   },
   transitioningRight: {
-    position: 'relative',
-    transform: 'translateX(200%)',
-    transition: 'transform 0.5s linear',
+    //position: 'relative',
+    //transform: 'translateX(200%)',
+    left: '200%',
+    transition: 'all 0.5s linear',
   },
   customButton: {
     width: '25rem',
@@ -329,7 +370,7 @@ const sharedStatusBadgeStyle = () => ({
 })
 
 const sharedButtonStyle = () => ({
-  background: 'none',
+  background: 'white',
   border: 'none',
   padding: '0',
   textAlign: 'left',

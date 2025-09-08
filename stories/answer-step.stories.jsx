@@ -28,7 +28,7 @@ const startingQuestion = {
 const whyQuestion = 'Why should everyone consider solving this issue?'
 
 const startingPoint = { _id: '1', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', description: 'Starting Point Description', userId: 'a' }
-const whyPoint1 = { _id: '2', parentId: '1', subject: 'Congress', description: 'Congress is too slow', userId: 'a' }
+const whyPoint1 = { _id: '2', parentId: '1', subject: 'Congress', description: 'Congress is too slow', userId: 'a', category: 'most' }
 const discussionId = startingQuestion._id
 
 export const Empty = {
@@ -133,13 +133,13 @@ export const asyncUpdate = {
             description: 'This is the first description!',
           }
           setUpdated(true)
-        }, 1000)
+        }, 100)
         // resetting so the test will pass on retest
         setTimeout(() => {
           context.args.myWhy.subject = subject0
           context.args.myWhy.description = description0
           setUpdated(true)
-        }, 2000)
+        }, 200)
       }, [])
       return <Story thisTestIsDone={updated} />
     },
@@ -167,25 +167,22 @@ export const AnswerStepEmpty = {
 
 function answerStepTemplate(args) {
   const { myAnswer, myWhy, defaultValue, ...otherProps } = args
-  if (!window.socket._socketEmitHandlers['get-points-of-ids']) {
+  useState(() => {
     window.socket._socketEmitHandlers['get-points-of-ids'] = (ids, cb) => {
       cb({ points: [myAnswer], myWhys: [myWhy] })
     }
-  }
-  if (!window.socket._socketEmitHandlers['insert-dturn-statement']) {
     window.socket._socketEmitHandlers['insert-dturn-statement'] = (discussionId, point, cb) => {
       window.socket._socketEmitHandlerResults['insert-dturn-statement'].push([discussionId, point])
       cb && cb()
     }
     window.socket._socketEmitHandlerResults['insert-dturn-statement'] = []
-  }
-  if (!window.socket._socketEmitHandlers['upsert-why']) {
+
     window.socket._socketEmitHandlers['upsert-why'] = (why, cb) => {
       window.socket._socketEmitHandlerResults['upsert-why'].push([why])
       cb && cb()
     }
     window.socket._socketEmitHandlerResults['upsert-why'] = []
-  }
+  })
   return <AnswerStep {...otherProps} />
 }
 
@@ -236,7 +233,7 @@ export const AnswerStepUserEntersData = {
       expect(ObjectId.isValid(pointId)).toBe(true)
       expect(window.socket._socketEmitHandlerResults['upsert-why'][0][0].parentId).toEqual(pointId)
       expect(deliberationContextData(canvas)).toMatchObject({
-        myWhyByParentId: { [pointId]: { _id: whyId, description: 'This is the second description!', parentId: pointId, subject: 'This is the second subject!' } },
+        myWhyByCategoryByParentId: { most: { [pointId]: { _id: whyId, description: 'This is the second description!', parentId: pointId, subject: 'This is the second subject!' } } },
         pointById: { [pointId]: { _id: pointId, description: 'This is the first description!', parentId: '5d0137260dacd06732a1d814', subject: 'This is the first subject!' } },
         reducedPointList: [{ point: { _id: pointId, description: 'This is the first description!', parentId: '5d0137260dacd06732a1d814', subject: 'This is the first subject!', userId: 'a' } }],
       })
@@ -246,11 +243,12 @@ export const AnswerStepUserEntersData = {
 
 export const AnswerStepPreviousDataComesFromServer = {
   args: {
-    defaultValue: { userId: 'a', round: '0', discussionId: startingQuestion._id, uInfo: [{ shownStatementIds: { [startingPoint._id]: { authored: true, rank: 0 } } }] }, // to deliberation context
+    defaultValue: { userId: 'a', discussionId: startingQuestion._id, uInfo: [{ shownStatementIds: { [startingPoint._id]: { authored: true, rank: 0 } } }] }, // to deliberation context
     question: startingQuestion,
     whyQuestion: whyQuestion,
     myAnswer: startingPoint,
     myWhy: whyPoint1,
+    round: '0',
   },
   render: answerStepTemplate,
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
@@ -258,17 +256,18 @@ export const AnswerStepPreviousDataComesFromServer = {
     const canvas = within(canvasElement)
     const { onDone } = args
     await waitFor(() => {
-      expect(onDone.mock.calls[1][0]).toMatchObject({
+      expect(onDone.mock.calls[0][0]).toMatchObject({
         valid: true,
         value: 1,
       })
-      const pointId = '1'
-      const whyId = '2'
-      expect(deliberationContextData(canvas)).toMatchObject({
-        myWhyByParentId: { [pointId]: { _id: whyId, description: 'Congress is too slow', parentId: pointId, subject: 'Congress', userId: 'a' } },
-        pointById: { [pointId]: { _id: pointId, description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } },
-        reducedPointList: [{ point: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } }],
-      })
+    })
+
+    const pointId = '1'
+    const whyId = '2'
+    expect(deliberationContextData(canvas)).toMatchObject({
+      myWhyByCategoryByParentId: { most: { [pointId]: { _id: whyId, description: 'Congress is too slow', parentId: pointId, subject: 'Congress', userId: 'a' } } },
+      pointById: { [pointId]: { _id: pointId, description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } },
+      reducedPointList: [{ point: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } }],
     })
   },
 }

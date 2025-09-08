@@ -14,8 +14,8 @@ export function DeliberationContextProvider(props) {
   })
   const upsert = useCallback(
     obj => {
-      let messages = data._showUpsertDeltas ? [] : undefined
       setData(data => {
+        let messages = data._showUpsertDeltas ? [] : undefined
         let newData = setOrDeleteByMutatePath(data, obj, messages)
         if (messages) console.info('context update:', messages)
         newData = deriveReducedPointList(newData, local)
@@ -30,10 +30,14 @@ export function DeliberationContextProvider(props) {
     upsert({ discussionId, userId })
 
     function onSubscribeHandler(data) {
+      let currentRound = 0
       if (data.uInfo) {
-        let round = data.uInfo.length - 1
-        data.round = round
-        if (data.uInfo[round].groupings?.length > 0) data.groupIdsLists = structuredClone(data.uInfo[round].groupings)
+        for (const r of data.uInfo) {
+          if (r.shownStatementIds && Object.values(r.shownStatementIds).some(s => s.rank > 0)) currentRound++
+          else break
+        }
+        if (data.uInfo[currentRound]?.finished && data.uInfo[currentRound]?.groupings) data.groupIdsLists = structuredClone(data.uInfo[currentRound].groupings)
+        else if (!data.groupIdsLists) data.groupIdsLists = [] // don't overwrite existing groupings on a resubscribe
       }
       upsert(data)
     }
@@ -73,6 +77,7 @@ function aEqual(a = [], b = []) {
 export function deriveReducedPointList(data, local) {
   const { pointById, groupIdsLists } = data
   if (!pointById) return data
+  if (!Object.keys(pointById).length) return data
   if (local.pointById === pointById && local.groupIdsList === groupIdsLists) return data // nothing to update
   const reducedPointTable = Object.entries(pointById).reduce((reducedPointTable, [id, point]) => ((reducedPointTable[id] = { point }), reducedPointTable), {})
   let updated = false
@@ -86,7 +91,8 @@ export function deriveReducedPointList(data, local) {
   }
   // if there are any pointWithGroup elements in the new table, that have equal contents with those in the old reducedPointList
   // then copy them over so they are unchanged
-  for (const pointWithGroup of data.reducedPointList) {
+  const oldReducedPointList = data.reducedPointList || []
+  for (const pointWithGroup of oldReducedPointList) {
     const ptid = pointWithGroup.point._id
     if (reducedPointTable[ptid]?.point === pointWithGroup.point && aEqual(reducedPointTable[ptid]?.group, pointWithGroup.group)) reducedPointTable[ptid] = pointWithGroup // if contentss are unchanged - unchange the ref
     else updated = true
@@ -94,7 +100,7 @@ export function deriveReducedPointList(data, local) {
   const newReducedPointList = Object.values(reducedPointTable)
   local.pointById = pointById
   local.groupIdsList = groupIdsLists
-  if (!(newReducedPointList.length === data.reducedPointList.length && !updated)) {
+  if (!(newReducedPointList.length === oldReducedPointList.length && !updated)) {
     data.reducedPointList = newReducedPointList
     return { ...data }
   }

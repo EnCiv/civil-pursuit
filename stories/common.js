@@ -19,8 +19,10 @@ export const buildApiDecorator = (handle, result) => {
         const cb = args.pop() // call back is the last argument
         window.socket._socketEmitHandlerResults[handle].push(args)
         setTimeout(() => {
-          if (typeof result === 'function') cb(result(...args))
-          else cb(result)
+          if (typeof result === 'function') {
+            args.push(cb)
+            result(...args)
+          } else cb(result)
         })
       }
     })
@@ -46,6 +48,7 @@ function setupSocketEmitHandlers() {
     else console.info('socketEmitDecorator window.socket.on replacing handler', handle)
     window.socket._onHandlers[handle] = fn
   }
+  if (!window.logger) window.logger = console
 }
 
 export const socketEmitDecorator = Story => {
@@ -224,11 +227,14 @@ export function onBackResult() {
 
 // Create the level adjustment decorator
 export const levelDecorator = (Story, context) => {
-  return (
-    <Level>
-      <Story {...context} />
-    </Level>
-  )
+  // The CivilPursuit component renders it's own initial Level
+  if (context?.component?.name === 'CivilPursuit') return <Story {...context} />
+  else
+    return (
+      <Level>
+        <Story {...context} />
+      </Level>
+    )
 }
 
 export default {

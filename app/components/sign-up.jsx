@@ -90,6 +90,9 @@ function SignUp(props, ref) {
     return
   }, [user])
 
+  // if user is logged in, don't display a signup form - password managers trigger on it even if it's off screen
+  if (user?.id) return <div className={cx(className, classes.SignUp)}>{user.email + ' is signed in.'}</div>
+
   // otherwise, continue showing login/sign up page
   return (
     <div className={cx(className, classes.SignUp)} style={style} ref={ref}>
@@ -373,6 +376,7 @@ const useStyles = createUseStyles(theme => ({
     margin: '0 auto',
     textAlign: 'left',
     alignItems: 'left',
+    paddingLeft: '1rem', // so when the checkbox is in focus, the border box is not clipped
   },
   checkTermBox: {
     margin: 0,

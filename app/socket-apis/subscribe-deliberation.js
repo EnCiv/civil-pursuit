@@ -43,12 +43,14 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
         },
         getAllUInfo: async () => {
           const allUInfo = await Dturns.getAllFromDiscussion(deliberationId)
-          const all = allUInfo.map(({ discussionId, userId, round, shownStatementIds = {}, groupings = [] }) => ({
+          const all = allUInfo.map(({ discussionId, userId, round, shownStatementIds = {}, groupings = [], _id, ...otherProps }) => ({
+            // do not put _id into the UInfo
             [userId]: {
               [discussionId]: {
                 [round]: {
                   shownStatementIds,
                   groupings: Object.values(groupings).map(group => Object.values(group)), // convert from plain object with nested objects to array of arrays
+                  ...otherProps,
                 },
               },
             },
@@ -73,10 +75,10 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
   })*/
 
   const uInfo = initUitems(deliberationId, this.synuser.id) // adds user if they are not yet there
-  const round = Math.min(uInfo.length - 1, Discussions[deliberationId].max_rounds)
+
   requestHandler?.({
     participants: Discussions[deliberationId].participants,
-    round,
+    lastRound: Discussions[deliberationId].lastRound,
     uInfo,
   })
 }
