@@ -15,29 +15,13 @@ export default {
 
 const storybookPadding = '2rem' // it padds the iframe with 1rem all around
 
+const stepNames = ['Answer', 'Group', 'Rank', 'Why Most', 'Why Least', 'Compare Why Most', 'Compare Why Least', 'Review', 'Intermission']
+
 function createPrimarySteps(num = 4) {
-  function stepLengthGenerator() {
-    const subjects = ['Cat ', 'Mountain ', 'Teacher ', 'Bird ', 'Astronaut ']
-    const verbs = ['Eats ', 'Discovers ', 'Teaches ', 'Climbs ', 'Paints ']
-    const predicates = ['Quickly', 'Mathematics', 'Delicious Meals', 'Happily ', 'Stunning Landscapes']
-    const words = [subjects, verbs, predicates]
-
-    let sentence = ''
-    for (let i = 0; i < 3; i++) {
-      const random = Math.floor((Math.random() * 10) % 5)
-      sentence += words[i][random]
-    }
-
-    return sentence
-  }
-
   let primarySteps = Array.from({ length: num }, (_, i) => ({
-    name: `Step ${i + 1}: The ${stepLengthGenerator()}`,
-    title: `this is step ${i + 1}`,
-    complete: false,
-    seen: false,
+    name: stepNames[i],
+    title: `this is step ${i + 1} names ${stepNames[i]}`,
   }))
-  primarySteps[1].name = 'Step 2: Rate'
 
   return primarySteps
 }
@@ -74,7 +58,7 @@ const Template = args => {
 const Panel = props => (
   <div style={{ width: 'inherit', height: '150vh', backgroundColor: props.backGroundColor }}>
     <div style={{ position: 'relative', width: 'inherit', height: 'inherit' }}>
-      <button onClick={() => props.onDone({ valid: true, value: props.backGroundColor })} style={{ position: 'absolute', top: '20vh' }}>
+      <button onClick={() => props.onDone({ valid: true, value: 1 })} style={{ position: 'absolute', top: '20vh' }}>
         Done
       </button>
 
@@ -82,8 +66,8 @@ const Panel = props => (
         Skip
       </button>
 
-      <button onClick={() => props.onDone({ valid: true, value: 'blue' })} style={{ position: 'absolute', top: '60vh' }}>
-        Move To Blue
+      <button onClick={() => props.onDone({ valid: true, value: 'Rank' })} style={{ position: 'absolute', top: '60vh' }}>
+        Move To Rank
       </button>
     </div>
   </div>
@@ -92,11 +76,11 @@ const Panel = props => (
 const list = [<Panel backGroundColor="green" />, <Panel backGroundColor="blue" />, <Panel backGroundColor="red" />, <Panel backGroundColor="purple" />]
 
 function createPanels(panels = 4) {
-  const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple']
+  const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'brown', 'gray']
   const panelList = []
 
   for (let count = 0; count < panels; count++) {
-    panelList.push(<Panel backGroundColor={colors[count % colors.length]} stepName={colors[count % colors.length]} />)
+    panelList.push(<Panel backGroundColor={colors[count % colors.length]} stepName={stepNames[count]} />)
   }
 
   return panelList
