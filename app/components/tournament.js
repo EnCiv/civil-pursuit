@@ -168,8 +168,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginBottom: '3.6875rem',
   },
   stepClass: {
-    marginLeft: '1rem',
-    marginRight: '1rem',
+    marginRight: '1rem', // or there's a problem with the AnswerStep when viewport is between 40 and 78 rems wide
   },
 }))
 
