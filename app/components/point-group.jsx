@@ -157,9 +157,15 @@ const PointGroup = props => {
       )}
       {vs !== 'collapsed' && vs !== 'selectLead' && (
         <div
-          className={cx(classes.borderStyle, classes.contentContainer, classes.informationGrid, {
-            [classes.selectedBorder]: select,
-          })}
+          className={cx(
+            classes.borderStyle,
+            classes.contentContainer,
+            classes.informationGrid,
+            {
+              [classes.selectedBorder]: select,
+            },
+            vState === 'disabled' && classes.disabledBorder
+          )}
         >
           {!singlePoint && (
             <div className={classes.SvgContainer}>
@@ -192,8 +198,8 @@ const PointGroup = props => {
               )}
             </div>
           )}
-          {subject && <H className={cx(classes.subjectStyle)}>{subject}</H>}
-          {description && <div className={cx(classes.descriptionStyle)}>{description}</div>}
+          {subject && <H className={cx(classes.subjectStyle, vState === 'disabled' && classes.disabledSubject)}>{subject}</H>}
+          {description && <div className={cx(classes.descriptionStyle, vState === 'disabled' && classes.disabledDescription)}>{description}</div>}
           {demInfo && <DemInfo {...demInfo} />}
           {childrenWithProps}
           {vs === 'edit' && expanded && !singlePoint && (
@@ -264,7 +270,7 @@ const PointGroup = props => {
                   {group.map(pD => {
                     return (
                       <div key={pD._id} className={classes.selectPoints}>
-                        <Point point={pD} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)} />
+                        <Point point={pD} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)} vState={vState} />
                       </div>
                     )
                   })}
@@ -548,6 +554,22 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     background: theme.colors.lightSuccess,
     '& $informationGrid': {
       color: theme.colors.success,
+    },
+  },
+  disabledSubject: {
+    opacity: 0.5,
+    color: theme.colors.title,
+  },
+  disabledDescription: {
+    opacity: 0.5,
+    color: theme.colors.title,
+  },
+  disabledBorder: {
+    opacity: 0.5,
+    outline: `1px solid ${theme.colors.borderGray}`,
+    background: theme.colors.white,
+    '&:hover ': {
+      outline: 'none',
     },
   },
 }))
