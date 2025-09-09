@@ -106,6 +106,7 @@ export function useRankByParentId(discussionId, round, stage, reducedPointList, 
   }, [reducedPointList, stageRankByParentId])
 
   const handleRankPoint = (point, result) => {
+    if (!result?.value) return
     const rankString = result.value
     const newCategory = rankStringToCategory[rankString]
 
@@ -219,7 +220,8 @@ export function RankPoints(props) {
             title="Clear All"
             children={'Clear All'}
             onDone={() => {
-              const clearedRanks = Object.values(rankByParentId).reduce((rankByParentId, rank) => ((rankByParentId[rank.parentId] = { ...rank, category: '' }), rankByParentId), {})
+              // rankByParentId[id] might be undefined sometimes
+              const clearedRanks = Object.values(rankByParentId).reduce((clearedRanks, rank) => (rank && (clearedRanks[rank.parentId] = { ...rank, category: '' }), clearedRanks), {})
 
               for (let rank of Object.values(clearedRanks)) {
                 const { valid, percentDone } = validAndPercentDone(reducedPointList, rankByParentId)
