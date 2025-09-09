@@ -19,7 +19,7 @@ export const StepSlider = props => {
   const outerRef = useRef()
   const panelRefs = useRef([])
   const stepChildRapper = useRef()
-  const [outerRect, setOuterRect] = useState({ height: 0, width: 0 })
+  const [outerRect, setOuterRect] = useState({ height: 0, width: 0, clientWidth: 0 })
   const [_this] = useState({ timeout: 0, otherProps, onNexts: [] }) // _this object will exist through life of component so there is no setter it's like 'this'
   // resizeHandler needs to access outerRef and setOuterRec but never change so that the event can be removed
   // FTI resizeHandler gets called on initial render
@@ -35,7 +35,7 @@ export const StepSlider = props => {
           if (outerRef.current) {
             // just to make sure
             let rect = outerRef.current.getBoundingClientRect()
-            rect.clientWidth = outerRef.current.clientWidth // there may be a scrollbar on the right
+            rect.clientWidth = outerRef.current.clientWidth || rect.width // there may be a scrollbar on the right
             if (rect.height && rect.width) setOuterRect(rect)
           }
           dispatch({ type: 'transitionsOn' })

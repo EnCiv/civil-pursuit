@@ -80,7 +80,7 @@ function reducer(state, action) {
       const { round, roundsStatus } = calculateRoundAndStatus(action.data.uInfo, action.data.finalRound)
       // only set round the first time it's valid
       if (round !== undefined && state.round === undefined) {
-        action.upsert({ round }) // deriveReducedPoints requires round to be set in context
+        setTimeout(() => action.upsert({ round })) // don't update context while rendering this component
         return { ...state, round, roundsStatus }
       } else return { ...state, roundsStatus }
     }
