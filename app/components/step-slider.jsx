@@ -26,6 +26,7 @@ export const StepSlider = props => {
   const resizeHandler = useCallback(() => {
     if (outerRef.current) {
       let rect = outerRef.current.getBoundingClientRect()
+      rect.clientWidth = outerRef.current.clientWidth || rect.width // there may be a scrollbar on the right
       if (rect.height && rect.width) {
         // there is an issue on smartphones when rotating from landscape to portrait where the screen ends up shows a split between two components
         // to work around this we are turning off transitions and then turning them back on after the viewport size stableizes
