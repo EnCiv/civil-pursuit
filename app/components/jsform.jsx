@@ -2,11 +2,12 @@
 // https://github.com/EnCiv/civil-pursuit/issues/297
 
 'use strict'
-import React, { useEffect, useState, useMemo, useContext } from 'react'
+import React, { useEffect, useState, useMemo, useContext, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { JsonForms } from '@jsonforms/react'
 import { vanillaCells, vanillaRenderers } from '@jsonforms/vanilla-renderers'
+import autosize from 'autosize'
 import { PrimaryButton } from './button'
 import { rankWith, isControl } from '@jsonforms/core'
 import { withJsonFormsControlProps } from '@jsonforms/react'
@@ -18,6 +19,10 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
   const label = schema.title || uischema.label
 
   const id = `input-${path.replace(/\./g, '-')}`
+
+  const textareaRef = useRef(null)
+
+  const isMulti = uischema && uischema.options && uischema.options.multi
 
   let type
   if (schema.format === 'date') {
@@ -37,6 +42,17 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
     handleChange(path, value)
   }
 
+  useEffect(() => {
+    if (!isMulti) return
+    if (textareaRef.current) autosize(textareaRef.current)
+    return () => {
+      if (textareaRef.current)
+        try {
+          autosize.destroy(textareaRef.current)
+        } catch (e) {}
+    }
+  }, [isMulti])
+
   return (
     <div>
       <label htmlFor={id}>{label}</label>
@@ -51,6 +67,8 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
             </option>
           ))}
         </select>
+      ) : isMulti ? (
+        <textarea id={id} ref={textareaRef} value={data || ''} onChange={handleInputChange} className={classes.formInput} />
       ) : (
         <input id={id} type={type} checked={type === 'checkbox' ? !!data : undefined} value={type === 'checkbox' ? undefined : data || ''} onChange={handleInputChange} className={classes.formInput} />
       )}
