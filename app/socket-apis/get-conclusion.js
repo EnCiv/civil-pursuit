@@ -39,16 +39,12 @@ export default async function getConclusion(discussionId, cb) {
 
       await getTopRankedWhysForPoint.call(this.synuser, statementId, 'most', start, pageSize, data => {
         mosts = data.results
-        counts.mosts += data.counts.mosts
-        counts.leasts += data.counts.leasts
-        counts.neutrals += data.counts.neutrals
+        counts.mosts = data.counts.mosts
+        counts.leasts = data.counts.leasts
+        counts.neutrals = data.counts.neutrals
       })
       await getTopRankedWhysForPoint.call(this.synuser, statementId, 'least', start, pageSize, data => {
         leasts = data.results
-
-        counts.mosts += data.counts.mosts
-        counts.leasts += data.counts.leasts
-        counts.neutrals += data.counts.neutrals
       })
 
       const point = await Point.findOne({ _id: new ObjectId(statementId) })
