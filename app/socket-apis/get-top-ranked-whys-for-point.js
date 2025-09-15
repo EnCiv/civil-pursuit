@@ -52,6 +52,8 @@ export default async function getTopRankedWhysForPoint(pointId, category, start,
         neutrals: first.neutrals?.[0]?.count ?? 0,
       },
     }
+
+    cb && cb(data)
   } catch (error) {
     console.error('Error in getTopRankedWhysForPoint:', error)
     cb(undefined)

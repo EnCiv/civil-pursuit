@@ -33,17 +33,28 @@ export default async function getConclusion(discussionId, cb) {
     let topPointAndWhys = []
 
     for await (const statementId of statementIds) {
-      const mosts = await getTopRankedWhysForPoint.call(this.synuser, statementId, 'most', start, pageSize, results => {
-        new Promise((ok, ko) => ok(results))
+      let mosts,
+        leasts,
+        counts = { mosts: 0, leasts: 0, neutrals: 0 }
+
+      await getTopRankedWhysForPoint.call(this.synuser, statementId, 'most', start, pageSize, data => {
+        mosts = data.results
+        counts.mosts += data.counts.mosts
+        counts.leasts += data.counts.leasts
+        counts.neutrals += data.counts.neutrals
       })
-      const leasts = await getTopRankedWhysForPoint.call(this.synuser, statementId, 'least', start, pageSize, results => {
-        new Promise((ok, ko) => ok(results))
+      await getTopRankedWhysForPoint.call(this.synuser, statementId, 'least', start, pageSize, data => {
+        leasts = data.results
+
+        counts.mosts += data.counts.mosts
+        counts.leasts += data.counts.leasts
+        counts.neutrals += data.counts.neutrals
       })
 
       const point = await Point.findOne({ _id: new ObjectId(statementId) })
       const convertedPoint = { ...point, _id: point._id.toString() }
 
-      topPointAndWhys.push({ mosts, leasts, point: convertedPoint })
+      topPointAndWhys.push({ mosts: mosts, leasts: leasts, point: convertedPoint, counts: counts })
     }
 
     return cb && cb(topPointAndWhys)

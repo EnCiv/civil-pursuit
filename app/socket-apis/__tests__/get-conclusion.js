@@ -7,8 +7,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { initDiscussion, insertStatementId, Discussions } from '../../dturn/dturn'
 import upsertPoint from '../../socket-apis/upsert-point'
 import upsertRank from '../../socket-apis/upsert-rank'
-import Dturns from '../../models/dturns'
-import Ranks from '../../models/ranks'
+import Points from '../../models/points'
 
 const ObjectID = require('bson-objectid')
 
