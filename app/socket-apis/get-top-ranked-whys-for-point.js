@@ -13,8 +13,8 @@ export default async function getTopRankedWhysForPoint(pointId, category, start,
   }
 
   try {
-    const whys = await Points.aggregate([
-      { $match: { parentId: pointId, category: category } },
+    let results = await Points.aggregate([
+      { $match: { parentId: pointId } },
       {
         $lookup: {
           from: 'ranks',
@@ -25,9 +25,6 @@ export default async function getTopRankedWhysForPoint(pointId, category, start,
       },
       { $unwind: { path: '$ranks', preserveNullAndEmptyArrays: true } },
       { $group: { _id: '$_id', count: { $sum: 1 }, doc: { $first: '$$ROOT' } } },
-      { $sort: { count: -1 } },
-      { $skip: start },
-      { $limit: pageSize },
       {
         $project: {
           doc: {
@@ -35,14 +32,26 @@ export default async function getTopRankedWhysForPoint(pointId, category, start,
           },
         },
       },
+      {
+        $facet: {
+          results: [{ $match: { 'doc.category': category } }, { $sort: { count: -1 } }, { $skip: start }, { $limit: pageSize }],
+          mosts: [{ $match: { 'doc.category': 'most' } }, { $count: 'count' }],
+          leasts: [{ $match: { 'doc.category': 'least' } }, { $count: 'count' }],
+          neutrals: [{ $match: { 'doc.category': 'neutral' } }, { $count: 'count' }],
+        },
+      },
     ]).toArray()
 
-    const result = whys.map(why => {
-      const { userId, ...rest } = why.doc
-      return rest
-    })
+    const first = results[0]
 
-    cb(result)
+    const data = {
+      results: first.results,
+      counts: {
+        mosts: first.mosts?.[0]?.count ?? 0,
+        leasts: first.leasts?.[0]?.count ?? 0,
+        neutrals: first.neutrals?.[0]?.count ?? 0,
+      },
+    }
   } catch (error) {
     console.error('Error in getTopRankedWhysForPoint:', error)
     cb(undefined)
