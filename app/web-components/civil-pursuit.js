@@ -48,7 +48,7 @@ function buildChildren(steps) {
 }
 
 function CivilPursuit(props) {
-  const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, participants = 0, minParticipants, finalRound = 1, ...otherProps } = props
+  const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, participants, minParticipants, finalRound = 1, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
   const [children, setChildren] = useState(buildChildren(steps)) // just do this once so we don't get rerenders
 

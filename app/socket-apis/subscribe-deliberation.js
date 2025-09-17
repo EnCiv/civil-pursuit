@@ -20,9 +20,9 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
   if (!this.synuser?.id) {
     // use not logged in, let them know the number of participants
     // TBD load the deliberation and figure out the number of participantsbut will have to set the updates function in the future because this has no server.to
-    requestHandler?.({
-      participants: Discussions[deliberationId]?.participants ?? 0, // it might not be loaded, but we can't load it if there's no server
-    })
+    const response = {}
+    if (Discussions[deliberationId]) response.participants = Discussions[deliberationId]?.participants ?? 0
+    requestHandler?.(response)
     return
   }
 
