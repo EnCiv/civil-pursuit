@@ -98,6 +98,15 @@ export function Rerank(props) {
   // if it's changed from above, we use the setter to cause a rerender
   // if it's changed from below (by the user) we mutate the state so we don't cause a rerender
 
+  const [vStateByPointId, setVStateByPointId] = useState(() => {
+    const vStateByPointId = {}
+    let firstDisabled = false
+    for (const pointGroup of reducedPointList || []) {
+      vStateByPointId[pointGroup.point._id] = postRankByParentId?.[pointGroup.point._id]?.category ? 'enabled' : firstDisabled ? 'disabled' : ((firstDisabled = true), 'open')
+    }
+    return vStateByPointId
+  })
+
   const validAndPercentDone = (reducedPointList, rankByParentId) => {
     if (!reducedPointList) return { valid: false, value: 0 }
     let doneCount = 0
@@ -108,6 +117,39 @@ export function Rerank(props) {
     return { valid: percentDone >= 1, value: percentDone }
   }
   const [rankByParentId, handleRankPoint] = useRankByParentId(discussionId, round, 'post', reducedPointList, postRankByParentId, validAndPercentDone, onDone)
+  const handleRankAndVState = (point, result) => {
+    handleRankPoint(point, result)
+    setVStateByPointId(prev => {
+      const newVStateByPointId = {}
+      let pointUpdated = false
+      let updated = false
+      let newPointUpdated = false
+      for (const pG of reducedPointList) {
+        if (pG.point._id === point._id) {
+          newVStateByPointId[pG.point._id] = 'enabled'
+          pointUpdated = true
+          updated = newVStateByPointId[pG.point._id] !== prev[pG.point._id] ? true : updated
+        } else if (pointUpdated && !newPointUpdated && prev[pG.point._id] && !rankByParentId[pG.point._id]?.category) {
+          newVStateByPointId[pG.point._id] = 'open'
+          updated = true
+          newPointUpdated = true
+        } else {
+          newVStateByPointId[pG.point._id] = prev[pG.point._id]
+        }
+      }
+      if (!newPointUpdated) {
+        for (const pG of reducedPointList) {
+          if (newVStateByPointId[pG.point._id] !== 'open' && !rankByParentId[pG.point._id]?.category) {
+            newVStateByPointId[pG.point._id] = 'open'
+            newPointUpdated = true
+            updated = true
+            break
+          }
+        }
+      }
+      return updated ? newVStateByPointId : prev
+    })
+  }
 
   const classes = useStylesFromThemeFunction()
 
@@ -128,7 +170,8 @@ export function Rerank(props) {
             leftPointList={topWhysByCategoryByParentId['most']?.[point._id] || []}
             rightPointList={topWhysByCategoryByParentId['least']?.[point._id] || []}
             rank={toRankString[rankByParentId[point._id]?.category]}
-            onDone={result => handleRankPoint(point, result)}
+            onDone={result => handleRankAndVState(point, result)}
+            vState={vStateByPointId[point._id]}
           />
         </div>
       ))}

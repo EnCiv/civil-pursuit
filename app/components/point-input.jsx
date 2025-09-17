@@ -163,7 +163,7 @@ const useStyles = createUseStyles(theme => ({
     '&[type="text"]': {
       border: `0.0625rem solid ${theme.colors.inputBorder}`,
       color: theme.colors.title,
-      fontSize: '1rem',
+      fontSize: '1.25rem',
       lineHeight: '1.5rem',
     },
     '&[type="text"]:hover': {
@@ -172,6 +172,7 @@ const useStyles = createUseStyles(theme => ({
   },
   description: {
     resize: 'none',
+    fontSize: '1rem',
     marginTop: '0.9375rem',
     padding: '0.9375rem 0.9375rem 1.25rem 0.9375rem',
     '&::placeholder': {

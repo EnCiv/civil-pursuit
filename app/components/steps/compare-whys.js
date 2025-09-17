@@ -27,12 +27,14 @@ export default function CompareWhysStep(props) {
     const { discussionId, preRankByParentId } = data
     const { mostIds, leastIds } = Object.values(preRankByParentId ?? {}).reduce(
       ({ mostIds, leastIds }, rank) => {
+        if (Object.values(data.randomWhyById || {}).some(why => why.parentId === rank.parentId)) return { mostIds, leastIds } // already have this why
         if (rank.category === 'most') mostIds.push(rank.parentId)
         else if (rank.category === 'least') leastIds.push(rank.parentId)
         return { mostIds, leastIds }
       },
       { mostIds: [], leastIds: [] }
     )
+    if (!mostIds.length && !leastIds.length) return
     window.socket.emit('get-why-ranks-and-points', discussionId, round, mostIds, leastIds, result => {
       if (!result) return // there was an error
       const { ranks, whys } = result
@@ -60,7 +62,7 @@ export function CompareWhys(props) {
   useEffect(() => {
     // if new points get added, mark them as incomplete
     if (!pointWithWhyRankListList) {
-      onDone({ valid: true, value: 1 })
+      onDone({ valid: true, value: 'skip' })
       return
     }
     for (const pointWithWhyRankList of pointWithWhyRankListList) {
@@ -167,19 +169,19 @@ export function derivePointWithWhyRankListListByCategory(data, category) {
   const whys = []
   if (local.whyRankByParentId !== whyRankByParentId) {
     // if rank changes we have to go through them all
-    whys.push(...Object.values(myWhyByParentId ?? {}))
-    whys.push(...Object.values(randomWhyById ?? {}))
+    whys.push(...Object.values(myWhyByParentId ?? {}).filter(why => why.category === category))
+    whys.push(...Object.values(randomWhyById ?? {}).filter(why => why.category === category))
     local.whyRankByParentId = whyRankByParentId
     local.randomWhyById = randomWhyById
     local.myWhyByParentId = myWhyByParentId
   } else {
     // get myWhys too
     if (local.myWhyByParentId !== myWhyByParentId) {
-      whys.push(...Object.values(myWhyByParentId ?? {}))
+      whys.push(...Object.values(myWhyByParentId ?? {}).filter(why => why.category === category))
       local.myWhyByParentId = myWhyByParentId
     }
     if (local.randomWhyById !== randomWhyById) {
-      whys.push(...Object.values(randomWhyById ?? {}))
+      whys.push(...Object.values(randomWhyById ?? {}).filter(why => why.category === category))
       local.randomWhyById = randomWhyById
     }
   }

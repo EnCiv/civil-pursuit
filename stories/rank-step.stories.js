@@ -341,14 +341,14 @@ export const rankStepWithClearRanks = {
     await userEvent.click(clearButton[0])
 
     await waitFor(() => {
-      expect(onDone.mock.calls[10][0]).toMatchObject({
+      expect(onDone.mock.calls[6][0]).toMatchObject({
         valid: false,
         value: 0,
       })
       expect(deliberationContextData(canvas)).toMatchObject({
         preRankByParentId: {
-          1: { _id: '201', stage: 'pre', parentId: '1', discussionId: '1001', round: 1 },
-          2: { _id: '211', stage: 'pre', parentId: '2', discussionId: '1001', round: 1 },
+          1: { _id: '201', stage: 'pre', parentId: '1', discussionId: '1001', round: 1, category: '' },
+          2: { _id: '211', stage: 'pre', parentId: '2', discussionId: '1001', round: 1, category: '' },
         },
       })
     })

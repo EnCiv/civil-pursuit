@@ -16,10 +16,13 @@ function ReviewPoint(props) {
   const { point = {}, leftPointList = [], rightPointList = [], rank = '', onDone = () => {}, ...otherProps } = props
   const [isRanked, setIsRanked] = useState(false)
 
-  // disabled: can't select yet, collapesed, has not been read
+  // disabled: can't select yet, collapsed, has not been read
   // open: point is open and visible, can select a ranking, has been read
   // enabled: point is collapsed, but you can still select a ranking, has been read
-  const [vState, setVState] = useState(rank ? 'enabled' : 'disabled')
+  const [vState, setVState] = useState(props.vState || (rank ? 'enabled' : 'disabled'))
+  useEffect(() => {
+    if (props.vState) setVState(props.vState)
+  }, [props.vState])
 
   const classes = useStylesFromThemeFunction()
 
@@ -36,6 +39,11 @@ function ReviewPoint(props) {
     if (isRanked) setIsRanked(false) // not ranked until validated from child
   }, [rank])
 
+  const handleClose = () => {
+    setVState('enabled')
+    setTimeout(() => onDone({ valid: !!rank }), 0)
+  }
+
   return (
     <div className={cx(classes.borderStyle)} {...otherProps}>
       <div className={cx(classes.contentContainer)}>
@@ -51,7 +59,7 @@ function ReviewPoint(props) {
         </div>
         <div className={classes.SvgContainer}>
           {vState === 'open' ? (
-            <TextButton onClick={() => setVState('enabled')} title="close" tabIndex={0}>
+            <TextButton onClick={handleClose} title="close" tabIndex={0}>
               <span className={classes.chevronButton}>
                 <SvgChevronUp />
               </span>

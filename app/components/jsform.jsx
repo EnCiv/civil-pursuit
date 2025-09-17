@@ -1,21 +1,28 @@
 // https://github.com/EnCiv/civil-pursuit/issues/89
+// https://github.com/EnCiv/civil-pursuit/issues/297
 
 'use strict'
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useContext, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { JsonForms } from '@jsonforms/react'
 import { vanillaCells, vanillaRenderers } from '@jsonforms/vanilla-renderers'
+import autosize from 'autosize'
 import { PrimaryButton } from './button'
 import { rankWith, isControl } from '@jsonforms/core'
 import { withJsonFormsControlProps } from '@jsonforms/react'
 import StepIntro from './step-intro'
+import { H, Level } from 'react-accessible-headings'
 
 const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
   const options = schema.enum || []
   const label = schema.title || uischema.label
 
   const id = `input-${path.replace(/\./g, '-')}`
+
+  const textareaRef = useRef(null)
+
+  const isMulti = uischema && uischema.options && uischema.options.multi
 
   let type
   if (schema.format === 'date') {
@@ -35,6 +42,17 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
     handleChange(path, value)
   }
 
+  useEffect(() => {
+    if (!isMulti) return
+    if (textareaRef.current) autosize(textareaRef.current)
+    return () => {
+      if (textareaRef.current)
+        try {
+          autosize.destroy(textareaRef.current)
+        } catch (e) {}
+    }
+  }, [isMulti])
+
   return (
     <div>
       <label htmlFor={id}>{label}</label>
@@ -49,6 +67,8 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
             </option>
           ))}
         </select>
+      ) : isMulti ? (
+        <textarea id={id} ref={textareaRef} value={data || ''} onChange={handleInputChange} className={classes.formInput} />
       ) : (
         <input id={id} type={type} checked={type === 'checkbox' ? !!data : undefined} value={type === 'checkbox' ? undefined : data || ''} onChange={handleInputChange} className={classes.formInput} />
       )}
@@ -56,17 +76,24 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
   )
 })
 
-const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }]
+/* new renderer for H uischema elements */
+const HRenderer = ({ uischema, path }) => {
+  const text = (uischema && uischema.text) || ''
+  return <H>{text}</H>
+}
 
-const MoreDetails = props => {
-  const { className = '', schema = {}, uischema = {}, onDone = () => {}, title, discussionId, stepIntro } = props
+/* customRenderers:*/
+const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }, { tester: rankWith(2, uischema => !!(uischema && uischema.type === 'H')), renderer: HRenderer }]
+
+const JsForm = props => {
+  const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, title, stepIntro, discussionId } = props
   const [data, setData] = useState({})
   const classes = useStyles(props)
 
   useEffect(() => {
     window.socket.emit('get-jsform', discussionId, data => {
       if (data) {
-        const moreDetails = data.moreDetails || {}
+        const moreDetails = data[name] || {}
         setData(moreDetails)
         if (handleIsValid(moreDetails)) {
           onDone({ valid: true, value: moreDetails })
@@ -76,11 +103,13 @@ const MoreDetails = props => {
   }, [])
 
   const handleSubmit = () => {
-    window.socket.emit('upsert-jsform', discussionId, 'moreDetails', data)
+    window.socket.emit('upsert-jsform', discussionId, name, data)
     onDone({ valid: handleIsValid(data), value: data })
   }
 
   const handleIsValid = data => {
+    if (!data) return false
+
     const requiredData = schema.properties || {}
     return Object.keys(requiredData).every(key => {
       if (!requiredData[key].properties) return !!data[key]
@@ -103,12 +132,23 @@ const MoreDetails = props => {
     <div className={cx(classes.formContainer, className)}>
       {title && <p className={classes.formTitle}>{title}</p>}
       {stepIntro && <StepIntro {...stepIntro} />}
-      <div className={classes.jsonFormContainer}>
-        <JsonForms schema={schema} uischema={uischema} data={data} renderers={memoedRenderers} cells={vanillaCells} onChange={({ data }) => setData(data)} />
-        <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
-          Submit
-        </PrimaryButton>
-      </div>
+      <Level>
+        <div className={classes.jsonFormContainer}>
+          <JsonForms
+            schema={schema}
+            uischema={uischema}
+            data={data}
+            renderers={memoedRenderers}
+            cells={vanillaCells}
+            onChange={({ data }) => {
+              setData(data)
+            }}
+          />
+          <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
+            Submit
+          </PrimaryButton>
+        </div>
+      </Level>
     </div>
   )
 }
@@ -117,7 +157,7 @@ const useStyles = createUseStyles(theme => ({
   formContainer: props => ({
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'left',
     width: '100%',
     backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.white,
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.black,
@@ -149,4 +189,4 @@ const useStyles = createUseStyles(theme => ({
   },
 }))
 
-export default MoreDetails
+export default JsForm

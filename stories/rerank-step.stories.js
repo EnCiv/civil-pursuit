@@ -225,7 +225,7 @@ export const rerankStepWithPartialDataAndUserUpdate = {
 }
 
 export const rerankStepWithTopDownUpdate = {
-  args: { defaultValue: { discussionId, reducedPointList }, topWhysByCategoryByParentId, postRankByParentId: { 1: postRankByParentId[1] }, round },
+  args: { defaultValue: { discussionId, reducedPointList, uInfo: [{ shownStatementIds: {} }, { shownStatementIds: {} }] }, topWhysByCategoryByParentId, postRankByParentId: { 1: postRankByParentId[1] }, round },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: args => {
     // simulate a top down update after the component initially renders

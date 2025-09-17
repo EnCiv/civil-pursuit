@@ -128,8 +128,15 @@ export function Why(props) {
     }, 0)
   }
 
+  useEffect(() => {
+    // if there nothing to do, skip this step
+    if (!pointWhyList) {
+      onDone({ valid: true, value: 'skip' })
+      return
+    }
+  }, [pointWhyList])
+
   if (!pointWhyList?.length) {
-    setTimeout(() => onDone({ valid: true, value: 1 }), 0) // if there are no points, mark as done
     return <div className={cx(classes.wrapper, className)}>Nothing to do here. Hit Next to continue.</div>
   }
 
@@ -163,7 +170,7 @@ export function derivePointWhyListByCategory(data, category) {
 
   let updated = false
 
-  if (local.reducedPointList !== reducedPointList) {
+  if (local.reducedPointList !== reducedPointList || local.preRankByParentId !== preRankByParentId) {
     const pointsInCategory = reducedPointList.filter(item => {
       const pId = item.point?._id
       return pId && preRankByParentId[pId]?.category === category
@@ -191,6 +198,7 @@ export function derivePointWhyListByCategory(data, category) {
     }
 
     local.reducedPointList = reducedPointList
+    local.preRankByParentId = preRankByParentId
   }
 
   if (local.myWhyByParentId !== myWhyByParentId) {

@@ -33,6 +33,9 @@ const stepIntroStyles = createUseStyles(theme => ({
     fontStyle: 'normal',
     paddingBottom: '4.375rem',
     borderBottom: `1px solid ${theme.colors.secondaryDivider}`,
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      paddingBottom: '1.25rem',
+    },
   },
 
   title: {
