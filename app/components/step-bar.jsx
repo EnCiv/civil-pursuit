@@ -9,8 +9,6 @@ import Step from './step'
 import SvgStepBarArrowDesktop from '../svgr/step-bar-arrow-desktop'
 import SvgStepBarArrowMobile from '../svgr/step-bar-arrow-mobile'
 import Theme from './theme'
-import { set } from 'lodash'
-import { optionIs } from '@jsonforms/core'
 
 function isMobile() {
   return window.innerWidth < parseInt(Theme.condensedWidthBreakPoint) * 16 // 40rem is the mobile breakpoint
@@ -19,7 +17,6 @@ function isMobile() {
 function StepBar(props) {
   const { className, style, steps = [], current = 0, onDone = () => {}, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
-  const mobileBreakpoint = 40
   const stepbarDebounceTime = 100
   /* 
   The overflow: hidden property on the last step prevents us from finding the width of the last step, which
@@ -88,7 +85,6 @@ function StepBar(props) {
   }
 
   const handleResize = () => {
-    //setIsMobile(window.innerWidth < mobileBreakpoint * 16)
     setVisibleSteps([...stepsWithIds, dummyStep])
     setTimeout(() => handleCarouselSetup()) // do this after the visibleSteps are rendered
   }
@@ -216,7 +212,7 @@ function StepBar(props) {
                 stepIndex={step.id}
                 complete={step.id < steps.length ? steps[step.id - 1].complete : false}
                 active={current === step.id ? true : false}
-                unlocked={steps[step.id - 2] ? steps[step.id - 2].complete : step?.seen}
+                unlocked={steps[step.id - 1]?.seen}
                 skip={steps[step.id - 1]?.skip}
                 onDone={() => onDone({ valid: true, value: step.id })}
                 index={index}
