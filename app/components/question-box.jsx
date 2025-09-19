@@ -23,7 +23,7 @@ const QuestionBox = props => {
           <Markdown>{description}</Markdown>
         </div>
       </div>
-      {participants && participants >= minParticipants && (
+      {!!participants && participants >= minParticipants && (
         <div className={classes.participants}>
           <StatusBadge name={badgeName} status="" />
         </div>
