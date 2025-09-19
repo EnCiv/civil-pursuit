@@ -16,6 +16,7 @@ const Intermission = props => {
   const [validationError, setValidationError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
   const [email, setEmail] = useState('')
+  const [copied, setCopied] = useState(false)
 
   const validateEmail = email => {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -105,7 +106,45 @@ const Intermission = props => {
     if (round === 0)
       conditionalResponse = (
         <>
-          <div className={classes.headlineSmall}>Great! You've answered the question, when we get responses from more people, we will invite you back to continue the deliberation.</div>
+          <div className={classes.headlineSmall}>
+            Great! You've answered the question, when we get responses from more people, we will invite you back to continue this round. Please feel free to invite others to join this discussion, just share this link{' '}
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={async () => {
+                const href = window.location.href
+                try {
+                  if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(href)
+                  } else {
+                    const ta = document.createElement('textarea')
+                    ta.value = href
+                    ta.style.position = 'fixed'
+                    ta.style.opacity = '0'
+                    document.body.appendChild(ta)
+                    ta.select()
+                    document.execCommand('copy')
+                    document.body.removeChild(ta)
+                  }
+                  setCopied(true)
+                  setTimeout(() => setCopied(false), 4000)
+                } catch (e) {
+                  // ignore copy failures
+                }
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  e.currentTarget.click()
+                }
+              }}
+              className={classes.hrefspan}
+            >
+              {window.location.href}
+              {copied && <span className={classes.copiedPopup}>Copied</span>}
+            </span>{' '}
+            with them.
+          </div>
         </>
       )
     else conditionalResponse = <div className={classes.headlineSmall}>There are not enough responses yet to proceed with round {round + 1}. When we hear from more people, we will invite you back to continue the deliberation.</div>
@@ -209,6 +248,27 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     alignItems: 'flex-start',
     gap: '1rem',
+  },
+  hrefspan: {
+    color: 'purple',
+    fontWeight: 600,
+    position: 'relative',
+    display: 'inline-block',
+    cursor: 'pointer',
+  },
+  copiedPopup: {
+    position: 'absolute',
+    left: '50%',
+    bottom: '100%',
+    transform: 'translateX(-50%)',
+    marginBottom: '0.25rem',
+    background: theme.colors.primaryButtonBlue,
+    color: theme.colors.white,
+    padding: '0.25rem 0.5rem',
+    borderRadius: '0.25rem',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+    zIndex: 1000,
+    whiteSpace: 'nowrap',
   },
 }))
 
