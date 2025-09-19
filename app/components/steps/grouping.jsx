@@ -210,8 +210,8 @@ export function GroupPoints(props) {
     })
   }
 
-  // Don't render if list is missing, but do call all the hooks because they can't change after the first render
-  if (!reducedPointList) return null
+  // Don't render if list is missing or if there's nothing to group yet, but do call all the hooks because they can't change after the first render
+  if (!reducedPointList || reducedPointList.length <= 1) return null
 
   return (
     <div className={cx(classes.groupingStep, className)}>
