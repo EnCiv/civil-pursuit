@@ -14,14 +14,12 @@ import { withJsonFormsControlProps } from '@jsonforms/react'
 import StepIntro from './step-intro'
 import { H, Level } from 'react-accessible-headings'
 
-const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
+const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes, errors }) => {
+
   const options = schema.enum || []
   const label = schema.title || uischema.label
-
   const id = `input-${path.replace(/\./g, '-')}`
-
   const textareaRef = useRef(null)
-
   const isMulti = uischema && uischema.options && uischema.options.multi
 
   let type
@@ -38,9 +36,12 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
   }
 
   const handleInputChange = event => {
-    const value = type === 'checkbox' ? event.target.checked : event.target.value
-    handleChange(path, value)
-  }
+  let value
+  if (type === 'checkbox') value = event.target.checked
+  else if (type === 'number' || schema.type === 'integer') value = parseInt(event.target.value, 10) || 0
+  else value = event.target.value
+  handleChange(path, value)
+}
 
   useEffect(() => {
     if (!isMulti) return
@@ -53,11 +54,14 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
     }
   }, [isMulti])
 
+  const isError = !!errors
+
   return (
     <div>
       <label htmlFor={id}>{label}</label>
+      {isError && <div style={{ color: '#b00000', fontSize: '0.875rem', marginTop: '0.25rem' }}>{errors}</div>}
       {type === 'select' ? (
-        <select id={id} value={data || ''} onChange={handleInputChange} className={classes.formInput}>
+        <select id={id} value={data || ''} onChange={handleInputChange} className={cx(classes.formInput, { [classes.errorInput]: isError })}>
           <option value="" disabled>
             Choose one
           </option>
@@ -68,9 +72,9 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
           ))}
         </select>
       ) : isMulti ? (
-        <textarea id={id} ref={textareaRef} value={data || ''} onChange={handleInputChange} className={classes.formInput} />
+        <textarea id={id} ref={textareaRef} value={data || ''} onChange={handleInputChange} className={cx(classes.formInput, { [classes.errorInput]: isError })} />
       ) : (
-        <input id={id} type={type} checked={type === 'checkbox' ? !!data : undefined} value={type === 'checkbox' ? undefined : data || ''} onChange={handleInputChange} className={classes.formInput} />
+        <input id={id} type={type} checked={type === 'checkbox' ? !!data : undefined} value={type === 'checkbox' ? undefined : data || ''} onChange={handleInputChange} className={cx(classes.formInput, { [classes.errorInput]: isError })} />
       )}
     </div>
   )
@@ -88,6 +92,7 @@ const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), 
 const JsForm = props => {
   const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, title, stepIntro, discussionId } = props
   const [data, setData] = useState({})
+  const [errors, setErrors] = useState([])
   const classes = useStyles(props)
 
   useEffect(() => {
@@ -107,16 +112,6 @@ const JsForm = props => {
     onDone({ valid: handleIsValid(data), value: data })
   }
 
-  const handleIsValid = data => {
-    if (!data) return false
-
-    const requiredData = schema.properties || {}
-    return Object.keys(requiredData).every(key => {
-      if (!requiredData[key].properties) return !!data[key]
-      else return Object.keys(requiredData[key].properties).every(prop => !!data[key][prop])
-    })
-  }
-
   // useMemo renders (React components) so they don't get rebuilt every time the user types a character
   // This was really a problem with string input because focus went away from the input fields after each time the user typed a character
   const memoedRenderers = useMemo(() => {
@@ -124,9 +119,16 @@ const JsForm = props => {
       ...renderer,
       renderer: renderer.renderer === CustomInputRenderer ? props => <CustomInputRenderer {...props} classes={classes} /> : renderer.renderer,
     }))
-  }, [schema, uischema])
+  }, [schema, uischema, errors])
 
-  const isValid = handleIsValid(data)
+  const isValid =
+    errors.length === 0 &&
+    Object.keys(schema.properties || {}).every(key => {
+      if (schema.required && schema.required.includes(key)) {
+        return !!data[key]
+      }
+      return true
+    })
 
   return (
     <div className={cx(classes.formContainer, className)}>
@@ -140,8 +142,9 @@ const JsForm = props => {
             data={data}
             renderers={memoedRenderers}
             cells={vanillaCells}
-            onChange={({ data }) => {
+            onChange={({ data, errors }) => {
               setData(data)
+              setErrors(errors)
             }}
           />
           <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
@@ -186,6 +189,11 @@ const useStyles = createUseStyles(theme => ({
   actionButton: {
     width: '100%',
     margin: '1.5rem 0',
+  },
+  errorInput: {
+    borderColor: '#b00000 !important',
+    backgroundColor: '#ffe6e6', 
+    color: '#b00000',
   },
 }))
 
