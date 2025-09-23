@@ -45,7 +45,7 @@ export default async function getTopRankedWhysForPoint(pointId, category, start,
     const first = results[0]
 
     const data = {
-      results: first.results,
+      results: first.results.map(doc => doc.doc),
       counts: {
         mosts: first.mosts?.[0]?.count ?? 0,
         leasts: first.leasts?.[0]?.count ?? 0,
