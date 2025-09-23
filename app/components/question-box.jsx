@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/100
 // https://github.com/EnCiv/civil-pursuit/issues/221
-import React from 'react'
+import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import StatusBadge from './status-badge'
@@ -8,14 +8,22 @@ import Markdown from 'markdown-to-jsx'
 import DeliberationContext from './deliberation-context'
 
 const QuestionBox = props => {
-  const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', minParticipants = 0, ...otherProps } = props
+  const { className = '', subject = '', description = '', discussionId, contentAlign = 'center', tagline = '', minParticipants = 0, ...otherProps } = props
   const classes = useStylesFromThemeFunction({ ...props, contentAlign })
   const { data } = React.useContext(DeliberationContext)
   const participants = data?.participants
   const badgeName = `${participants || 0} participant` + (participants > 1 ? 's' : '')
+  const [status, setStatus] = useState(null)
+  const detectStatus = event => {
+    window.socket.emit('get-discussion-status', discussionId, status => {
+      if (!status) return
+      setStatus(status)
+    })
+  }
 
   return (
-    <div className={cx(classes.container, className)} {...otherProps}>
+    <div className={cx(classes.questionBox, className)} {...otherProps}>
+      <div className={classes.invisibleButtonInUpperRight} onClick={detectStatus} />
       <div className={classes.topic}>
         {tagline && <div className={classes.fixedText}>{tagline}</div>}
         <h1 className={classes.subject}>{subject}</h1>
@@ -23,9 +31,18 @@ const QuestionBox = props => {
           <Markdown>{description}</Markdown>
         </div>
       </div>
-      {participants && participants >= minParticipants && (
+      {!!participants && participants >= minParticipants && (
         <div className={classes.participants}>
           <StatusBadge name={badgeName} status="" />
+        </div>
+      )}
+      {status && (
+        <div className={classes.status}>
+          {Object.entries(status).map(([key, value]) => (
+            <div key={key} className={classes.statusItem}>
+              <strong>{key}:</strong> {typeof value !== undefined ? JSON.stringify(value, null, 2) : ''}
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -33,7 +50,8 @@ const QuestionBox = props => {
 }
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-  container: {
+  questionBox: {
+    position: 'relative',
     borderRadius: '1.875rem',
     border: `0.0625rem solid ${theme.colors.secondaryDivider}`,
     backgroundColor: 'rgba(235, 235, 235, 0.4)',
@@ -95,6 +113,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     paddingTop: '1.6875rem',
+  },
+  status: {
+    marginTop: '2rem',
+  },
+  invisibleButtonInUpperRight: {
+    width: '1rem',
+    height: '1rem',
+    position: 'absolute',
+    backgroundColor: 'transparent',
+    right: 0,
+    top: 0,
   },
 }))
 

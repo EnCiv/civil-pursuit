@@ -7,10 +7,51 @@ import { ObjectId } from 'mongodb'
 import { subscribeEventName } from './socket-api-subscribe'
 import Dturns from '../models/dturns'
 
+export async function ensureDeliberationLoaded(deliberationId) {
+  if (Discussions[deliberationId]) return true
+  const iota = await Iota.findOne({ _id: new ObjectId(deliberationId) }) // Lookup in the iota collection
+  if (iota) {
+    const server = this.server // don't reference "this" in the UInfoUpdate handler.
+    const options = {
+      ...(iota?.webComponent?.dturn ?? {}),
+      updateUInfo: async UInfoData => {
+        const userId = Object.keys(UInfoData)[0]
+
+        // extract the round and info note round is a string because this was an object
+        // info is an object which may have shownStatementIds and/or groupings but is a delta not the whole object
+        const [roundStr, info] = Object.entries(UInfoData[userId][deliberationId])[0]
+
+        await Dturns.upsert(userId, deliberationId, +roundStr, info)
+      },
+      getAllUInfo: async () => {
+        const allUInfo = await Dturns.getAllFromDiscussion(deliberationId)
+        const all = allUInfo.map(({ discussionId, userId, round, shownStatementIds = {}, groupings = [], _id, ...otherProps }) => ({
+          // do not put _id into the UInfo
+          [userId]: {
+            [discussionId]: {
+              [round]: {
+                shownStatementIds,
+                groupings: Object.values(groupings).map(group => Object.values(group)), // convert from plain object with nested objects to array of arrays
+                ...otherProps,
+              },
+            },
+          },
+        }))
+        return all
+      },
+      updates: updateData => {
+        const eventName = subscribeEventName('subscribe-deliberation', deliberationId)
+
+        server.to(deliberationId).emit(eventName, updateData)
+      },
+    }
+    await initDiscussion(deliberationId, options)
+    return true
+  } else return false
+}
+
 export default async function subscribeDeliberation(deliberationId, requestHandler) {
   const socket = this // making it clear this is a socket
-  const server = this.server // don't reference "this" in the UInfoUpdate handler.
-  const eventName = subscribeEventName('subscribe-deliberation', deliberationId)
 
   // Verify argument
   if (!deliberationId) {
@@ -28,44 +69,11 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
 
   // Check if discussion is loaded in memory
   if (!Discussions[deliberationId]) {
-    const iota = await Iota.findOne({ _id: new ObjectId(deliberationId) }) // Lookup in the iota collection
-    if (iota) {
-      const options = {
-        ...(iota?.webComponent?.dturn ?? {}),
-        updateUInfo: async UInfoData => {
-          const userId = Object.keys(UInfoData)[0]
-
-          // extract the round and info note round is a string because this was an object
-          // info is an object which may have shownStatementIds and/or groupings but is a delta not the whole object
-          const [roundStr, info] = Object.entries(UInfoData[userId][deliberationId])[0]
-
-          await Dturns.upsert(userId, deliberationId, +roundStr, info)
-        },
-        getAllUInfo: async () => {
-          const allUInfo = await Dturns.getAllFromDiscussion(deliberationId)
-          const all = allUInfo.map(({ discussionId, userId, round, shownStatementIds = {}, groupings = [], _id, ...otherProps }) => ({
-            // do not put _id into the UInfo
-            [userId]: {
-              [discussionId]: {
-                [round]: {
-                  shownStatementIds,
-                  groupings: Object.values(groupings).map(group => Object.values(group)), // convert from plain object with nested objects to array of arrays
-                  ...otherProps,
-                },
-              },
-            },
-          }))
-          return all
-        },
-        updates: updateData => {
-          server.to(deliberationId).emit(eventName, updateData)
-        },
-      }
-      await initDiscussion(deliberationId, options)
-    } else {
+    const loaded = await ensureDeliberationLoaded.call(this, deliberationId)
+    if (!loaded) {
       requestHandler?.() // let the client know there was an error
-      return console.error(`Failed to find deliberation iota with id '${deliberationId}'.`) // Else fail
-    }
+      return console.error(`Failed to load deliberation with id '${deliberationId}'.`) // Else fail
+    } // else deliberation is now loaded
   }
 
   socket.join(deliberationId) // subscribe this user to the room for this deliberation
