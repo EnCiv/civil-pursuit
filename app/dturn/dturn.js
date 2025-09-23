@@ -13,6 +13,7 @@ function getInitOptions(options) {
     updates: options.updates || (() => []), // not async. socket.io will quere updates and send, if overflow, better to send latest than to catchup
     updateUInfo: options.updateUInfo || (async () => {}),
     getAllUInfo: options.getAllUInfo || (async () => []),
+    finalRound: options.finalRound || 0, // the final round of the discussion no more after round === finalRound
   }
 }
 /**
@@ -220,6 +221,7 @@ async function getStatementIds(discussionId, round, userId) {
     console.error(`Insufficient ShownStatements length for discussion ${discussionId}`)
     return undefined
   }
+  if (round > Discussions[discussionId].finalRound) return undefined
 
   const dis = Discussions[discussionId]
   const statementIds = []
@@ -460,6 +462,7 @@ async function putGroupings(discussionId, round, userId, groupings) {
   const uitem = Discussions[discussionId].Uitems[userId][round]
   if (!uitem) return false
   if (uitem.finished) return false
+  if (round > Discussions[discussionId].finalRound) return false
 
   //?? if there is already a groupins, should we uncount the groupins in gitems before overriding it - in the real world groupins may get resubmitted
   if (uitem?.groupings?.length) console.error('putGroupings already there', round, userId, groupings, uitem)
@@ -488,6 +491,7 @@ async function finishRound(discussionId, round, userId, rankings, groupings) {
   const uitem = Discussions[discussionId].Uitems?.[userId]?.[round]
   if (!uitem) return false
   if (uitem.finished) return false // already finished this round
+  if (round > Discussions[discussionId].finalRound) return false
 
   const shownStatementIds = Object.keys(uitem.shownStatementIds)
   if (shownStatementIds.length <= 1) {
@@ -533,6 +537,7 @@ module.exports.finishRound = finishRound
 
 async function rankMostImportant(discussionId, round, userId, statementId, rank = 1) {
   if (Discussions[discussionId].Uitems[userId][round].finished) return
+  if (round > Discussions[discussionId].finalRound) return undefined
   deltaShownItemsRank(discussionId, round, statementId, rank)
   Discussions[discussionId].Uitems[userId][round].shownStatementIds[statementId].rank = rank
   await Discussions[discussionId].updateUInfo({
@@ -698,21 +703,12 @@ export async function getConclusionIds(discussionId) {
   }
   let dis = Discussions[discussionId]
 
-  const lastRoundNotMoreThanGroupSize = dis.ShownStatements.at(-1).length <= dis.group_size
-
-  if (!lastRoundNotMoreThanGroupSize) {
-    //console.info('last round more than group size ', dis.ShownStatements.at(-1).length, ' <= ', dis.group_size)
-    return undefined
-  }
-  const [highestRank, leastShownCount] = dis.ShownStatements.at(-1).reduce(([highestRank, leastShownCount], sItem) => [Math.max(sItem.rank, highestRank), Math.min(leastShownCount, sItem.shownCount)], [-1, Infinity])
-  const shownCountMoreThanMin = leastShownCount >= dis.participants * dis.min_shown_percent
-  if (shownCountMoreThanMin && highestRank > 0) {
-    const conclusionIds = dis.ShownStatements.at(-1)
-      .filter(sItem => sItem.rank === highestRank)
-      .map(sItem => sItem.statementId) // if there is a single item with the highest rank, return it
-    return conclusionIds
-  }
-
-  //console.info('shown count less than min or highest rank less than 1 ', leastShownCount, ' >= ', dis.participants * dis.min_shown_percent, ', highest rank', highestRank)
-  return undefined
+  // shownStatements is sorted by rank
+  if (dis.ShownStatements?.at(-1)?.[0]?.shownCount < Math.pow(dis.group_size, dis.finalRound + 1)) return undefined
+  let highestRank = dis.ShownStatements.at(-1)[0]?.rank
+  let conclusionIds = dis.ShownStatements.at(-1)
+    .filter(sItem => sItem.rank === highestRank)
+    .map(sItem => sItem.statementId)
+  if (conclusionIds.length > 0 && highestRank > 0) return conclusionIds
+  else return undefined
 }

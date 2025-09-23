@@ -11,7 +11,8 @@ const Intermission = props => {
   const { className = '', onDone = () => {}, user, round } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useContext(DeliberationContext)
-  const { lastRound, finalRound, uInfo = {} } = data
+  const { lastRound, dturn, uInfo = {} } = data
+  const { finalRound } = dturn || {}
 
   const [validationError, setValidationError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')

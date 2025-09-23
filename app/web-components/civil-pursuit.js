@@ -12,13 +12,13 @@ import StepSlider from '../components/step-slider'
 import SignUp from '../components/sign-up'
 import Jsform from '../components/jsform'
 import Tournament from '../components/tournament'
+import Conclusion from '../components/steps/conclusion'
 
 const WebComponents = {
   SignUp: SubWrap(SignUp),
   Jsform: SubWrap(Jsform),
   Tournament: Tournament,
-  Conclusion: undefined, // TODO: Import the Conclusion component
-  Feedback: undefined, // TODO: Import the Feedback component
+  Conclusion: Conclusion,
 }
 
 function SubWrap(Component) {
@@ -48,12 +48,12 @@ function buildChildren(steps) {
 }
 
 function CivilPursuit(props) {
-  const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, participants, minParticipants, finalRound = 1, ...otherProps } = props
+  const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, participants, minParticipants, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
   const [children, setChildren] = useState(buildChildren(steps)) // just do this once so we don't get rerenders
 
   return (
-    <DeliberationContextProvider defaultValue={{ discussionId: _id, user, userId: user?.id, participants, finalRound, ...otherProps }}>
+    <DeliberationContextProvider defaultValue={{ discussionId: _id, user, userId: user?.id, participants, ...otherProps }}>
       <div className={cx(classes.civilPursuit, className)}>
         <QuestionBox className={classes.question} subject={subject} description={description} minParticipants={minParticipants} />
         <Level>

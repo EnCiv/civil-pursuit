@@ -17,9 +17,9 @@
     "description": "This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. We’re asking about concerns, not solutions.",
     "webComponent": {
       "webComponent": "CivilPursuit",
-      "dturn": { "group_size": 5 },
+      "dturn": { "group_size": 5, "finalRound": 3 },
       "participants": 12,
-      "finalRound": 3,
+
       "steps": [
         { "webComponent": "SignUp", "startTab": "SignUp" },
         {
@@ -239,9 +239,8 @@
     "description": "What's the largest random number between 0 and 100. This is a test of the Civil Server.",
     "webComponent": {
       "webComponent": "CivilPursuit",
-      "dturn": { "group_size": 5 },
+      "dturn": { "group_size": 5, "finalRound": 2 },
       "participants": 0,
-      "finalRound": 2,
       "steps": [
         { "webComponent": "SignUp", "startTab": "SignUp" },
         {
@@ -465,9 +464,8 @@
     "description": "There are lots of surveys that show that most Americans think our country is headed in the wrong direction. But what is the right direction, the one that unites us and motivates us to make that happen?\n\nThis is not a survey, it is a deliberation that will help us find our answer.\n\nAnd this is a new tool for large scale, productive, national discourse that we are developing and hope to get your feedback on.",
     "webComponent": {
       "webComponent": "CivilPursuit",
-      "dturn": { "group_size": 5 },
+      "dturn": { "group_size": 5, "finalRound": 1 },
       "participants": 12,
-      "finalRound": 1,
       "steps": [
         { "webComponent": "SignUp", "startTab": "SignUp" },
         {

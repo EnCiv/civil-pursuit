@@ -22,7 +22,7 @@ export default async function getConclusion(discussionId, cb) {
     return cb && cb(undefined)
   } else {
     let pointDocs, myWhys
-    await getPointsOfIds.call(this.synuser, statementIds, result => {
+    await getPointsOfIds.call(this, statementIds, result => {
       pointDocs = result.points
       myWhys = result.myWhys
     })
@@ -37,13 +37,13 @@ export default async function getConclusion(discussionId, cb) {
         leasts,
         counts = { mosts: 0, leasts: 0, neutrals: 0 }
 
-      await getTopRankedWhysForPoint.call(this.synuser, statementId, 'most', start, pageSize, data => {
+      await getTopRankedWhysForPoint.call(this, statementId, 'most', start, pageSize, data => {
         mosts = data.results
         counts.mosts = data.counts.mosts
         counts.leasts = data.counts.leasts
         counts.neutrals = data.counts.neutrals
       })
-      await getTopRankedWhysForPoint.call(this.synuser, statementId, 'least', start, pageSize, data => {
+      await getTopRankedWhysForPoint.call(this, statementId, 'least', start, pageSize, data => {
         leasts = data.results
       })
 
