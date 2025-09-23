@@ -182,7 +182,7 @@ const Intermission = props => {
 
   useEffect(() => {
     onDone({ valid, value: 'continue', onNext })
-  }, [valid])
+  }, [valid, onNext])
   return (
     <div className={cx(classes.intermission, className)}>
       <div className={classes.iconContainer}>
