@@ -716,3 +716,36 @@ export async function getConclusionIds(discussionId) {
   //console.info('shown count less than min or highest rank less than 1 ', leastShownCount, ' >= ', dis.participants * dis.min_shown_percent, ', highest rank', highestRank)
   return undefined
 }
+
+async function getDiscussionStatus(discussionId) {
+  if (!Discussions[discussionId]) {
+    return undefined
+  }
+  const dis = Discussions[discussionId]
+  const conclusionIds = await getConclusionIds(discussionId)
+  const status = {
+    conclusionIds,
+    participants: dis.participants,
+    lastRound: dis.lastRound,
+    num_statements: dis.ShownStatements?.[0]?.length || 0,
+    num_users_by_round: dis.Uitems
+      ? Object.values(dis.Uitems).reduce((numUsersByRound, uitem) => {
+          if (!uitem) return numUsersByRound
+          uitem.forEach((r, i) => {
+            if (!numUsersByRound[i]) numUsersByRound[i] = 0
+            numUsersByRound[i]++
+          })
+          return numUsersByRound
+        }, {})
+      : {},
+    num_statements_by_round: dis.ShownStatements
+      ? dis.ShownStatements.reduce((numStatementsByRound, sitems, i) => {
+          if (numStatementsByRound[i] === undefined) numStatementsByRound[i] = 0
+          numStatementsByRound[i] = sitems.length
+          return numStatementsByRound
+        }, {})
+      : {},
+  }
+  return status
+}
+module.exports.getDiscussionStatus = getDiscussionStatus

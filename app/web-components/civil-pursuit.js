@@ -55,7 +55,7 @@ function CivilPursuit(props) {
   return (
     <DeliberationContextProvider defaultValue={{ discussionId: _id, user, userId: user?.id, participants, finalRound, ...otherProps }}>
       <div className={cx(classes.civilPursuit, className)}>
-        <QuestionBox className={classes.question} subject={subject} description={description} minParticipants={minParticipants} />
+        <QuestionBox className={classes.question} subject={subject} description={description} discussionId={_id} minParticipants={minParticipants} />
         <Level>
           <StepSlider
             className={classes.stepPadding}
