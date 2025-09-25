@@ -2,7 +2,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/297
 // https://github.com/EnCiv/civil-pursuit/issues/357
 
-
 'use strict'
 import React, { useEffect, useState, useMemo, useContext, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
@@ -17,7 +16,6 @@ import StepIntro from './step-intro'
 import { H, Level } from 'react-accessible-headings'
 
 const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes, errors }) => {
-
   const options = schema.enum || []
   const label = schema.title || uischema.label
   const id = `input-${path.replace(/\./g, '-')}`
@@ -38,12 +36,12 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
   }
 
   const handleInputChange = event => {
-  let value
-  if (type === 'checkbox') value = event.target.checked
-  else if (type === 'number' || schema.type === 'integer') value = parseInt(event.target.value, 10) || 0
-  else value = event.target.value
-  handleChange(path, value)
-}
+    let value
+    if (type === 'checkbox') value = event.target.checked
+    else if (type === 'number' || schema.type === 'integer') value = parseInt(event.target.value, 10) || 0
+    else value = event.target.value
+    handleChange(path, value)
+  }
 
   useEffect(() => {
     if (!isMulti) return
@@ -59,9 +57,24 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
   const isError = !!errors
 
   return (
-    <div>
+    <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
       <label htmlFor={id}>{label}</label>
-      {isError && <div style={{ color: '#b00000', fontSize: '0.875rem', marginTop: '0.25rem' }}>{errors}</div>}
+
+      {isError && (
+        <div className={classes.errorInput}
+          style={{
+            position: 'absolute',
+            top: '-1.25rem',
+            left: 0,
+            fontSize: '0.875rem',
+            lineHeight: '2.0rem',
+            minHeight: '1rem',
+          }}
+        >
+          {errors}
+        </div>
+      )}
+
       {type === 'select' ? (
         <select id={id} value={data || ''} onChange={handleInputChange} className={cx(classes.formInput, { [classes.errorInput]: isError })}>
           <option value="" disabled>
@@ -102,7 +115,7 @@ const JsForm = props => {
       if (data) {
         const moreDetails = data[name] || {}
         setData(moreDetails)
-        if (handleIsValid(moreDetails)) {
+        if (handleIsValid(moreDetails, schema, errors)) {
           onDone({ valid: true, value: moreDetails })
         }
       }
@@ -111,7 +124,7 @@ const JsForm = props => {
 
   const handleSubmit = () => {
     window.socket.emit('upsert-jsform', discussionId, name, data)
-    onDone({ valid: handleIsValid(data), value: data })
+    onDone({ valid: handleIsValid(data, schema, errors), value: data })
   }
 
   // useMemo renders (React components) so they don't get rebuilt every time the user types a character
@@ -123,14 +136,53 @@ const JsForm = props => {
     }))
   }, [schema, uischema])
 
-  const isValid =
-    errors.length === 0 &&
-    Object.keys(schema.properties || {}).every(key => {
-      if (schema.required && schema.required.includes(key)) {
-        return !!data[key]
+  // const isValid = errors.length === 0 &&
+  //   Object.keys(schema.properties || {}).every(key => {
+  //     if (schema.required && schema.required.includes(key)) {
+  //       return !!data[key]
+  //     }
+  //     return true
+  //   })
+
+  // const handleIsValid = (data, schema, errors) => {
+  //   if (!data) return false
+  //   if (errors && errors.length > 0) return false
+
+  //   const requiredKeys = schema.required || []
+  //   const props = schema.properties || {}
+
+  //   return requiredKeys.every(key => {
+  //     if (!props[key]) return false
+
+  //     // nested object case
+  //     if (props[key].type === 'object' && props[key].properties) {
+  //       return Object.keys(props[key].properties).every(prop => !!(data[key] && data[key][prop]))
+  //     }
+
+  //     // primitive case
+  //     return !!data[key]
+  //   })
+  // }
+
+  const handleIsValid = (data, schema, errors) => {
+    if (!data) return false
+    if (errors && errors.length > 0) return false
+    if (!schema || !schema.properties) return true // nothing to validate
+
+    const requiredKeys = schema.required || []
+    const props = schema.properties || {}
+
+    return requiredKeys.every(key => {
+      if (!props[key]) return false
+
+      if (props[key].type === 'object' && props[key].properties) {
+        return Object.keys(props[key].properties).every(prop => !!(data[key] && data[key][prop]))
       }
-      return true
+      return !!data[key]
     })
+  }
+
+  const isValid = handleIsValid(data, schema, errors)
 
   return (
     <div className={cx(classes.formContainer, className)}>
@@ -193,8 +245,7 @@ const useStyles = createUseStyles(theme => ({
     margin: '1.5rem 0',
   },
   errorInput: {
-    borderColor: `${theme.colors.inputErrorBorder} !important` ,
-    backgroundColor: `${theme.colors.inputErrorContainer}`, 
+    borderColor: `${theme.colors.inputErrorBorder} !important`,
     color: `${theme.colors.inputErrorBorder}`,
   },
 }))

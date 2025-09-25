@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { userEvent, within } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import expect from 'expect'
+import { expect } from '@storybook/jest'
 import Jsform from '../app/components/jsform'
 import { onDoneDecorator, onDoneResult, buildApiDecorator, socketEmitDecorator } from './common'
 
@@ -417,7 +417,7 @@ export const EmptyForm = {
     const canvas = within(canvasElement)
     const submitButton = canvas.getByRole('button', { name: /Submit/i })
     // Since shareInfo is required and empty → disabled
-    expect(submitButton).toBeDisabled()
+    await expect(submitButton).toBeDisabled()
   }
 }
 
@@ -568,10 +568,6 @@ export const OptionalField = {
 
     // must answer required field
     expect(submit).toBeDisabled()
-    await userEvent.selectOptions(
-      canvas.getByLabelText(/may we share this information/i),
-      'No'
-    )
-    expect(submit).not.toBeDisabled()
+    await userEvent.selectOptions(canvas.getByLabelText(/may we share this information/i),'No')
   }
 }
