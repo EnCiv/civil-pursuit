@@ -417,7 +417,7 @@ export const EmptyForm = {
     const canvas = within(canvasElement)
     const submitButton = canvas.getByRole('button', { name: /Submit/i })
     // Since shareInfo is required and empty → disabled
-    await expect(submitButton).toBeDisabled()
+     expect(submitButton).toBeDisabled()
   }
 }
 

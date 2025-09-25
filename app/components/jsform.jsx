@@ -136,34 +136,6 @@ const JsForm = props => {
     }))
   }, [schema, uischema])
 
-  // const isValid = errors.length === 0 &&
-  //   Object.keys(schema.properties || {}).every(key => {
-  //     if (schema.required && schema.required.includes(key)) {
-  //       return !!data[key]
-  //     }
-  //     return true
-  //   })
-
-  // const handleIsValid = (data, schema, errors) => {
-  //   if (!data) return false
-  //   if (errors && errors.length > 0) return false
-
-  //   const requiredKeys = schema.required || []
-  //   const props = schema.properties || {}
-
-  //   return requiredKeys.every(key => {
-  //     if (!props[key]) return false
-
-  //     // nested object case
-  //     if (props[key].type === 'object' && props[key].properties) {
-  //       return Object.keys(props[key].properties).every(prop => !!(data[key] && data[key][prop]))
-  //     }
-
-  //     // primitive case
-  //     return !!data[key]
-  //   })
-  // }
-
   const handleIsValid = (data, schema, errors) => {
     if (!data) return false
     if (errors && errors.length > 0) return false
