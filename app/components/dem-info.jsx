@@ -10,6 +10,7 @@ export default function DemInfo(props) {
 
   const userState = state || ''
   const userAge = dob ? calculateAge(dob) : ''
+
   const userPoliticalParty = party || ''
 
   let contentText = ''
