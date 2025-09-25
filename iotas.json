@@ -557,8 +557,14 @@
                 "title": "Gender",
                 "type": "string",
                 "enum": ["Male", "Female", "Other"]
+              },
+              "shareInfo": {
+                "title": "Personally Identifiable Information is not shown, but may we share this information with your posts?",
+                "type": "string",
+                "enum": ["Yes", "No"]
               }
-            }
+            },
+             "required": ["shareInfo"]
           },
           "uischema": {
             "type": "VerticalLayout",
@@ -578,6 +584,10 @@
               {
                 "type": "Control",
                 "scope": "#/properties/Gender"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/shareInfo"
               }
             ]
           }
@@ -900,8 +910,14 @@
                 "title": "Gender",
                 "type": "string",
                 "enum": ["Male", "Female", "Other"]
+              },
+              "shareInfo": {
+                "title": "Personally Identifiable Information is not shown, but may we share this information with your posts?",
+                "type": "string",
+                "enum": ["Yes", "No"]
               }
-            }
+            },
+             "required": ["shareInfo"]
           },
           "uischema": {
             "type": "VerticalLayout",
@@ -921,6 +937,10 @@
               {
                 "type": "Control",
                 "scope": "#/properties/Gender"
+              },
+               {
+                "type": "Control",
+                "scope": "#/properties/shareInfo"
               }
             ]
           }
