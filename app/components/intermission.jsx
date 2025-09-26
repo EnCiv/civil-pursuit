@@ -108,7 +108,8 @@ const Intermission = props => {
       conditionalResponse = (
         <>
           <div className={classes.headlineSmall}>
-            Great! You've answered the question, when we get responses from more people, we will invite you back to continue this round. Please feel free to invite others to join this discussion, just share this link{' '}
+            Great! You've answered the question, when we get responses from {(data?.dturn?.group_size || 10) * 2 - 1 - (data.participants || 1)} more people, we will invite you back to continue this round. Please feel free to invite others
+            to join this discussion, just share this link{' '}
             <span
               role="button"
               tabIndex={0}
