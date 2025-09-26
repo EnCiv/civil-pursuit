@@ -38,7 +38,7 @@ export const Empty = {
 
 export const NoEmail = {
   args: {
-    defaultValue: { lastRound: 1, finalRound: 1 },
+    defaultValue: { lastRound: 1, dturn: { finalRound: 1 } },
     user: {},
     round: 1,
   },
@@ -47,7 +47,7 @@ export const NoEmail = {
 
 export const NoEmailSuccess = {
   args: {
-    defaultValue: { lastRound: 1, finalRound: 1 },
+    defaultValue: { lastRound: 1, dturn: { finalRound: 1 } },
     user: {},
     round: 1,
   },
@@ -71,7 +71,7 @@ export const NoEmailSuccess = {
 
 export const NoEmailFail = {
   args: {
-    defaultValue: { lastRound: 1, finalRound: 1 },
+    defaultValue: { lastRound: 1, dturn: { finalRound: 1 } },
     user: {},
     round: 1,
   },
@@ -94,7 +94,7 @@ export const NoEmailFail = {
 }
 export const NoEmailMobile = {
   args: {
-    defaultValue: { lastRound: 1, finalRound: 1, uInfo: uInfoRound0Incomplete },
+    defaultValue: { lastRound: 1, dturn: { finalRound: 1 }, uInfo: uInfoRound0Incomplete },
     user: {},
     round: 1,
   },
@@ -107,14 +107,14 @@ export const NoEmailMobile = {
 
 export const CanContinueToNextRound = {
   args: {
-    defaultValue: { lastRound: 2, finalRound: 2, uInfo: uInfoRound1Complete },
+    defaultValue: { lastRound: 2, dturn: { finalRound: 1 }, uInfo: uInfoRound1Complete },
     user: { id: '123456', email: 'user@email.com' },
     round: 1,
   },
 }
 export const CanContinueToNextRoundOnDone = {
   args: {
-    defaultValue: { lastRound: 2, finalRound: 2, uInfo: uInfoRound1Complete },
+    defaultValue: { lastRound: 2, dturn: { finalRound: 1 }, uInfo: uInfoRound1Complete },
     user: { id: '123456', email: 'user@email.com' },
     round: 1,
   },
@@ -142,7 +142,7 @@ export const CanContinueToNextRoundOnDone = {
 }
 export const CanNotFinishTheRound = {
   args: {
-    defaultValue: { lastRound: 1, finalRound: 1, uInfo: uInfoRound0Incomplete },
+    defaultValue: { lastRound: 1, dturn: { finalRound: 1 }, uInfo: uInfoRound0Incomplete },
     user: { id: '123456', email: 'user@email.com' },
     round: 0,
   },
@@ -150,7 +150,7 @@ export const CanNotFinishTheRound = {
 
 export const CanNotContinueToNextRound = {
   args: {
-    defaultValue: { lastRound: 0, finalRound: 1, uInfo: uInfoRound0Complete },
+    defaultValue: { lastRound: 0, dturn: { finalRound: 1 }, uInfo: uInfoRound0Complete },
     user: { id: '123456', email: 'user@email.com' },
     round: 0,
   },
@@ -158,7 +158,7 @@ export const CanNotContinueToNextRound = {
 
 export const DiscussionFinished = {
   args: {
-    defaultValue: { discussionId: '123456', lastRound: 1, finalRound: 1, uInfo: uInfoRound1Complete },
+    defaultValue: { discussionId: '123456', lastRound: 1, dturn: { finalRound: 1 }, uInfo: uInfoRound1Complete },
     user: { id: '123456', email: 'user@email.com' },
     round: 1,
   },

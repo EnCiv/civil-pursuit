@@ -69,6 +69,14 @@ const whyQuestionAnswerStep = 'Why should everyone consider solving this issue?'
 
 export const tournamentSteps = [
   {
+    webComponent: 'Conclusion',
+    stepName: 'Conclusion',
+    stepIntro: {
+      subject: 'Conclusion',
+      description: 'This is the end of the deliberation. Thank you for your participation!',
+    },
+  },
+  {
     webComponent: 'Answer',
     stepName: 'Answer',
     stepIntro: {
@@ -268,7 +276,7 @@ export const tournamentDefaultValue = {
   // this goes into the deliberation context
   userId: '67bf9d6ae49200d1349ab34a',
   discussionId: '5d0137260dacd06732a1d814',
-  finalRound: 2,
+  dturn: { finalRound: 2 },
   pointById: byId(pointList),
   groupIdsLists: [],
   randomWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
