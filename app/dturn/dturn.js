@@ -19,13 +19,14 @@ function getInitOptions(options) {
  *  initDiscussion(discussionId,options) nothing returned
  *  insertStatementId(discussionId,round,userId,statementId) returns statementId
     getStatementIds(discussionId,round,userId) returns an array of statementIds or undefined if there's a problem
-    putGroupings(discussionId,round,userId,statementIds) nothing returned
-    rankMostImportant(discussionId,round,userId,statementId) returns nothing
+    finishRound(discussionId, round, userId, rankings, groupings) returns true on success
+    deprecated: use finishRound - putGroupings(discussionId,round,userId,statementIds) nothing returned
+    deprecated: use finishRound - rankMostImportant(discussionId,round,userId,statementId) returns nothing
     getUserRecord(discussionId,userId) returns [round: Number]{shownStatementIds: [statementIds], groupings: [[statementIds],...]} or undefined
     initUitems(discussionId,userId,round) returns the Uitems object for that user
 
 
-    report,
+    report for testing only
  */
 
 /**
@@ -34,9 +35,9 @@ function getInitOptions(options) {
  * 1) If the best (lowest) statement gets put into a group, and that group doesn't win the rankings in that round, then it dissapears. Observed when proxy users randomly choosse the top of a group.
  *
  *
- * Messsy Edge Conditions to consider
+ * Messy Edge Conditions to consider
  *
- * 1) A user is shwon a group of items, but then dissapears and never groups/ranks them
+ * 1) A user is shown a group of items, but then disappears and never groups/ranks them
  *
  */
 
