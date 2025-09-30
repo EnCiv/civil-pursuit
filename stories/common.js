@@ -193,8 +193,19 @@ export function onDoneDecorator(Story, context) {
     </>
   )
 }
+
 export function onDoneResult() {
-  return JSON.parse(document.getElementById('onDoneResult').innerHTML)
+  const el = document.getElementById('onDoneResult')
+  if (!el) {
+    console.warn('[onDoneResult] No onDoneResult element found yet')
+    return { count: 0 } // safe default
+  }
+  try {
+    return JSON.parse(el.innerHTML)
+  } catch (e) {
+    console.error('[onDoneResult] Failed to parse innerHTML:', el.innerHTML, e)
+    return { count: 0 }
+  }
 }
 
 export function onBackDecorator(Story, context) {

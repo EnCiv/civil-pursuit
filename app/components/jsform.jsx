@@ -57,23 +57,26 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
   const isError = !!errors
 
   return (
-    <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
-      <label htmlFor={id}>{label}</label>
+    <div style={{ position: 'relative', marginTop: '2.0rem', marginBottom: '0.5rem' }}>
 
       {isError && (
-        <div className={classes.errorInput}
+        <div
+          className={classes.errorInput}
           style={{
             position: 'absolute',
+            left: '-0.5rem',
             top: '-1.25rem',
-            left: 0,
             fontSize: '0.875rem',
-            lineHeight: '2.0rem',
+            lineHeight: '1.25rem',
             minHeight: '1rem',
+            padding: '0.25rem 0.5rem',
           }}
         >
           {errors}
         </div>
       )}
+
+      <label htmlFor={id}>{label}</label>
 
       {type === 'select' ? (
         <select id={id} value={data || ''} onChange={handleInputChange} className={cx(classes.formInput, { [classes.errorInput]: isError })}>
@@ -111,16 +114,17 @@ const JsForm = props => {
   const classes = useStyles(props)
 
   useEffect(() => {
-    window.socket.emit('get-jsform', discussionId, data => {
-      if (data) {
-        const moreDetails = data[name] || {}
-        setData(moreDetails)
-        if (handleIsValid(moreDetails, schema, errors)) {
-          onDone({ valid: true, value: moreDetails })
-        }
+  window.socket.emit('get-jsform', discussionId, data => {
+    if (data && data[name] !== undefined) {
+      const moreDetails = data[name] 
+      setData(moreDetails)
+      if (handleIsValid(moreDetails, schema, errors)) {
+        onDone({ valid: true, value: moreDetails })
       }
-    })
-  }, [])
+    }
+  })
+}, [])
+
 
   const handleSubmit = () => {
     window.socket.emit('upsert-jsform', discussionId, name, data)
@@ -139,7 +143,7 @@ const JsForm = props => {
   const handleIsValid = (data, schema, errors) => {
     if (!data) return false
     if (errors && errors.length > 0) return false
-    if (!schema || !schema.properties) return true // nothing to validate
+    if (!schema || !schema.properties) return true
 
     const requiredKeys = schema.required || []
     const props = schema.properties || {}

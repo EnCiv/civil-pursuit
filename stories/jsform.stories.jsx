@@ -389,18 +389,17 @@ export const EmptyForm = {
         stateOfResidence: {
           title: 'State of Residence',
           type: 'string',
-          enum: ['California', 'Texas', 'New York'] // shortened for test
+          enum: ['California', 'Texas', 'New York'], // shortened for test
         },
         yearOfBirth: { title: 'Year of Birth', type: 'integer', minimum: 1900, maximum: 2025 },
         Gender: { title: 'Gender', type: 'string', enum: ['Male', 'Female', 'Other'] },
         shareInfo: {
-          title:
-            'Personally Identifiable Information is not shown, but may we share this information with your posts?',
+          title: 'Personally Identifiable Information is not shown, but may we share this information with your posts?',
           type: 'string',
-          enum: ['Yes', 'No']
-        }
+          enum: ['Yes', 'No'],
+        },
       },
-      required: ['shareInfo']
+      required: ['shareInfo'],
     },
     uischema: {
       type: 'VerticalLayout',
@@ -409,16 +408,16 @@ export const EmptyForm = {
         { type: 'Control', scope: '#/properties/stateOfResidence' },
         { type: 'Control', scope: '#/properties/yearOfBirth' },
         { type: 'Control', scope: '#/properties/Gender' },
-        { type: 'Control', scope: '#/properties/shareInfo' }
-      ]
-    }
+        { type: 'Control', scope: '#/properties/shareInfo' },
+      ],
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const submitButton = canvas.getByRole('button', { name: /Submit/i })
     // Since shareInfo is required and empty → disabled
-     expect(submitButton).toBeDisabled()
-  }
+    expect(submitButton).toBeDisabled()
+  },
 }
 
 // Existing all valid input
@@ -432,22 +431,22 @@ export const SubmitAllValid = {
         politicalParty: {
           title: 'Political Party or nearest ideology',
           type: 'string',
-          enum: ['Democrat', 'Republican', 'Independent', 'Libertarian', 'Green', 'Other']
+          enum: ['Democrat', 'Republican', 'Independent', 'Libertarian', 'Green', 'Other'],
         },
         stateOfResidence: {
           title: 'State of Residence',
           type: 'string',
-          enum: ['California', 'Texas', 'New York'] // shortened for test
+          enum: ['California', 'Texas', 'New York'], // shortened for test
         },
         yearOfBirth: { title: 'Year of Birth', type: 'integer', minimum: 1900, maximum: 2025 },
         Gender: { title: 'Gender', type: 'string', enum: ['Male', 'Female', 'Other'] },
         shareInfo: {
           title: 'Personally Identifiable Information is not shown, but may we share this information with your posts?',
           type: 'string',
-          enum: ['Yes', 'No']
-        }
+          enum: ['Yes', 'No'],
+        },
       },
-      required: ['shareInfo']
+      required: ['shareInfo'],
     },
     uischema: {
       type: 'VerticalLayout',
@@ -456,9 +455,9 @@ export const SubmitAllValid = {
         { type: 'Control', scope: '#/properties/stateOfResidence' },
         { type: 'Control', scope: '#/properties/yearOfBirth' },
         { type: 'Control', scope: '#/properties/Gender' },
-        { type: 'Control', scope: '#/properties/shareInfo' }
-      ]
-    }
+        { type: 'Control', scope: '#/properties/shareInfo' },
+      ],
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -470,17 +469,14 @@ export const SubmitAllValid = {
     await userEvent.selectOptions(canvas.getByLabelText(/Gender/i), 'Female')
 
     // required field
-    await userEvent.selectOptions(
-      canvas.getByLabelText(/may we share this information/i),
-      'Yes'
-    )
+    await userEvent.selectOptions(canvas.getByLabelText(/may we share this information/i), 'Yes')
 
     expect(submitButton).not.toBeDisabled()
     await userEvent.click(submitButton)
-  }
+  },
 }
 
-// Validation of year 
+// Validation of year
 export const YearOfBirthValidation = {
   args: {
     schema: {
@@ -490,18 +486,18 @@ export const YearOfBirthValidation = {
         shareInfo: {
           title: 'Personally Identifiable Information is not shown, but may we share this information with your posts?',
           type: 'string',
-          enum: ['Yes', 'No']
-        }
+          enum: ['Yes', 'No'],
+        },
       },
-      required: ['shareInfo']
+      required: ['shareInfo'],
     },
     uischema: {
       type: 'VerticalLayout',
       elements: [
         { type: 'Control', scope: '#/properties/yearOfBirth' },
-        { type: 'Control', scope: '#/properties/shareInfo' }
-      ]
-    }
+        { type: 'Control', scope: '#/properties/shareInfo' },
+      ],
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -510,10 +506,10 @@ export const YearOfBirthValidation = {
     await userEvent.type(input, '1800')
     expect(canvas.getByText(/must be >= 1900/i)).toBeInTheDocument()
     expect(canvas.getByRole('button', { name: /Submit/i })).toBeDisabled()
-  }
+  },
 }
 
-// Required field shareInfo before submit 
+// Required field shareInfo before submit
 export const RequiredShareInfo = {
   args: {
     schema: {
@@ -522,21 +518,21 @@ export const RequiredShareInfo = {
         shareInfo: {
           title: 'Personally Identifiable Information is not shown, but may we share this information with your posts?',
           type: 'string',
-          enum: ['Yes', 'No']
-        }
+          enum: ['Yes', 'No'],
+        },
       },
-      required: ['shareInfo']
+      required: ['shareInfo'],
     },
     uischema: {
       type: 'VerticalLayout',
-      elements: [{ type: 'Control', scope: '#/properties/shareInfo' }]
-    }
+      elements: [{ type: 'Control', scope: '#/properties/shareInfo' }],
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const submit = canvas.getByRole('button', { name: /Submit/i })
     expect(submit).toBeDisabled()
-  }
+  },
 }
 
 // Optional field checks
@@ -549,18 +545,18 @@ export const OptionalField = {
         shareInfo: {
           title: 'Personally Identifiable Information is not shown, but may we share this information with your posts?',
           type: 'string',
-          enum: ['Yes', 'No']
-        }
+          enum: ['Yes', 'No'],
+        },
       },
-      required: ['shareInfo']
+      required: ['shareInfo'],
     },
     uischema: {
       type: 'VerticalLayout',
       elements: [
         { type: 'Control', scope: '#/properties/nickname' },
-        { type: 'Control', scope: '#/properties/shareInfo' }
-      ]
-    }
+        { type: 'Control', scope: '#/properties/shareInfo' },
+      ],
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -568,6 +564,37 @@ export const OptionalField = {
 
     // must answer required field
     expect(submit).toBeDisabled()
-    await userEvent.selectOptions(canvas.getByLabelText(/may we share this information/i),'No')
-  }
+    await userEvent.selectOptions(canvas.getByLabelText(/may we share this information/i), 'No')
+  },
+}
+
+export const SkipOnUndefinedData = {
+  args: {
+    name: 'moreDetails',
+    discussionId: '123456789012345678901234567890abcd',
+    schema: testSchema,
+    uischema: testUIschema,
+  },
+  decorators: [
+    buildApiDecorator('get-jsform', (discussionId, cb) => () => {
+      cb({})
+    }),
+    buildApiDecorator('upsert-jsform', (discussionId, name, data, cb) => () => {
+      cb?.()
+    }),
+    onDoneDecorator,
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    console.log('[SkipOnUndefinedData] play started')
+
+    expect(canvas.getByLabelText(/Household Income/i)).toBeInTheDocument()
+    expect(canvas.getByLabelText(/Housing/i)).toBeInTheDocument()
+    expect(canvas.getByLabelText(/Number of Siblings/i)).toBeInTheDocument()
+
+    const result = onDoneResult(canvas)
+    console.log('[SkipOnUndefinedData] onDoneResult:', result)
+
+    expect(result).toMatchObject({ count: 0 })
+  },
 }
