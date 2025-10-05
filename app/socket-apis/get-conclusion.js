@@ -22,7 +22,7 @@ export default async function getConclusion(discussionId, cb) {
     return cb && cb(undefined)
   } else {
     let pointDocs, myWhys
-    await getPointsOfIds.call(this.synuser, statementIds, result => {
+    await getPointsOfIds.call(this, statementIds, result => {
       pointDocs = result.points
       myWhys = result.myWhys
     })

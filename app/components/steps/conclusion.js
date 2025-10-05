@@ -13,7 +13,7 @@ import HowDoYouFeel from '../../components/how-do-you-feel'
 
 export default function Conclusion(props) {
   const { className, discussionId, stepIntro, onDone = () => {}, ...otherProps } = props
-  const [data, setData] = useState({})
+  const [data, setData] = useState(null)
   const classes = useStylesFromThemeFunction(props)
 
   useEffect(() => {
@@ -35,34 +35,39 @@ export default function Conclusion(props) {
     <div className={cx(classes.conclusion, className)} {...otherProps}>
       <div className={cx(classes.mostAndLeastsWrapper)}>
         <StepIntro {...stepIntro} />
-        <div>
-          <div className={cx(classes.subject)}>
-            <H>{data.point?.subject}</H>
-          </div>
-          <div className={cx(classes.description)}>
-            <text>{data.point?.description}</text>
-          </div>
+        {data &&
+          data.map(d => (
+            <>
+              <div>
+                <div className={cx(classes.subject)}>
+                  <H>{d.point?.subject}</H>
+                </div>
+                <div className={cx(classes.description)}>
+                  <text>{d.point?.description}</text>
+                </div>
+              </div>
+              <div className={cx(classes.dualPointList)}>
+                <ShowDualPointList leftPoints={d.mosts} leftHeader={"Why It's Most Important"} rightPoints={d.leasts} rightHeader={"Why It's Least Important"} vState={undefined} />
+              </div>
+              <div className={cx(classes.rankingResultsWrapper)}>
+                <div className={cx(classes.votingResultsText)}>
+                  <text>Voting Results</text>
+                </div>
+                <div className={cx(classes.rankingResults)}>
+                  <RankingResults
+                    resultList={{
+                      Most: d.counts.mosts ?? 0,
+                      Neutral: d.counts.neutral ?? 0,
+                      Least: d.counts.leasts ?? 0,
+                    }}
+                  />
+                </div>
+              </div>
+            </>
+          ))}
+        <div className={cx(classes.howDoYouFeelWrapper)}>
+          <HowDoYouFeel title={'How do you feel about the results?'} onDone={handleOnDone} />
         </div>
-        <div className={cx(classes.dualPointList)}>
-          <ShowDualPointList leftPoints={data.mosts} leftHeader={"Why It's Most Important"} rightPoints={data.leasts} rightHeader={"Why It's Least Important"} vState={undefined} />
-        </div>
-      </div>
-      <div className={cx(classes.rankingResultsWrapper)}>
-        <div className={cx(classes.votingResultsText)}>
-          <text>Voting Results</text>
-        </div>
-        <div className={cx(classes.rankingResults)}>
-          <RankingResults
-            resultList={{
-              Most: data.mosts ? data.mosts.length : 0,
-              Neutral: 20,
-              Least: data.leasts ? data.leasts.length : 0,
-            }}
-          />
-        </div>
-      </div>
-      <div className={cx(classes.howDoYouFeelWrapper)}>
-        <HowDoYouFeel title={'How do you feel about the results?'} onDone={handleOnDone} />
       </div>
     </div>
   )

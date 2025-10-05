@@ -29,6 +29,7 @@ const WebComponents = {
   WhyStep: WhyStep,
   CompareReasons: CompareReasons,
   Intermission: Intermission,
+  Conclusion: Conclusion,
   Jsform: Jsform,
 }
 
@@ -55,7 +56,7 @@ function calculateRoundAndStatus(uInfo, finalRound) {
     if (roundFound) return 'pending' // if we already found an in-progress round, all subsequent rounds are complete
     const shownStatements = Object.values(roundInfo.shownStatementIds || {})
     if (roundInfo.finished) {
-      round = Math.min(i + 1, finalRound)
+      round = Math.min(i + 1, finalRound || 0)
       return 'complete'
     } else if (shownStatements.length) {
       round = i
@@ -67,7 +68,7 @@ function calculateRoundAndStatus(uInfo, finalRound) {
       return 'inProgress' // if this is the first round and no statements are shown, it's still in progress
     }
   })
-  while (roundsStatus.length <= finalRound) {
+  while (roundsStatus.length <= (finalRound || 0)) {
     if (roundFound) roundsStatus.push('pending')
     else {
       roundsStatus.push('inProgress')
@@ -80,7 +81,7 @@ function calculateRoundAndStatus(uInfo, finalRound) {
 function reducer(state, action) {
   switch (action.type) {
     case 'init': {
-      const { round, roundsStatus } = calculateRoundAndStatus(action.data.uInfo, action.data.finalRound)
+      const { round, roundsStatus } = calculateRoundAndStatus(action.data.uInfo, action.data?.dturn?.finalRound)
       // only set round the first time it's valid
       if (round !== undefined && state.round === undefined) {
         setTimeout(() => action.upsert({ round })) // don't update context while rendering this component
@@ -88,18 +89,18 @@ function reducer(state, action) {
       } else return { ...state, roundsStatus }
     }
     case 'increment': {
-      const nextRound = Math.min(state.round + 1, action.data.finalRound)
+      const nextRound = Math.min(state.round + 1, action.data?.dturn?.finalRound)
       // recalc roundsStatus based on new round
-      const { roundsStatus } = calculateRoundAndStatus(action.data.uInfo, action.data.finalRound)
+      const { roundsStatus } = calculateRoundAndStatus(action.data.uInfo, action.data?.dturn?.finalRound)
       const clearContextForNextRound = Object.keys(action.data).reduce((contextData, key) => ((contextData[key] = undefined), contextData), {})
-      ;['discussionId', 'user', 'userId', 'participants', 'finalRound', 'uInfo', 'lastRound'].forEach(key => delete clearContextForNextRound[key])
+      ;['discussionId', 'user', 'userId', 'participants', 'dturn', 'uInfo', 'lastRound'].forEach(key => delete clearContextForNextRound[key])
       clearContextForNextRound.round = nextRound // set the next round to clear context for
       setTimeout(() => action.upsert(clearContextForNextRound)) // can't update context while rendering this component
       return { ...state, round: nextRound, roundsStatus, stepComponents: undefined }
     }
     case 'updateRounds': {
       // recalc roundsStatus after uInfo change
-      const { roundsStatus } = calculateRoundAndStatus(action.data.uInfo, action.data.finalRound)
+      const { roundsStatus } = calculateRoundAndStatus(action.data.uInfo, action.data?.dturn?.finalRound)
       return { ...state, roundsStatus }
     }
     default:
@@ -111,7 +112,8 @@ function Tournament(props) {
   const { className, steps = [], onDone, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useContext(DeliberationContext)
-  const { uInfo, finalRound } = data
+  const { uInfo, dturn } = data
+  const { finalRound = 0 } = dturn || {}
   const [prev] = useState({ uInfoSet: !!data.uInfo })
   const [state, dispatch] = useReducer(reducer, { ...calculateRoundAndStatus(uInfo, finalRound), stepComponents: undefined })
   const { round = 0, roundsStatus } = state
