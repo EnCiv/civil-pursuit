@@ -577,7 +577,7 @@ async function main() {
     console.error('userCount must be a positive integer')
     process.exit(1)
   }
-  const url = process.env.CIVIL_SERVER_URL || 'http://127.0.0.1:3011' // localhost doesn't work
+  const url = process.env.CIVIL_SERVER_URL || 'http://127.0.0.1:3012' // localhost doesn't work
   await Mongo.connect()
   try {
     for (let user = 1; user <= userCount; user++) {

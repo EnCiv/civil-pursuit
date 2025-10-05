@@ -91,6 +91,7 @@ export function GroupPoints(props) {
 
   const togglePointSelection = _id => {
     setGs(oldGs => {
+      if (oldGs.selectLead) return oldGs // ignore clicks while in selectLead mode
       // if the _id is already in there, remove it
       const selectedIds = oldGs.selectedIds.filter(id => id !== _id)
       // if the _id wasn't in there, push it
@@ -209,8 +210,8 @@ export function GroupPoints(props) {
     })
   }
 
-  // Don't render if list is missing, but do call all the hooks because they can't change after the first render
-  if (!reducedPointList) return null
+  // Don't render if list is missing or if there's nothing to group yet, but do call all the hooks because they can't change after the first render
+  if (!reducedPointList || reducedPointList.length <= 1) return null
 
   return (
     <div className={cx(classes.groupingStep, className)}>
@@ -222,7 +223,7 @@ export function GroupPoints(props) {
         </div>
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
-            <PrimaryButton disabled={gs.selectedIds.length < MIN_GROUPS} className={`${classes.primaryButton} ${gs.selectedIds.length < MIN_GROUPS ? classes.createGroupDisabled : ''}`} onClick={handleCreateGroupClick}>
+            <PrimaryButton disabled={gs.selectedIds.length < 2} className={`${classes.primaryButton} ${gs.selectedIds.length < 2 ? classes.createGroupDisabled : ''}`} onClick={handleCreateGroupClick}>
               Create Group
             </PrimaryButton>
           </div>
@@ -236,38 +237,42 @@ export function GroupPoints(props) {
           </SecondaryButton> */}
         </div>
       </div>
-      {gs.selectLead != null ? (
+      {gs.selectLead && (
         <div className={classes.selectLead}>
           <PointGroup pointGroup={gs.selectLead} vState={'selectLead'} onDone={onSelectLeadDone} />
         </div>
-      ) : null}
-      <div className={classes.groupsContainer}>
-        {gs.pGsToGroup.map(pGD => (
-          <PointGroup key={pGD.point._id} pointGroup={pGD} vState="default" select={gs.selectedIds.some(id => id === pGD.point._id)} onClick={() => togglePointSelection(pGD.point._id)} />
-        ))}
-      </div>
-      {!!gs.yourGroups.length && (
-        <div className={classes.yourGroupsWrapper}>
-          <div className={classes.yourGroupsTitle}>{'Your Groups'}</div>
-          <div className={classes.groupsContainer}>
-            {gs.yourGroups.map(pointGroup => {
-              return (
-                pointGroup && (
-                  <PointGroup
-                    className={classes.yourGroupsPoint}
-                    key={pointGroup.point?._id}
-                    pointGroup={pointGroup}
-                    vState="editable"
-                    select={gs.selectedIds.some(id => id === pointGroup.point._id)}
-                    onClick={() => togglePointSelection(pointGroup.point._id)}
-                    onDone={onYourPointEdited}
-                  />
-                )
-              )
-            })}
-          </div>
-        </div>
       )}
+      {
+        /*!gs.selectLead&& */ <div className={classes.groupsContainer}>
+          {gs.pGsToGroup.map(pGD => (
+            <PointGroup key={pGD.point._id} pointGroup={pGD} vState={gs.selectLead ? 'disabled' : 'view'} select={gs.selectedIds.some(id => id === pGD.point._id)} onClick={() => togglePointSelection(pGD.point._id)} />
+          ))}
+        </div>
+      }
+      {
+        /*!gs.selectLead && **/ !!gs.yourGroups.length && (
+          <div className={classes.yourGroupsWrapper}>
+            <div className={classes.yourGroupsTitle}>{'Your Groups'}</div>
+            <div className={classes.groupsContainer}>
+              {gs.yourGroups.map(pointGroup => {
+                return (
+                  pointGroup && (
+                    <PointGroup
+                      className={classes.yourGroupsPoint}
+                      key={pointGroup.point?._id}
+                      pointGroup={pointGroup}
+                      vState={gs.selectLead ? 'disabled' : 'editable'}
+                      select={gs.selectedIds.some(id => id === pointGroup.point._id)}
+                      onClick={() => togglePointSelection(pointGroup.point._id)}
+                      onDone={onYourPointEdited}
+                    />
+                  )
+                )
+              })}
+            </div>
+          </div>
+        )
+      }
     </div>
   )
 }

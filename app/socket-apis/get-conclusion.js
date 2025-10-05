@@ -6,7 +6,7 @@ import { getConclusionIds } from '../dturn/dturn'
 import getPointsOfIds from '../socket-apis/get-points-of-ids'
 import getTopRankedWhysForPoint from './get-top-ranked-whys-for-point'
 
-import Point from '../models/points'
+import Points from '../models/points'
 
 export default async function getConclusion(discussionId, cb) {
   if (!discussionId) {
@@ -27,32 +27,22 @@ export default async function getConclusion(discussionId, cb) {
       myWhys = result.myWhys
     })
 
-    const start = 0
-    const pageSize = 5
-
-    let topPointAndWhys = []
+    let topPointAndRanks = []
 
     for await (const statementId of statementIds) {
-      let mosts,
-        leasts,
-        counts = { mosts: 0, leasts: 0, neutrals: 0 }
-
-      await getTopRankedWhysForPoint.call(this.synuser, statementId, 'most', start, pageSize, data => {
-        mosts = data.results
-        counts.mosts = data.counts.mosts
-        counts.leasts = data.counts.leasts
-        counts.neutrals = data.counts.neutrals
-      })
-      await getTopRankedWhysForPoint.call(this.synuser, statementId, 'least', start, pageSize, data => {
-        leasts = data.results
-      })
-
-      const point = await Point.findOne({ _id: new ObjectId(statementId) })
-      const convertedPoint = { ...point, _id: point._id.toString() }
-
-      topPointAndWhys.push({ mosts: mosts, leasts: leasts, point: convertedPoint, counts: counts })
+      const ranks = await Points.aggregate([
+        {
+          $match: {
+            parentId: statementId,
+            discussionId: discussionId,
+            stage: 'post',
+          },
+        },
+      ]).toArray()
+      console.log('RANKS', JSON.stringify(ranks, null, 2))
+      topPointAndRanks.push(ranks)
     }
 
-    return cb && cb(topPointAndWhys)
+    return cb && cb(topPointAndRanks)
   }
 }

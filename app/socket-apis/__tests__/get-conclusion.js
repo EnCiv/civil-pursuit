@@ -137,9 +137,7 @@ test('Return data if discussion is complete.', async () => {
   await getConclusion.call({ synuser: synuser }, DISCUSSION_ID2, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  expect(cb).toHaveBeenCalledWith([
-    { leasts: [], mosts: [], point: { _id: '6864611dda8eca6f38256713', description: '1.5870962407368285', subject: 'proxy random number', userId: '6864611dda8eca6f38256712' }, counts: { leasts: 0, mosts: 0, neutrals: 0 } },
-  ])
+  expect(cb).toHaveBeenCalledWith([{ leasts: [], mosts: [], point: { _id: '6864611dda8eca6f38256713', description: '1.5870962407368285', subject: 'proxy random number', userId: '6864611dda8eca6f38256712' } }])
 }, 70000)
 
 function getTestUInfo() {

@@ -37,7 +37,7 @@ async function signUpHandler(req, res) {
     return
   }
 }
- // LOL
+// LOL
 async function tempId(req, res) {
   console.info('tempId body', req.body)
   let { password, ..._body } = req.body // don't let the password show up in the logs

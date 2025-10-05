@@ -159,6 +159,66 @@ export const tournamentSteps = [
     reviewPoints: [reviewPoint1, reviewPoint2, reviewPoint3],
   },
   {
+    webComponent: 'Jsform',
+    name: 'earlyFeedback',
+    stepName: 'Feedback',
+    allowedRounds: [0], // only show this step in round 0
+    stepIntro: {
+      subject: 'Feedback',
+      description: "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters.",
+    },
+    schema: {
+      type: 'object',
+      properties: {
+        experience: {
+          title: 'Rating',
+          type: 'string',
+          enum: ['Very Positive', 'Somewhat Positive', 'Neutral', 'Somewhat Negative', 'Very Negative'],
+        },
+        comfort: {
+          title: 'Rating',
+          type: 'string',
+          enum: ['Very Comfortable', 'Somewhat Comfortable', 'Neutral', 'Somewhat Uncomfortable', 'Very Uncomfortable'],
+        },
+        interest: {
+          title: 'Rating',
+          type: 'string',
+          enum: ['Very Interested', 'Somewhat Interested', 'Neutral', 'Somewhat Uninterested', 'Very Uninterested'],
+        },
+        improvements: {
+          title: 'Description',
+          type: 'string',
+        },
+      },
+    },
+    uischema: {
+      type: 'VerticalLayout',
+      elements: [
+        { type: 'H', text: 'How has your experience been so far?' },
+        {
+          type: 'Control',
+          scope: '#/properties/experience',
+        },
+        { type: 'H', text: 'How comfortable would you feel inviting close friends or family to participate in this discussion too?' },
+        {
+          type: 'Control',
+          scope: '#/properties/comfort',
+        },
+        { type: 'H', text: 'How interested are you in getting to the next round of this discussion?' },
+        {
+          type: 'Control',
+          scope: '#/properties/interest',
+        },
+        { type: 'H', text: 'What can we do to make this tool better?' },
+        {
+          type: 'Control',
+          scope: '#/properties/improvements',
+          options: { multi: true, rows: 5 },
+        },
+      ],
+    },
+  },
+  {
     webComponent: 'Intermission',
     stepName: 'Intermission',
     stepIntro: {

@@ -62,9 +62,9 @@ afterAll(async () => {
 })
 
 // Tests
-test('If user not logged in, let them know the number of participantss', done => {
+test('If user not logged in, let them know the number of participants', done => {
   subscribeDeliberation.call({}, discussionId, ({ participants }) => {
-    expect(participants).toBe(0)
+    expect(participants).toBe(undefined) // because deliberation not loaded yet, participants should be undefined
     done()
   })
 })

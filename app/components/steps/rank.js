@@ -106,6 +106,7 @@ export function useRankByParentId(discussionId, round, stage, reducedPointList, 
   }, [reducedPointList, stageRankByParentId])
 
   const handleRankPoint = (point, result) => {
+    if (!result?.value) return
     const rankString = result.value
     const newCategory = rankStringToCategory[rankString]
 
@@ -219,7 +220,8 @@ export function RankPoints(props) {
             title="Clear All"
             children={'Clear All'}
             onDone={() => {
-              const clearedRanks = Object.values(rankByParentId).reduce((rankByParentId, rank) => ((rankByParentId[rank.parentId] = { ...rank, category: '' }), rankByParentId), {})
+              // rankByParentId[id] might be undefined sometimes
+              const clearedRanks = Object.values(rankByParentId).reduce((clearedRanks, rank) => (rank && (clearedRanks[rank.parentId] = { ...rank, category: '' }), clearedRanks), {})
 
               for (let rank of Object.values(clearedRanks)) {
                 const { valid, percentDone } = validAndPercentDone(reducedPointList, rankByParentId)
@@ -263,9 +265,30 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '2rem 0rem 3rem 0rem',
     display: 'flex',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: '1.25rem',
   },
-  leftButtons: { display: 'flex', alignItems: 'center', gap: '1rem' },
-  rightButtons: {},
+  leftButtons: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+    flexGrow: 1,
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      justifyContent: 'space-around',
+    },
+  },
+  rightButtons: {
+    display: 'flex',
+    flexGrow: 1,
+    justifyContent: 'flex-end',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      '& button': {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        flexGrow: 0.8,
+      },
+    },
+  },
   pointDiv: {
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',

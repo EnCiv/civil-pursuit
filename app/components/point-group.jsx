@@ -53,6 +53,18 @@ const PointGroup = props => {
     setPg(pointGroup)
   }, [pointGroup]) // could be changed by parent component, or within this component
 
+  const ungroupAndClose = () => {
+    setPg({})
+    onDone({
+      valid: true,
+      value: {
+        pointGroup: undefined,
+        removedPgs: group.map(point => ({
+          point,
+        })),
+      },
+    })
+  }
   return (
     <div className={cx(classes.pointGroup, className)} {...otherProps}>
       {vs === 'collapsed' && (
@@ -62,21 +74,7 @@ const PointGroup = props => {
         <div className={cx(classes.borderStyle, classes.contentContainer)}>
           <H className={classes.titleGroup}>Please select the response you want to lead with</H>
           <div className={classes.SvgContainer}>
-            <TextButton
-              title="Ungroup and close"
-              onClick={() => {
-                setPg({})
-                onDone({
-                  valid: true,
-                  value: {
-                    pointGroup: undefined,
-                    removedPgs: group.map(point => ({
-                      point,
-                    })),
-                  },
-                })
-              }}
-            >
+            <TextButton title="Ungroup and close" onClick={ungroupAndClose}>
               <span className={classes.chevronButton}>
                 <SvgClose />
               </span>
@@ -122,7 +120,7 @@ const PointGroup = props => {
             </Level>
           )}
           <div className={cx(classes.bottomButtons, classes.bottomButtonsOne)}>
-            <span>
+            <span className={classes.buttonSpan}>
               <SecondaryButton
                 disabled={selected === ''}
                 title="Done"
@@ -152,15 +150,22 @@ const PointGroup = props => {
                   setExpanded(false)
                 }}
               />
+              <SecondaryButton title="Ungroup" children="Ungroup" onDone={ungroupAndClose} />
             </span>
           </div>
         </div>
       )}
       {vs !== 'collapsed' && vs !== 'selectLead' && (
         <div
-          className={cx(classes.borderStyle, classes.contentContainer, classes.informationGrid, {
-            [classes.selectedBorder]: select,
-          })}
+          className={cx(
+            classes.borderStyle,
+            classes.contentContainer,
+            classes.informationGrid,
+            {
+              [classes.selectedBorder]: select,
+            },
+            vState === 'disabled' && classes.disabledBorder
+          )}
         >
           {!singlePoint && (
             <div className={classes.SvgContainer}>
@@ -193,8 +198,8 @@ const PointGroup = props => {
               )}
             </div>
           )}
-          {subject && <H className={cx(classes.subjectStyle)}>{subject}</H>}
-          {description && <div className={cx(classes.descriptionStyle)}>{description}</div>}
+          {subject && <H className={cx(classes.subjectStyle, vState === 'disabled' && classes.disabledSubject)}>{subject}</H>}
+          {description && <div className={cx(classes.descriptionStyle, vState === 'disabled' && classes.disabledDescription)}>{description}</div>}
           {demInfo && <DemInfo {...demInfo} />}
           {childrenWithProps}
           {vs === 'edit' && expanded && !singlePoint && (
@@ -265,7 +270,7 @@ const PointGroup = props => {
                   {group.map(pD => {
                     return (
                       <div key={pD._id} className={classes.selectPoints}>
-                        <Point point={pD} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)} />
+                        <Point point={pD} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)} vState={vState} />
                       </div>
                     )
                   })}
@@ -389,6 +394,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
     width: '100%',
     boxSizing: 'border-box',
+    marginLeft: '0.5rem',
+    marginRight: '0.5rem',
   },
 
   defaultWidth: {
@@ -408,6 +415,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '7rem',
     },
+  },
+
+  buttonSpan: {
+    display: 'flex',
+    gap: '1rem',
+    justifyContent: 'center',
   },
 
   ungroupButton: {},
@@ -541,6 +554,22 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     background: theme.colors.lightSuccess,
     '& $informationGrid': {
       color: theme.colors.success,
+    },
+  },
+  disabledSubject: {
+    opacity: 0.5,
+    color: theme.colors.title,
+  },
+  disabledDescription: {
+    opacity: 0.5,
+    color: theme.colors.title,
+  },
+  disabledBorder: {
+    opacity: 0.5,
+    outline: `1px solid ${theme.colors.borderGray}`,
+    background: theme.colors.white,
+    '&:hover ': {
+      outline: 'none',
     },
   },
 }))

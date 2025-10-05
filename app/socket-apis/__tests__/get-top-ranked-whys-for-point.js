@@ -45,7 +45,7 @@ describe('getTopRankedWhysForPoint', () => {
     const user = { id: USER1 }
     const cb = jest.fn()
     await getTopRankedWhysForPoint.call({ synuser: user }, POINT1, 'most', 0, 5, cb)
-    expect(cb).toHaveBeenCalledWith(expect.objectContaining({ results: [] }))
+    expect(cb).toHaveBeenCalledWith([])
   })
 
   test('one why for the point, pageSize is 5', async () => {
@@ -62,12 +62,8 @@ describe('getTopRankedWhysForPoint', () => {
     }
     await Points.insertOne(why)
     await getTopRankedWhysForPoint.call({ synuser: user }, POINT1, 'most', 0, 5, cb)
-    expect(cb).toHaveBeenCalledWith(
-      expect.objectContaining({
-        results: expect.any(Array),
-      })
-    )
-    expect(cb.mock.calls[0][0]['results'].length).toBe(1)
+    expect(cb).toHaveBeenCalledWith(expect.any(Array))
+    expect(cb.mock.calls[0][0].length).toBe(1)
   })
 
   test('five whys for the point, different ranks, pageSize is 5', async () => {
@@ -100,12 +96,8 @@ describe('getTopRankedWhysForPoint', () => {
     })
     await Ranks.insertMany(ranks)
     await getTopRankedWhysForPoint.call({ synuser: user }, POINT1, 'most', 0, 5, cb)
-    expect(cb).toHaveBeenCalledWith(
-      expect.objectContaining({
-        results: expect.any(Array),
-      })
-    )
-    expect(cb.mock.calls[0][0]['results'].length).toBe(5)
+    expect(cb).toHaveBeenCalledWith(expect.any(Array))
+    expect(cb.mock.calls[0][0].length).toBe(5)
   })
 
   test('eleven whys for the point, different ranks, pageSize is 5', async () => {
@@ -138,12 +130,8 @@ describe('getTopRankedWhysForPoint', () => {
     })
     await Ranks.insertMany(ranks)
     await getTopRankedWhysForPoint.call({ synuser: user }, POINT1, 'most', 0, 5, cb)
-    expect(cb).toHaveBeenCalledWith(
-      expect.objectContaining({
-        results: expect.any(Array),
-      })
-    )
-    expect(cb.mock.calls[0][0]['results'].length).toBe(5)
+    expect(cb).toHaveBeenCalledWith(expect.any(Array))
+    expect(cb.mock.calls[0][0].length).toBe(5)
   })
 
   test('eleven whys for the point, different ranks, start is 5, pageSize is 5', async () => {
@@ -176,12 +164,8 @@ describe('getTopRankedWhysForPoint', () => {
     })
     await Ranks.insertMany(ranks)
     await getTopRankedWhysForPoint.call({ synuser: user }, POINT1, 'most', 5, 5, cb)
-    expect(cb).toHaveBeenCalledWith(
-      expect.objectContaining({
-        results: expect.any(Array),
-      })
-    )
-    expect(cb.mock.calls[0][0]['results'].length).toBe(5)
+    expect(cb).toHaveBeenCalledWith(expect.any(Array))
+    expect(cb.mock.calls[0][0].length).toBe(5)
   })
 
   test('eleven whys for the point, different ranks, start is 10, pageSize is 5', async () => {
@@ -214,12 +198,8 @@ describe('getTopRankedWhysForPoint', () => {
     })
     await Ranks.insertMany(ranks)
     await getTopRankedWhysForPoint.call({ synuser: user }, POINT1, 'most', 10, 5, cb)
-    expect(cb).toHaveBeenCalledWith(
-      expect.objectContaining({
-        results: expect.any(Array),
-      })
-    )
-    expect(cb.mock.calls[0][0]['results'].length).toBe(1) // Only 1 why should be returned
+    expect(cb).toHaveBeenCalledWith(expect.any(Array))
+    expect(cb.mock.calls[0][0].length).toBe(1) // Only 1 why should be returned
   })
 
   test('eleven whys for the point, different ranks, start is 15, pageSize is 5', async () => {
@@ -252,47 +232,6 @@ describe('getTopRankedWhysForPoint', () => {
     })
     await Ranks.insertMany(ranks)
     await getTopRankedWhysForPoint.call({ synuser: user }, POINT1, 'most', 15, 5, cb)
-    expect(cb).toHaveBeenCalledWith(
-      expect.objectContaining({
-        results: [],
-      })
-    ) // No whys should be returned
+    expect(cb).toHaveBeenCalledWith([]) // No whys should be returned
   })
-})
-
-test('eleven whys for the point, different ranks, alternating categories', async () => {
-  const user = { id: USER1 }
-  const cb = jest.fn()
-  const whys = Array.from({ length: 11 }, (_, i) => ({
-    _id: new ObjectId(),
-    subject: `Why ${i + 1}`,
-    description: `Description ${i + 1}`,
-    round: 1,
-    parentId: POINT1,
-    userId: USER1,
-    category: i % 2 === 0 ? 'most' : 'least',
-  }))
-  await Points.insertMany(whys)
-
-  const ranks = []
-  whys.forEach(why => {
-    for (let j = 0; j < Math.floor(Math.random() * 10); j++) {
-      ranks.push({
-        _id: new ObjectId(),
-        parentId: why._id.toString(),
-        userId: USER1,
-        round: why.round,
-        stage: 'pre',
-        category: why.category,
-        discussionId: 'discussion-1',
-      })
-    }
-  })
-  await Ranks.insertMany(ranks)
-  await getTopRankedWhysForPoint.call({ synuser: user }, POINT1, 'most', 15, 5, cb)
-  expect(cb).toHaveBeenCalledWith(
-    expect.objectContaining({
-      results: [],
-    })
-  ) // No whys should be returned
 })

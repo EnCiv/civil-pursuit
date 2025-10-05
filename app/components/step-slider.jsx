@@ -1,6 +1,7 @@
 'use strict'
 
 // https://github.com/EnCiv/civil-pursuit/issues/112
+// https://github.com/EnCiv/civil-pursuit/issues/332
 
 import React, { useState, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useCallback } from 'react'
 import { createUseStyles } from 'react-jss'
@@ -18,13 +19,14 @@ export const StepSlider = props => {
   const outerRef = useRef()
   const panelRefs = useRef([])
   const stepChildRapper = useRef()
-  const [outerRect, setOuterRect] = useState({ height: 0, width: 0 })
+  const [outerRect, setOuterRect] = useState({ height: 0, width: 0, clientWidth: 0 })
   const [_this] = useState({ timeout: 0, otherProps, onNexts: [] }) // _this object will exist through life of component so there is no setter it's like 'this'
   // resizeHandler needs to access outerRef and setOuterRec but never change so that the event can be removed
   // FTI resizeHandler gets called on initial render
   const resizeHandler = useCallback(() => {
     if (outerRef.current) {
       let rect = outerRef.current.getBoundingClientRect()
+      rect.clientWidth = outerRef.current.clientWidth || rect.width // there may be a scrollbar on the right
       if (rect.height && rect.width) {
         // there is an issue on smartphones when rotating from landscape to portrait where the screen ends up shows a split between two components
         // to work around this we are turning off transitions and then turning them back on after the viewport size stableizes
@@ -34,7 +36,7 @@ export const StepSlider = props => {
           if (outerRef.current) {
             // just to make sure
             let rect = outerRef.current.getBoundingClientRect()
-            rect.clientWidth = outerRef.current.clientWidth // there may be a scrollbar on the right
+            rect.clientWidth = outerRef.current.clientWidth || rect.width // there may be a scrollbar on the right
             if (rect.height && rect.width) setOuterRect(rect)
           }
           dispatch({ type: 'transitionsOn' })
@@ -71,13 +73,19 @@ export const StepSlider = props => {
       case 'transitionsOn':
         return { ...state, transitions: true }
       case 'moveTo':
-        return { ...state, transitions: false, nextStep: action.to }
+        const newStepStatuses = state.stepStatuses?.map((stepStatus, i) => {
+          if (i > state.currentStep && i < action.to) return { ...stepStatus, skip: true }
+          else return stepStatus
+        })
+        return { ...state, transitions: false, stepStatuses: newStepStatuses, nextStep: action.to }
 
       case 'increment':
+        let nextStep = Math.min(state.currentStep + 1, children.length - 1)
+        while (state.stepStatuses[nextStep].skip && nextStep < children.length - 1) nextStep++
         return {
           ...state,
           transitions: false,
-          nextStep: Math.min(state.currentStep + 1, children.length - 1),
+          nextStep: nextStep,
         }
 
       case 'transitionBegin': {
@@ -94,7 +102,6 @@ export const StepSlider = props => {
         return state // no need to rerender. leaving transitions on so that child components growing and shrinking will animate
       }
       case 'decrement': {
-        console.log('decrementing', state.currentStep)
         return {
           ...state,
           nextStep: Math.max(0, state.currentStep - 1),
@@ -102,9 +109,10 @@ export const StepSlider = props => {
         }
       }
       case 'updateStatuses':
-        let { valid, index } = action.payload
+        let { valid, index, skip } = action.payload
+
         if (steps) {
-          const newState = { ...state, stepStatuses: state.stepStatuses.toSpliced(index, 1, { ...state.stepStatuses[index], complete: valid }) }
+          const newState = { ...state, stepStatuses: state.stepStatuses.toSpliced(index, 1, { ...state.stepStatuses[index], complete: valid, skip }) }
           return newState
         } else if (valid) {
           // Just increment if no steps
@@ -134,13 +142,9 @@ export const StepSlider = props => {
   }
   // Keep track of each step's seen/completion status
   // Populate statuses with initial values
-  if (steps) {
-    steps[0].seen = true
-    steps.forEach((step, index) => {
-      steps[index].complete = false
-    })
-  }
-  const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, transitions: false, stepStatuses: steps })
+  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i === 0, complete: false, skip: false })) : undefined
+
+  const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, transitions: false, stepStatuses: initialStepStatuses })
 
   function cloneChild(currentStep) {
     return React.cloneElement(children[currentStep], {
@@ -148,8 +152,11 @@ export const StepSlider = props => {
       ...children[currentStep].props,
       key: currentStep,
       onDone: ({ valid, value, onNext }) => {
-        if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
-        else dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep } })
+        if (valid && value === 'skip') {
+          dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: true } })
+          dispatch({ type: 'increment' })
+        } else if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
+        else dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: value === 'skip' } })
         if (valid && onNext) _this.onNexts[currentStep] = onNext // save onNext for later use
         else delete _this.onNexts[currentStep] // delete onNext if not valid
       },
@@ -173,7 +180,6 @@ export const StepSlider = props => {
   // ResizeObserver to update stepChildWrapper height when the current panel's height changes
   useEffect(() => {
     if (!panelRefs.current[state.currentStep] || !stepChildRapper.current) {
-      console.info('No panel or stepChildRapper found', state.currentStep, panelRefs.current[state.currentStep], stepChildRapper.current)
       return
     }
     const panel = panelRefs.current[state.currentStep]
@@ -230,7 +236,7 @@ export const StepSlider = props => {
           ref={stepChildRapper}
           style={{
             left: -outerRect.width * state.currentStep + 'px',
-            width: outerRect.width * cachedChildren.length + 'px',
+            width: Math.max(outerRect.width, outerRect.clientWidth) * cachedChildren.length + 'px', // clientWidth is an integer and may get rounded up vs width in cases (desktop scaled monitor)
             height: panelRefs.current[state.currentStep]?.offsetHeight + 'px',
           }}
           className={cx(classes.stepChildWrapper, state.transitions && classes.transitions)}

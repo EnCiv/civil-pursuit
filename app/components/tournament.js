@@ -14,6 +14,7 @@ import ReviewPointList from './steps/rerank'
 import WhyStep from './steps/why'
 import CompareReasons from './steps/compare-whys'
 import Intermission from './intermission'
+import Jsform from './jsform'
 import DeliberationContext from './deliberation-context'
 import Conclusion from './steps/conclusion'
 
@@ -28,7 +29,7 @@ const WebComponents = {
   WhyStep: WhyStep,
   CompareReasons: CompareReasons,
   Intermission: Intermission,
-  Conclusion: Conclusion,
+  Jsform: Jsform,
 }
 
 function buildChildren(steps, round) {
@@ -82,7 +83,7 @@ function reducer(state, action) {
       const { round, roundsStatus } = calculateRoundAndStatus(action.data.uInfo, action.data.finalRound)
       // only set round the first time it's valid
       if (round !== undefined && state.round === undefined) {
-        action.upsert({ round }) // deriveReducedPoints requires round to be set in context
+        setTimeout(() => action.upsert({ round })) // don't update context while rendering this component
         return { ...state, round, roundsStatus }
       } else return { ...state, roundsStatus }
     }
@@ -107,7 +108,7 @@ function reducer(state, action) {
 }
 
 function Tournament(props) {
-  const { className, steps = [], discussionId, onDone, ...otherProps } = props
+  const { className, steps = [], onDone, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useContext(DeliberationContext)
   const { uInfo, finalRound } = data
@@ -128,7 +129,7 @@ function Tournament(props) {
 
   const filteredSteps =
     round < finalRound || (round === finalRound && roundsStatus[round] !== 'complete')
-      ? steps.filter(step => !(step.stepName === 'Answer' && round > 0)) // don't show Answer step after the first round
+      ? steps.filter(step => !((step.stepName === 'Answer' && round > 0) || (step.allowedRounds && !step.allowedRounds.includes(round)))) // don't show Answer step after the first round
       : steps.filter(step => step.stepName === 'Intermission') // all rounds done, just go to intermission
   const stepInfo = filteredSteps.map(step => {
     return {
@@ -170,8 +171,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginBottom: '3.6875rem',
   },
   stepClass: {
-    marginLeft: '1rem',
-    marginRight: '1rem',
+    marginRight: '1rem', // or there's a problem with the AnswerStep when viewport is between 40 and 78 rems wide
   },
 }))
 
