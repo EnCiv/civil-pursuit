@@ -107,6 +107,6 @@
   },
   "peerDependencies": {
     "civil-client": "github:EnCiv/civil-client",
-    "civil-server": "github:EnCiv/civil-server#rate-limit-option"
+    "civil-server": "github:EnCiv/civil-server"
   }
 }

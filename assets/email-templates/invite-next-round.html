@@ -1,0 +1,102 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <!-- Facebook sharing information tags -->
+    <meta property="og:title" content="Continue Your Discussion - EnCiv" />
+    <title>Continue Your Discussion - EnCiv</title>
+</head>
+
+<body style="font-size: 16px">
+    <!-- Hidden prop for discussionId as per issue requirements -->
+    <input type="hidden" name="discussionId" value="{{ params.DISCUSSIONID }}" />
+
+    <div style="width: 100%; max-width: 40rem; margin: 1em auto 1em auto">
+        <table style="
+          width: 100%;
+          padding-top: 1em;
+          padding-bottom: 1em;
+          border-top: 1px solid gray;
+          border-bottom: 1px solid gray;
+        ">
+            <tr>
+                <td style="text-align: right; vertical-align: top">
+                    <img height="75px"
+                        src="https://res.cloudinary.com/hf6mryjpf/image/upload/h_75/v1587935029/assets/enciv-logo.png" />
+                </td>
+            </tr>
+        </table>
+        <div style="margin-top: 1em">
+            Hi {{ params.DISPLAYNAME }},
+            <br /><br />
+            The next round for your discussion <strong>{{ params.DISCUSSIONTITLE }}</strong> is ready.
+            <br /><br />
+            Your input matters to bringing this discussion to a meaningful conclusion that unites us. The next round
+            awaits you.
+            <br /><br />
+            <div style="text-align: center; margin: 20px 0;">
+                <a href="{{ params.INVITEURL }}"
+                    style="background-color: #FFC315; color: #333333; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">Continue
+                    Discussion</a>
+            </div>
+            <br />
+            This deliberation brings people together across different viewpoints to find solutions that unite rather
+            than divide us. Your participation helps ensure all perspectives are heard.
+            <br /><br />
+            Thanks for helping build a more thoughtful democracy,
+            <br /><br />
+            The EnCiv Team
+            <br />
+            <br />
+            <div style="margin-top: 1em; padding: 1em; font-size: 12px; background-color: #f0f0f0">
+                EnCiv, Inc Is a 501(c)(3) nonprofit bringing structure to online democratic discourse.
+            </div>
+            <table border="0" cellpadding="0" cellspacing="0" style="
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            background-color: #ffffff;
+            border-collapse: collapse !important;
+            border-top-color: #ffffff;
+            border-top-style: solid;
+            border-top-width: 1px;
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+          " width="100%">
+                <tbody>
+                    <tr>
+                        <td align="left" style="
+                  -webkit-text-size-adjust: 100%;
+                  -ms-text-size-adjust: 100%;
+                  mso-table-lspace: 0pt;
+                  mso-table-rspace: 0pt;
+                  color: #808080;
+                  font-family: Helvetica;
+                  font-size: 10px;
+                  line-height: 15px;
+                  text-align: left;
+                  padding: 20px;
+                " valign="top">
+                            <div style="text-align: center">
+                                <a href="https://twitter.com/_EnCiv" style="
+                      -webkit-text-size-adjust: 100%;
+                      -ms-text-size-adjust: 100%;
+                      font-weight: normal;
+                      color: #606060;
+                    ">Follow on Twitter</a> <a href="https://www.facebook.com/EnCiv.org" style="
+                      -webkit-text-size-adjust: 100%;
+                      -ms-text-size-adjust: 100%;
+                      font-weight: normal;
+                      color: #606060;
+                    ">Friend on Facebook</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

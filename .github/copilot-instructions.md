@@ -8,13 +8,34 @@ Short guidance to help an AI coding agent be productive in this repository.
 - Client: `app/` contains React components (JSX) and client code. `app/index.js` exports top-level `Components` used by the server to render UI.
 - Build: source lives in `app/`. The repo uses Babel to transpile ES modules (and some CommonJS) into `dist/` and Webpack for client bundles.
 
+## Terminal environment setup (CRITICAL)
+
+**IMPORTANT**: When opening a new bash terminal, Node.js and npm are NOT available until the environment is properly configured. The following commands from `.bashrc` must be run to set up the Node.js environment:
+
+```bash
+if [ ! -f .nvmrc ];then
+    export NODE_VERSION=$(cat ./package.json | grep '\"node\":' | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')
+else
+    export NODE_VERSION=`cat .nvmrc`
+fi
+export NVS_HOME="$HOME/AppData/Local/nvs/"
+$NVS_HOME/nvs add $NODE_VERSION
+source $NVS_HOME/nvs.sh use $NODE_VERSION
+```
+
+**Without running these commands, `node` and `npm` commands will fail.** The user may need to manually enter these commands in new terminal sessions. While executing `./.bashrc` would be ideal, it can disconnect the agent from terminal output. If you encounter "command not found" errors for `node` or `npm`, this environment setup is likely the issue.
+
 ## Key files and directories
 
 - `app/start.js` — server bootstrap (important for runtime wiring).
 - `app/components/*` — React UI; prefer existing component patterns (many default exports).
+- `app/components/theme.js` — central theme configuration with colors, fonts, and styling constants. Use `encivYellow: '#FFC315'` for brand consistency.
 - `app/dturn/dturn.js` — critical tournament clustering logic (in-memory Discussions, Uitems, Gitems). Read before changing ranking/grouping behavior.
+- `app/jobs/` — background job implementations (e.g., email invitations).
+- `app/models/` — data models and database schemas.
 - `app/socket-apis/` — socket API handlers registered by the server (integration point with clients).
 - `app/routes/` and `app/events/` — server routes and lifecycle events.
+- `assets/email-templates/` — HTML email templates using EnCiv branding and styling.
 - `iotas.json` — preloaded by `Iota.preload()` in `start.js`.
 - `webpack-dev.config.js`, `webpack-prod.config.js` — client build and production config; `assets/webpack` is the output path.
 - `jest.config.js`, `jest-db.config.js` — test configuration (note `@shelf/jest-mongodb` preset).
@@ -39,12 +60,18 @@ Notes: many files mix `import`/`export` and `module.exports` — respect the exi
 - Persistence hooks: `initDiscussion` accepts `updateUInfo` and `getAllUInfo` callbacks. `updateUInfo` is expected to write incremental user state; `getAllUInfo` is used to rehydrate memory on startup. Never assume DB access is inside dturn — it relies on provided callbacks.
 - Deterministic tests: `getRandomUniqueList` checks `process.env.JEST_TEST_ENV` to return deterministic sequences for Jest tests.
 - Ranking/grouping thresholds and parameters are configured via the options object passed to `initDiscussion` (see `app/dturn/dturn.js`). `getInitOptions` defines the default values (e.g. `group_size`, `gmajority`, `min_rank`).
+- ObjectId handling: Property names ending in "Id" (like `userId`) are always strings. On the client side, `_id` is always a string. In the database, `_id` is always an ObjectId object. Server-side code must be careful and clear about when `_id` is an ObjectId or a string - use `new ObjectId(stringId)` to convert strings for database queries.
+- Models and mongo-collections: Data models are located in `app/models/` and use the `@enciv/mongo-collections` package. Models define MongoDB collection schemas and provide methods for database operations. Import models directly (e.g., `import InviteLog from '../../models/invite-log'`) and use standard MongoDB methods like `insertOne`, `findOne`, `updateOne`. Collections are automatically created on first use.
+- Email templates: Located in `assets/email-templates/`. Follow the styling pattern from `node_modules/civil-server/assets/email-templates/reset-password.html` for consistency with EnCiv branding (logo, footer, social links).
+- Background jobs: Implement in `app/jobs/` with proper error handling, logging, and throttling. Use real MongoDB integration in tests rather than mocks when testing job functionality.
 
 ## Testing notes
 
 - Jest roots are `app/` (see `jest.config.js`). Setup files include `jest-test-setup.js` and `jest-enzyme` integration.
 - DB tests rely on `@shelf/jest-mongodb` and `mongodb-memory-server`.
 - Use `npm run dbtest` for debug-friendly runs.
+- Integration tests: For complex functionality involving dturn, MongoDB, and civil-server components, prefer integration tests using MongoMemoryServer over mocked tests. This provides better coverage and catches real-world issues.
+- Mock management: Use `jest.clearAllMocks()` in test cleanup to ensure proper isolation between tests.
 
 ## Integration points and external dependencies
 
@@ -53,7 +80,7 @@ Notes: many files mix `import`/`export` and `module.exports` — respect the exi
 
 ## Pitfalls & quick warnings
 
-- Don't mix module styles within a single file — follow the file's existing pattern (some files are CommonJS, others ESM).
+- Don't mix module styles within a single file — follow the file's existing pattern (some files are CommonJS, others ESM). New files should prefer ES modules.
 - `Discussions` is in-memory; in production you must implement `updateUInfo`/`getAllUInfo` to persist user interactions and rehydrate on restart.
 - `structuredClone` is used in `dturn.js` — Node >= 17/18 is expected (package.json specifies Node 18.13.0).
 
