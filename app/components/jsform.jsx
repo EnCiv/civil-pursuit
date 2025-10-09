@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/89
 // https://github.com/EnCiv/civil-pursuit/issues/297
+// https://github.com/EnCiv/civil-pursuit/issues/357
 
 'use strict'
 import React, { useEffect, useState, useMemo, useContext, useRef } from 'react'
@@ -14,14 +15,11 @@ import { withJsonFormsControlProps } from '@jsonforms/react'
 import StepIntro from './step-intro'
 import { H, Level } from 'react-accessible-headings'
 
-const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes }) => {
+const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes, errors }) => {
   const options = schema.enum || []
   const label = schema.title || uischema.label
-
   const id = `input-${path.replace(/\./g, '-')}`
-
   const textareaRef = useRef(null)
-
   const isMulti = uischema && uischema.options && uischema.options.multi
 
   let type
@@ -38,7 +36,10 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
   }
 
   const handleInputChange = event => {
-    const value = type === 'checkbox' ? event.target.checked : event.target.value
+    let value
+    if (type === 'checkbox') value = event.target.checked
+    else if (type === 'number' || schema.type === 'integer') value = parseInt(event.target.value, 10) || 0
+    else value = event.target.value
     handleChange(path, value)
   }
 
@@ -53,11 +54,32 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
     }
   }, [isMulti])
 
+  const isError = !!errors
+
   return (
-    <div>
+    <div style={{ position: 'relative', marginTop: '2.0rem', marginBottom: '0.5rem' }}>
+
+      {isError && (
+        <div
+          className={classes.errorInput}
+          style={{
+            position: 'absolute',
+            left: '-0.5rem',
+            top: '-1.25rem',
+            fontSize: '0.875rem',
+            lineHeight: '1.25rem',
+            minHeight: '1rem',
+            padding: '0.25rem 0.5rem',
+          }}
+        >
+          {errors}
+        </div>
+      )}
+
       <label htmlFor={id}>{label}</label>
+
       {type === 'select' ? (
-        <select id={id} value={data || ''} onChange={handleInputChange} className={classes.formInput}>
+        <select id={id} value={data || ''} onChange={handleInputChange} className={cx(classes.formInput, { [classes.errorInput]: isError })}>
           <option value="" disabled>
             Choose one
           </option>
@@ -68,9 +90,9 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
           ))}
         </select>
       ) : isMulti ? (
-        <textarea id={id} ref={textareaRef} value={data || ''} onChange={handleInputChange} className={classes.formInput} />
+        <textarea id={id} ref={textareaRef} value={data || ''} onChange={handleInputChange} className={cx(classes.formInput, { [classes.errorInput]: isError })} />
       ) : (
-        <input id={id} type={type} checked={type === 'checkbox' ? !!data : undefined} value={type === 'checkbox' ? undefined : data || ''} onChange={handleInputChange} className={classes.formInput} />
+        <input id={id} type={type} checked={type === 'checkbox' ? !!data : undefined} value={type === 'checkbox' ? undefined : data || ''} onChange={handleInputChange} className={cx(classes.formInput, { [classes.errorInput]: isError })} />
       )}
     </div>
   )
@@ -88,33 +110,25 @@ const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), 
 const JsForm = props => {
   const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, title, stepIntro, discussionId } = props
   const [data, setData] = useState({})
+  const [errors, setErrors] = useState([])
   const classes = useStyles(props)
 
   useEffect(() => {
-    window.socket.emit('get-jsform', discussionId, data => {
-      if (data) {
-        const moreDetails = data[name] || {}
-        setData(moreDetails)
-        if (handleIsValid(moreDetails)) {
-          onDone({ valid: true, value: moreDetails })
-        }
+  window.socket.emit('get-jsform', discussionId, data => {
+    if (data && data[name] !== undefined) {
+      const moreDetails = data[name] 
+      setData(moreDetails)
+      if (handleIsValid(moreDetails, schema, errors)) {
+        onDone({ valid: true, value: moreDetails })
       }
-    })
-  }, [])
+    }
+  })
+}, [])
+
 
   const handleSubmit = () => {
     window.socket.emit('upsert-jsform', discussionId, name, data)
-    onDone({ valid: handleIsValid(data), value: data })
-  }
-
-  const handleIsValid = data => {
-    if (!data) return false
-
-    const requiredData = schema.properties || {}
-    return Object.keys(requiredData).every(key => {
-      if (!requiredData[key].properties) return !!data[key]
-      else return Object.keys(requiredData[key].properties).every(prop => !!data[key][prop])
-    })
+    onDone({ valid: handleIsValid(data, schema, errors), value: data })
   }
 
   // useMemo renders (React components) so they don't get rebuilt every time the user types a character
@@ -126,7 +140,25 @@ const JsForm = props => {
     }))
   }, [schema, uischema])
 
-  const isValid = handleIsValid(data)
+  const handleIsValid = (data, schema, errors) => {
+    if (!data) return false
+    if (errors && errors.length > 0) return false
+    if (!schema || !schema.properties) return true
+
+    const requiredKeys = schema.required || []
+    const props = schema.properties || {}
+
+    return requiredKeys.every(key => {
+      if (!props[key]) return false
+
+      if (props[key].type === 'object' && props[key].properties) {
+        return Object.keys(props[key].properties).every(prop => !!(data[key] && data[key][prop]))
+      }
+      return !!data[key]
+    })
+  }
+
+  const isValid = handleIsValid(data, schema, errors)
 
   return (
     <div className={cx(classes.formContainer, className)}>
@@ -140,8 +172,9 @@ const JsForm = props => {
             data={data}
             renderers={memoedRenderers}
             cells={vanillaCells}
-            onChange={({ data }) => {
+            onChange={({ data, errors }) => {
               setData(data)
+              setErrors(errors)
             }}
           />
           <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
@@ -186,6 +219,10 @@ const useStyles = createUseStyles(theme => ({
   actionButton: {
     width: '100%',
     margin: '1.5rem 0',
+  },
+  errorInput: {
+    borderColor: `${theme.colors.inputErrorBorder} !important`,
+    color: `${theme.colors.inputErrorBorder}`,
   },
 }))
 
