@@ -2,7 +2,7 @@
 
 This is a tool to enable large scale deliberation online. It leads people through a discussion process, not chat, that engages them in finding what they agree on. The process stages are derived from in-person dialog and deliberation but here they can be automated and made to scale to support very large numbers of participants.
 
-[<p align="center"><img width="638" alt="Civil Pursuit App" src="https://github.com/user-attachments/assets/18604275-7ac5-438e-9463-70d5440a8fb3" /></p>](https://civilpursuit.herokuapp.com/what-first-usa-1)
+[<img width="638" alt="Civil Pursuit App" src="https://github.com/user-attachments/assets/18604275-7ac5-438e-9463-70d5440a8fb3" />](https://civilpursuit.herokuapp.com/what-first-usa-1)
 
 [Click here to try it](https://civilpursuit.herokuapp.com/what-first-usa-1)
 
@@ -48,5 +48,6 @@ After your inital push, go to [github.com/EnCiv/civil-pursuit](https://github.co
 
 # [Icons, Figma and SVG](https://github.com/EnCiv/.github/wiki/Icons,-Figma-and-SVG)
 [see the wiki](https://github.com/EnCiv/.github/wiki/Icons,-Figma-and-SVG)
+
 
 
