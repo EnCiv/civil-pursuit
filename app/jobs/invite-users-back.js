@@ -179,16 +179,18 @@ export default async function inviteUsersBackJob() {
     }
   }
 
-  // Set timeout for next run if needed
-  if (nextRunTime) {
-    const timeUntilNext = nextRunTime.getTime() - Date.now()
-    if (timeUntilNext > 0) {
-      logger.info(`Scheduling next invite job run in ${Math.round(timeUntilNext / 1000 / 60)} minutes`)
-      nextRunTimeout = setTimeout(() => {
-        inviteUsersBackJob()
-      }, timeUntilNext)
+  if (!process.env.JEST_WORKER_ID) {
+    // Set timeout for next run if needed
+    if (nextRunTime) {
+      const timeUntilNext = nextRunTime.getTime() - Date.now()
+      if (timeUntilNext > 0) {
+        logger.info(`Scheduling next invite job run in ${Math.round(timeUntilNext / 1000 / 60)} minutes`)
+        nextRunTimeout = setTimeout(() => {
+          inviteUsersBackJob()
+        }, timeUntilNext)
+      }
     }
-  }
+  } else logger.info(`Jest test environment detected - not scheduling next run`)
   logger.info(`Invite job completed. Sent ${totalInvitesSent} invites across ${iotas.length} discussions. Next run time: ${nextRunTime}`)
 
   return { invitesSent: totalInvitesSent, discussionsProcessed: iotas.length, nextRunTime }
