@@ -13,19 +13,21 @@ function getInitOptions(options) {
     updates: options.updates || (() => []), // not async. socket.io will quere updates and send, if overflow, better to send latest than to catchup
     updateUInfo: options.updateUInfo || (async () => {}),
     getAllUInfo: options.getAllUInfo || (async () => []),
+    finalRound: options.finalRound, // optional override for final round used by invite logic/tests
   }
 }
 /**
  *  initDiscussion(discussionId,options) nothing returned
  *  insertStatementId(discussionId,round,userId,statementId) returns statementId
     getStatementIds(discussionId,round,userId) returns an array of statementIds or undefined if there's a problem
-    putGroupings(discussionId,round,userId,statementIds) nothing returned
-    rankMostImportant(discussionId,round,userId,statementId) returns nothing
+    finishRound(discussionId, round, userId, rankings, groupings) returns true on success
+    deprecated: use finishRound - putGroupings(discussionId,round,userId,statementIds) nothing returned
+    deprecated: use finishRound - rankMostImportant(discussionId,round,userId,statementId) returns nothing
     getUserRecord(discussionId,userId) returns [round: Number]{shownStatementIds: [statementIds], groupings: [[statementIds],...]} or undefined
     initUitems(discussionId,userId,round) returns the Uitems object for that user
 
 
-    report,
+    report for testing only
  */
 
 /**
@@ -34,9 +36,9 @@ function getInitOptions(options) {
  * 1) If the best (lowest) statement gets put into a group, and that group doesn't win the rankings in that round, then it dissapears. Observed when proxy users randomly choosse the top of a group.
  *
  *
- * Messsy Edge Conditions to consider
+ * Messy Edge Conditions to consider
  *
- * 1) A user is shwon a group of items, but then dissapears and never groups/ranks them
+ * 1) A user is shown a group of items, but then disappears and never groups/ranks them
  *
  */
 
@@ -749,3 +751,54 @@ async function getDiscussionStatus(discussionId) {
   return status
 }
 module.exports.getDiscussionStatus = getDiscussionStatus
+
+/**
+ * getUsersToInviteBack(discussionId)
+ * Returns undefined if the discussion is not initialized.
+ * Otherwise returns an array of { userId, round } where `round` is the first round
+ * that the user has not finished and should be invited back to.
+ *
+ * Logic:
+ *  - If user hasn't finished round 0 and (they have more than 1 shownStatementIds OR
+ *    there are at least 2 * group_size shown statements in round 0) then invite to round 0.
+ *  - For rounds > 0, if the discussion has ShownStatements for that round and the round
+ *    is <= final round, then for users who have finished the previous round but not this one,
+ *    invite them to this round.
+ */
+async function getUsersToInviteBack(discussionId) {
+  if (!Discussions[discussionId]) return undefined
+  const dis = Discussions[discussionId]
+  const result = []
+
+  const finalRound = typeof dis.finalRound === 'number' ? dis.finalRound : (dis.ShownStatements?.length || 0) - 1
+
+  const userIds = Object.keys(dis.Uitems || {})
+  for (const userId of userIds) {
+    // find the first round the user hasn't finished and that meets invite criteria
+    // check round 0 first
+    const u0 = dis.Uitems[userId]?.[0]
+    const totalShown0 = dis.ShownStatements?.[0]?.length || 0
+    if (u0 && !u0.finished) {
+      const numShown = Object.keys(u0.shownStatementIds || {}).length
+      if (numShown > 1 || totalShown0 >= 2 * dis.group_size) {
+        result.push({ userId, round: 0 })
+        continue
+      }
+    }
+
+    // subsequent rounds
+    for (let r = 1; r <= finalRound; r++) {
+      if (!dis.ShownStatements?.[r]) continue
+      const prev = dis.Uitems[userId]?.[r - 1]
+      if (!prev || !prev.finished) break // user hasn't finished previous round, can't be invited to this one
+      const cur = dis.Uitems[userId]?.[r]
+      if (!cur || !cur.finished) {
+        result.push({ userId, round: r })
+        break
+      }
+    }
+  }
+
+  return result
+}
+module.exports.getUsersToInviteBack = getUsersToInviteBack

@@ -564,7 +564,7 @@
                 "enum": ["Yes", "No"]
               }
             },
-             "required": ["shareInfo"]
+            "required": ["shareInfo"]
           },
           "uischema": {
             "type": "VerticalLayout",
@@ -818,6 +818,7 @@
     "webComponent": {
       "webComponent": "CivilPursuit",
       "dturn": { "group_size": 5, "finalRound": 2 },
+      "status": "active",
       "participants": 1,
       "minParticipants": 100,
       "finalRound": 2,
@@ -917,7 +918,7 @@
                 "enum": ["Yes", "No"]
               }
             },
-             "required": ["shareInfo"]
+            "required": ["shareInfo"]
           },
           "uischema": {
             "type": "VerticalLayout",
@@ -938,7 +939,7 @@
                 "type": "Control",
                 "scope": "#/properties/Gender"
               },
-               {
+              {
                 "type": "Control",
                 "scope": "#/properties/shareInfo"
               }
