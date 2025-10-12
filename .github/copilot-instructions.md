@@ -72,6 +72,7 @@ Notes: many files mix `import`/`export` and `module.exports` — respect the exi
 - Use `npm run dbtest` for debug-friendly runs.
 - Integration tests: For complex functionality involving dturn, MongoDB, and civil-server components, prefer integration tests using MongoMemoryServer over mocked tests. This provides better coverage and catches real-world issues.
 - Mock management: Use `jest.clearAllMocks()` in test cleanup to ensure proper isolation between tests.
+- - Logger mocking: When mocking `global.logger`, info should be silent `jest.fn()`, while warn/error should console the arguments for debugging visibility: `jest.fn((...args) => console.warn('Logger WARN:', ...args))`. Exception: Unit tests specifically testing error scenarios should use silent mocks (`jest.fn()`) to avoid console noise and should verify the exact logger calls with `expect(logger.error).toHaveBeenCalledWith(...)`.
 
 ## Integration points and external dependencies
 
