@@ -10,7 +10,7 @@ import InviteLog from '../../models/invite-log'
 import inviteUsersBackJob from '../invite-users-back'
 
 let MemoryServer
-
+const group_size = 2
 // No mocking - use real civil-server functions including SibGetTemplateId and SibSendTransacEmail
 
 // Mock global logger following guidelines: info silent, warn/error console for debugging
@@ -24,7 +24,7 @@ global.logger = {
 describe('Invite Users Back Job - Integration Tests (Real Email)', () => {
   beforeAll(async () => {
     process.env.INVITE_USERS_BACK_JOB = 'true'
-    console.log = jest.fn()
+    //console.log = jest.fn() we want to operator to see the log messages from this test
     MemoryServer = await MongoMemoryServer.create()
     const uri = MemoryServer.getUri()
     await Mongo.connect(uri)
@@ -54,8 +54,8 @@ describe('Invite Users Back Job - Integration Tests (Real Email)', () => {
       const discussionId = new ObjectId()
       const userIds = []
 
-      // Create 10 users with email extensions
-      for (let i = 0; i < 10; i++) {
+      // Create users with email extensions
+      for (let i = 0; i < group_size * 2; i++) {
         const userId = new ObjectId()
         userIds.push(userId)
 
@@ -85,7 +85,7 @@ describe('Invite Users Back Job - Integration Tests (Real Email)', () => {
       await initDiscussion(discussionId.toString(), {
         updateUInfo: () => {},
         getAllUInfo: () => [],
-        group_size: 5,
+        group_size: group_size,
       })
 
       // Add statements for all users to make them eligible
@@ -95,7 +95,7 @@ describe('Invite Users Back Job - Integration Tests (Real Email)', () => {
       }
 
       // Try to get statements for some users to trigger the invitation logic
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < group_size * 1.5; i++) {
         try {
           await getStatementIds(discussionId.toString(), 0, userIds[i].toString())
         } catch (e) {
@@ -105,7 +105,7 @@ describe('Invite Users Back Job - Integration Tests (Real Email)', () => {
 
       console.log(`Running integration test with base email: ${baseEmail}`)
       console.log('This test will send real emails to:')
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < group_size * 2; i++) {
         const [localPart, domain] = baseEmail.split('@')
         console.log(`  ${localPart}+u${i + 1}@${domain}`)
       }
@@ -115,7 +115,7 @@ describe('Invite Users Back Job - Integration Tests (Real Email)', () => {
 
       // Verify that the job ran (check InviteLog entries)
       const inviteLogs = await InviteLog.find({}).toArray()
-      expect(inviteLogs.length).toBeGreaterThan(0)
+      expect(inviteLogs.length).toBe(group_size * 2)
 
       // Verify that each invite log has a valid userId and timestamp
       inviteLogs.forEach(log => {
