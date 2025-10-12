@@ -19,6 +19,14 @@ async function sendInviteEmail(userId, discussion, round) {
       return false
     }
 
+    // Skip test email addresses
+    const testEmailPatterns = [/^david\d+@enciv\.org$/i, /^ga-test-\d+@enciv\.org$/i]
+
+    if (testEmailPatterns.some(pattern => pattern.test(user.email))) {
+      logger.info(`Skipping test email address: ${user.email}`)
+      return false
+    }
+
     // Determine the correct scheme for the hostname
     const hostname = process.env.HOSTNAME || 'localhost:3011'
     const scheme = hostname.startsWith('localhost') ? 'http://' : /^([a-z][a-z0-9+\-.]*):\/\//i.test(hostname) ? '' : 'https://'
@@ -27,7 +35,7 @@ async function sendInviteEmail(userId, discussion, round) {
     const params = {
       DISPLAYNAME: user.firstName || user.name || user.email?.split('@')[0] || 'there',
       DISCUSSIONTITLE: discussion.subject || '',
-      INVITEURL: `${scheme}${hostname}/${discussion.path}`,
+      INVITEURL: `${scheme}${hostname}${discussion.path}`, // no slash in front of path because paths in iotas begin with /
       DISCUSSIONID: discussion._id.toString(), // Hidden prop as per issue requirements
     }
 
@@ -57,7 +65,11 @@ async function sendInviteEmail(userId, discussion, round) {
 
 let nextRunTimeout = null
 
-export default async function inviteUsersBackJob(opts = {}) {
+export default async function inviteUsersBackJob() {
+  if (!process.env.INVITE_USERS_BACK_JOB) {
+    logger.info('INVITE_USERS_BACK_JOB not set - skipping inviteUsersBackJob')
+    return null // job disabled, maybe it's running on another server
+  }
   // Clear any existing timeout
   if (nextRunTimeout) {
     clearTimeout(nextRunTimeout)
@@ -76,13 +88,13 @@ export default async function inviteUsersBackJob(opts = {}) {
   // Get all active discussions from Iota collection per issue specs
   const iotas = await Iota.find({
     'webComponent.webComponent': 'CivilPursuit',
-    'webComponent.finished': { $ne: true },
+    'webComponent.status': 'active',
   }).toArray()
 
   logger.info(`Found ${iotas.length} active discussions`)
 
   let totalInvitesSent = 0
-  let nextRunTime = null
+  let nextRunTime = new Date(Date.now() + 24 * 60 * 60 * 1000) // default to 24 hours from now
 
   for (const discussion of iotas) {
     try {
@@ -167,18 +179,17 @@ export default async function inviteUsersBackJob(opts = {}) {
     }
   }
 
-  logger.info(`Invite job completed. Sent ${totalInvitesSent} invites across ${iotas.length} discussions.`)
-
   // Set timeout for next run if needed
   if (nextRunTime) {
     const timeUntilNext = nextRunTime.getTime() - Date.now()
     if (timeUntilNext > 0) {
       logger.info(`Scheduling next invite job run in ${Math.round(timeUntilNext / 1000 / 60)} minutes`)
       nextRunTimeout = setTimeout(() => {
-        inviteUsersBackJob(opts)
+        inviteUsersBackJob()
       }, timeUntilNext)
     }
   }
+  logger.info(`Invite job completed. Sent ${totalInvitesSent} invites across ${iotas.length} discussions. Next run time: ${nextRunTime}`)
 
   return { invitesSent: totalInvitesSent, discussionsProcessed: iotas.length, nextRunTime }
 }
