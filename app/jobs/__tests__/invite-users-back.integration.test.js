@@ -13,16 +13,18 @@ let MemoryServer
 
 // No mocking - use real civil-server functions including SibGetTemplateId and SibSendTransacEmail
 
-// Mock global logger but also console the messages
+// Mock global logger following guidelines: info silent, warn/error console for debugging
 global.logger = {
   error: jest.fn((...args) => console.error('Logger ERROR:', ...args)),
-  info: jest.fn((...args) => console.info('Logger INFO:', ...args)),
+  info: jest.fn(), // Silent for integration tests to reduce noise
   warn: jest.fn((...args) => console.warn('Logger WARN:', ...args)),
   debug: jest.fn((...args) => console.debug('Logger DEBUG:', ...args)),
 }
 
 describe('Invite Users Back Job - Integration Tests (Real Email)', () => {
   beforeAll(async () => {
+    process.env.INVITE_USERS_BACK_JOB = 'true'
+    console.log = jest.fn()
     MemoryServer = await MongoMemoryServer.create()
     const uri = MemoryServer.getUri()
     await Mongo.connect(uri)
@@ -72,9 +74,10 @@ describe('Invite Users Back Job - Integration Tests (Real Email)', () => {
       await Iota.insertOne({
         _id: discussionId,
         subject: 'Integration Test Discussion',
+        path: '/our-tools', // a valid path on enciv.org for testing the invite link
         webComponent: {
           webComponent: 'CivilPursuit',
-          finished: false,
+          status: 'active',
         },
       })
 
@@ -114,15 +117,15 @@ describe('Invite Users Back Job - Integration Tests (Real Email)', () => {
       const inviteLogs = await InviteLog.find({}).toArray()
       expect(inviteLogs.length).toBeGreaterThan(0)
 
-    // Verify that each invite log has a valid userId and timestamp
-    inviteLogs.forEach(log => {
-      expect(log.userId).toBeDefined()
-      expect(log.sentAt).toBeInstanceOf(Date)
-      expect(log.discussionId).toBe(discussionId.toString())
-    })
+      // Verify that each invite log has a valid userId and timestamp
+      inviteLogs.forEach(log => {
+        expect(log.userId).toBeDefined()
+        expect(log.sentAt).toBeInstanceOf(Date)
+        expect(log.discussionId).toBe(discussionId.toString())
+      })
 
-    console.log(`Successfully sent ${inviteLogs.length} invitation emails`)
-    console.log('Check your email inbox for test invitations')
+      console.log(`Successfully sent ${inviteLogs.length} invitation emails`)
+      console.log('Check your email inbox for test invitations')
     },
     10000
   ) // Increase timeout to 10 seconds for email sending

@@ -7,6 +7,7 @@ import { Iota, User, SibGetTemplateId, SibSendTransacEmail } from 'civil-server'
 import { initDiscussion, insertStatementId, getUsersToInviteBack, getStatementIds } from '../../dturn/dturn'
 import InviteLog from '../../models/invite-log'
 import inviteUsersBackJob from '../invite-users-back'
+import path from 'path'
 
 let MemoryServer
 
@@ -17,16 +18,26 @@ jest.mock('civil-server', () => ({
   SibSendTransacEmail: jest.fn(),
 }))
 
-// Mock global logger
+// Mock global logger but also console the messages except for info
 global.logger = {
   info: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
+  warn: jest.fn((...args) => console.warn('Logger WARN:', ...args)),
+  error: jest.fn((...args) => console.error('Logger ERROR:', ...args)),
+}
+
+// Helper function to setup logger for error testing (no console output)
+function setupSilentLogger() {
+  global.logger = {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  }
 }
 
 beforeAll(async () => {
   // Set Jest environment for dturn so things are not randomized
   process.env.JEST_TEST_ENV = 'true'
+  process.env.INVITE_USERS_BACK_JOB = 'true'
 
   MemoryServer = await MongoMemoryServer.create()
   const uri = MemoryServer.getUri()
@@ -47,7 +58,7 @@ beforeEach(async () => {
   // Reset mocks completely
   jest.clearAllMocks()
   SibGetTemplateId.mockResolvedValue(123)
-  SibSendTransacEmail.mockResolvedValue({ success: true })
+  SibSendTransacEmail.mockResolvedValue(new Promise(resolve => resolve({ messageId: 1234 })))
 
   // Set up environment
   process.env.HOSTNAME = 'example.com'
@@ -87,7 +98,7 @@ describe('invite-users-back job', () => {
       path: 'test-path',
       webComponent: {
         webComponent: 'CivilPursuit',
-        finished: false,
+        status: 'active',
       },
     })
 
@@ -120,7 +131,7 @@ describe('invite-users-back job', () => {
 
     // Verify emails were sent
     expect(result.invitesSent).toBeGreaterThan(0)
-    expect(SibGetTemplateId).toHaveBeenCalledWith('invite-next-round')
+    expect(SibGetTemplateId).toHaveBeenCalledWith(path.resolve(__dirname, '../../../assets/email-templates/invite-next-round.html'))
     expect(SibSendTransacEmail).toHaveBeenCalled()
 
     // Verify invite was logged
@@ -150,7 +161,7 @@ describe('invite-users-back job', () => {
       subject: 'Test Discussion',
       webComponent: {
         webComponent: 'CivilPursuit',
-        finished: false,
+        status: 'active',
       },
     })
 
@@ -193,6 +204,9 @@ describe('invite-users-back job', () => {
   })
 
   test('should handle missing user gracefully', async () => {
+    // Setup silent logger for this error test
+    setupSilentLogger()
+
     const discussionId = new ObjectId()
     const userIds = []
     for (let i = 0; i < 10; i++) {
@@ -215,7 +229,7 @@ describe('invite-users-back job', () => {
       subject: 'Test Discussion',
       webComponent: {
         webComponent: 'CivilPursuit',
-        finished: false,
+        status: 'active',
       },
     })
 
@@ -257,7 +271,7 @@ describe('invite-users-back job', () => {
       subject: 'Finished Discussion',
       webComponent: {
         webComponent: 'CivilPursuit',
-        finished: true,
+        status: 'finished',
       },
     })
 
@@ -269,6 +283,9 @@ describe('invite-users-back job', () => {
   })
 
   test('should handle email sending errors gracefully', async () => {
+    // Setup silent logger for this error test
+    setupSilentLogger()
+
     const discussionId = new ObjectId()
     const userIds = []
     for (let i = 0; i < 10; i++) {
@@ -289,7 +306,7 @@ describe('invite-users-back job', () => {
       subject: 'Test Discussion',
       webComponent: {
         webComponent: 'CivilPursuit',
-        finished: false,
+        status: 'active',
       },
     })
 
