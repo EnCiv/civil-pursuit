@@ -20,7 +20,7 @@ export default function Conclusion(props) {
     window.socket.emit('get-conclusion', discussionId, data => {
       if (data) {
         const conclusion = data
-        //setData(conclusion)
+        setData(conclusion)
       }
     })
   }, [])
@@ -55,11 +55,13 @@ export default function Conclusion(props) {
                 </div>
                 <div className={cx(classes.rankingResults)}>
                   <RankingResults
-                    resultList={{
-                      Most: d.counts?.mosts ?? 0,
-                      Neutral: d.counts?.neutral ?? 0,
-                      Least: d.counts?.leasts ?? 0,
-                    }}
+                    resultList={[
+                      {
+                        Most: 0,
+                        Neutral: 0,
+                        Least: 0,
+                      },
+                    ]}
                   />
                 </div>
               </div>
