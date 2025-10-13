@@ -555,8 +555,14 @@
                 "title": "Gender",
                 "type": "string",
                 "enum": ["Male", "Female", "Other"]
+              },
+              "shareInfo": {
+                "title": "Personally Identifiable Information is not shown, but may we share this information with your posts?",
+                "type": "string",
+                "enum": ["Yes", "No"]
               }
-            }
+            },
+            "required": ["shareInfo"]
           },
           "uischema": {
             "type": "VerticalLayout",
@@ -576,6 +582,10 @@
               {
                 "type": "Control",
                 "scope": "#/properties/Gender"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/shareInfo"
               }
             ]
           }
@@ -812,6 +822,7 @@
     "webComponent": {
       "webComponent": "CivilPursuit",
       "dturn": { "group_size": 5, "finalRound": 2 },
+      "status": "active",
       "participants": 1,
       "minParticipants": 100,
       "finalRound": 2,
@@ -904,8 +915,14 @@
                 "title": "Gender",
                 "type": "string",
                 "enum": ["Male", "Female", "Other"]
+              },
+              "shareInfo": {
+                "title": "Personally Identifiable Information is not shown, but may we share this information with your posts?",
+                "type": "string",
+                "enum": ["Yes", "No"]
               }
-            }
+            },
+            "required": ["shareInfo"]
           },
           "uischema": {
             "type": "VerticalLayout",
@@ -925,6 +942,10 @@
               {
                 "type": "Control",
                 "scope": "#/properties/Gender"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/shareInfo"
               }
             ]
           }

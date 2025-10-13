@@ -5,6 +5,7 @@ import path from 'path'
 import { theCivilServer, Iota } from 'civil-server'
 import iotas from '../iotas.json'
 import App from './components/app'
+import inviteUsersBackJob from './jobs/invite-users-back'
 
 Iota.preload(iotas)
 
@@ -19,6 +20,7 @@ async function start() {
     server.serverEventsDirPaths.push(path.resolve(__dirname, './events'))
     await server.start()
     logger.info('started')
+    setTimeout(inviteUsersBackJob, 10000) // wait 10 seconds then run job, that will schedule next runs
   } catch (error) {
     logger.error('error on start', error)
   }
