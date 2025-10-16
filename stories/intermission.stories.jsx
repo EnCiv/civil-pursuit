@@ -114,7 +114,7 @@ export const CanContinueToNextRound = {
 }
 export const CanContinueToNextRoundOnDone = {
   args: {
-    defaultValue: { lastRound: 2, dturn: { finalRound: 1 }, uInfo: uInfoRound1Complete },
+    defaultValue: { lastRound: 2, dturn: { finalRound: 2 }, uInfo: uInfoRound1Complete },
     user: { id: '123456', email: 'user@email.com' },
     round: 1,
   },

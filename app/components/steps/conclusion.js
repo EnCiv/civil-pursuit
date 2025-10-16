@@ -3,8 +3,9 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { H } from 'react-accessible-headings'
+import DeliberationContext from '../deliberation-context'
 
 import StepIntro from '../step-intro'
 import ShowDualPointList from '../../components/show-dual-point-list'
@@ -13,21 +14,19 @@ import HowDoYouFeel from '../../components/how-do-you-feel'
 
 export default function Conclusion(props) {
   const { className, discussionId, stepIntro, onDone = () => {}, ...otherProps } = props
-  const [data, setData] = useState(null)
   const classes = useStylesFromThemeFunction(props)
+  const { data, upsert } = useContext(DeliberationContext)
 
   useEffect(() => {
-    window.socket.emit('get-conclusion', discussionId, data => {
-      if (data) {
-        const conclusion = data
-        setData(conclusion)
-      }
-    })
+    if (!data?.topPointAndWhys) {
+      window.socket.emit('get-conclusion', discussionId, topPointAndWhys => {
+        if (topPointAndWhys) upsert({ topPointAndWhys })
+      })
+    }
   }, [])
 
   const handleOnDone = ({ valid, value }) => {
     window.socket.emit('upsert-jsform', discussionId, 'conclusion', { howDoYouFeel: value })
-
     onDone({ valid })
   }
 
@@ -35,8 +34,8 @@ export default function Conclusion(props) {
     <div className={cx(classes.conclusion, className)} {...otherProps}>
       <div className={cx(classes.mostAndLeastsWrapper)}>
         <StepIntro {...stepIntro} />
-        {data &&
-          data.map(d => (
+        {data?.topPointAndWhys &&
+          data.topPointAndWhys.map(d => (
             <>
               <div>
                 <div className={cx(classes.subject)}>
@@ -55,21 +54,20 @@ export default function Conclusion(props) {
                 </div>
                 <div className={cx(classes.rankingResults)}>
                   <RankingResults
-                    resultList={[
-                      {
-                        Most: 0,
-                        Neutral: 0,
-                        Least: 0,
-                      },
-                    ]}
+                    resultList={Object.entries(d.counts).reduce((rl, [key, value]) => {
+                      const newKey = key.charAt(0).toUpperCase() + key.slice(1)
+                      return { ...rl, [newKey]: value }
+                    }, {})}
                   />
                 </div>
               </div>
             </>
           ))}
-        <div className={cx(classes.howDoYouFeelWrapper)}>
-          <HowDoYouFeel title={'How do you feel about the results?'} onDone={handleOnDone} />
-        </div>
+        {data?.topPointAndWhys && (
+          <div className={cx(classes.howDoYouFeelWrapper)}>
+            <HowDoYouFeel title={'How do you feel about the results?'} onDone={handleOnDone} />
+          </div>
+        )}
       </div>
     </div>
   )

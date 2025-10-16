@@ -268,7 +268,7 @@ export const tournamentDecorators = [
   buildApiDecorator('get-why-ranks-and-points', { ranks: [], whys: [] }),
   buildApiDecorator('upsert-rank', () => {}),
   buildApiDecorator('get-conclusion', (discussionId, cb) => {
-    cb && cb({ point: pointList[0], mosts: make5Whys([pointList[0]], 'most').flat(), leasts: make5Whys([pointList[0]], 'least').flat() })
+    cb && cb([{ point: pointList[0], mosts: make5Whys([pointList[0]], 'most').flat(), leasts: make5Whys([pointList[0]], 'least').flat(), counts: { most: 7, neutral: 2, least: 5 } }])
   }),
 ]
 

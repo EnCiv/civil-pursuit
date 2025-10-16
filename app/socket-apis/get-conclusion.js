@@ -29,10 +29,10 @@ export default async function getConclusion(discussionId, cb) {
       let mosts, leasts, counts
 
       await getTopRankedWhysForPoint.call(this, statementId, 'most', start, pageSize, data => {
-        mosts = data
+        mosts = data || []
       })
       await getTopRankedWhysForPoint.call(this, statementId, 'least', start, pageSize, data => {
-        leasts = data
+        leasts = data || []
       })
 
       counts = await Ranks.aggregate([
@@ -72,8 +72,11 @@ export default async function getConclusion(discussionId, cb) {
 
       const point = await Point.findOne({ _id: new ObjectId(statementId) })
       const convertedPoint = { ...point, _id: point._id.toString() }
-
-      topPointAndWhys.push({ mosts: mosts, leasts: leasts, point: convertedPoint, counts: counts[0]?.countByCategory })
+      const newCounts = counts[0]?.countByCategory || {}
+      ;['most', 'neutral', 'least'].forEach(cat => {
+        if (!newCounts[cat]) newCounts[cat] = 0
+      })
+      topPointAndWhys.push({ mosts: mosts, leasts: leasts, point: convertedPoint, counts: newCounts })
     }
   }
 
