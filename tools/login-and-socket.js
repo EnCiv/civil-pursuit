@@ -44,22 +44,11 @@ async function answer(context) {
   const userId = context.userId
   const deliberationId = context.deliberationId
   // Get round and uInfo from context (from subscribe-deliberation)
-  const { round, uInfo } = context.subscribeDeliberationResult || {}
-  if (typeof round !== 'number' || !uInfo) {
-    console.error('No round or uInfo in context for answer step.')
-    return
-  }
-  if (round !== 0) {
-    console.log('Not round 0, skipping answer step.')
-    return
-  }
+  const round = context.round
+  if (round > 0) return
+  const { uInfo } = context.subscribeDeliberationResult || {}
   // Find this user's info
-  const userInfo = uInfo.find(u => u.userId === userId)
-  if (!userInfo) {
-    console.error('No user info found for userId', userId)
-    return
-  }
-  const shownStatementIds = Object.keys(userInfo.shownStatementIds || {})
+  const shownStatementIds = Object.keys(uInfo?.[round]?.shownStatementIds || {})
 
   // Fetch current points and whys
   let points = [],
@@ -138,7 +127,7 @@ async function group(context) {
   const socket = context.socket
   const deliberationId = context.deliberationId
   // Get points for this round
-  const round = (context.subscribeDeliberationResult && context.subscribeDeliberationResult.round) || 0
+  const round = context.round
   const getPointsForRound = () =>
     new Promise(resolve => {
       socket.emit('get-points-for-round', deliberationId, round, result => {
@@ -149,7 +138,7 @@ async function group(context) {
   context.pointsForRound = points
   if (!points?.length) {
     console.log('Group, No points to group found for round', round)
-    return
+    return false
   }
   // Group points by subject
   const groupMap = {}
@@ -166,6 +155,7 @@ async function group(context) {
       resolve()
     })
   })
+  return true
 }
 
 async function subscribe(url, cookie, context) {
@@ -193,6 +183,14 @@ async function subscribe(url, cookie, context) {
           console.log('subscribe-deliberation result:', JSON.stringify(result, null, 2))
           context.subscribeDeliberationResult = result
           context.socket = socket
+          let round = 0
+          for (const roundInfo of Object.values(result.uInfo || [])) {
+            if (roundInfo.finished) {
+              round++
+              continue
+            }
+          }
+          context.round = round
           resolve(context)
         })
       } else {
@@ -273,7 +271,7 @@ async function rank(context) {
 
   // Get any past ranks
   const userId = context.userId
-  const round = (context.subscribeDeliberationResult && context.subscribeDeliberationResult.round) || 0
+  const round = context.round
   const getUserRanks = () =>
     new Promise(resolve => {
       socket.emit('get-user-ranks', deliberationId, round, 'pre', result => {
@@ -330,7 +328,7 @@ async function rank(context) {
 async function compareWhys(context, category) {
   const { socket, deliberationId, userId } = context
   // Get round from context
-  const round = (context.subscribeDeliberationResult && context.subscribeDeliberationResult.round) || 0
+  const round = context.round
   // Get mostIds and leastIds from context, or compute from ranks if not present
   let mostIds = context.mostIds,
     leastIds = context.leastIds
@@ -351,11 +349,6 @@ async function compareWhys(context, category) {
     return
   }
   const { ranks = [], whys = [] } = result
-  if (whys.length !== mostIds.length + leastIds.length)
-    console.error(
-      `compareWhys: Expected ${mostIds.length + leastIds.length} whys, but got ${whys.length} there may be missing why's in the points collection.`,
-      `Most+LestIds: ${mostIds.concat(leastIds).sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))}, why parentIds: ${whys.map(w => w.parentId).sort((a, b) => (a > b ? 1 : a < b ? -1 : 0))}`
-    )
   // Build lookup for existing ranks by parentId
   const rankByParentId = {}
   for (const r of ranks) rankByParentId[r.parentId] = r
@@ -420,7 +413,7 @@ async function rerank(context) {
   const socket = context.socket
   const deliberationId = context.deliberationId
   const userId = context.userId
-  const round = (context.subscribeDeliberationResult && context.subscribeDeliberationResult.round) || 0
+  const round = context.round
   const reducedPoints = context.reducedPoints || []
   if (!reducedPoints.length) {
     console.log('No reducedPoints to rerank, skipping rerank step.')
@@ -479,9 +472,9 @@ async function rerank(context) {
     // Only 'most' is 1, all others are 0
     return { [point._id]: rankObj && rankObj.category === 'most' ? 1 : 0 }
   })
-  // Call complete-round with rankByIds
+  // Call finish-round with rankByIds and groupings
   await new Promise(resolve => {
-    socket.emit('complete-round', deliberationId, round, rankByIds, resolve)
+    socket.emit('finish-round', deliberationId, round, rankByIds, context.groupings, resolve)
   })
   console.log('rerank: completed and round marked complete')
 }
@@ -557,17 +550,20 @@ async function runForUser(fixedUrl, deliberationId, email, password) {
   }
   console.log('context', context)
   await subscribe(fixedUrl, cookie, context)
+  console.log('working on round', context.round, 'for user', email)
   await answer(context)
-  await group(context)
-  await rank(context)
-  await compareWhys(context, 'most')
-  await compareWhys(context, 'least')
-  await rerank(context)
+  const groupGotStatements = await group(context)
+  if (groupGotStatements) {
+    await rank(context)
+    await compareWhys(context, 'most')
+    await compareWhys(context, 'least')
+    await rerank(context)
+  }
   await closeDown(context)
 }
 
 async function main() {
-  let [, , deliberationId, userCountStr] = process.argv
+  let [, , deliberationId, userCountStr, userStartStr = '1'] = process.argv
   if (!deliberationId || !userCountStr) {
     console.error('Usage: node login-and-socket.js <deliberationId> <userCount>')
     process.exit(1)
@@ -577,10 +573,11 @@ async function main() {
     console.error('userCount must be a positive integer')
     process.exit(1)
   }
-  const url = process.env.CIVIL_SERVER_URL || 'http://127.0.0.1:3011' // localhost doesn't work
+  const userStart = parseInt(userStartStr, 10) || 1
+  const url = process.env.CIVIL_SERVER_URL || 'http://127.0.0.1:3012' // localhost doesn't work
   await Mongo.connect()
   try {
-    for (let user = 1; user <= userCount; user++) {
+    for (let user = userStart; user <= userCount; user++) {
       const email = `ga-test-${user}@enciv.org`
       const password = email.split('').reverse().join('')
       console.log(`\n--- Running steps for user ${user}: ${email} ---`)

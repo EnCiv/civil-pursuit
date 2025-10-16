@@ -7,11 +7,15 @@ import Intermission_Icon from '../svgr/intermission-icon'
 import StatusBox from '../components/status-box'
 import DeliberationContext from './deliberation-context'
 
+// needs to be static because it used as a dependency in useEffect
+const goToEnCiv = () => location.pushState('https://enciv.org/')
+
 const Intermission = props => {
   const { className = '', onDone = () => {}, user, round } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useContext(DeliberationContext)
-  const { lastRound, finalRound, uInfo = {} } = data
+  const { lastRound, dturn, uInfo = {} } = data
+  const { finalRound } = dturn || {}
 
   const [validationError, setValidationError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
@@ -101,7 +105,7 @@ const Intermission = props => {
       </>
     )
     valid = true
-    onNext = () => location.replace('https://enciv.org/')
+    onNext = goToEnCiv
   } else if (!roundCompleted) {
     if (round === 0)
       conditionalResponse = (
@@ -150,7 +154,7 @@ const Intermission = props => {
       )
     else conditionalResponse = <div className={classes.headlineSmall}>There are not enough responses yet to proceed with round {round + 1}. When we hear from more people, we will invite you back to continue the deliberation.</div>
     valid = false
-    onNext = () => location.replace('https://enciv.org/')
+    onNext = goToEnCiv
   } else if (nextRoundAvailable) {
     conditionalResponse = (
       <>
@@ -168,7 +172,7 @@ const Intermission = props => {
     )
     if (successMessage) {
       valid = true
-      onNext = () => location.replace('https://enciv.org/')
+      onNext = goToEnCiv
     } else valid = false
   } else {
     conditionalResponse = (
@@ -177,12 +181,12 @@ const Intermission = props => {
       </>
     )
     valid = true
-    onNext = () => location.replace('https://enciv.org/')
+    onNext = goToEnCiv
   }
 
   useEffect(() => {
     onDone({ valid, value: 'continue', onNext })
-  }, [valid])
+  }, [valid, onNext])
   return (
     <div className={cx(classes.intermission, className)}>
       <div className={classes.iconContainer}>
