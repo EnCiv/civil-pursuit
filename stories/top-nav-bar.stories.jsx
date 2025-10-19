@@ -232,3 +232,12 @@ export const VerticalModeDefaultTabSelect = {
     mode: 'vertical',
   },
 }
+
+export const VerticalMode20RemWidth = {
+  args: {
+    menu: [createMenuItem('Profile'), createMenuItem('Discussions'), createMenuItem('Settings'), createMenuItem('Help'), createMenuItem('Logout')],
+    defaultSelectedItem: 'Discussions',
+    mode: 'vertical',
+    style: { width: '20rem' },
+  },
+}

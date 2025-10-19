@@ -66,7 +66,7 @@ const TopNavBar = props => {
 
   if (mode === 'vertical') {
     return (
-      <menu className={cx(classes.verticalMenuContainer)}>
+      <menu className={cx(classes.verticalMenuContainer, className)} {...otherProps}>
         {menu &&
           menu.map((item, index) => (
             <li className={classes.menuList}>
