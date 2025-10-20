@@ -5,9 +5,9 @@
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import { TextButton } from './button.jsx'
-import ShowDualPointList from './show-dual-point-list.jsx'
-import Ranking from './ranking.jsx'
+import { TextButton } from './button'
+import ShowDualPointList from './show-dual-point-list'
+import Ranking from './ranking'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
 import { H, Level } from 'react-accessible-headings'
@@ -16,10 +16,13 @@ function ReviewPoint(props) {
   const { point = {}, leftPointList = [], rightPointList = [], rank = '', onDone = () => {}, ...otherProps } = props
   const [isRanked, setIsRanked] = useState(false)
 
-  // disabled: can't select yet, collapesed, has not been read
+  // disabled: can't select yet, collapsed, has not been read
   // open: point is open and visible, can select a ranking, has been read
   // enabled: point is collapsed, but you can still select a ranking, has been read
-  const [vState, setVState] = useState(rank ? 'enabled' : 'disabled')
+  const [vState, setVState] = useState(props.vState || (rank ? 'enabled' : 'disabled'))
+  useEffect(() => {
+    if (props.vState) setVState(props.vState)
+  }, [props.vState])
 
   const classes = useStylesFromThemeFunction()
 
@@ -36,29 +39,27 @@ function ReviewPoint(props) {
     if (isRanked) setIsRanked(false) // not ranked until validated from child
   }, [rank])
 
+  const handleClose = () => {
+    setVState('enabled')
+    setTimeout(() => onDone({ valid: !!rank }), 0)
+  }
+
   return (
     <div className={cx(classes.borderStyle)} {...otherProps}>
       <div className={cx(classes.contentContainer)}>
         <div className={classes.informationGrid}>
           <div className={classes.informationColumn}>
-            <span className={vState !== 'disabled' ? classes.statusBadgeComplete : classes.statusBadge}>
-              {vState !== 'disabled' ? 'Read' : 'Unread'}
-            </span>
+            <span className={vState !== 'disabled' ? classes.statusBadgeComplete : classes.statusBadge}>{vState !== 'disabled' ? 'Read' : 'Unread'}</span>
             {point.subject && <H className={cx(classes.subjectStyle)}>{point.subject}</H>}
             {point.description && <p className={cx(classes.descriptionStyle)}>{point.description}</p>}
           </div>
           <div className={classes.rankingColumn}>
-            <Ranking
-              className={classes.ranking}
-              disabled={vState === 'disabled'}
-              defaultValue={rank}
-              onDone={handleRankingDone}
-            />
+            <Ranking className={classes.ranking} disabled={vState === 'disabled'} defaultValue={rank} onDone={handleRankingDone} />
           </div>
         </div>
         <div className={classes.SvgContainer}>
           {vState === 'open' ? (
-            <TextButton onClick={() => setVState('enabled')} title="close" tabIndex={0}>
+            <TextButton onClick={handleClose} title="close" tabIndex={0}>
               <span className={classes.chevronButton}>
                 <SvgChevronUp />
               </span>
@@ -75,13 +76,7 @@ function ReviewPoint(props) {
       {vState === 'open' && (leftPointList.length > 0 || rightPointList.length > 0) && (
         <div className={classes.showDualPointListContainer}>
           <Level>
-            <ShowDualPointList
-              className={classes.showDualPointList}
-              leftHeader="Why It's Most Important"
-              rightHeader="Why It's Least Important"
-              leftPoints={leftPointList}
-              rightPoints={rightPointList}
-            />
+            <ShowDualPointList className={classes.showDualPointList} leftHeader="Why It's Most Important" rightHeader="Why It's Least Important" leftPoints={leftPointList} rightPoints={rightPointList} />
           </Level>
         </div>
       )}

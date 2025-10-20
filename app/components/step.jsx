@@ -1,14 +1,15 @@
 'use strict'
 
 // https://github.com/EnCiv/civil-pursuit/issues/46
+// https://github.com/EnCiv/civil-pursuit/issues/332
 
 import React, { forwardRef, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import { PositioningPortal } from '@codastic/react-positioning-portal/lib'
+import { PositioningPortal } from '@codastic/react-positioning-portal/lib/legacy/index.js'
 
 const Step = forwardRef((props, ref) => {
-  const { name, title = '', complete, active, unlocked, onDone = () => {}, index, className, ...otherProps } = props
+  const { name, title = '', complete, active, unlocked, skip, onDone = () => {}, index, stepIndex, className, ...otherProps } = props
 
   const classes = useStylesFromThemeFunction()
 
@@ -30,8 +31,8 @@ const Step = forwardRef((props, ref) => {
   )
 
   const textStyle = cx(classes.sharedTextStyles, {
-    [classes.stepTextActive]: (active && !complete) || (!active && complete) || (!active && !complete && unlocked),
-    [classes.stepTextInactiveIncomplete]: !active && !complete && !unlocked,
+    [classes.stepTextActive]: !skip && ((active && !complete) || (!active && complete) || (!active && !complete && unlocked)),
+    [classes.stepTextInactiveIncomplete]: (!active && !complete && !unlocked) || skip,
   })
 
   // begin a timneout when the span wrapping the step is clicked
@@ -42,7 +43,7 @@ const Step = forwardRef((props, ref) => {
   }
 
   // clear the timeout when the click is finished
-  const handleMouseUp = () => {
+  const handleMouseUp = event => {
     clearTimeout(timeRef.current)
     setTimeout(() => setIsPortalOpen(false), displayTime)
   }
@@ -52,7 +53,7 @@ const Step = forwardRef((props, ref) => {
       e.stopPropagation()
       if (timeRef.current) clearTimeout(timeRef.current)
       timeRef.current = null
-      if (complete || active || unlocked) onDone(index)
+      if (!skip && (complete || active || unlocked)) onDone(index)
     }
   }
 
@@ -69,8 +70,9 @@ const Step = forwardRef((props, ref) => {
   return (
     <div
       className={containerStyle}
-      onMouseDown={() => {
-        if (complete || active || unlocked) onDone(index)
+      onMouseUp={e => {
+        e.stopPropagation()
+        if (!skip && (complete || active || unlocked)) onDone(index)
       }}
       onKeyDown={handleKeyDown}
       title={`${title}`}
@@ -81,7 +83,7 @@ const Step = forwardRef((props, ref) => {
     >
       <span onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
         <PositioningPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
-          <div className={textStyle}>{name}</div>
+          <div className={textStyle}>{stepIndex + ': ' + name}</div>
         </PositioningPortal>
       </span>
     </div>

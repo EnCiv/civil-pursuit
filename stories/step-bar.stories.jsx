@@ -1,7 +1,7 @@
 import StepBar from '../app/components/step-bar'
 import React from 'react'
-import { onDoneDecorator } from './common'
-import { userEvent, within } from '@storybook/test'
+import { asyncSleep, onDoneDecorator } from './common'
+import { userEvent, waitFor, within, expect } from '@storybook/test'
 
 let primarySteps = Array.from({ length: 9 }, (_, i) => ({
   name: `Step ${i + 1}: The ${stepLengthGenerator()}`,
@@ -58,18 +58,12 @@ export const ParentsWidth = args => {
   return <StepBar style={{ maxWidth: '50.375rem' }} {...args} />
 }
 
-export const MobileViewOne = {}
-MobileViewOne.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
-  },
+export const MobileViewOne = {
+  parameters: { viewport: { defaultViewport: 'galaxys5' } },
 }
 
-export const MobileViewTwo = {}
-MobileViewTwo.parameters = {
-  viewport: {
-    defaultViewport: 'mobile2',
-  },
+export const MobileViewTwo = {
+  parameters: { viewport: { defaultViewport: 'iphone14promax' } },
 }
 
 // tests the right scroll button
@@ -104,40 +98,32 @@ ScrollLeft.args = { steps: secondarySteps, current: 9 }
 // Accessibility tests
 export const AccessibilityTestDesktop = {
   play: async ({ canvasElement }) => {
-    const interval = setInterval(async () => {
-      await userEvent.keyboard('{tab}')
-    }, 250)
-
-    const timeout = setTimeout(() => {
-      clearInterval(interval)
-      clearTimeout(timeout)
-    }, 2000)
+    await userEvent.keyboard('{tab}')
+    await asyncSleep(500)
+    await userEvent.keyboard('{tab}')
+    await asyncSleep(500)
   },
 }
 
 // Accessibility tests
 export const AccessibilityTestMobile = {
+  parameters: { viewport: { defaultViewport: 'iphone13' } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const select = canvas.getByTestId('mobile-select-bar')
+    let select
+    // it takes time for the viewport to change
 
-    const timeoutOne = setTimeout(async () => {
-      await userEvent.click(select)
-      clearTimeout(timeoutOne)
-    }, 500)
-
-    const interval = setInterval(async () => {
-      await userEvent.keyboard('{tab}')
-    }, 250)
-
-    const timeout = setTimeout(() => {
-      clearInterval(interval)
-      clearTimeout(timeout)
-    }, 2000)
-  },
-}
-AccessibilityTestMobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+    /*
+    This works in storybook, but not with npm run test-storybook
+    
+      await waitFor(() => {
+      select = canvas.getByTestId('mobile-select-bar')
+      expect(select).toBeInTheDocument()
+    })*/
+    await asyncSleep(500)
+    await userEvent.click(select)
+    await asyncSleep(500)
+    await userEvent.keyboard('{tab}')
+    await asyncSleep(500)
   },
 }

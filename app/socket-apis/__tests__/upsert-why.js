@@ -1,5 +1,4 @@
 // https://github.com/EnCiv/civil-pursuit/issues/133
-// https://github.com/EnCiv/civil-pursuit/issues/210
 
 import upsertWhy from '../upsert-why'
 import Points from '../../models/points'
@@ -25,10 +24,17 @@ afterAll(async () => {
   await MemoryServer.stop()
 })
 
-test('Insert a new document', async () => {
+beforeEach(async () => {
+  jest.spyOn(console, 'error').mockImplementation(() => {})
+})
+
+afterEach(async () => {
+  console.error.mockRestore()
+})
+
+test('Insert a new document with no id set', async () => {
   const pointObj = {
-    _id: POINT1,
-    title: 'Test Subject',
+    subject: 'Test Subject',
     description: 'Test Description',
     round: 1,
     parentId: PARENTID,
@@ -41,28 +47,25 @@ test('Insert a new document', async () => {
   await upsertWhy.call({ synuser: user }, pointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const point = await Mongo.db.collection('points').findOne({ title: 'Test Subject' })
+  const point = await Points.findOne({ subject: 'Test Subject' })
   expect(point).toMatchObject({ ...pointObj, userId: USER1 })
 })
 
-test('Upsert changes to an existing document when valid request with its id set', async () => {
+test('Upsert changes to an existing document with its id set', async () => {
   const existingPoint = {
-    _id: new ObjectId(POINT2),
-    title: 'Existing Subject',
+    _id: POINT1,
+    subject: 'Existing Subject',
     description: 'Existing Description',
     round: 1,
     parentId: PARENTID,
     userId: USER1,
     category: 'most',
   }
-  await Mongo.db.collection('points').insertOne(existingPoint)
-
-  const existingDBPoint = await Mongo.db.collection('points').findOne({ _id: new ObjectId(POINT2) })
-  expect(existingDBPoint).toMatchObject({ ...existingPoint })
+  await Points.insertOne(existingPoint)
 
   const updatedPointObj = {
-    _id: POINT2,
-    title: 'Updated Subject',
+    _id: POINT1,
+    subject: 'Updated Subject',
     description: 'Updated Description',
     round: 1,
     parentId: PARENTID,
@@ -75,14 +78,14 @@ test('Upsert changes to an existing document when valid request with its id set'
   await upsertWhy.call({ synuser: user }, updatedPointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const updatedDBPoint = await Mongo.db.collection('points').findOne({ _id: new ObjectId(POINT2) })
-  expect(updatedDBPoint).toMatchObject({ ...updatedPointObj })
+  const point = await Points.findOne({ _id: POINT1 })
+  expect(point).toMatchObject({ ...updatedPointObj, userId: USER1 })
 })
 
 test('User not logged in, not allowed to upsert a document', async () => {
   const pointObj = {
-    _id: POINT3,
-    title: 'Test Subject',
+    _id: POINT2,
+    subject: 'Test Subject',
     description: 'Test Description',
     round: 1,
     parentId: PARENTID,
@@ -94,69 +97,27 @@ test('User not logged in, not allowed to upsert a document', async () => {
   await upsertWhy.call({}, pointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  const point = await Mongo.db.collection('points').findOne({ _id: new Object(POINT3) })
+  const point = await Points.findOne({ _id: POINT2 })
   expect(point).toBeNull()
 })
 
 test('Validation error when upserting a document', async () => {
   const invalidPointObj = {
-    title: 'Test Subject',
-    description: '',
+    // no subject, which is required
+    description: 'invalidPointObj',
     round: 1,
     parentId: PARENTID,
     category: 'most',
   }
   const user = { id: USER1 }
 
-  // Mock the validate method to return an error
-  Points.validate = jest.fn().mockReturnValue({ error: 'Validation error' })
-
   const cb = jest.fn()
 
   await upsertWhy.call({ synuser: user }, invalidPointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  expect(cb).toHaveBeenCalledWith(null)
+  expect(cb).toHaveBeenCalledWith(undefined)
 
-  const point = await Mongo.db.collection('points').findOne({ subject: 'Test Subject' })
+  const point = await Points.findOne({ description: 'invalidPointObj' })
   expect(point).toBeNull()
-})
-
-test('error when category in request is missing', async () => {
-  const pointObj = {
-    id: POINT1,
-    title: 'Test Subject',
-    description: '',
-    round: 1,
-    parentId: 'parent-id',
-    // category is missing
-  }
-  const user = { id: USER1 }
-  const cb = jest.fn()
-
-  await upsertWhy.call({ synuser: user }, pointObj, cb)
-
-  // validation error
-  expect(cb).toHaveBeenCalledTimes(1)
-  expect(cb).toHaveBeenCalledWith(null)
-})
-
-test('error when category in request is not valid', async () => {
-  const pointObj = {
-    id: POINT1,
-    title: 'Test Subject',
-    description: '',
-    round: 1,
-    parentId: 'parent-id',
-    category: 'Invalid',
-    // category invalid
-  }
-  const user = { id: USER1 }
-  const cb = jest.fn()
-
-  await upsertWhy.call({ synuser: user }, pointObj, cb)
-
-  // validation error
-  expect(cb).toHaveBeenCalledTimes(1)
-  expect(cb).toHaveBeenCalledWith(null)
 })

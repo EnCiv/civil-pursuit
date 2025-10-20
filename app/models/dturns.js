@@ -11,12 +11,13 @@ class Dturns extends Collection {
         bsonType: 'object',
         title: 'Dturn Object Validation',
         required: ['discussionId', 'userId'],
+        additionalProperties: true,
         properties: {
           discussionId: {
             description: "'discussionId' must be an ObjectId and is required",
           },
           userId: {
-            description: "'userId' must be an ObjectId",
+            description: "'userId' must be an string",
           },
           round: {
             description: "'round' must be a number",
@@ -27,29 +28,27 @@ class Dturns extends Collection {
           groupings: {
             description: "'groupings' must be an array",
           },
+          finished: {
+            description: 'true if all user input for the round has been completed',
+          },
         },
       },
     },
   }
 
   static async getAllFromDiscussion(discussionId) {
-    return await this.find({ discussionId: discussionId })
+    return await this.find({ discussionId: discussionId }).toArray()
   }
 
-  static async upsert(userId, discussionId, round, shownStatementIds, groupings) {
+  static async upsert(userId, discussionId, round, info) {
     const dturnObj = {
-      discussionId: discussionId,
-      round: round,
-      userId: userId,
-      shownStatementIds: shownStatementIds,
-      groupings: groupings,
+      discussionId,
+      round,
+      userId,
+      ...info,
     }
 
-    await this.updateOne(
-      { discussionId: discussionId, userId: userId, round: round },
-      { $set: dturnObj },
-      { upsert: true }
-    )
+    await this.updateOne({ discussionId, userId, round }, { $set: dturnObj }, { upsert: true })
   }
 }
 

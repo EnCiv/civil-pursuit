@@ -1,3 +1,7 @@
+// https://github.com/EnCiv/civil-pursuit/issues/101
+// https://github.com/EnCiv/civil-pursuit/issues/243
+// https://github.com/EnCiv/civil-pursuit/issues/331
+
 'use strict'
 import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
@@ -5,12 +9,16 @@ import StatusBadge from './status-badge'
 import Theme from './theme'
 import cx from 'classnames'
 
+const statusToBadge = {
+  complete: { name: 'Complete', status: 'Complete' },
+  inprogress: { name: 'In Progress', status: 'Progress' },
+  pending: { name: 'Pending', status: 'Pending' },
+}
+
 const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
   const classes = useStyles()
 
-  const [isMobile, setIsMobile] = useState(
-    typeof window !== 'undefined' ? window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`) : false
-  )
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.matchMedia(`(max-width: ${Theme.condensedWidthBreakPoint})`) : false)
   const [isInitialized, setIsInitialized] = useState(false)
 
   useEffect(() => {
@@ -39,38 +47,58 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
     }
 
     const currentRoundIndex = roundsStatus.findIndex(status => status === 'inProgress')
+    const lastRound = roundsStatus.length - 1
 
-    let lowerIndex, upperIndex
+    let visibleRounds = []
 
-    if (currentRoundIndex === 0) {
-      lowerIndex = 0
-      upperIndex = isMobile ? 2 : 3 // Show the first two rounds on mobile, first 3 on full-width
-    } else if (currentRoundIndex === roundsStatus.length - 1) {
-      lowerIndex = roundsStatus.length - (isMobile ? 1 : 3)
-      upperIndex = roundsStatus.length - 1 // Show only the last round on mobile, last 3 on full-width
+    if (roundsStatus.length === 1) {
+      visibleRounds = [0]
+    } else if (isMobile) {
+      // Just show the current round and the last round
+      if (currentRoundIndex == lastRound) {
+        visibleRounds = [lastRound - 1, lastRound]
+      } else {
+        visibleRounds = [currentRoundIndex, lastRound]
+      }
     } else {
-      // Show the current and next round on mobile.
-      // Previous, current, and next round on full-width
-      lowerIndex = isMobile ? currentRoundIndex : currentRoundIndex - 1
-      upperIndex = currentRoundIndex + 2
+      if (currentRoundIndex === 0) {
+        visibleRounds = [currentRoundIndex, currentRoundIndex + 1, lastRound]
+      } else if (currentRoundIndex === lastRound) {
+        visibleRounds = [currentRoundIndex - 2, currentRoundIndex - 1, currentRoundIndex]
+      } else {
+        visibleRounds = [currentRoundIndex - 1, currentRoundIndex, lastRound]
+      }
     }
 
     return roundsStatus.map((status, index) => {
       // Only render visible rounds
-      if (lowerIndex <= index && index < upperIndex)
+      if (visibleRounds.includes(index)) {
+        const badgeInfo = statusToBadge[status.toLowerCase()]
+
+        const metaIndex = visibleRounds.indexOf(index)
+
+        const nextRound = new Set(visibleRounds).size > 1 ? visibleRounds[metaIndex + 1] : undefined
+
+        let lineType = classes.lineInvisible
+
+        if (nextRound - index == 1) {
+          lineType = classes.lineSolid
+        } else {
+          lineType = classes.lineDashed
+        }
+
         return (
           <React.Fragment key={index}>
             <div className={classes.roundContainer}>
-              <div className={classes.roundNumber}>Round {index + 1}</div>
-              <StatusBadge
-                name={status.charAt(0).toUpperCase() + status.slice(1)}
-                status={status.toLowerCase()}
-                className={classes.badge}
-              />
+              <div className={classes.roundHeader}>
+                <div className={classes.roundNumber}>Round {index + 1}</div>
+              </div>
+              <StatusBadge name={badgeInfo.name} status={badgeInfo.status} className={classes.badge} />
             </div>
-            {index < upperIndex - 1 && <div className={classes.dash} />}
+            {nextRound > 0 && <div className={cx(classes.lineBase, lineType)} />}
           </React.Fragment>
         )
+      }
     })
   }
 
@@ -93,8 +121,7 @@ const useStyles = createUseStyles(theme => ({
   roundTrackerWrapper: {
     backgroundColor: theme.colors.roundTrackerBackground,
     borderRadius: '0.5rem',
-    padding: '1rem',
-    boxShadow: '0 0 1rem rgba(0, 0, 0, 0.1)',
+    border: `${theme.border.width.thin} solid ${theme.colors.borderGray}`,
   },
   roundTracker: {
     display: 'flex',
@@ -102,49 +129,65 @@ const useStyles = createUseStyles(theme => ({
     justifyContent: 'center',
     flexWrap: 'wrap',
     flexDirection: 'row',
+    margin: '1.625rem 4.1875rem 1.625rem 4.1875rem',
+    gap: '5.1875rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'row',
       flexWrap: 'nowrap',
+      margin: '1.625rem 1rem  1.625rem 1rem ',
+      gap: '2rem',
     },
   },
   roundContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    margin: '0 0.5rem',
+    gap: '0.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'column',
       alignItems: 'center',
-      marginBottom: '0.5rem',
     },
   },
+  roundHeader: {
+    display: 'flex',
+    alignItems: 'center',
+  },
   roundNumber: {
-    marginBottom: '0.25rem',
     fontWeight: 'bold',
     textAlign: 'center',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       marginBottom: '0.25rem',
-      marginRight: '0',
     },
   },
+  lineBase: {
+    width: '3.375rem',
+    height: '0rem',
+    borderBottomWidth: '0.125rem',
+    borderBottomColor: theme.colors.encivGray,
+    borderBottomStyle: 'solid',
+    margin: '-3.75rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      margin: '-1.5rem',
+    },
+  },
+
+  lineSolid: {
+    borderBottomStyle: 'solid',
+  },
+  lineDashed: {
+    borderBottomStyle: 'dashed',
+  },
+
+  lineInvisible: {
+    borderBottomColor: 'transparent',
+  },
+
   badge: {
-    margin: '0 0.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       margin: '0 0.25rem',
     },
   },
-  dash: {
-    width: '1.5rem',
-    height: '0.125rem',
-    backgroundColor: theme.colors.borderGray,
-    alignSelf: 'center',
-    transform: 'translateY(0.65rem)',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '0.75rem',
-      height: '0.0625rem',
-      marginBottom: '0.5rem',
-    },
-  },
+
   emptyMessage: {
     fontSize: '1rem',
     color: theme.colors.textPrimary,

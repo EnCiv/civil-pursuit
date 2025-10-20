@@ -1,39 +1,15 @@
 // https://github.com/EnCiv/civil-pursuit/issues/151
 
-import React from 'react'
+import React, { useState } from 'react'
 import Tournament from '../app/components/tournament'
-import { onDoneDecorator } from './common'
+import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator, buildApiDecorator } from './common'
 
-const createPointDoc = (
-  _id,
-  subject,
-  description = 'Point Description',
-  groupedPoints = [],
-  user = {
-    dob: '1990-10-20T00:00:00.000Z',
-    state: 'NY',
-    party: 'Independent',
-  }
-) => {
-  return {
-    _id,
-    subject,
-    description,
-    groupedPoints,
-    user,
-  }
-}
-
-const pointItems = Array.from({ length: 30 }, (_, index) =>
-  createPointDoc(index, 'Point ' + index, 'Point Description ' + index)
-)
-
-const defaultSharedPointsWhyStep = {
-  mosts: [pointItems[1], pointItems[2]],
-  leasts: [pointItems[3], pointItems[4]],
-  whyMosts: [pointItems[1], pointItems[2]],
-  whyLeasts: [pointItems[3], pointItems[4]],
-}
+const pointItems = Array.from({ length: 30 }, (_, index) => ({
+  _id: index + 'a', //
+  subject: 'Point ' + index,
+  description: 'Point Description ' + index,
+  userId: '1000' + index,
+}))
 
 const reviewPoint1 = {
   point: pointItems[0],
@@ -91,7 +67,15 @@ const startingQuestionAnswerStep = {
 
 const whyQuestionAnswerStep = 'Why should everyone consider solving this issue?'
 
-const testSteps = [
+export const tournamentSteps = [
+  {
+    webComponent: 'Conclusion',
+    stepName: 'Conclusion',
+    stepIntro: {
+      subject: 'Conclusion',
+      description: 'This is the end of the deliberation. Thank you for your participation!',
+    },
+  },
   {
     webComponent: 'Answer',
     stepName: 'Answer',
@@ -101,18 +85,16 @@ const testSteps = [
     },
     question: startingQuestionAnswerStep,
     whyQuestion: whyQuestionAnswerStep,
-    shared: {},
   },
   {
     webComponent: 'GroupingStep',
     stepName: 'Group',
     stepIntro: {
       subject: 'Group Responses',
-      description:
-        'Of these issues, please group similar responses to facilitate your decision-making by avoiding duplicates. If no duplicates are found, you may continue to the next section below.',
+      description: 'Of these issues, please group similar responses to facilitate your decision-making by avoiding duplicates. If no duplicates are found, you may continue to the next section below.',
     },
     shared: {
-      pointList: pointItems,
+      pointList: makePoints(9),
       groupedPointList: [],
     },
   },
@@ -121,37 +103,30 @@ const testSteps = [
     stepName: 'Rank',
     stepIntro: {
       subject: 'Rank Responses',
-      description:
-        'Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important.',
+      description: 'Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important.',
     },
     pointList: pointItems,
     rankList: [],
   },
   {
     webComponent: 'WhyStep',
-    type: 'most',
+    category: 'most',
     stepName: 'Why Most',
     stepIntro: {
       subject: "Why it's Most Important",
-      description:
-        "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it.",
+      description: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it.",
     },
-    intro:
-      "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: defaultSharedPointsWhyStep,
+    intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
   },
   {
     webComponent: 'WhyStep',
-    type: 'least',
+    category: 'least',
     stepName: 'Why Least',
     stepIntro: {
       subject: "Why it's Least Important",
-      description:
-        "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it.",
+      description: "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it.",
     },
-    intro:
-      "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
-    shared: defaultSharedPointsWhyStep,
+    intro: "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it",
   },
   {
     webComponent: 'CompareReasons',
@@ -162,7 +137,7 @@ const testSteps = [
       description: 'Compare two responses and select a response that is most important for the community to consider.',
     },
     pointList: compareReasonsPointList,
-    side: 'most',
+    category: 'most',
   },
   {
     webComponent: 'CompareReasons',
@@ -172,17 +147,76 @@ const testSteps = [
       description: 'Compare two responses and select a response that is most important for the community to consider.',
     },
     pointList: compareReasonsPointList,
-    side: 'least',
+    category: 'least',
   },
   {
     webComponent: 'ReviewPointList',
     stepName: 'Review',
     stepIntro: {
       subject: 'Review',
-      description:
-        'These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again. ',
+      description: 'These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again. ',
     },
     reviewPoints: [reviewPoint1, reviewPoint2, reviewPoint3],
+  },
+  {
+    webComponent: 'Jsform',
+    name: 'earlyFeedback',
+    stepName: 'Feedback',
+    allowedRounds: [0], // only show this step in round 0
+    stepIntro: {
+      subject: 'Feedback',
+      description: "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters.",
+    },
+    schema: {
+      type: 'object',
+      properties: {
+        experience: {
+          title: 'Rating',
+          type: 'string',
+          enum: ['Very Positive', 'Somewhat Positive', 'Neutral', 'Somewhat Negative', 'Very Negative'],
+        },
+        comfort: {
+          title: 'Rating',
+          type: 'string',
+          enum: ['Very Comfortable', 'Somewhat Comfortable', 'Neutral', 'Somewhat Uncomfortable', 'Very Uncomfortable'],
+        },
+        interest: {
+          title: 'Rating',
+          type: 'string',
+          enum: ['Very Interested', 'Somewhat Interested', 'Neutral', 'Somewhat Uninterested', 'Very Uninterested'],
+        },
+        improvements: {
+          title: 'Description',
+          type: 'string',
+        },
+      },
+    },
+    uischema: {
+      type: 'VerticalLayout',
+      elements: [
+        { type: 'H', text: 'How has your experience been so far?' },
+        {
+          type: 'Control',
+          scope: '#/properties/experience',
+        },
+        { type: 'H', text: 'How comfortable would you feel inviting close friends or family to participate in this discussion too?' },
+        {
+          type: 'Control',
+          scope: '#/properties/comfort',
+        },
+        { type: 'H', text: 'How interested are you in getting to the next round of this discussion?' },
+        {
+          type: 'Control',
+          scope: '#/properties/interest',
+        },
+        { type: 'H', text: 'What can we do to make this tool better?' },
+        {
+          type: 'Control',
+          scope: '#/properties/improvements',
+          options: { multi: true, rows: 5 },
+        },
+      ],
+    },
   },
   {
     webComponent: 'Intermission',
@@ -192,24 +226,73 @@ const testSteps = [
       description: 'When more people have gotten to this point we will invite you back to continue the deliberation.',
     },
     user: { email: 'example@gmail.com', tempid: '123456' },
-    round: 1,
-    lastRound: 2,
   },
 ]
 
 export default {
   component: Tournament,
   args: {
-    steps: testSteps,
+    steps: tournamentSteps,
   },
   parameters: {
     layout: 'fullscreen',
   },
-  decorators: [onDoneDecorator],
+  decorators: [DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator],
+  excludeStories: ['tournamentDecorators', 'tournamentDefaultValue', 'tournamentSteps'],
 }
 
-export const Default = {
-  args: {
-    testSteps,
+function makePoints(n) {
+  return Array.from({ length: n }, (_, i) => ({ _id: i + 1 + '', subject: 'Point ' + i, description: 'Point Description ' + i, parentId: 'd' }))
+}
+const pointList = makePoints(9)
+
+let id = 100
+function make5Whys(points, category) {
+  return points.map(point => Array.from({ length: 5 }, (_, i) => ({ _id: id++, subject: `Why ${category} ` + point._id + i, description: `Why ${category} Description ` + point._id + i, parentId: point._id, category })))
+}
+function byId(docs) {
+  return docs.reduce((byId, doc) => ((byId[doc._id] = doc), byId), {})
+}
+
+function byParentIdList(docs) {
+  return docs.reduce((byPId, doc) => (byPId[doc.parentId] ? byPId[doc.parentId].push(doc) : (byPId[doc.parentId] = [doc]), byPId), {})
+}
+
+// export so they can be used in other stories like civil-pursuit
+export const tournamentDecorators = [
+  buildApiDecorator('subscribe-deliberation', (discussionId, requestHandler, updateHandler) => {
+    requestHandler({ uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }], lastRound: 0, participants: 1 })
+  }),
+  buildApiDecorator('get-user-ranks', []),
+  buildApiDecorator('get-points-of-ids', []),
+  buildApiDecorator('get-why-ranks-and-points', { ranks: [], whys: [] }),
+  buildApiDecorator('upsert-rank', () => {}),
+  buildApiDecorator('get-conclusion', (discussionId, cb) => {
+    cb && cb([{ point: pointList[0], mosts: make5Whys([pointList[0]], 'most').flat(), leasts: make5Whys([pointList[0]], 'least').flat(), counts: { most: 7, neutral: 2, least: 5 } }])
+  }),
+]
+
+export const tournamentDefaultValue = {
+  // this goes into the deliberation context
+  userId: '67bf9d6ae49200d1349ab34a',
+  discussionId: '5d0137260dacd06732a1d814',
+  dturn: { finalRound: 2 },
+  pointById: byId(pointList),
+  groupIdsLists: [],
+  randomWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
+  whyRankByParentId: {},
+  //topWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
+  whysByCategoryByParentId: {
+    most: byParentIdList(make5Whys(pointList, 'most').flat()),
+    least: byParentIdList(make5Whys(pointList, 'least').flat()),
   },
+  postRankByParentId: {},
+}
+
+export const Normal = {
+  args: {
+    testSteps: tournamentSteps,
+    defaultValue: tournamentDefaultValue,
+  },
+  decorators: tournamentDecorators,
 }

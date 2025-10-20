@@ -11,16 +11,7 @@ const merge = require('lodash').merge
 const showDeepDiff = require('show-deep-diff')
 
 const ObjectID = require('bson-objectid')
-const {
-  insertStatementId,
-  getStatementIds,
-  putGroupings,
-  report,
-  rankMostImportant,
-  getUserRecord,
-  initDiscussion,
-  Discussions,
-} = require('./dturn')
+const { insertStatementId, getStatementIds, putGroupings, report, rankMostImportant, getUserRecord, initDiscussion, Discussions, finishRound } = require('./dturn')
 const MAX_ANSWER = 100
 const DISCUSSION_ID = 1
 const NUMBER_OF_PARTICIPANTS = process.argv[2] || 4096 //117649 // 4096 //240 // the number of simulated people in the discussion
@@ -60,10 +51,7 @@ function groupStatementsWithTheSameFloor(statements) {
         groups[lastGroup] = [sortedStatements[s], sortedStatements[s + 1]]
         s++
       } else ungrouped.push(sortedStatements[s])
-    } else if (
-      groups[lastGroup] &&
-      Math.floor(groups[lastGroup].at(-1).description) === Math.floor(sortedStatements[s].description)
-    ) {
+    } else if (groups[lastGroup] && Math.floor(groups[lastGroup].at(-1).description) === Math.floor(sortedStatements[s].description)) {
       groups[lastGroup].push(sortedStatements[s])
     } else {
       if (groups[lastGroup]) {
@@ -102,15 +90,15 @@ async function proxyUser() {
     if (!statementIdsForGrouping) return
     const statementsForGrouping = statementIdsForGrouping.map(id => Statements[id])
     const [groupings, ungrouped] = groupStatementsWithTheSameFloor(statementsForGrouping)
-    await putGroupings(
+    const forRanking = groupings.map(group => group[0]).concat(ungrouped)
+    const rankMostId = forRanking.sort(sortLowestDescriptionFirst)[0]._id
+    await finishRound(
       DISCUSSION_ID,
       round,
       userId,
+      [{ [rankMostId]: 1 }],
       groupings.map(group => group.map(statement => statement._id))
     )
-    const forRanking = groupings.map(group => group[0]).concat(ungrouped)
-    const rankMostId = forRanking.sort(sortLowestDescriptionFirst)[0]._id
-    await rankMostImportant(DISCUSSION_ID, round, userId, rankMostId)
     round++
   }
 }
@@ -138,15 +126,15 @@ async function proxyUserReturn(userId, final = 0) {
   }
   while (statementsForGrouping.length) {
     const [groupings, ungrouped] = groupStatementsWithTheSameFloor(statementsForGrouping)
-    await putGroupings(
+    const forRanking = groupings.map(group => group[0]).concat(ungrouped)
+    const rankMostId = forRanking.sort(sortLowestDescriptionFirst)[0]._id
+    await finishRound(
       DISCUSSION_ID,
       round,
       userId,
+      [{ [rankMostId]: 1 }],
       groupings.map(group => group.map(statement => statement._id))
     )
-    const forRanking = groupings.map(group => group[0]).concat(ungrouped)
-    const rankMostId = forRanking.sort(sortLowestDescriptionFirst)[0]._id
-    await rankMostImportant(DISCUSSION_ID, round, userId, rankMostId)
     round++
     const statementIdsForGrouping = (await getStatementIds(DISCUSSION_ID, round, userId)) || []
     statementsForGrouping = statementIdsForGrouping.map(id => Statements[id])
@@ -154,7 +142,7 @@ async function proxyUserReturn(userId, final = 0) {
 }
 
 async function main() {
-  await initDiscussion(DISCUSSION_ID, { updateUInfo: updateUInfo })
+  await initDiscussion(DISCUSSION_ID, { updateUInfo: updateUInfo, group_size: parseInt(process.argv[3] || '10') })
   for (let i = 0; i < NUMBER_OF_PARTICIPANTS; i++) {
     process.stdout.write('new user ' + i + '\r')
     await proxyUser()
@@ -168,12 +156,7 @@ async function main() {
     //checkUInfo(DISCUSSION_ID) // only for debug
   }
   if (Discussions[DISCUSSION_ID].ShownStatements.at(-1).length > Discussions[DISCUSSION_ID].group_size) {
-    console.info(
-      'before last round',
-      Discussions[DISCUSSION_ID].ShownStatements.length - 1,
-      'has',
-      Discussions[DISCUSSION_ID].ShownStatements.at(-1).length
-    )
+    console.info('before last round', Discussions[DISCUSSION_ID].ShownStatements.length - 1, 'has', Discussions[DISCUSSION_ID].ShownStatements.at(-1).length)
     // need one last round
     i = 0
     const final = Discussions[DISCUSSION_ID].ShownStatements.length - 1
@@ -183,16 +166,12 @@ async function main() {
       await proxyUserReturn(userId, final)
     }
   }
-  console.info(
-    'after last round',
-    Discussions[DISCUSSION_ID].ShownStatements.length - 1,
-    'has',
-    Discussions[DISCUSSION_ID].ShownStatements.at(-1).length
-  )
+  console.info('after last round', Discussions[DISCUSSION_ID].ShownStatements.length - 1, 'has', Discussions[DISCUSSION_ID].ShownStatements.at(-1).length)
   process.stdout.write('\n')
   report(DISCUSSION_ID, Statements)
   console.info('Initialising discussion 2')
   await initDiscussion(2, {
+    group_size: parseInt(process.argv[3] || '10'),
     getAllUInfo: async () => {
       const Uinfos = Object.keys(UserInfo).map(uId => {
         const rounds = UserInfo[uId][1]
@@ -205,18 +184,13 @@ async function main() {
   report(2, Statements)
   console.info('show differences between 1 and 2')
   for (const dId of [1, 2]) {
-    for (const round of Discussions[dId].ShownStatements)
-      round.sort(sortShownStatementsByHighestRankThenLowestShownCountThenLowestId)
+    for (const round of Discussions[dId].ShownStatements) round.sort(sortShownStatementsByHighestRankThenLowestShownCountThenLowestId)
     for (const round of Discussions[dId].ShownGroups) round.sort(sortShownGroupsByCountThenId)
     for (const round of Discussions[dId].Gitems) {
       const byLowerId = {}
       const byUpperId = {}
-      Object.entries(round.byLowerId).forEach(
-        ([key, value]) => (byLowerId[key] = value.sort(sortGitemsUpperStatementId))
-      )
-      Object.entries(round.byUpperId).forEach(
-        ([key, value]) => (byUpperId[key] = value.sort(sortGitemsLowerStatementId))
-      )
+      Object.entries(round.byLowerId).forEach(([key, value]) => (byLowerId[key] = value.sort(sortGitemsUpperStatementId)))
+      Object.entries(round.byUpperId).forEach(([key, value]) => (byUpperId[key] = value.sort(sortGitemsLowerStatementId)))
       round.byLowerId = byLowerId
       round.byUpperId = byUpperId
     }
@@ -228,8 +202,7 @@ function checkUInfo(discussionId) {
   for (const uInfo of Object.values(UserInfo)) {
     for (const round of Object.values(uInfo[discussionId])) {
       const keys = Object.keys(round.shownStatementIds)
-      if (keys.length !== 1 && keys.length !== Discussions[discussionId].group_size)
-        console.error('keys was', keys.length)
+      if (keys.length !== 1 && keys.length !== Discussions[discussionId].group_size) console.error('keys was', keys.length)
     }
   }
 }

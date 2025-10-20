@@ -32,14 +32,10 @@ class Points extends Collection {
   // Optional: Collection options objectt as defined in MongoDB createCollection
   static collectionOptions = {}
 
-  // Optional: indexes array as defined in db.collection.createIndexes
-  static collectionIndexes = [{ key: { title: 1 }, name: 'title_index', unique: true }]
-
-  static validateRequiredFields(requiredFields, doc) {
-    const schema = enforceRequiredFields(pointSchema, requiredFields)
-    const { error, value } = schema.validate(doc)
-    if (error) {
-      return { error: error.details[0].message }
+  // Optional: Validation function
+  static validate(doc) {
+    if (typeof doc.subject !== 'string' || typeof doc.description !== 'string') {
+      return { error: 'subject and description are required strings' }
     }
     return { result: value }
   }

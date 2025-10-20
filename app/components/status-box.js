@@ -9,26 +9,19 @@ import SvgCheckedCircle from '../svgr/checked-circle'
 import SvgWarningTriangle from '../svgr/warning-triangle'
 import SvgNoticeCircle from '../svgr/notice-circle'
 
+const statusToIcon = {
+  error: SvgAlertTriangle,
+  done: SvgCheckedCircle,
+  warn: SvgWarningTriangle,
+  notice: SvgNoticeCircle,
+}
+
 function StatusBox(props) {
   const { className, status = '', subject = '', description = '', ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
 
-  let leadText
-  let Icon
-  if (status === 'error') {
-    Icon = SvgAlertTriangle
-  }
-  if (status === 'done') {
-    Icon = SvgCheckedCircle
-  }
-  if (status === 'warn') {
-    Icon = SvgWarningTriangle
-  }
-  if (status === 'notice') {
-    Icon = SvgNoticeCircle
-  } else {
-    console.error(`${status} is not a valid status for StatusBox.`)
-  }
+  let Icon = statusToIcon[status]
+  if (!status) console.error(`${status} is not a valid status for StatusBox.`)
 
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>

@@ -1,6 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/52
 // https://github.com/EnCiv/civil-pursuit/issues/144
 // https://github.com/EnCiv/civil-pursuit/issues/182
+// https://github.com/EnCiv/civil-pursuit/issues/222
 
 'use strict'
 
@@ -48,15 +49,46 @@ const TopNavBar = props => {
   // taken from button.jsx
   const handleKeyDown = (e, type, index) => {
     e.stopPropagation()
+
     // if space key is pressed
     if (e.keyCode === 32) {
       if (type === 'menu') {
-        handleMouseLeave() // closes any dropdowns still open
+        if (mode === 'vertical') {
+          handleMenuItemClick(menu[index])
+        } else {
+          handleMouseLeave() // closes any dropdowns still open
+        }
       } else if (type === 'menuGroup') {
         handleMouseEnter(index)
       }
     }
   }
+
+  if (mode === 'vertical') {
+    return (
+      <menu className={cx(classes.verticalMenuContainer, className)} {...otherProps}>
+        {menu &&
+          menu.map((item, index) => (
+            <li className={classes.menuList}>
+              <div
+                key={item.name}
+                tabIndex={tabIndex}
+                onKeyDown={e => handleKeyDown(e, 'menu', index)}
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={() => handleMouseLeave()}
+                className={cx(classes.verticalMenuItem, {
+                  [classes.selectedItem]: selectedItem === item.name,
+                })}
+                onClick={() => handleMenuItemClick(item)}
+              >
+                {item.name}
+              </div>
+            </li>
+          ))}
+      </menu>
+    )
+  }
+
   return (
     <div className={cx(classes.topNavBar, classes.colors, className)} {...otherProps}>
       <div className={classes.columnAligner}>
@@ -272,8 +304,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '1.25rem 1.25rem',
     display: 'flex',
     width: '80%',
-    background:
-      props.mode === 'dark' || props.mode === 'transparent' ? theme.colors.darkModeGray : theme.colors.encivYellow,
+    background: props.mode === 'dark' || props.mode === 'transparent' ? theme.colors.darkModeGray : theme.colors.encivYellow,
     flexDirection: 'column',
     justifyContent: 'left',
     [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
@@ -375,9 +406,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       outline: `${theme.focusOutline}`,
     },
   }),
-  selectedItem: props => ({
-    borderBottom: '0.125rem solid' + (props.mode === 'dark' ? theme.colors.white : theme.colors.black),
-  }),
+  selectedItem: props => {
+    if (props.mode === 'vertical') {
+      return { background: theme.colors.focusRing }
+    } else {
+      return {
+        borderBottom: '0.125rem solid' + (props.mode === 'dark' ? theme.colors.white : theme.colors.black),
+      }
+    }
+  },
   userOrSignupContainer: {
     position: 'absolute',
     top: 0,
@@ -416,6 +453,22 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   }),
   menuList: {
     listStyle: 'none',
+  },
+  verticalMenuContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: theme.colors.inputBorder,
+    padding: '0.5rem 0.5rem',
+    color: '#06335C',
+    fontWeight: 600,
+    borderRadius: '0.5rem',
+  },
+  verticalMenuItem: {
+    padding: '1.0rem 1.0rem',
+    borderRadius: '0.5rem',
+    '&:hover': {
+      background: theme.colors.focusRing,
+    },
   },
 }))
 

@@ -7,5 +7,1163 @@
     "subject": "Join",
     "description": "Join the Civil Server",
     "webComponent": "Join"
+  },
+  {
+    "_id": {
+      "$oid": "67db9da4c6019fba8de3eafe"
+    },
+    "path": "/",
+    "subject": "What one issue should ‘We the People’ unite and solve first to make our country even better?",
+    "description": "This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. We’re asking about concerns, not solutions.",
+    "webComponent": {
+      "webComponent": "CivilPursuit",
+      "dturn": { "group_size": 5, "finalRound": 3 },
+      "participants": 12,
+
+      "steps": [
+        { "webComponent": "SignUp", "startTab": "SignUp" },
+        {
+          "webComponent": "Jsform",
+          "name": "moreDetails",
+          "title": "Some Details",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "stateOfResidence": {
+                "title": "State of Residence",
+                "type": "string",
+                "enum": [
+                  "Alabama",
+                  "Alaska",
+                  "Arizona",
+                  "Arkansas",
+                  "California",
+                  "Colorado",
+                  "Connecticut",
+                  "Delaware",
+                  "Florida",
+                  "Georgia",
+                  "Hawaii",
+                  "Idaho",
+                  "Illinois",
+                  "Indiana",
+                  "Iowa",
+                  "Kansas",
+                  "Kentucky",
+                  "Louisiana",
+                  "Maine",
+                  "Maryland",
+                  "Massachusetts",
+                  "Michigan",
+                  "Minnesota",
+                  "Mississippi",
+                  "Missouri",
+                  "Montana",
+                  "Nebraska",
+                  "Nevada",
+                  "New Hampshire",
+                  "New Jersey",
+                  "New Mexico",
+                  "New York",
+                  "North Carolina",
+                  "North Dakota",
+                  "Ohio",
+                  "Oklahoma",
+                  "Oregon",
+                  "Pennsylvania",
+                  "Rhode Island",
+                  "South Carolina",
+                  "South Dakota",
+                  "Tennessee",
+                  "Texas",
+                  "Utah",
+                  "Vermont",
+                  "Virginia",
+                  "Washington",
+                  "West Virginia",
+                  "Wisconsin",
+                  "Wyoming"
+                ]
+              },
+              "dateOfBirth": {
+                "title": "Date of Birth",
+                "type": "string",
+                "format": "date"
+              }
+            }
+          },
+          "uischema": {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/stateOfResidence"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/dateOfBirth"
+              }
+            ]
+          }
+        },
+        {
+          "webComponent": "Tournament",
+          "steps": [
+            {
+              "webComponent": "Answer",
+              "stepName": "Answer",
+              "stepIntro": {
+                "subject": "Answer",
+                "description": "Please provide a title and short description for your answer"
+              },
+              "question": {
+                "_id": "5d0137260dacd06732a1d814",
+                "subject": "What one issue should 'We the People' unite and solve first to make our country even better?",
+                "description": "This task is testing an application for large scale online discussion that is unbiased, thoughtful, doesn’t require reading millions of answers, and leads to awesome results. We are only asking about a concern - an issue or problem, not about any possible solutions. Think about it before answering, think outside the box, think big and think about everyone in the country uniting on this. At the end, your feedback will be welcomed."
+              },
+              "whyQuestion": "Why should everyone consider solving this issue?"
+            },
+            {
+              "webComponent": "GroupingStep",
+              "stepName": "Group",
+              "stepIntro": {
+                "subject": "Group Responses",
+                "description": "Of these issues, please group similar responses to facilitate your decision-making by avoiding duplicates. If no duplicates are found, you may continue to the next section below."
+              }
+            },
+            {
+              "webComponent": "RankStep",
+              "stepName": "Rank",
+              "stepIntro": {
+                "subject": "Rank Responses",
+                "description": "Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important."
+              }
+            },
+            {
+              "webComponent": "WhyStep",
+              "category": "most",
+              "stepName": "Why Most",
+              "stepIntro": {
+                "subject": "Why it's Most Important",
+                "description": "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it."
+              },
+              "intro": "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it"
+            },
+            {
+              "webComponent": "WhyStep",
+              "category": "least",
+              "stepName": "Why Least",
+              "stepIntro": {
+                "subject": "Why it's Least Important",
+                "description": "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it."
+              },
+              "intro": "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it"
+            },
+            {
+              "webComponent": "CompareReasons",
+              "stepName": "Compare Why Most",
+              "stepIntro": {
+                "subject": "Compare Reasons Why It's Most Important",
+                "description": "Compare two responses and select a response that is most important for the community to consider."
+              },
+              "category": "most"
+            },
+            {
+              "webComponent": "CompareReasons",
+              "stepName": "Compare Why Least",
+              "stepIntro": {
+                "subject": "Compare Reasons Why It's Least Important",
+                "description": "Compare two responses and select a response that is most important for the community to consider."
+              },
+              "category": "least"
+            },
+            {
+              "webComponent": "ReviewPointList",
+              "stepName": "Review",
+              "stepIntro": {
+                "subject": "Review",
+                "description": "These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again."
+              }
+            },
+            {
+              "webComponent": "Intermission",
+              "stepName": "Intermission",
+              "stepIntro": {
+                "subject": "Intermission",
+                "description": "When more people have gotten to this point we will invite you back to continue the deliberation."
+              }
+            }
+          ]
+        },
+        { "webComponent": "Conclusion" },
+        {
+          "webComponent": "Jsform",
+          "name": "moreDetails",
+          "questions": [["How would you rate your overall experience with our product/service?", "What aspects of our product/service do you believe can be improved?"]],
+          "schema": {
+            "type": "object",
+            "properties": {
+              "experience": {
+                "title": "Description",
+                "type": "string"
+              },
+              "improvements": {
+                "title": "Description",
+                "type": "string"
+              }
+            }
+          },
+          "uischema": {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/experience"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/improvements"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68687cdeb4e0c47144419fde"
+    },
+    "path": "/whats-largest",
+    "subject": "What's the largest number",
+    "description": "What's the largest random number between 0 and 100. This is a test of the Civil Server.",
+    "webComponent": {
+      "webComponent": "CivilPursuit",
+      "dturn": { "group_size": 5, "finalRound": 2 },
+      "participants": 0,
+      "steps": [
+        { "webComponent": "SignUp", "startTab": "SignUp" },
+        {
+          "webComponent": "Tournament",
+          "steps": [
+            {
+              "webComponent": "Answer",
+              "stepName": "Answer",
+              "stepIntro": {
+                "subject": "Answer",
+                "description": "Please provide a number and repeat that as the description"
+              },
+              "question": {
+                "_id": "5d0137260dacd06732a1d814",
+                "subject": "What's the largest random number between 0 and 100?",
+                "description": "What's the largest random number between 0 and 100. This is a test of the Civil Server."
+              },
+              "whyQuestion": "Why should everyone consider solving this issue?"
+            },
+            {
+              "webComponent": "GroupingStep",
+              "stepName": "Group",
+              "stepIntro": {
+                "subject": "Group Responses",
+                "description": "Of these issues, please group similar responses to simplify future steps. If no duplicates are found, please continue to the next section."
+              }
+            },
+            {
+              "webComponent": "RankStep",
+              "stepName": "Rank",
+              "stepIntro": {
+                "subject": "Rank Responses",
+                "description": "Please rate the following responses as Most, Neutral, or Least important. All responses need to be rated in order to continue."
+              }
+            },
+            {
+              "webComponent": "WhyStep",
+              "category": "most",
+              "stepName": "Why Most",
+              "stepIntro": {
+                "subject": "Why it's Most Important",
+                "description": "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it."
+              },
+              "intro": "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it"
+            },
+            {
+              "webComponent": "WhyStep",
+              "category": "least",
+              "stepName": "Why Least",
+              "stepIntro": {
+                "subject": "Why it's Least Important",
+                "description": "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it."
+              },
+              "intro": "Of the issues you thought were Least important, please give a brief explanation of why it's important for everyone to consider it"
+            },
+            {
+              "webComponent": "CompareReasons",
+              "stepName": "Compare Why Most",
+              "stepIntro": {
+                "subject": "Compare Reasons Why It's Most Important",
+                "description": "Compare two responses and select a response that is most important for the community to consider."
+              },
+              "category": "most"
+            },
+            {
+              "webComponent": "CompareReasons",
+              "stepName": "Compare Why Least",
+              "stepIntro": {
+                "subject": "Compare Reasons Why It's Least Important",
+                "description": "Compare two responses and select a response that is most important for the community to consider."
+              },
+              "category": "least"
+            },
+            {
+              "webComponent": "ReviewPointList",
+              "stepName": "Review",
+              "stepIntro": {
+                "subject": "Review",
+                "description": "These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again."
+              }
+            },
+            {
+              "webComponent": "Jsform",
+              "name": "earlyFeedback",
+              "allowedRounds": [0],
+              "stepName": "Feedback",
+              "stepIntro": {
+                "subject": "Feedback",
+                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "experience": {
+                    "title": "Rating",
+                    "type": "string",
+                    "enum": ["Very Positive", "Somewhat Positive", "Neutral", "Somewhat Negative", "Very Negative"]
+                  },
+                  "comfort": {
+                    "title": "Rating",
+                    "type": "string",
+                    "enum": ["Very Comfortable", "Somewhat Comfortable", "Neutral", "Somewhat Uncomfortable", "Very Uncomfortable"]
+                  },
+                  "interest": {
+                    "title": "Rating",
+                    "type": "string",
+                    "enum": ["Very Interested", "Somewhat Interested", "Neutral", "Somewhat Uninterested", "Very Uninterested"]
+                  },
+                  "improvements": {
+                    "title": "Description",
+                    "type": "string"
+                  }
+                }
+              },
+              "uischema": {
+                "type": "VerticalLayout",
+                "elements": [
+                  { "type": "H", "text": "How has your experience been so far?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/experience"
+                  },
+                  { "type": "H", "text": "How comfortable would you feel inviting close friends or family to participate in this discussion too?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/comfort"
+                  },
+                  { "type": "H", "text": "How interested are you in getting to the next round of this discussion?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/interest"
+                  },
+                  { "type": "H", "text": "What can we do to make this tool better?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/improvements",
+                    "options": { "multi": true }
+                  }
+                ]
+              }
+            },
+            {
+              "webComponent": "Intermission",
+              "stepName": "Intermission",
+              "stepIntro": {
+                "subject": "Intermission",
+                "description": "When more people have gotten to this point we will invite you back to continue the deliberation."
+              }
+            }
+          ]
+        },
+        { "webComponent": "Conclusion" },
+        {
+          "webComponent": "Jsform",
+          "name": "finalFeedback",
+          "stepName": "Feedback",
+          "stepIntro": {
+            "subject": "Feedback",
+            "description": "Thanks for completing the discussion. Please provide some final feedback to help us improve this tool."
+          },
+          "schema": {
+            "type": "object",
+            "properties": {
+              "experience": {
+                "title": "Rating",
+                "type": "string",
+                "enum": ["Very Positive", "Somewhat Positive", "Neutral", "Somewhat Negative", "Very Negative"]
+              },
+              "comfort": {
+                "title": "Rating",
+                "type": "string",
+                "enum": ["Very Comfortable", "Somewhat Comfortable", "Neutral", "Somewhat Uncomfortable", "Very Uncomfortable"]
+              },
+              "interest": {
+                "title": "Rating",
+                "type": "string",
+                "enum": ["Very Interested", "Somewhat Interested", "Neutral", "Somewhat Uninterested", "Very Uninterested"]
+              },
+              "improvements": {
+                "title": "Description",
+                "type": "string"
+              }
+            }
+          },
+          "uischema": {
+            "type": "VerticalLayout",
+            "elements": [
+              { "type": "H", "text": "What's your overall rating for this kind of discussion tool?" },
+              {
+                "type": "Control",
+                "scope": "#/properties/experience"
+              },
+              { "type": "H", "text": "How comfortable would you feel inviting close friends or family to participate in this discussion too?" },
+              {
+                "type": "Control",
+                "scope": "#/properties/comfort"
+              },
+              { "type": "H", "text": "Would you like to participate in more discussions like this" },
+              {
+                "type": "Control",
+                "scope": "#/properties/interest"
+              },
+              { "type": "H", "text": "What can we do to make this tool better, get more people involved, or is there anything else we should know?" },
+              {
+                "type": "Control",
+                "scope": "#/properties/improvements",
+                "options": { "multi": true }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68a647dfb89b241ee09849c7"
+    },
+    "path": "/what-direction-test-1",
+    "subject": "What's the right direction for our country?",
+    "description": "There are lots of surveys that show that most Americans think our country is headed in the wrong direction. But what is the right direction, the one that unites us and motivates us to make that happen?\n\nThis is not a survey, it is a deliberation that will help us find our answer.\n\nAnd this is a new tool for large scale, productive, national discourse that we are developing and hope to get your feedback on.",
+    "webComponent": {
+      "webComponent": "CivilPursuit",
+      "dturn": { "group_size": 5, "finalRound": 1 },
+      "participants": 12,
+      "steps": [
+        { "webComponent": "SignUp", "startTab": "SignUp" },
+        {
+          "webComponent": "Jsform",
+          "name": "moreDetails",
+          "stepIntro": {
+            "subject": "Some details",
+            "description": "We ask these questions about participants to help us engage diverse participation.  In order to find the best possible solutions, and the ones that unite the nation, all views need to be represented if not participating directly.  This details are specific to this conversations. For other conversations, we will ask again."
+          },
+          "schema": {
+            "type": "object",
+            "properties": {
+              "politicalParty": {
+                "title": "Political Party or nearest ideology",
+                "type": "string",
+                "enum": ["Democrat", "Republican", "Independent", "Libertarian", "Green", "Other"]
+              },
+              "stateOfResidence": {
+                "title": "State of Residence",
+                "type": "string",
+                "enum": [
+                  "Alabama",
+                  "Alaska",
+                  "Arizona",
+                  "Arkansas",
+                  "California",
+                  "Colorado",
+                  "Connecticut",
+                  "Delaware",
+                  "Florida",
+                  "Georgia",
+                  "Hawaii",
+                  "Idaho",
+                  "Illinois",
+                  "Indiana",
+                  "Iowa",
+                  "Kansas",
+                  "Kentucky",
+                  "Louisiana",
+                  "Maine",
+                  "Maryland",
+                  "Massachusetts",
+                  "Michigan",
+                  "Minnesota",
+                  "Mississippi",
+                  "Missouri",
+                  "Montana",
+                  "Nebraska",
+                  "Nevada",
+                  "New Hampshire",
+                  "New Jersey",
+                  "New Mexico",
+                  "New York",
+                  "North Carolina",
+                  "North Dakota",
+                  "Ohio",
+                  "Oklahoma",
+                  "Oregon",
+                  "Pennsylvania",
+                  "Rhode Island",
+                  "South Carolina",
+                  "South Dakota",
+                  "Tennessee",
+                  "Texas",
+                  "Utah",
+                  "Vermont",
+                  "Virginia",
+                  "Washington",
+                  "West Virginia",
+                  "Wisconsin",
+                  "Wyoming",
+                  "American Samoa",
+                  "District of Columbia",
+                  "Guam",
+                  "Northern Mariana Islands",
+                  "Puerto Rico",
+                  "U.S. Virgin Islands"
+                ]
+              },
+              "yearOfBirth": {
+                "title": "Year of Birth",
+                "type": "integer",
+                "minimum": 1900,
+                "maximum": 2025
+              },
+              "Gender": {
+                "title": "Gender",
+                "type": "string",
+                "enum": ["Male", "Female", "Other"]
+              },
+              "shareInfo": {
+                "title": "Personally Identifiable Information is not shown, but may we share this information with your posts?",
+                "type": "string",
+                "enum": ["Yes", "No"]
+              }
+            },
+            "required": ["shareInfo"]
+          },
+          "uischema": {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/politicalParty"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/stateOfResidence"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/yearOfBirth"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/Gender"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/shareInfo"
+              }
+            ]
+          }
+        },
+        {
+          "webComponent": "Tournament",
+          "steps": [
+            {
+              "webComponent": "Answer",
+              "stepName": "Answer",
+              "stepIntro": {
+                "subject": "Answer",
+                "description": "Please answer the question below, and provide a short headline for it. Then in the second section, please explain why it's important for everyone to consider this answer.\n\nIn the next steps you will get to see others' answers and explanations, but to maximize the opportunity for independent new ideas, we ask everyone to answer the question first before seeing others' answers."
+              },
+              "question": {
+                "_id": "68a647dfb89b241ee09849c7",
+                "subject": "What's the right direction for our country?",
+                "description": "For many years, under many presidents, surveys show that most Americans think our country is headed in the wrong direction. But what is the right direction, the one that unites us and motivates us to make it happen?"
+              },
+              "whyQuestion": "Why would everyone unite around this direction for our country?",
+              "maxWordCount": 300,
+              "maxCharCount": 80
+            },
+            {
+              "webComponent": "GroupingStep",
+              "stepName": "Group",
+              "stepIntro": {
+                "subject": "Group Responses",
+                "description": "Of these answers, please group similar responses, and choose the best stated one as the lead. If none are similar, please continue to the next section."
+              }
+            },
+            {
+              "webComponent": "RankStep",
+              "stepName": "Rank",
+              "stepIntro": {
+                "subject": "Rank Responses",
+                "description": "Please rate the following responses as Most, Neutral, or Least important to discuss further. All need to be rated, and in future steps you will be asked to explain why you rated them that way. See below for how many must be rated Most and Least important."
+              }
+            },
+            {
+              "webComponent": "WhyStep",
+              "category": "most",
+              "stepName": "Why Most",
+              "stepIntro": {
+                "subject": "Why it's Most Important",
+                "description": "Of the issues you thought were Most important to discuss further, please give a brief explanation of why it's important for everyone to consider it."
+              },
+              "maxWordCount": 300,
+              "maxCharCount": 80
+            },
+            {
+              "webComponent": "WhyStep",
+              "category": "least",
+              "stepName": "Why Least",
+              "stepIntro": {
+                "subject": "Why it's Least Important",
+                "description": "Of the issues you thought were least important to discuss further, please give a brief explanation of why it's least important for everyone to consider it."
+              },
+              "maxWordCount": 300,
+              "maxCharCount": 80
+            },
+            {
+              "webComponent": "CompareReasons",
+              "stepName": "Compare Why Most",
+              "stepIntro": {
+                "subject": "Compare Reasons Why It's Most Important",
+                "description": "Compare two responses and select a response that is most important for the community to consider."
+              },
+              "category": "most"
+            },
+            {
+              "webComponent": "CompareReasons",
+              "stepName": "Compare Why Least",
+              "stepIntro": {
+                "subject": "Compare Reasons Why It's Least Important",
+                "description": "Compare two responses and select a response that is most important for the community to consider."
+              },
+              "category": "least"
+            },
+            {
+              "webComponent": "ReviewPointList",
+              "stepName": "Review",
+              "stepIntro": {
+                "subject": "Review",
+                "description": "These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again."
+              }
+            },
+            {
+              "webComponent": "Jsform",
+              "name": "earlyFeedback",
+              "allowedRounds": [0],
+              "stepName": "Feedback",
+              "stepIntro": {
+                "subject": "Feedback",
+                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "experience": {
+                    "title": "Rating",
+                    "type": "string",
+                    "enum": ["Very Positive", "Somewhat Positive", "Neutral", "Somewhat Negative", "Very Negative"]
+                  },
+                  "comfort": {
+                    "title": "Rating",
+                    "type": "string",
+                    "enum": ["Very Comfortable", "Somewhat Comfortable", "Neutral", "Somewhat Uncomfortable", "Very Uncomfortable"]
+                  },
+                  "interest": {
+                    "title": "Rating",
+                    "type": "string",
+                    "enum": ["Very Interested", "Somewhat Interested", "Neutral", "Somewhat Uninterested", "Very Uninterested"]
+                  },
+                  "improvements": {
+                    "title": "Description",
+                    "type": "string"
+                  }
+                }
+              },
+              "uischema": {
+                "type": "VerticalLayout",
+                "elements": [
+                  { "type": "H", "text": "How has your experience been so far?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/experience"
+                  },
+                  { "type": "H", "text": "How comfortable would you feel inviting close friends or family to participate in this discussion too?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/comfort"
+                  },
+                  { "type": "H", "text": "How interested are you in getting to the next round of this discussion?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/interest"
+                  },
+                  { "type": "H", "text": "What can we do to make this tool better?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/improvements",
+                    "options": { "multi": true }
+                  }
+                ]
+              }
+            },
+            {
+              "webComponent": "Intermission",
+              "stepName": "Intermission",
+              "stepIntro": {
+                "subject": "Intermission",
+                "description": "When more people have gotten to this point we will invite you back to continue the deliberation."
+              }
+            }
+          ]
+        },
+        {
+          "webComponent": "Conclusion",
+          "stepIntro": {
+            "subject": "Conclusion",
+            "description": "This is the end of the deliberation. Thank you for your participation!"
+          }
+        },
+        {
+          "webComponent": "Jsform",
+          "name": "finalFeedback",
+          "stepName": "Feedback",
+          "stepIntro": {
+            "subject": "Feedback",
+            "description": "Thanks for completing the discussion. Please provide some final feedback to help us improve this tool."
+          },
+          "schema": {
+            "type": "object",
+            "properties": {
+              "experience": {
+                "title": "Rating",
+                "type": "string",
+                "enum": ["Very Positive", "Somewhat Positive", "Neutral", "Somewhat Negative", "Very Negative"]
+              },
+              "comfort": {
+                "title": "Rating",
+                "type": "string",
+                "enum": ["Very Comfortable", "Somewhat Comfortable", "Neutral", "Somewhat Uncomfortable", "Very Uncomfortable"]
+              },
+              "interest": {
+                "title": "Rating",
+                "type": "string",
+                "enum": ["Very Interested", "Somewhat Interested", "Neutral", "Somewhat Uninterested", "Very Uninterested"]
+              },
+              "improvements": {
+                "title": "Description",
+                "type": "string"
+              }
+            }
+          },
+          "uischema": {
+            "type": "VerticalLayout",
+            "elements": [
+              { "type": "H", "text": "What's your overall rating for this kind of discussion tool?" },
+              {
+                "type": "Control",
+                "scope": "#/properties/experience"
+              },
+              { "type": "H", "text": "How comfortable would you feel inviting close friends or family to participate in this discussion too?" },
+              {
+                "type": "Control",
+                "scope": "#/properties/comfort"
+              },
+              { "type": "H", "text": "Would you like to participate in more discussions like this" },
+              {
+                "type": "Control",
+                "scope": "#/properties/interest"
+              },
+              { "type": "H", "text": "What can we do to make this tool better, get more people involved, or is there anything else we should know?" },
+              {
+                "type": "Control",
+                "scope": "#/properties/improvements",
+                "options": { "multi": true }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "_id": {
+      "$oid": "68cc75864f36c7b9957a3718"
+    },
+    "path": "/what-first-usa-1",
+    "subject": "What one issue should 'We the People' unite and solve first to move our country in the right direction?",
+    "description": "United, we can solve our biggest problems! But to succeed, we need to find a way to agree and focus on one at a time. The one issue that everyone from across the political spectrum would agree has a positive impact. Then we can solve it and move on to the next one.\n\nTake a moment and think about it, but don't over think your answer at this point. You will probably have a new perspective after this. This is just the beginning.\n\nThis is not a survey, this is a new kind of tool that is designed to help us discuss our ideas and productively converge on what unites us.\n\nAfter expressing your views, you will get to see others, and you will get to say why some are more or less important to discuss further. And you will get to see what others say as well. Then after each round we will invite you back to be part of the next one, considering the most unifying ideas from the previous round, until we converge on the conclusions that unite us.\n\nThis is a new tool, early in its development and we invite you to provide feedback along the way so we can keep making it better.",
+    "webComponent": {
+      "webComponent": "CivilPursuit",
+      "dturn": { "group_size": 5, "finalRound": 2 },
+      "status": "active",
+      "participants": 1,
+      "minParticipants": 100,
+      "finalRound": 2,
+      "steps": [
+        { "webComponent": "SignUp", "startTab": "SignUp" },
+        {
+          "webComponent": "Jsform",
+          "name": "moreDetails",
+          "stepIntro": {
+            "subject": "Some details",
+            "description": "We ask these questions about participants to help us achieve broad ideological participation.  In order to find the best possible solutions, and the ones that unite the nation, all ideas need to be represented."
+          },
+          "schema": {
+            "type": "object",
+            "properties": {
+              "politicalParty": {
+                "title": "Political Party or nearest ideology",
+                "type": "string",
+                "enum": ["Democrat", "Republican", "Independent", "Libertarian", "Green", "Other"]
+              },
+              "stateOfResidence": {
+                "title": "State of Residence",
+                "type": "string",
+                "enum": [
+                  "Alabama",
+                  "Alaska",
+                  "Arizona",
+                  "Arkansas",
+                  "California",
+                  "Colorado",
+                  "Connecticut",
+                  "Delaware",
+                  "Florida",
+                  "Georgia",
+                  "Hawaii",
+                  "Idaho",
+                  "Illinois",
+                  "Indiana",
+                  "Iowa",
+                  "Kansas",
+                  "Kentucky",
+                  "Louisiana",
+                  "Maine",
+                  "Maryland",
+                  "Massachusetts",
+                  "Michigan",
+                  "Minnesota",
+                  "Mississippi",
+                  "Missouri",
+                  "Montana",
+                  "Nebraska",
+                  "Nevada",
+                  "New Hampshire",
+                  "New Jersey",
+                  "New Mexico",
+                  "New York",
+                  "North Carolina",
+                  "North Dakota",
+                  "Ohio",
+                  "Oklahoma",
+                  "Oregon",
+                  "Pennsylvania",
+                  "Rhode Island",
+                  "South Carolina",
+                  "South Dakota",
+                  "Tennessee",
+                  "Texas",
+                  "Utah",
+                  "Vermont",
+                  "Virginia",
+                  "Washington",
+                  "West Virginia",
+                  "Wisconsin",
+                  "Wyoming",
+                  "American Samoa",
+                  "District of Columbia",
+                  "Guam",
+                  "Northern Mariana Islands",
+                  "Puerto Rico",
+                  "U.S. Virgin Islands"
+                ]
+              },
+              "yearOfBirth": {
+                "title": "Year of Birth",
+                "type": "integer",
+                "minimum": 1900,
+                "maximum": 2025
+              },
+              "Gender": {
+                "title": "Gender",
+                "type": "string",
+                "enum": ["Male", "Female", "Other"]
+              },
+              "shareInfo": {
+                "title": "Personally Identifiable Information is not shown, but may we share this information with your posts?",
+                "type": "string",
+                "enum": ["Yes", "No"]
+              }
+            },
+            "required": ["shareInfo"]
+          },
+          "uischema": {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/politicalParty"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/stateOfResidence"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/yearOfBirth"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/Gender"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/shareInfo"
+              }
+            ]
+          }
+        },
+        {
+          "webComponent": "Tournament",
+          "steps": [
+            {
+              "webComponent": "Answer",
+              "stepName": "Answer",
+              "stepIntro": {
+                "subject": "Answer",
+                "description": "Please answer the question below, and provide a short headline for it. Then in the second section, please explain why it's important for everyone to consider this answer.\n\nIn steps that follow,you will get to see others' answers and explanations, but to maximize the opportunity for independent new ideas, we ask everyone to answer the question first before seeing others' answers."
+              },
+              "question": {
+                "_id": "68cc75864f36c7b9957a3718",
+                "subject": "What one issue should 'We the People' unite and solve first to move our country in the right direction?",
+                "description": "United, we can solve our biggest problems! But to succeed, we need to find a way to agree and focus on one at a time. The one issue that everyone from across the political spectrum would agree has a positive impact?"
+              },
+              "whyQuestion": "Why should everyone unite around solving this issue first?",
+              "maxWordCount": 300,
+              "maxCharCount": 80
+            },
+            {
+              "webComponent": "GroupingStep",
+              "stepName": "Group",
+              "stepIntro": {
+                "subject": "Group Responses",
+                "description": "Of these responses, please group similar responses, and choose one to be the lead. If none are similar, please continue to the next section."
+              }
+            },
+            {
+              "webComponent": "RankStep",
+              "stepName": "Rank",
+              "stepIntro": {
+                "subject": "Rank Responses",
+                "description": "Please rate the following responses as Most, Neutral, or Least important to discuss further. All need to be rated, and in future steps you will be asked to explain why you rated them that way. See below for how many must be rated Most and Least important."
+              }
+            },
+            {
+              "webComponent": "WhyStep",
+              "category": "most",
+              "stepName": "Why Most",
+              "stepIntro": {
+                "subject": "Why it's Most Important",
+                "description": "Of the issues you thought were Most important to discuss further, please give a brief explanation of why it's valuable for everyone to consider it."
+              },
+              "maxWordCount": 300,
+              "maxCharCount": 80
+            },
+            {
+              "webComponent": "WhyStep",
+              "category": "least",
+              "stepName": "Why Least",
+              "stepIntro": {
+                "subject": "Why it's Least Important",
+                "description": "Of the issues you thought were least important to discuss further, please give a brief explanation of why it's least valuable for everyone to consider further."
+              },
+              "maxWordCount": 300,
+              "maxCharCount": 80
+            },
+            {
+              "webComponent": "CompareReasons",
+              "stepName": "Compare Why Most",
+              "stepIntro": {
+                "subject": "Compare Reasons Why It's Most Important",
+                "description": "Responses will be presented side by side. Select the one you think is the strongest explanation. If there is only one left, select Yes if its strong enough for everyone to consider, or No if not. At the end you can choose Start Over if you want to reconsider your choices."
+              },
+              "category": "most"
+            },
+            {
+              "webComponent": "CompareReasons",
+              "stepName": "Compare Why Least",
+              "stepIntro": {
+                "subject": "Compare Reasons Why It's Least Important",
+                "description": "Responses will be presented side by side. Select the one you think is the strongest explanation. If there is only one left, select Yes if its strong enough for everyone to consider, or No if not. At the end you can choose Start Over if you want to reconsider your choices."
+              },
+              "category": "least"
+            },
+            {
+              "webComponent": "ReviewPointList",
+              "stepName": "Review",
+              "stepIntro": {
+                "subject": "Review",
+                "description": "These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again."
+              }
+            },
+            {
+              "webComponent": "Jsform",
+              "name": "earlyFeedback",
+              "allowedRounds": [0],
+              "stepName": "Feedback",
+              "stepIntro": {
+                "subject": "Feedback",
+                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "experience": {
+                    "title": "Rating",
+                    "type": "string",
+                    "enum": ["Very Positive", "Somewhat Positive", "Neutral", "Somewhat Negative", "Very Negative"]
+                  },
+                  "comfort": {
+                    "title": "Rating",
+                    "type": "string",
+                    "enum": ["Very Comfortable", "Somewhat Comfortable", "Neutral", "Somewhat Uncomfortable", "Very Uncomfortable"]
+                  },
+                  "interest": {
+                    "title": "Rating",
+                    "type": "string",
+                    "enum": ["Very Interested", "Somewhat Interested", "Neutral", "Somewhat Uninterested", "Very Uninterested"]
+                  },
+                  "improvements": {
+                    "title": "Description",
+                    "type": "string"
+                  }
+                }
+              },
+              "uischema": {
+                "type": "VerticalLayout",
+                "elements": [
+                  { "type": "H", "text": "How has your experience been so far?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/experience"
+                  },
+                  { "type": "H", "text": "How comfortable would you feel inviting close friends or family to participate in this discussion too?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/comfort"
+                  },
+                  { "type": "H", "text": "How interested are you in getting to the next round of this discussion?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/interest"
+                  },
+                  { "type": "H", "text": "What can we do to make this tool better?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/improvements",
+                    "options": { "multi": true }
+                  }
+                ]
+              }
+            },
+            {
+              "webComponent": "Intermission",
+              "stepName": "Intermission",
+              "stepIntro": {
+                "subject": "Intermission",
+                "description": "When more people have gotten to this point we will invite you back to continue the deliberation."
+              }
+            }
+          ]
+        },
+        { "webComponent": "Conclusion" },
+        {
+          "webComponent": "Jsform",
+          "name": "finalFeedback",
+          "stepName": "Feedback",
+          "stepIntro": {
+            "subject": "Feedback",
+            "description": "Thanks for completing the discussion. Please provide some final feedback to help us improve this tool."
+          },
+          "schema": {
+            "type": "object",
+            "properties": {
+              "experience": {
+                "title": "Rating",
+                "type": "string",
+                "enum": ["Very Positive", "Somewhat Positive", "Neutral", "Somewhat Negative", "Very Negative"]
+              },
+              "comfort": {
+                "title": "Rating",
+                "type": "string",
+                "enum": ["Very Comfortable", "Somewhat Comfortable", "Neutral", "Somewhat Uncomfortable", "Very Uncomfortable"]
+              },
+              "interest": {
+                "title": "Rating",
+                "type": "string",
+                "enum": ["Very Interested", "Somewhat Interested", "Neutral", "Somewhat Uninterested", "Very Uninterested"]
+              },
+              "improvements": {
+                "title": "Description",
+                "type": "string"
+              }
+            }
+          },
+          "uischema": {
+            "type": "VerticalLayout",
+            "elements": [
+              { "type": "H", "text": "What's your overall rating for this kind of discussion tool?" },
+              {
+                "type": "Control",
+                "scope": "#/properties/experience"
+              },
+              { "type": "H", "text": "How comfortable would you feel inviting close friends or family to participate in this discussion too?" },
+              {
+                "type": "Control",
+                "scope": "#/properties/comfort"
+              },
+              { "type": "H", "text": "Would you like to participate in more discussions like this" },
+              {
+                "type": "Control",
+                "scope": "#/properties/interest"
+              },
+              { "type": "H", "text": "What can we do to make this tool better, get more people involved, or is there anything else we should know?" },
+              {
+                "type": "Control",
+                "scope": "#/properties/improvements",
+                "options": { "multi": true }
+              }
+            ]
+          }
+        }
+      ]
+    }
   }
 ]

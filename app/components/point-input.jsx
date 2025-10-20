@@ -1,50 +1,58 @@
 // https://github.com/EnCiv/civil-pursuit/issues/44
+// https://github.com/EnCiv/civil-pursuit/issues/288
 
 'use strict'
 import React, { useEffect, useRef, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import autosize from 'autosize'
+import ObjectId from 'bson-objectid'
 
 function PointInput(props) {
-  const {
-    style = {},
-    className = '',
-    maxWordCount = 30,
-    maxCharCount = 100,
-    value = { description: '', subject: '' },
-    onDone = () => {},
-    ...otherProps
-  } = props
+  const { style = {}, className = '', maxWordCount = 30, maxCharCount = 100, value, onDone = () => {}, ...otherProps } = props
   const classes = useStyles()
-  // biState is for bidirectional state - we will use setBiState to change state values, but sometimers we will just change the value
+  // inputState is for bidirectional state - we will use setInputState to change state values, but sometimers we will just change the value
   // in the object, without returning a new object so we don't cause a rerender
-  const [biState, setBiState] = useState({ subject: value?.subject ?? '', description: value?.description ?? '' })
-  const [descWordCount, setDescWordCount] = useState(getDescWordCount(biState.description))
-  const [subjCharCount, setSubjCharCount] = useState(getSubjCharCount(biState.subject))
+  const [inputState, setInputState] = useState({ subject: value?.subject ?? '', description: value?.description ?? '' })
   const textareaRef = useRef(null)
 
   // if valaue is changed from above, need to update state and then update the parent about validity
-  useEffect(() => {
-    const subject = value.subject ?? ''
-    const description = value.description ?? ''
+  // there may be other things that have changed in value, besides subject and description so need to update
+  // validity to parent even if those things haven't changed
+  const [prev, setPrev] = useState({ value, firstRender: true })
+  // on first render, if there is a value, we need to call onDone to update the parent about the validity
+  if (prev.firstRender) {
+    prev.firstRender = false
+    if (value) {
+      setTimeout(() =>
+        onDone({
+          valid: isSubjValid(value.subject || '') && isDescValid(value.description || ''),
+          value,
+        })
+      )
+    }
+  }
+  if (prev.value !== value) {
+    const subject = value?.subject ?? ''
+    const description = value?.description ?? ''
     // if no change, don't do anything.  This happens on first render
-    if (subject === biState.subject && description === biState.description) return
-    // calling the setter with the new data, to cause a rerender
-    setBiState(biState => ({ subject, description })) // no ...biState because nothing else in there
-
-    onDone({
-      valid: isSubjValid(subject) && isDescValid(description),
-      value: { ...value },
-    })
-  }, [value.subject, value.description])
+    if (!prev.value || !(subject === inputState.subject && description === inputState.description)) {
+      // if there was not previous value, then we need to call onDone to update the parent about the validity
+      // mutate directly as we are about to render it and don't need to rerender
+      inputState.subject = subject
+      inputState.description = description
+      setTimeout(() =>
+        onDone({
+          valid: isSubjValid(subject) && isDescValid(description),
+          value,
+        })
+      )
+    }
+    prev.value = value
+  }
 
   useEffect(() => {
     autosize(textareaRef.current)
-    // on initial render, if there are initial values, call onDone to update the parent about their validity
-    if (value.subject || value.description) {
-      setTimeout(handleOnBlur)
-    }
     return () => {
       autosize.destroy(textareaRef.current)
     }
@@ -59,6 +67,9 @@ function PointInput(props) {
     return inputText.length
   }
 
+  const subjCharCount = getSubjCharCount(inputState.subject)
+  const descWordCount = getDescWordCount(inputState.description)
+
   const isDescValid = inputText => {
     const wordCount = getDescWordCount(inputText)
     return wordCount > 0 && wordCount <= maxWordCount
@@ -70,21 +81,19 @@ function PointInput(props) {
   }
 
   const handleSubjectChange = value => {
-    setBiState(biState => ((biState.subject = value), biState)) // use the setter but don't create a new object and cause a rerender
-    setSubjCharCount(getSubjCharCount(value))
+    setInputState(inputState => ({ ...inputState, subject: value })) // use the setter because subject and descrciption may change before the next rerender wish updates inputState
   }
 
   const handleDescriptionChange = value => {
-    // the biState pattern is not to call the setter onChange, because the input component will display value as soon as it's changed by the user,
-    // but with textArea, the calling the setter is required
-    setBiState(biState => ({ ...biState, description: value }))
-    setDescWordCount(getDescWordCount(value))
+    setInputState(inputState => ({ ...inputState, description: value })) // use the setter because subject and descrciption may change before the next rerender wish updates inputState
   }
 
   const handleOnBlur = e => {
+    const newValue = { ...value, ...inputState }
+    if (!newValue._id) newValue._id = ObjectId().toString()
     onDone({
-      valid: isSubjValid(biState.subject) && isDescValid(biState.description),
-      value: { ...value, ...biState },
+      valid: isSubjValid(inputState.subject) && isDescValid(inputState.description),
+      value: newValue,
     })
   }
 
@@ -93,29 +102,39 @@ function PointInput(props) {
       <input
         type="text"
         placeholder="Type some thing here"
-        value={biState.subject}
+        value={inputState.subject}
         onChange={e => handleSubjectChange(e.target.value)}
         onBlur={handleOnBlur}
         className={cx(classes.subject, classes.sharedInputStyle, subjCharCount > maxCharCount && classes.errorInput)}
       ></input>
-      <span className={subjCharCount > maxCharCount ? classes.errorWordCount : classes.wordCount}>
-        {subjCharCount} / {maxCharCount}
+      <span className={cx(subjCharCount > maxCharCount ? classes.errorWordCount : classes.wordCount)}>
+        Character count{' '}
+        <span
+          className={cx({
+            [classes.wordCountLimitReached]: subjCharCount >= maxCharCount, // make the text bold
+          })}
+        >
+          {subjCharCount} / {maxCharCount}
+        </span>
       </span>
 
       <textarea
         ref={textareaRef}
         placeholder="Description"
-        value={biState.description}
+        value={inputState.description}
         onChange={e => handleDescriptionChange(e.target.value)}
         onBlur={handleOnBlur}
-        className={cx(
-          classes.description,
-          classes.sharedInputStyle,
-          descWordCount > maxWordCount && classes.errorInput
-        )}
+        className={cx(classes.description, classes.sharedInputStyle, descWordCount > maxWordCount && classes.errorInput)}
       ></textarea>
-      <span className={descWordCount > maxWordCount ? classes.errorWordCount : classes.wordCount}>
-        {descWordCount} / {maxWordCount}
+      <span className={cx(descWordCount > maxWordCount ? classes.errorWordCount : classes.wordCount)}>
+        Word count{' '}
+        <span
+          className={cx({
+            [classes.wordCountLimitReached]: descWordCount >= maxWordCount, // make the text bold
+          })}
+        >
+          {descWordCount} / {maxWordCount}
+        </span>
       </span>
     </div>
   )
@@ -144,7 +163,7 @@ const useStyles = createUseStyles(theme => ({
     '&[type="text"]': {
       border: `0.0625rem solid ${theme.colors.inputBorder}`,
       color: theme.colors.title,
-      fontSize: '1rem',
+      fontSize: '1.25rem',
       lineHeight: '1.5rem',
     },
     '&[type="text"]:hover': {
@@ -153,6 +172,7 @@ const useStyles = createUseStyles(theme => ({
   },
   description: {
     resize: 'none',
+    fontSize: '1rem',
     marginTop: '0.9375rem',
     padding: '0.9375rem 0.9375rem 1.25rem 0.9375rem',
     '&::placeholder': {
@@ -182,6 +202,9 @@ const useStyles = createUseStyles(theme => ({
   errorWordCount: {
     color: theme.colors.inputErrorWordCount,
     ...sharedWordCountStyle(theme),
+  },
+  wordCountLimitReached: {
+    fontWeight: 'bold',
   },
 }))
 

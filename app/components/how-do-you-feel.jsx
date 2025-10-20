@@ -2,35 +2,53 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import { Button } from './button'
+import cx from 'classnames'
 
 const responseOptions = ['Awesome!', 'Just Okay', 'Unsatisfied']
 export default function HowDoYouFeel(props) {
-  const { disabled = false, className, onDone, title = '', ...otherProps } = props
+  const { disabled = false, className, onDone, title = 'How do you feel about it', ...otherProps } = props
   const styleClasses = rankingStyleClasses(props)
+
   return (
-    <div className={className} {...otherProps}>
-      <p className={styleClasses.textStyle}>How do you feel about it</p>
+    <div className={cx(styleClasses.wrapper, className)} {...otherProps}>
+      <p className={styleClasses.textStyle}>{title}</p>
       <div className={styleClasses.group}>
-        {responseOptions.map(option => {
-          return (
-            <label>
-              <Button title={option} onDone={onDone} value={option} className={styleClasses.Howdoyoufeel}>
-                {option}
-              </Button>
-            </label>
-          )
-        })}
+        {responseOptions.map(option => (
+          <label key={option}>
+            <Button title={option} onDone={onDone} value={option} className={styleClasses.option}>
+              {option}
+            </Button>
+          </label>
+        ))}
       </div>
     </div>
   )
 }
 const rankingStyleClasses = createUseStyles(theme => ({
-  group: { display: 'flex', gap: '1.4375rem' },
-  textStyle: { fontSize: '2.4rem', fontWeight: 'normal', marginTop: 0 },
-  Howdoyoufeel: {
+  wrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '2rem',
+    flexWrap: 'wrap',
+  },
+
+  textStyle: {
+    fontSize: '2.4rem',
+    fontWeight: 'normal',
+    margin: 0,
+  },
+
+  group: {
+    display: 'flex',
+    gap: '1.4375rem',
+  },
+
+  option: {
     backgroundColor: theme.colors.white,
     color: theme.colors.primaryButtonBlue,
     border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+
     '&:disabled': {
       backgroundColor: theme.colors.white,
       color: theme.colors.disableGray,

@@ -5,6 +5,7 @@ const Dturns = require('../dturns')
 const { beforeEach } = require('@jest/globals')
 
 const userId = '6667d5a33da5d19ddc304a6b'
+const discussionId = '1111'
 
 beforeEach(async () => {
   await Dturns.deleteMany({})
@@ -43,35 +44,28 @@ describe('Dturns Model', () => {
   })
 
   it('should upsert when the upsert function is called', async () => {
-    const doc = {
-      userId: userId,
-      discussionId: '1111',
-      round: 0,
-      shownStatementIds: { points: ['101', '111'] },
-      groupings: [],
-    }
     // Create a new doc
-    await Dturns.upsert(doc.userId, doc.discussionId, doc.round, doc.shownStatementIds, doc.groupings)
+    await Dturns.upsert(userId, discussionId, 0, { shownStatementIds: { 101: { most: 0 }, 111: { most: 0 } }, groupings: ['101', '111'] })
     const result = await Dturns.findOne()
 
-    expect(result).toMatchObject(doc)
+    expect(result).toMatchObject({
+      userId,
+      discussionId,
+      round: 0,
+      shownStatementIds: { 101: { most: 0 }, 111: { most: 0 } },
+      groupings: ['101', '111'],
+    })
 
     // Try to update the doc
     const newData = {
       discussionId: '1111',
       userId: userId,
       round: 0,
-      shownStatementIds: { points: ['100', '101', '110', '111'] },
-      groupings: [],
+      shownStatementIds: { 100: { most: 0 }, 101: { most: 1 }, 110: { most: 0 }, 111: { most: 1 } },
+      groupings: ['100', '101', '110'],
     }
 
-    await Dturns.upsert(
-      newData.userId,
-      newData.discussionId,
-      newData.round,
-      newData.shownStatementIds,
-      newData.groupings
-    )
+    await Dturns.upsert(newData.userId, newData.discussionId, newData.round, { shownStatementIds: newData.shownStatementIds, groupings: newData.groupings })
 
     const updateResult = await Dturns.findOne()
     expect(updateResult).toMatchObject(newData)
@@ -81,19 +75,19 @@ describe('Dturns Model', () => {
     const discussionId = '2024'
 
     for (let num = 0; num < 5; num++) {
-      await Dturns.upsert(userId + num, discussionId, 0, { points: [num] }, [])
+      await Dturns.upsert(userId + num, discussionId, 0, { shownStatementIds: { [num]: { most: 0 } }, groupings: [] })
     }
 
     const result = await Dturns.getAllFromDiscussion(discussionId)
 
-    expect(await result.toArray()).toMatchObject([
+    expect(result).toMatchObject([
       {
         _id: /./,
         discussionId: discussionId,
         round: 0,
         userId: userId + '0',
         groupings: [],
-        shownStatementIds: { points: [0] },
+        shownStatementIds: { 0: { most: 0 } },
       },
       {
         _id: /./,
@@ -101,7 +95,7 @@ describe('Dturns Model', () => {
         round: 0,
         userId: userId + '1',
         groupings: [],
-        shownStatementIds: { points: [1] },
+        shownStatementIds: { 1: { most: 0 } },
       },
       {
         _id: /./,
@@ -109,7 +103,7 @@ describe('Dturns Model', () => {
         round: 0,
         userId: userId + '2',
         groupings: [],
-        shownStatementIds: { points: [2] },
+        shownStatementIds: { 2: { most: 0 } },
       },
       {
         _id: /./,
@@ -117,7 +111,7 @@ describe('Dturns Model', () => {
         round: 0,
         userId: userId + '3',
         groupings: [],
-        shownStatementIds: { points: [3] },
+        shownStatementIds: { 3: { most: 0 } },
       },
       {
         _id: /./,
@@ -125,7 +119,7 @@ describe('Dturns Model', () => {
         round: 0,
         userId: userId + '4',
         groupings: [],
-        shownStatementIds: { points: [4] },
+        shownStatementIds: { 4: { most: 0 } },
       },
     ])
   })

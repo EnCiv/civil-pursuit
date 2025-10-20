@@ -1,11 +1,11 @@
 // https://github.com/EnCiv/civil-pursuit/issues/136
 
-const getTopRankedWhysForPoint = require('../get-top-ranked-whys-for-point')
-const Points = require('../../models/points')
-const Ranks = require('../../models/ranks')
-const { Mongo } = require('@enciv/mongo-collections')
-const { MongoMemoryServer } = require('mongodb-memory-server')
-const { ObjectId } = require('mongodb')
+import getTopRankedWhysForPoint from '../get-top-ranked-whys-for-point'
+import Points from '../../models/points'
+import Ranks from '../../models/ranks'
+import { Mongo } from '@enciv/mongo-collections'
+import { MongoMemoryServer } from 'mongodb-memory-server'
+import { ObjectId } from 'mongodb'
 
 const USER1 = '6667d5a33da5d19ddc304a6b'
 const POINT1 = '6667d688b20d8e339ca50020'
@@ -53,7 +53,7 @@ describe('getTopRankedWhysForPoint', () => {
     const cb = jest.fn()
     const why = {
       _id: new ObjectId(),
-      title: 'Why 1',
+      subject: 'Why 1',
       description: 'Description 1',
       round: 1,
       parentId: POINT1,
@@ -71,7 +71,7 @@ describe('getTopRankedWhysForPoint', () => {
     const cb = jest.fn()
     const whys = Array.from({ length: 5 }, (_, i) => ({
       _id: new ObjectId(),
-      title: `Why ${i + 1}`,
+      subject: `Why ${i + 1}`,
       description: `Description ${i + 1}`,
       round: 1,
       parentId: POINT1,
@@ -105,7 +105,7 @@ describe('getTopRankedWhysForPoint', () => {
     const cb = jest.fn()
     const whys = Array.from({ length: 11 }, (_, i) => ({
       _id: new ObjectId(),
-      title: `Why ${i + 1}`,
+      subject: `Why ${i + 1}`,
       description: `Description ${i + 1}`,
       round: 1,
       parentId: POINT1,
@@ -139,7 +139,7 @@ describe('getTopRankedWhysForPoint', () => {
     const cb = jest.fn()
     const whys = Array.from({ length: 11 }, (_, i) => ({
       _id: new ObjectId(),
-      title: `Why ${i + 1}`,
+      subject: `Why ${i + 1}`,
       description: `Description ${i + 1}`,
       round: 1,
       parentId: POINT1,
@@ -173,7 +173,7 @@ describe('getTopRankedWhysForPoint', () => {
     const cb = jest.fn()
     const whys = Array.from({ length: 11 }, (_, i) => ({
       _id: new ObjectId(),
-      title: `Why ${i + 1}`,
+      subject: `Why ${i + 1}`,
       description: `Description ${i + 1}`,
       round: 1,
       parentId: POINT1,
@@ -207,7 +207,7 @@ describe('getTopRankedWhysForPoint', () => {
     const cb = jest.fn()
     const whys = Array.from({ length: 11 }, (_, i) => ({
       _id: new ObjectId(),
-      title: `Why ${i + 1}`,
+      subject: `Why ${i + 1}`,
       description: `Description ${i + 1}`,
       round: 1,
       parentId: POINT1,

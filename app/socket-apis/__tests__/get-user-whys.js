@@ -1,9 +1,9 @@
 // https://github.com/EnCiv/civil-pursuit/issues/206
 
-const { MongoMemoryServer } = require('mongodb-memory-server')
-const { MongoClient } = require('mongodb')
-const getUserWhys = require('../get-user-whys')
-const Points = require('../../models/points')
+import { MongoMemoryServer } from 'mongodb-memory-server'
+import { MongoClient } from 'mongodb'
+import getUserWhys from '../get-user-whys'
+import Points from '../../models/points'
 
 let memoryServer
 let connection
@@ -60,17 +60,17 @@ test('Return list of items matching parentId in ids.', async () => {
 
   // Mock the find function to return items where parentId is in ids
   const mockPoints = [
-    { _id: '1', title: 'Point1', userId, parentId: 'id1' },
-    { _id: '2', title: 'Point2', userId, parentId: 'id1' },
-    { _id: '3', title: 'Point3', userId, parentId: 'id2' },
-    { _id: '4', title: 'Point4', userId, parentId: 'id2' },
-    { _id: '5', title: 'Point5', userId, parentId: 'id1' },
+    { _id: '1', subject: 'Point1', userId, parentId: 'id1' },
+    { _id: '2', subject: 'Point2', userId, parentId: 'id1' },
+    { _id: '3', subject: 'Point3', userId, parentId: 'id2' },
+    { _id: '4', subject: 'Point4', userId, parentId: 'id2' },
+    { _id: '5', subject: 'Point5', userId, parentId: 'id1' },
     // These items should not be returned because their parentId is not in ['id1', 'id2']
-    { _id: '6', title: 'Point6', userId, parentId: 'id3' },
-    { _id: '7', title: 'Point7', userId, parentId: 'id4' },
+    { _id: '6', subject: 'Point6', userId, parentId: 'id3' },
+    { _id: '7', subject: 'Point7', userId, parentId: 'id4' },
     // These items should not be returned because their userId is not equals to current userId
-    { _id: '8', title: 'Point8', userId: userId + '0', parentId: 'id1' },
-    { _id: '9', title: 'Point9', userId: userId + '0', parentId: 'id2' },
+    { _id: '8', subject: 'Point8', userId: userId + '0', parentId: 'id1' },
+    { _id: '9', subject: 'Point9', userId: userId + '0', parentId: 'id2' },
   ]
 
   //Insert into the database

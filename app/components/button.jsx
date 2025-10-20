@@ -1,7 +1,8 @@
 // https://github.com/EnCiv/civil-pursuit/issues/43
+// https://github.com/EnCiv/civil-pursuit/issues/246
 import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
-import { PositioningPortal } from '@codastic/react-positioning-portal'
+import { PositioningPortal } from '@codastic/react-positioning-portal/lib/legacy/index.js'
 import cx from 'classnames'
 
 /**
@@ -132,7 +133,7 @@ const buttonStyles = createUseStyles(theme => ({
     width: 'auto',
     height: 'auto',
     borderRadius: '0.5rem',
-    padding: '0.5rem 1.25rem',
+    padding: '0.75rem 1.25rem',
     fontFamily: 'Inter, sans-serif',
     fontWeight: 600,
     fontSize: '1rem',
@@ -160,6 +161,12 @@ const buttonStyles = createUseStyles(theme => ({
 
     '&:hover, &.hover': {
       textDecoration: 'underline',
+      textUnderlineOffset: '0.25rem',
+      backgroundColor: theme.colors.white,
+      borderColor: theme.colors.primaryButtonBlue,
+    },
+
+    '&.createhover': {
       backgroundColor: theme.colors.white,
       borderColor: theme.colors.primaryButtonBlue,
     },
@@ -180,6 +187,7 @@ const buttonStyles = createUseStyles(theme => ({
 
     '&:hover, &.hover': {
       textDecoration: 'underline',
+      textUnderlineOffset: '0.25rem',
       backgroundColor: theme.colors.white,
       borderColor: theme.colors.encivYellow,
     },
@@ -205,14 +213,15 @@ const buttonStyles = createUseStyles(theme => ({
       textDecoration: 'none',
       transition: 'none',
     },
-
-    '&:hover, &.hover': {
-      textDecoration: 'underline',
-      backgroundColor: theme.colors.primaryButtonBlue,
-      borderColor: theme.colors.primaryButtonBlue,
+    '&:not(:disabled)': {
+      '&:hover, &.hover': {
+        textDecoration: 'underline',
+        textUnderlineOffset: '0.25rem',
+        backgroundColor: theme.colors.primaryButtonBlue,
+        borderColor: theme.colors.primaryButtonBlue,
+      },
     },
-
-    '&:active': {
+    '&:active:not(:disabled)': {
       backgroundColor: theme.colors.mouseDownPrimeBlue,
       border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
       textDecoration: 'none',
@@ -226,9 +235,11 @@ const buttonStyles = createUseStyles(theme => ({
     border: 'none',
     textAlign: 'left',
     textDecoration: 'underline',
+    textUnderlineOffset: '0.25rem',
 
     '&:hover, &.hover': {
       textDecoration: 'underline',
+      textUnderlineOffset: '0.25rem',
       backgroundColor: 'transparent',
       borderColor: 'none',
     },

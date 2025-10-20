@@ -1,7 +1,8 @@
 // https://github.com/EnCiv/civil-pursuit/issues/212
 const dturn = require('../dturn/dturn')
 
-async function completeRound(discussionId, round, idRanks, cb) {
+export default async function completeRound(discussionId, round, idRanks, cb) {
+  if (cb && typeof cb !== 'function') console.error('completeRound cb must be a function, received:', cb)
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
     if (cb) cb(undefined)
@@ -32,17 +33,16 @@ async function completeRound(discussionId, round, idRanks, cb) {
   }
 
   // For each `id`, call `dturn.rankMostImportant` with the provided `rank`
-  for (const item of idRanks) {
-    const id = Object.keys(item)[0]
-    const rank = item[id]
+  for await (const item of idRanks) {
+    const [id, rank] = Object.entries(item)[0]
 
     // Check if `id` is in `statementIds`
     if (statementIds.some(sId => sId === id)) {
-      dturn.rankMostImportant(discussionId, round, userId, id, rank)
+      await dturn.rankMostImportant(discussionId, round, userId, id, rank)
+    } else {
+      console.error(`user ${userId} tried to rank statement ${id} which was not shown to them`)
     }
   }
 
   if (cb) cb(true)
 }
-
-module.exports = completeRound

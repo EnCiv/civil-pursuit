@@ -8,23 +8,17 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 
 function WhyInput(props) {
-  const {
-    point = { subject: '', description: '', _id: '' },
-    value = { subject: '', description: '' },
-    onDone = () => {},
-    className,
-    ...otherProps
-  } = props
+  const { point = { subject: '', description: '', _id: '' }, value, onDone = () => {}, className, maxWordCount, maxCharCount, ...otherProps } = props
   const classes = useStyles()
 
   const handleOnDone = ({ valid, value }) => {
-    value.parentId = `${point._id}`
+    value && (value.parentId = point._id)
     onDone({ valid, value })
   }
   return (
     <div className={cx(classes.container, className)} {...otherProps}>
       <Point className={classes.point} point={point} vState="secondary" />
-      <PointInput className={classes.pointInput} onDone={handleOnDone} value={value} />
+      <PointInput className={classes.pointInput} maxWordCount={maxWordCount} maxCharCount={maxCharCount} onDone={handleOnDone} value={value} />
     </div>
   )
 }
