@@ -203,3 +203,41 @@ export const VariableParentDiv = () => {
     </div>
   )
 }
+
+export const VerticalModeEmpty = {
+  args: {
+    menu: [],
+    mode: 'vertical',
+  },
+}
+
+export const VerticalModeThreeItems = {
+  args: {
+    menu: [createMenuItem('Profile'), createMenuItem('Discussions'), createMenuItem('Settings')],
+    mode: 'vertical',
+  },
+}
+
+export const VerticalModeFiveItems = {
+  args: {
+    menu: [createMenuItem('Profile'), createMenuItem('Discussions'), createMenuItem('Settings'), createMenuItem('Help'), createMenuItem('Logout')],
+    mode: 'vertical',
+  },
+}
+
+export const VerticalModeDefaultTabSelect = {
+  args: {
+    menu: [createMenuItem('Profile'), createMenuItem('Discussions'), createMenuItem('Settings'), createMenuItem('Help'), createMenuItem('Logout')],
+    defaultSelectedItem: 'Discussions',
+    mode: 'vertical',
+  },
+}
+
+export const VerticalMode20RemWidth = {
+  args: {
+    menu: [createMenuItem('Profile'), createMenuItem('Discussions'), createMenuItem('Settings'), createMenuItem('Help'), createMenuItem('Logout')],
+    defaultSelectedItem: 'Discussions',
+    mode: 'vertical',
+    style: { width: '20rem' },
+  },
+}
