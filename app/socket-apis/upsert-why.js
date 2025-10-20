@@ -13,6 +13,7 @@ export default async function upsertWhy(pointObj, cb) {
     console.error('upsertWhy called but no user logged in')
     return cb?.(undefined) // No user logged in
   }
+
   const userId = this.synuser.id
   pointObj.userId = userId // Add userId to the document
 
