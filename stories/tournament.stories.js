@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import Tournament from '../app/components/tournament'
 import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator, buildApiDecorator } from './common'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
-import { resetRequestedById } from '../app/components/hooks/use-fetch-dem-info'
 
 const pointItems = Array.from({ length: 30 }, (_, index) => ({
   _id: index + 'a', //
@@ -288,10 +287,7 @@ function byParentIdList(docs) {
 // export so they can be used in other stories like civil-pursuit
 export const tournamentDecorators = [
   Story => {
-    // Reset the static requestedById cache
-    useState(() => {
-      resetRequestedById()
-    })
+    // Each DemInfoProvider has its own requestedById tracking
 
     // DemInfoSetup runs inside the provider so useContext works correctly
     const DemInfoSetup = () => {

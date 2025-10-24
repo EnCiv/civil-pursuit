@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useState } from 'react'
+import React, { createContext, useCallback, useRef, useState } from 'react'
 import setOrDeleteByMutatePath from '../lib/set-or-delete-by-mutate-path'
 
 export const DemInfoContext = createContext({})
@@ -7,6 +7,10 @@ export default DemInfoContext
 export function DemInfoProvider(props) {
   const { demInfoProviderDefault = {} } = props
   const [data, setData] = useState(() => ({ ...demInfoProviderDefault }))
+
+  // Mutable object to track which pointIds have been requested
+  // Prevents redundant fetches within this context instance
+  const requestedById = useRef({}).current
 
   const upsert = useCallback(
     obj => {
@@ -21,7 +25,7 @@ export function DemInfoProvider(props) {
     [setData]
   )
 
-  return <DemInfoContext.Provider value={{ data, upsert }}>{props.children}</DemInfoContext.Provider>
+  return <DemInfoContext.Provider value={{ data, upsert, requestedById }}>{props.children}</DemInfoContext.Provider>
 }
 
 export function useDemInfoContext() {

@@ -6,7 +6,6 @@ import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberati
 import { within, userEvent, expect, waitFor } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
-import { resetRequestedById } from '../app/components/hooks/use-fetch-dem-info'
 
 const discussionId = '1101'
 const round = 0
@@ -594,10 +593,7 @@ export const groupingStepCachesDemInfo = {
   args: { ...getGroupingArgsFrom(groupingPoints) },
   decorators: [
     Story => {
-      // Reset the static requestedById cache before this test runs
-      useState(() => {
-        resetRequestedById()
-      })
+      // Each DemInfoProvider has its own requestedById tracking
       return (
         <DemInfoProvider>
           <Story />
