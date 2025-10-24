@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Point from '../app/components/point'
 import PointLeadButton from '../app/components/point-lead-button'
 import Theme from '../app/components/theme'
+import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 
 const DemInfoTestComponent = props => {
   const { vState } = props
@@ -28,8 +29,7 @@ export default {
   args: {
     point: {
       subject: 'Phasellus diam sapien, placerat id sollicitudin eget',
-      description:
-        'Cras porttitor quam eros, vel auctor magna consequat vitae. Donec condimentum ac libero mollis tristique.',
+      description: 'Cras porttitor quam eros, vel auctor magna consequat vitae. Donec condimentum ac libero mollis tristique.',
       demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' },
     },
   },
@@ -66,10 +66,7 @@ export const MultipleChildren = {
     children: (
       <>
         <PointLeadButton vState="default" />
-        <Point
-          point={{ _id: '42', subject: 'sub child', description: 'this is a point as a child of a point' }}
-          style={{ width: '100%' }}
-        />
+        <Point point={{ _id: '42', subject: 'sub child', description: 'this is a point as a child of a point' }} style={{ width: '100%' }} />
       </>
     ),
   },
@@ -164,4 +161,153 @@ export const ChildrenPointsSevenLayersDeep = {
     vState: 'default',
     children: point2,
   },
+}
+
+// DemInfo integration stories - Point already renders DemInfo internally
+const PointWithDemInfoDecorator = Story => (
+  <DemInfoProvider>
+    <Story />
+  </DemInfoProvider>
+)
+
+const PointWithDemInfoSetup = ({ pointId, demInfo, uischema, ...pointProps }) => {
+  const { upsert } = React.useContext(DemInfoContext)
+
+  React.useEffect(() => {
+    if (uischema) {
+      upsert({ uischema })
+    }
+    if (demInfo) {
+      upsert({ demInfoById: { [pointId]: demInfo } })
+    }
+  }, [pointId, demInfo, uischema, upsert])
+
+  return <Point {...pointProps} />
+}
+
+const demUISchema = {
+  type: 'VerticalLayout',
+  elements: [
+    { type: 'Control', scope: '#/properties/stateOfResidence' },
+    { type: 'Control', scope: '#/properties/yearOfBirth' },
+    { type: 'Control', scope: '#/properties/politicalParty' },
+  ],
+}
+
+export const PointWithDemInfo = {
+  decorators: [PointWithDemInfoDecorator],
+  render: () => (
+    <PointWithDemInfoSetup
+      pointId="point1"
+      point={{
+        _id: 'point1',
+        subject: 'Implement renewable energy infrastructure',
+        description: 'We need to invest heavily in solar and wind power to reduce carbon emissions.',
+      }}
+      vState="default"
+      uischema={demUISchema}
+      demInfo={{
+        stateOfResidence: 'California',
+        yearOfBirth: 1985,
+        politicalParty: 'Democrat',
+        shareInfo: 'Yes',
+      }}
+    />
+  ),
+}
+
+export const PointWithNoDemInfo = {
+  decorators: [PointWithDemInfoDecorator],
+  render: () => (
+    <PointWithDemInfoSetup
+      pointId="point2"
+      point={{
+        _id: 'point2',
+        subject: 'Increase education funding',
+        description: 'Schools need more resources to provide quality education.',
+      }}
+      vState="default"
+      uischema={demUISchema}
+      demInfo={null}
+    />
+  ),
+}
+
+export const MultiplePointsWithMixedDemInfo = {
+  decorators: [PointWithDemInfoDecorator],
+  render: () => {
+    const { upsert } = React.useContext(DemInfoContext)
+
+    React.useEffect(() => {
+      upsert({ uischema: demUISchema })
+      upsert({
+        demInfoById: {
+          point3: {
+            stateOfResidence: 'Texas',
+            yearOfBirth: 1990,
+            politicalParty: 'Republican',
+            shareInfo: 'Yes',
+          },
+          point4: null, // No dem info
+          point5: {
+            stateOfResidence: 'New York',
+            yearOfBirth: 1975,
+            politicalParty: 'Independent',
+            shareInfo: 'Yes',
+          },
+        },
+      })
+    }, [upsert])
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <Point
+          point={{
+            _id: 'point3',
+            subject: 'Healthcare reform',
+            description: 'We need universal healthcare coverage.',
+          }}
+          vState="default"
+        />
+        <Point
+          point={{
+            _id: 'point4',
+            subject: 'Tax policy changes',
+            description: 'Reform the tax code to be more progressive.',
+          }}
+          vState="default"
+        />
+        <Point
+          point={{
+            _id: 'point5',
+            subject: 'Infrastructure investment',
+            description: 'Modernize roads, bridges, and public transit.',
+          }}
+          vState="default"
+        />
+      </div>
+    )
+  },
+}
+
+export const PointWithDemInfoSelected = {
+  decorators: [PointWithDemInfoDecorator],
+  render: () => (
+    <PointWithDemInfoSetup
+      pointId="point6"
+      point={{
+        _id: 'point6',
+        subject: 'Climate change action',
+        description: 'Immediate action is needed to address climate change.',
+      }}
+      vState="selected"
+      uischema={demUISchema}
+      demInfo={{
+        stateOfResidence: 'Oregon',
+        yearOfBirth: 1992,
+        politicalParty: 'Green',
+        shareInfo: 'Yes',
+      }}
+    />
+  ),
 }

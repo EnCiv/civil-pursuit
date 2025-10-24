@@ -6,6 +6,7 @@ import cx from 'classnames'
 import { Level } from 'react-accessible-headings'
 
 import { DeliberationContextProvider } from '../components/deliberation-context'
+import { DemInfoProvider, useDemInfoContext } from '../components/dem-info-context'
 
 import QuestionBox from '../components/question-box'
 import StepSlider from '../components/step-slider'
@@ -47,27 +48,39 @@ function buildChildren(steps) {
   })
 }
 
+function CivilPursuitContent({ iota, steps, user, _id, minParticipants, children }) {
+  const classes = useStylesFromThemeFunction()
+  // upsert uischema into DemInfoContext
+  try {
+    const { upsert } = useDemInfoContext()
+    React.useEffect(() => {
+      const stepsList = iota?.steps || steps || []
+      const moreDetailsStep = stepsList.find(s => s.webComponent === 'Jsform' && s.name === 'moreDetails')
+      if (moreDetailsStep?.uischema) upsert({ uischema: moreDetailsStep.uischema })
+    }, [iota, steps, upsert])
+  } catch (e) {
+    // if context not available, skip
+  }
+
+  return (
+    <div className={cx(classes.civilPursuit)}>
+      <QuestionBox className={classes.question} subject={iota?.subject} description={iota?.description} discussionId={_id} minParticipants={minParticipants} />
+      <Level>
+        <StepSlider className={classes.stepPadding} children={children} user={user} discussionId={_id} />
+      </Level>
+    </div>
+  )
+}
+
 function CivilPursuit(props) {
   const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, participants, minParticipants, ...otherProps } = props
-  const classes = useStylesFromThemeFunction(props)
-  const [children, setChildren] = useState(buildChildren(steps)) // just do this once so we don't get rerenders
+  const [children] = useState(buildChildren(steps)) // just do this once so we don't get rerenders
 
   return (
     <DeliberationContextProvider defaultValue={{ discussionId: _id, user, userId: user?.id, participants, ...otherProps }}>
-      <div className={cx(classes.civilPursuit, className)}>
-        <QuestionBox className={classes.question} subject={subject} description={description} discussionId={_id} minParticipants={minParticipants} />
-        <Level>
-          <StepSlider
-            className={classes.stepPadding}
-            children={children}
-            onDone={valid => {
-              // We're done!
-            }}
-            user={user}
-            discussionId={_id}
-          />
-        </Level>
-      </div>
+      <DemInfoProvider>
+        <CivilPursuitContent iota={{ subject, description, steps }} steps={steps} user={user} _id={_id} minParticipants={minParticipants} children={children} />
+      </DemInfoProvider>
     </DeliberationContextProvider>
   )
 }

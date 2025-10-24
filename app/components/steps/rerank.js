@@ -6,12 +6,14 @@ import React, { useState, useEffect, useRef, useContext, useMemo } from 'react'
 import { createUseStyles } from 'react-jss'
 import ReviewPoint from '../review-point'
 import DeliberationContext from '../deliberation-context'
+import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 import StepIntro from '../step-intro'
 import { useRankByParentId } from './rank'
 
 export default function RerankStep(props) {
   const { onDone, round } = props
   const { data, upsert } = useContext(DeliberationContext)
+  const fetchDemInfo = useFetchDemInfo()
   let onNext
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
@@ -55,6 +57,10 @@ export default function RerankStep(props) {
         const postRankByParentId = ranks.reduce((postRankByParentId, rank) => ((postRankByParentId[rank.parentId] = rank), postRankByParentId), {})
         const whysByCategoryByParentId = whys.reduce((wXpXc, w) => (wXpXc[w.category][w.parentId] ? wXpXc[w.category][w.parentId].push(w) : (wXpXc[w.category][w.parentId] = [w]), wXpXc), { most: {}, least: {} })
         upsert({ postRankByParentId, whysByCategoryByParentId })
+
+        // Fetch dem-info for parent points and all why points
+        const whyIds = whys.map(w => w._id)
+        fetchDemInfo(whyIds)
       }
     )
   }, [round, data.reducedPointList])
@@ -64,7 +70,8 @@ export default function RerankStep(props) {
       (tWxCxP, { point, group }) => {
         ;['most', 'least'].forEach(category => {
           tWxCxP[category][point._id] = data.whysByCategoryByParentId?.[category]?.[point._id] || []
-          if (data.myWhyByCategoryByParentId?.[category]?.[point._id]) tWxCxP[category][point._id].push(data.myWhyByCategoryByParentId[category][point._id])
+          if (data.myWhyByCategoryByParentId?.[category]?.[point._id] && !tWxCxP[category][point._id].some(p => p._id === data.myWhyByCategoryByParentId[category][point._id]._id))
+            tWxCxP[category][point._id].push(data.myWhyByCategoryByParentId[category][point._id])
         })
         return tWxCxP
       },

@@ -16,7 +16,7 @@ const Point = forwardRef((props, ref) => {
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
 
-  const { subject = '', description = '', demInfo = {} } = point || {}
+  const { subject = '', description = '', _id } = point || {}
 
   const onMouseIn = () => {
     setIsHovered(true)
@@ -48,7 +48,7 @@ const Point = forwardRef((props, ref) => {
               {isLoading ? '' : description}
             </p>
           )}
-          <DemInfo {...demInfo} />
+          <DemInfo className={cx(classes[vState + 'DemInfo'])} pointId={_id} />
           <Level>{childrenWithProps}</Level>
         </div>
       </div>
@@ -184,10 +184,25 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'none',
   },
 
+  // demInfo states
+  defaultDemInfo: {
+    color: theme.colors.title,
+  },
+  selectedDemInfo: {
+    color: theme.colors.success,
+  },
+  disabledDemInfo: {
+    color: theme.colors.title,
+  },
+  collapsedDemInfo: {
+    display: 'none',
+  },
+
   // shared styling
   sharedBorderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: theme.boxShadowRightBottom,
+    paddingBottom: '0.5rem',
   },
   sharedSubjectStyle: {
     ...theme.font,
@@ -204,6 +219,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontWeight: '400',
     lineHeight: '1.5rem',
     whiteSpace: 'pre-wrap',
+    marginBottom: '0.25rem',
   },
   invalidText: {
     color: theme.colors.rankInvalidText,

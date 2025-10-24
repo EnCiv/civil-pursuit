@@ -4,6 +4,7 @@
 import React, { useContext, useState } from 'react'
 import DeliberationContext from '../app/components/deliberation-context'
 import RerankStep, { Rerank } from '../app/components/steps/rerank'
+import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 
 import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, asyncSleep } from './common'
 import { within, userEvent, expect, waitFor } from '@storybook/test'
@@ -76,6 +77,65 @@ export const Desktop = {
     discussionId,
     round,
   },
+}
+
+// Desktop with DemInfo data for all points
+const DemInfoDecorator = ({ children }) => {
+  const { upsert } = React.useContext(DemInfoContext)
+
+  React.useEffect(() => {
+    // Set UISchema
+    upsert({
+      uischema: {
+        type: 'VerticalLayout',
+        elements: [
+          { type: 'Control', scope: '#/properties/stateOfResidence' },
+          { type: 'Control', scope: '#/properties/yearOfBirth' },
+          { type: 'Control', scope: '#/properties/politicalParty' },
+        ],
+      },
+    })
+    // Set dem-info for all points (including nested whys)
+    upsert({
+      demInfoById: {
+        1: { stateOfResidence: 'California', yearOfBirth: 1985, politicalParty: 'Democrat', shareInfo: 'Yes' },
+        2: { stateOfResidence: 'Texas', yearOfBirth: 1990, politicalParty: 'Republican', shareInfo: 'Yes' },
+        3: { stateOfResidence: 'New York', yearOfBirth: 1975, politicalParty: 'Independent', shareInfo: 'Yes' },
+        11: { stateOfResidence: 'Florida', yearOfBirth: 1988, politicalParty: 'Democrat', shareInfo: 'Yes' },
+        12: { stateOfResidence: 'Oregon', yearOfBirth: 1992, politicalParty: 'Green', shareInfo: 'Yes' },
+        13: { stateOfResidence: 'Nevada', yearOfBirth: 1980, politicalParty: 'Libertarian', shareInfo: 'Yes' },
+        14: { stateOfResidence: 'Washington', yearOfBirth: 1995, politicalParty: 'Democrat', shareInfo: 'Yes' },
+        21: { stateOfResidence: 'Arizona', yearOfBirth: 1983, politicalParty: 'Republican', shareInfo: 'Yes' },
+        22: { stateOfResidence: 'Georgia', yearOfBirth: 1987, politicalParty: 'Republican', shareInfo: 'Yes' },
+        23: { stateOfResidence: 'Ohio', yearOfBirth: 1991, politicalParty: 'Independent', shareInfo: 'Yes' },
+        24: { stateOfResidence: 'Michigan', yearOfBirth: 1978, politicalParty: 'Democrat', shareInfo: 'Yes' },
+        31: { stateOfResidence: 'Pennsylvania', yearOfBirth: 1982, politicalParty: 'Independent', shareInfo: 'Yes' },
+        32: { stateOfResidence: 'Colorado', yearOfBirth: 1989, politicalParty: 'Democrat', shareInfo: 'Yes' },
+        33: { stateOfResidence: 'Virginia', yearOfBirth: 1993, politicalParty: 'Republican', shareInfo: 'Yes' },
+        34: { stateOfResidence: 'North Carolina', yearOfBirth: 1986, politicalParty: 'Independent', shareInfo: 'Yes' },
+      },
+    })
+  }, [upsert])
+
+  return children
+}
+
+export const DesktopWithDemInfo = {
+  args: {
+    reducedPointList,
+    topWhysByCategoryByParentId,
+    discussionId,
+    round,
+  },
+  decorators: [
+    Story => (
+      <DemInfoProvider>
+        <DemInfoDecorator>
+          <Story />
+        </DemInfoDecorator>
+      </DemInfoProvider>
+    ),
+  ],
 }
 
 export const Mobile = {

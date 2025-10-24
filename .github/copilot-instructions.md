@@ -56,6 +56,17 @@ Notes: many files mix `import`/`export` and `module.exports` — respect the exi
 
 ## Project-specific conventions & patterns
 
+- **React coding style**: Follow the [EnCiv React Coding and Style Guidelines](https://github.com/EnCiv/.github/wiki/React-Coding-and-Style-Guidelines). Key points:
+  - Use `react-jss` with `createUseStyles` for styling; place styles at bottom of file
+  - Accept `className` prop and combine with component classes using `cx(classes.componentName, className)`
+  - Destructure `{ className, ...otherProps }` and spread `{...otherProps}` to outer tag for extensibility
+  - Use theme from `app/components/theme.js` for colors, spacing, and other shared values
+  - File names: lowercase with hyphens, `.js` extension (`.jsx` only for class components)
+  - Components take width from parent, have no margin; use padding for internal spacing
+  - Avoid `px` units; use `rem`, `em`, `vw`, `vh` for responsiveness
+  - Include GitHub issue link at top of component and story files
+  - Components with user input accept `onDone` callback: `onDone({valid: bool, value: any})`
+  - Create Storybook stories for each component with multiple test scenarios
 - dturn in-memory model: `Discussions[discussionId]` holds per-discussion state: `ShownStatements`, `ShownGroups`, `Gitems`, `Uitems`. The module exposes `initDiscussion`, `insertStatementId`, `getStatementIds`, `finishRound`, `putGroupings`, `rankMostImportant`, and `getDiscussionStatus`. Tests import `Discussions` for inspection — the export is intended for tests only.
 - Persistence hooks: `initDiscussion` accepts `updateUInfo` and `getAllUInfo` callbacks. `updateUInfo` is expected to write incremental user state; `getAllUInfo` is used to rehydrate memory on startup. Never assume DB access is inside dturn — it relies on provided callbacks.
 - Deterministic tests: `getRandomUniqueList` checks `process.env.JEST_TEST_ENV` to return deterministic sequences for Jest tests.
