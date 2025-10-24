@@ -13,12 +13,14 @@ import PointGroup from '../point-group'
 import { PrimaryButton } from '../button'
 import StatusBadge from '../status-badge'
 import StepIntro from '../step-intro'
+import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 
 const MIN_GROUPS = 0 // the minimum number of groups the user has to make
 
 export default function GroupingStep(props) {
   const { onDone, round, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
+  const fetchDemInfo = useFetchDemInfo()
 
   const { discussionId } = data
   const args = deriveReducedPointList(data, useRef({}).current)
@@ -51,6 +53,10 @@ export default function GroupingStep(props) {
         }
       }
       upsert({ pointById, uInfo: { ...uInfo, [round]: uInfoRound } })
+
+      // Fetch demographic info for all points
+      const pointIds = points.map(p => p._id)
+      fetchDemInfo(pointIds)
     })
   }, [round])
   return <GroupPoints {...args} round={round} discussionId={data.discussionId} onDone={handleOnDone} {...otherProps} />

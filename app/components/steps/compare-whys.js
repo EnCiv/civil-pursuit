@@ -9,10 +9,12 @@ import { H, Level } from 'react-accessible-headings'
 import StepIntro from '../step-intro'
 
 import DeliberationContext from '../deliberation-context'
+import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 
 export default function CompareWhysStep(props) {
   const { onDone, round, category } = props
   const { data, upsert } = useContext(DeliberationContext)
+  const fetchDemInfo = useFetchDemInfo()
   const args = { ...derivePointWithWhyRankListListByCategory(data, category) }
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
@@ -42,6 +44,10 @@ export default function CompareWhysStep(props) {
       const whyRankByParentId = ranks.reduce((whyRankByParentId, rank) => ((whyRankByParentId[rank.parentId] = rank), whyRankByParentId), {})
       const randomWhyById = whys.reduce((randomWhyById, point) => ((randomWhyById[point._id] = point), randomWhyById), {})
       upsert({ whyRankByParentId, randomWhyById })
+
+      // Fetch dem-info for all why points
+      const whyIds = whys.map(w => w._id)
+      fetchDemInfo(whyIds)
     })
   }, [round, data.preRankByParentId])
   return <CompareWhys {...props} {...args} round={round} discussionId={data.discussionId} onDone={handleOnDone} />

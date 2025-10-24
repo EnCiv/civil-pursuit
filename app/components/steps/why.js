@@ -3,6 +3,7 @@
 
 import React, { useEffect, useContext, useRef, useState } from 'react'
 import DeliberationContext from '../deliberation-context'
+import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 import WhyInput from '../why-input'
 import { H, Level } from 'react-accessible-headings'
 import cx from 'classnames'
@@ -13,6 +14,7 @@ import StepIntro from '../step-intro'
 export default function WhyStep(props) {
   const { data, upsert } = useContext(DeliberationContext)
   const { category, onDone, ...otherProps } = props
+  const fetchDemInfo = useFetchDemInfo()
 
   useEffect(() => {
     if (!data?.myWhyByCategoryByParentId && data?.reducedPointList?.length > 0) {
@@ -25,6 +27,9 @@ export default function WhyStep(props) {
           myWhyByCategoryByParentId[point.category][point.parentId] = point
         }
         upsert({ myWhyByCategoryByParentId })
+
+        // Fetch dem-info for whys
+        fetchDemInfo(results.map(w => w._id))
       })
     }
   }, [])

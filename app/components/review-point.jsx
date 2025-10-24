@@ -11,6 +11,7 @@ import Ranking from './ranking'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
 import { H, Level } from 'react-accessible-headings'
+import DemInfo from './dem-info'
 
 function ReviewPoint(props) {
   const { point = {}, leftPointList = [], rightPointList = [], rank = '', onDone = () => {}, ...otherProps } = props
@@ -52,6 +53,7 @@ function ReviewPoint(props) {
             <span className={vState !== 'disabled' ? classes.statusBadgeComplete : classes.statusBadge}>{vState !== 'disabled' ? 'Read' : 'Unread'}</span>
             {point.subject && <H className={cx(classes.subjectStyle)}>{point.subject}</H>}
             {point.description && <p className={cx(classes.descriptionStyle)}>{point.description}</p>}
+            <DemInfo pointId={point._id} />
           </div>
           <div className={classes.rankingColumn}>
             <Ranking className={classes.ranking} disabled={vState === 'disabled'} defaultValue={rank} onDone={handleRankingDone} />
