@@ -508,12 +508,11 @@ export const someTestStory = {
   ],
   // ... test implementation
 }
-```
 
 return fetchDemInfo
 }
 
-````
+```
 
 **Rationale**: By returning a function instead of automatically fetching, we can call it explicitly after socket API calls that fetch points. This solves the timing and hook dependency issues.
 
@@ -648,7 +647,7 @@ export default function RerankStep(props) {
 
   return <Rerank {...otherProps} />
 }
-````
+```
 
 **Implementation Steps for Each Component**:
 

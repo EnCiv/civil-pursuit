@@ -5,13 +5,48 @@ import { ObjectId } from 'mongodb'
 import Points from '../models/points'
 import Jsforms from '../models/jsforms'
 
-/**
- * Socket API to fetch demographic information for multiple points
- * Returns moreDetails data for points where users have consented (shareInfo="Yes")
- *
- * @param {string[]} pointIds - Array of point IDs
- * @param {Function} cb - Called with object of { [pointId]: moreDetails } or undefined on error
- */
+/*
+# Socket API: get-dem-info
+
+Fetches demographic information for multiple points.
+Returns moreDetails data for points where users have consented (shareInfo="Yes").
+
+## Parameters
+
+- `pointIds` (string[]) - Array of point IDs to fetch demographic info for
+- `cb` (Function) - Callback function
+
+## Callback Response
+
+- **Success**: `cb({ [pointId]: moreDetails })` - Object mapping pointIds to their demographic data
+  - Returns `null` for a pointId if:
+    - Point not found
+    - Jsform not found
+    - User has not consented (shareInfo !== "Yes")
+    - Error processing that specific pointId
+- **Error**: `cb(undefined)` - Called when:
+  - User is not authenticated
+  - Invalid pointIds format (not array or empty)
+  - Unexpected server error
+
+## Privacy & Security
+
+- **Privacy**: Only returns data if `shareInfo === "Yes"`
+- **Security**: `userId` is always removed from response (even for user's own points per implementation)
+- **Authentication**: Requires authenticated user (`this.synuser`)
+
+## Example
+
+```javascript
+window.socket.emit('get-dem-info', ['id1', 'id2'], (result) => {
+  if (result) {
+    // Success: { id1: { stateOfResidence: 'CA', ... }, id2: null }
+  } else {
+    // Error: undefined
+  }
+})
+```
+*/
 export default async function getDemInfo(pointIds, cb) {
   try {
     if (typeof cb !== 'function') {
