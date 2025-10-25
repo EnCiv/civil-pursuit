@@ -78,7 +78,7 @@ function ReviewPoint(props) {
       {vState === 'open' && (leftPointList.length > 0 || rightPointList.length > 0) && (
         <div className={classes.showDualPointListContainer}>
           <Level>
-            <ShowDualPointList className={classes.showDualPointList} leftHeader="Why It's Most Important" rightHeader="Why It's Least Important" leftPoints={leftPointList} rightPoints={rightPointList} />
+            <ShowDualPointList className={classes.showDualPointList} leftHeader="Why It's Most Important" rightHeader="Why It's Least Important" leftPoints={leftPointList} rightPoints={rightPointList} vState={'expanded'} />
           </Level>
         </div>
       )}

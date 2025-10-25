@@ -198,12 +198,12 @@ function PairCompare(props) {
         <div className={classes.buttonsContainer}>
           {isSelectionComplete && !allRanked ? (
             <>
-              <SecondaryButton className={classes.customButton} onDone={handleYes}>
-                Yes
+              <SecondaryButton className={classes.customButton} onDone={handleYes} title="Recommend for further consideration">
+                Useful
               </SecondaryButton>
               <div style={{ width: '1rem', display: 'inline' }} />
-              <SecondaryButton className={classes.customButton} onDone={handleNo}>
-                No
+              <SecondaryButton className={classes.customButton} onDone={handleNo} title="Not recommended for further consideration">
+                Not useful
               </SecondaryButton>
             </>
           ) : isSelectionComplete || allRanked ? (
