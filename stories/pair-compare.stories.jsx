@@ -57,7 +57,7 @@ export const empty = {
   pointList: [],
 }
 
-export const onePointCanBeYesStartOverNo = {
+export const onePointCanBeUsefulStartOverNotUseful = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
@@ -67,8 +67,8 @@ export const onePointCanBeYesStartOverNo = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const Yes = canvas.getByText('Yes')
-    await userEvent.click(Yes)
+    const Useful = canvas.getByText('Useful')
+    await userEvent.click(Useful)
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
         count: 1,
@@ -94,8 +94,8 @@ export const onePointCanBeYesStartOverNo = {
         },
       })
     })
-    const No = canvas.getByText('No')
-    await userEvent.click(No)
+    const NotUseful = canvas.getByText('Not useful')
+    await userEvent.click(NotUseful)
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
         count: 3,
@@ -184,8 +184,8 @@ export const UserChoosesNoPoint = {
         },
       })
     })
-    const No = canvas.getByText('No')
-    await userEvent.click(No)
+    const NotUseful = canvas.getByText('Not useful')
+    await userEvent.click(NotUseful)
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
         count: 3,
