@@ -46,7 +46,7 @@ export default function Conclusion(props) {
                 </div>
               </div>
               <div className={cx(classes.dualPointList)}>
-                <ShowDualPointList leftPoints={d.mosts} leftHeader={"Why It's Most Important"} rightPoints={d.leasts} rightHeader={"Why It's Least Important"} vState={undefined} />
+                <ShowDualPointList leftPoints={d.mosts} leftHeader={"Why It's Most Important"} rightPoints={d.leasts} rightHeader={"Why It's Least Important"} vState={'expanded'} />
               </div>
               <div className={cx(classes.rankingResultsWrapper)}>
                 <div className={cx(classes.votingResultsText)}>

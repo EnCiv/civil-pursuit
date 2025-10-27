@@ -57,15 +57,14 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
   const isError = !!errors
 
   return (
-    <div style={{ position: 'relative', marginTop: '2.0rem', marginBottom: '0.5rem' }}>
-
+    <div style={{ position: 'relative', marginTop: '0.5rem', marginBottom: '2.0rem' }}>
       {isError && (
         <div
           className={classes.errorInput}
           style={{
             position: 'absolute',
-            left: '-0.5rem',
-            top: '-1.25rem',
+            left: '0.5rem',
+            bottom: '-1.5rem',
             fontSize: '0.875rem',
             lineHeight: '1.25rem',
             minHeight: '1rem',
@@ -114,17 +113,16 @@ const JsForm = props => {
   const classes = useStyles(props)
 
   useEffect(() => {
-  window.socket.emit('get-jsform', discussionId, data => {
-    if (data && data[name] !== undefined) {
-      const moreDetails = data[name] 
-      setData(moreDetails)
-      if (handleIsValid(moreDetails, schema, errors)) {
-        onDone({ valid: true, value: moreDetails })
+    window.socket.emit('get-jsform', discussionId, data => {
+      if (data && data[name] !== undefined) {
+        const moreDetails = data[name]
+        setData(moreDetails)
+        if (handleIsValid(moreDetails, schema, errors)) {
+          onDone({ valid: true, value: moreDetails })
+        }
       }
-    }
-  })
-}, [])
-
+    })
+  }, [])
 
   const handleSubmit = () => {
     window.socket.emit('upsert-jsform', discussionId, name, data)

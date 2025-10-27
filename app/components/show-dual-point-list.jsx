@@ -42,7 +42,7 @@ export default function ShowDualPointList({ className, leftPoints = [], leftHead
       </div>
       <div className={classes.buttonContainer}>
         <ModifierButton className={classes.button} onDone={toggleExpandCollapse}>
-          {isExpanded ? 'Collapse Chart' : 'Expand Chart'}
+          {isExpanded ? 'Collapse Table' : 'Expand Table'}
         </ModifierButton>
       </div>
     </div>

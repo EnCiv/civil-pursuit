@@ -106,7 +106,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1rem',
     lineHeight: '1.5rem',
     color: theme.colors.primaryButtonBlue,
-    textAlign: props => props.contentAlign,
+    textAlign: 'left',
   },
 
   participants: {
