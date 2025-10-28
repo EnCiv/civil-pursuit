@@ -104,7 +104,7 @@ export function Answer(props) {
 export function deriveMyAnswerAndMyWhy(data) {
   const local = useRef({}).current
   if (data.pointById !== local.pointById) {
-    const myAnswer = Object.values(data.pointById).find(p => p.userId === data.userId)
+    const myAnswer = Object.values(data.pointById || {}).find(p => p.userId === data.userId)
     local.myAnswer = myAnswer
     local.pointById = data.pointById
   }
