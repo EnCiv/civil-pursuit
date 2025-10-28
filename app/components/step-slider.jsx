@@ -89,7 +89,7 @@ export const StepSlider = props => {
         }
 
       case 'transitionBegin': {
-        sendDoneToParent(state.currentStep)
+        sendDoneToParent(Math.min(state.nextStep, state.currentStep)) // if going back, don't sent currentStep which might be the last step causing premature done
         return {
           ...state,
           transitions: true,
