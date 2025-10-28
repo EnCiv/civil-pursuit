@@ -130,7 +130,9 @@ function Tournament(props) {
   }, [uInfo, finalRound])
 
   const filteredSteps =
-    round < finalRound || (round === finalRound && roundsStatus[round] !== 'complete')
+    (data.participants || 0) < 2 * (data.dturn?.group_size || 10)
+      ? steps.filter(step => step.stepName === 'Answer' || step.stepName === 'Intermission')
+      : round < finalRound || (round === finalRound && roundsStatus[round] !== 'complete')
       ? steps.filter(step => !((step.stepName === 'Answer' && round > 0) || (step.allowedRounds && !step.allowedRounds.includes(round)))) // don't show Answer step after the first round
       : steps.filter(step => step.stepName === 'Intermission') // all rounds done, just go to intermission
   const stepInfo = filteredSteps.map(step => {
