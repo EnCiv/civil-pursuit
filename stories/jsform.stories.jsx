@@ -384,7 +384,7 @@ export const EmptyForm = {
         politicalParty: {
           title: 'Political Party or nearest ideology',
           type: 'string',
-          enum: ['Democrat', 'Republican', 'Independent', 'Libertarian', 'Green', 'Other']
+          enum: ['Democrat', 'Republican', 'Independent', 'Libertarian', 'Green', 'Other'],
         },
         stateOfResidence: {
           title: 'State of Residence',
@@ -416,7 +416,7 @@ export const EmptyForm = {
     const canvas = within(canvasElement)
     const submitButton = canvas.getByRole('button', { name: /Submit/i })
     // Since shareInfo is required and empty → disabled
-    expect(submitButton).toBeDisabled()
+    expect(submitButton.getAttribute('aria-disabled')).toEqual('true')
   },
 }
 
@@ -471,7 +471,7 @@ export const SubmitAllValid = {
     // required field
     await userEvent.selectOptions(canvas.getByLabelText(/may we share this information/i), 'Yes')
 
-    expect(submitButton).not.toBeDisabled()
+    expect(submitButton.getAttribute('aria-disabled')).toEqual('false')
     await userEvent.click(submitButton)
   },
 }
@@ -505,7 +505,7 @@ export const YearOfBirthValidation = {
 
     await userEvent.type(input, '1800')
     expect(canvas.getByText(/must be >= 1900/i)).toBeInTheDocument()
-    expect(canvas.getByRole('button', { name: /Submit/i })).toBeDisabled()
+    expect(canvas.getByRole('button', { name: /Submit/i }).getAttribute('aria-disabled')).toEqual('true')
   },
 }
 
@@ -531,7 +531,7 @@ export const RequiredShareInfo = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const submit = canvas.getByRole('button', { name: /Submit/i })
-    expect(submit).toBeDisabled()
+    expect(submit.getAttribute('aria-disabled')).toEqual('true')
   },
 }
 
@@ -563,7 +563,7 @@ export const OptionalField = {
     const submit = canvas.getByRole('button', { name: /Submit/i })
 
     // must answer required field
-    expect(submit).toBeDisabled()
+    expect(submit.getAttribute('aria-disabled')).toEqual('true')
     await userEvent.selectOptions(canvas.getByLabelText(/may we share this information/i), 'No')
   },
 }
