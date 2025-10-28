@@ -316,9 +316,6 @@ export const tournamentDecorators = [
       </DemInfoProvider>
     )
   },
-  buildApiDecorator('subscribe-deliberation', (discussionId, requestHandler, updateHandler) => {
-    requestHandler({ uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }], lastRound: 0, participants: 1 })
-  }),
   buildApiDecorator('get-user-ranks', []),
   buildApiDecorator('get-points-of-ids', []),
   buildApiDecorator('get-why-ranks-and-points', { ranks: [], whys: [] }),
@@ -360,5 +357,23 @@ export const Normal = {
     testSteps: tournamentSteps,
     defaultValue: tournamentDefaultValue,
   },
-  decorators: tournamentDecorators,
+  decorators: [
+    ...tournamentDecorators,
+    buildApiDecorator('subscribe-deliberation', (discussionId, requestHandler, updateHandler) => {
+      requestHandler({ uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }], lastRound: 0, participants: 20 })
+    }),
+  ],
+}
+
+export const NotEnoughParticipantsYet = {
+  args: {
+    testSteps: tournamentSteps,
+    defaultValue: tournamentDefaultValue,
+  },
+  decorators: [
+    ...tournamentDecorators,
+    buildApiDecorator('subscribe-deliberation', (discussionId, requestHandler, updateHandler) => {
+      requestHandler({ uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }], lastRound: 0, participants: 1 })
+    }),
+  ],
 }
