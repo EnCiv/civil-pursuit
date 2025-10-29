@@ -26,7 +26,7 @@ export default async function upsertWhy(pointObj, cb) {
     return cb?.(undefined) // Return validation error
   }
 
-  const validation = Points.validate(correctedPointObj)
+  const validation = Points.validate(correctedPointObj, ['_id', 'category', 'subject'])
   if (validation.error) {
     console.error(validation.error)
     return cb?.(undefined) // Return validation error

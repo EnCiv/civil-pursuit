@@ -6,9 +6,9 @@ const Validation = {
   SANE: SANE,
   Integer: /^[0-9]+$/,
   ObjectID: () => Joi.any(),
-  String: () => Joi.string().allow('').max(SANE),
-  IsoDate: () => Joi.string().allow('').isoDate(),
-  Email: () => Joi.string().allow('').email(),
+  String: () => Joi.string().max(SANE),
+  IsoDate: () => Joi.string().isoDate(),
+  Email: () => Joi.string().email(),
   Number: () => Joi.number(),
 }
 export default Validation

@@ -47,13 +47,14 @@ test('Insert a new document with no id set', async () => {
   await upsertWhy.call({ synuser: user }, pointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
+
   const point = await Points.findOne({ subject: 'Test Subject' })
   expect(point).toMatchObject({ ...pointObj, userId: USER1 })
 })
 
 test('Upsert changes to an existing document with its id set', async () => {
   const existingPoint = {
-    _id: POINT1,
+    _id: POINT3,
     subject: 'Existing Subject',
     description: 'Existing Description',
     round: 1,
@@ -64,7 +65,7 @@ test('Upsert changes to an existing document with its id set', async () => {
   await Points.insertOne(existingPoint)
 
   const updatedPointObj = {
-    _id: POINT1,
+    _id: POINT3,
     subject: 'Updated Subject',
     description: 'Updated Description',
     round: 1,
@@ -78,6 +79,7 @@ test('Upsert changes to an existing document with its id set', async () => {
   await upsertWhy.call({ synuser: user }, updatedPointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
+  console.log('HERE', cb.mock.calls[0][0])
   const point = await Points.findOne({ _id: POINT1 })
   expect(point).toMatchObject({ ...updatedPointObj, userId: USER1 })
 })

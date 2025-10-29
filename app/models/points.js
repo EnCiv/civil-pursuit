@@ -24,11 +24,12 @@ class Points extends Collection {
     parentId: Validation.String(),
     category: Validation.String(),
     userId: Validation.String(),
+    round: Validation.Number(), // for whys
   })
 
   static validate(doc, requiredFields) {
     const schema = requiredFields ? enforceRequiredFields(this.joiSchema, requiredFields) : this.joiSchema
-    console.log(schema)
+
     const { error, value } = schema.validate(doc)
     if (error) {
       return { error: error.details[0].message }
