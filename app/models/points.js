@@ -15,7 +15,7 @@ class Points extends Collection {
   static collectionOptions = {}
 
   // Optional: indexes array as defined in db.collection.createIndexes
-  static collectionIndexes = [{ key: { subject: 1 }, name: 'subject_index', unique: true }]
+  static collectionIndexes = [{ key: { subject: 1 }, name: 'subject_index', unique: false }]
 
   static joiSchema = Joi.object({
     _id: Validation.ObjectID(),

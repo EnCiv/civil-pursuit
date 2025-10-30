@@ -110,7 +110,7 @@ test('Return data if discussion is complete.', async () => {
 
   for (let statement of testStatements) {
     statement.description = statement.description.toString()
-    await upsertPoint.call({ synuser: { id: statement.userId } }, statement, () => {})
+    await upsertPoint.call({ synuser: { id: statement.userId } }, statement, res => {})
   }
 
   // Structure and insert predefined uInfo

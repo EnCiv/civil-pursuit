@@ -79,8 +79,8 @@ test('Upsert changes to an existing document with its id set', async () => {
   await upsertWhy.call({ synuser: user }, updatedPointObj, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
-  console.log('HERE', cb.mock.calls[0][0])
-  const point = await Points.findOne({ _id: POINT1 })
+
+  const point = await Points.findOne({ _id: POINT3 })
   expect(point).toMatchObject({ ...updatedPointObj, userId: USER1 })
 })
 
