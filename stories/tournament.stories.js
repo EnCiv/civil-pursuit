@@ -338,6 +338,10 @@ export const tournamentDecorators = [
     })
     cb(demInfo)
   }),
+  // subscribe-deliberation is at the end so it can be sliced off and replaced
+  buildApiDecorator('subscribe-deliberation', (discussionId, requestHandler, updateHandler) => {
+    requestHandler({ uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }], lastRound: 0, participants: 20 })
+  }),
 ]
 
 export const tournamentDefaultValue = {
@@ -357,12 +361,7 @@ export const Normal = {
     testSteps: tournamentSteps,
     defaultValue: tournamentDefaultValue,
   },
-  decorators: [
-    ...tournamentDecorators,
-    buildApiDecorator('subscribe-deliberation', (discussionId, requestHandler, updateHandler) => {
-      requestHandler({ uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }], lastRound: 0, participants: 20 })
-    }),
-  ],
+  decorators: [...tournamentDecorators],
 }
 
 export const NotEnoughParticipantsYet = {
@@ -371,7 +370,7 @@ export const NotEnoughParticipantsYet = {
     defaultValue: tournamentDefaultValue,
   },
   decorators: [
-    ...tournamentDecorators,
+    ...tournamentDecorators.slice(0, -1),
     buildApiDecorator('subscribe-deliberation', (discussionId, requestHandler, updateHandler) => {
       requestHandler({ uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }], lastRound: 0, participants: 1 })
     }),
