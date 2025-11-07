@@ -48,23 +48,23 @@ function buildChildren(steps) {
   })
 }
 
-function CivilPursuitContent({ iota, steps, user, _id, minParticipants, children }) {
+function CivilPursuitContent({ subject, description, steps, user, _id, minParticipants, children }) {
   const classes = useStylesFromThemeFunction()
   // upsert uischema into DemInfoContext
   try {
     const { upsert } = useDemInfoContext()
     React.useEffect(() => {
-      const stepsList = iota?.steps || steps || []
+      const stepsList = steps || []
       const moreDetailsStep = stepsList.find(s => s.webComponent === 'Jsform' && s.name === 'moreDetails')
       if (moreDetailsStep?.uischema) upsert({ uischema: moreDetailsStep.uischema })
-    }, [iota, steps, upsert])
+    }, [steps, upsert])
   } catch (e) {
     // if context not available, skip
   }
 
   return (
     <div className={cx(classes.civilPursuit)}>
-      <QuestionBox className={classes.question} subject={iota?.subject} description={iota?.description} discussionId={_id} minParticipants={minParticipants} />
+      <QuestionBox className={classes.question} subject={subject} description={description} discussionId={_id} minParticipants={minParticipants} />
       <Level>
         <StepSlider className={classes.stepPadding} children={children} user={user} discussionId={_id} />
       </Level>
@@ -74,12 +74,12 @@ function CivilPursuitContent({ iota, steps, user, _id, minParticipants, children
 
 function CivilPursuit(props) {
   const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, participants, minParticipants, ...otherProps } = props
-  const [children] = useState(buildChildren(steps)) // just do this once so we don't get rerenders
+  const [children] = useState(buildChildren(steps)) // just do this once so we don't get rerenders. steps don't change so there's no need for useMemo and dependencies
 
   return (
-    <DeliberationContextProvider defaultValue={{ discussionId: _id, user, userId: user?.id, participants, ...otherProps }}>
+    <DeliberationContextProvider defaultValue={{ discussionId: _id, user, userId: user?.id, participants, subject, description, ...otherProps }}>
       <DemInfoProvider>
-        <CivilPursuitContent iota={{ subject, description, steps }} steps={steps} user={user} _id={_id} minParticipants={minParticipants} children={children} />
+        <CivilPursuitContent subject={subject} description={description} steps={steps} user={user} _id={_id} minParticipants={minParticipants} children={children} />
       </DemInfoProvider>
     </DeliberationContextProvider>
   )

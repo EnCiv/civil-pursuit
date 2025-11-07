@@ -1,7 +1,7 @@
 //https://github.com/EnCiv/civil-pursuit/issues/213
 
 'use strict'
-import React, { useState, useContext, useEffect, useRef } from 'react'
+import React, { useState, useContext, useEffect, useRef, useMemo } from 'react'
 import cx from 'classnames'
 import StepIntro from '../step-intro'
 import WhyInput from '../why-input'
@@ -31,22 +31,27 @@ export default function AnswerStep(props) {
     })
   }, [data.uInfo, round])
 
-  function handleOnDone({ valid, value, delta }) {
-    if (delta) {
-      if (delta.myAnswer) {
-        upsert({ pointById: { [delta.myAnswer._id]: delta.myAnswer } }) // Update context with delta changes
-        window.socket.emit('insert-dturn-statement', delta.myAnswer.parentId, delta.myAnswer) // Push changes to server
-      }
-      if (delta.myWhy) {
-        // Only upsert the changed value for 'most', do not expand the whole object
-        upsert({ myWhyByCategoryByParentId: { most: { [delta.myWhy.parentId]: delta.myWhy } } })
-        window.socket.emit('upsert-why', delta.myWhy)
-      }
-    }
-    onDone({ valid, value })
-  }
+  const question = useMemo(() => ({ _id: data.discussionId, subject: data.subject, description: data.description }), [data.discussionId, data.subject, data.description]) // the question use to be in the step, but it is also in the Iota. deprecate the question in the step
 
-  return <Answer {...deriveMyAnswerAndMyWhy(data)} round={round} userId={data.userId} discussionId={data.discussionId} {...otherProps} onDone={handleOnDone} />
+  const handleOnDone = React.useCallback(
+    ({ valid, value, delta }) => {
+      if (delta) {
+        if (delta.myAnswer) {
+          upsert({ pointById: { [delta.myAnswer._id]: delta.myAnswer } }) // Update context with delta changes
+          window.socket.emit('insert-dturn-statement', delta.myAnswer.parentId, delta.myAnswer) // Push changes to server
+        }
+        if (delta.myWhy) {
+          // Only upsert the changed value for 'most', do not expand the whole object
+          upsert({ myWhyByCategoryByParentId: { most: { [delta.myWhy.parentId]: delta.myWhy } } })
+          window.socket.emit('upsert-why', delta.myWhy)
+        }
+      }
+      onDone({ valid, value })
+    },
+    [onDone, upsert]
+  )
+
+  return <Answer {...deriveMyAnswerAndMyWhy(data)} question={question} round={round} userId={data.userId} discussionId={data.discussionId} {...otherProps} onDone={handleOnDone} />
 }
 
 // Presentation component: only renders UI and handles local user interactions
@@ -89,7 +94,7 @@ export function Answer(props) {
       <StepIntro {...stepIntro} />
       <div className={classes.answersContainer}>
         <div key="question">
-          <WhyInput point={{ ...question, _id: discussionId }} value={_myAnswer} maxWordCount={maxWordCount} maxCharCount={maxCharCount} onDone={updateResponse('myAnswer')} />
+          <WhyInput point={question} value={_myAnswer} maxWordCount={maxWordCount} maxCharCount={maxCharCount} onDone={updateResponse('myAnswer')} />
         </div>
         <div key="why">
           <hr className={classes.pointsHr} />
