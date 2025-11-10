@@ -1,0 +1,887 @@
+# Late Sign-Up Feature Specification
+
+## Overview
+
+This specification describes the "Late Sign-Up" feature that allows users to explore the deliberation experience before committing to sign up. Users can participate through Round 1 (round 0 in code) using the `useAuth` skip method to create a temporary account. All data is stored in localStorage throughout all rounds, then batch-upserted to the server at key checkpoints (after each round completion). Users are prompted to provide their email at the intermission after Round 1 to continue. This reduces the barrier to entry and allows users to build trust and interest before providing personal information.
+
+## Problem Statement
+
+**Current State:**
+
+- Users are immediately greeted with `app/components/sign-up.jsx` as the first step
+- This creates a barrier to entry, preventing users from understanding what the deliberation is about
+- Few users utilize the "Skip" feature which assigns a temporary userId
+- Data is immediately upserted to the database via socket API calls, requiring a userId association from the start
+
+**Issues:**
+
+- High bounce rate at the sign-up page
+- Users cannot evaluate the deliberation process before committing
+- Trust and interest building happens after the commitment, not before
+
+## Objectives
+
+1. Remove sign-up friction by allowing users to skip registration through Round 1 (round 0 in code)
+2. Use civil-client's `useAuth` skip method to create temporary user accounts
+3. Store all user data in localStorage for all rounds (not just anonymous users)
+4. Batch-upsert localStorage data to server after round completion and email submission
+5. Request email at intermission after Round 1 to associate with the temporary account
+6. Move demographic questions (jsform/moreDetails) to end of tournament steps, before intermission
+7. Maintain backward compatibility with existing flows and tests
+
+## Architecture & Data Flow
+
+**Key Design Decision:** All rounds use localStorage as the primary data store on the client side. This provides a single, consistent code path and solves existing issues:
+
+- Prevents loss of `groupIdsLists` on page refresh
+- Prevents inconsistencies when users edit points that have already been shown to others
+- Allows users to navigate forward/backward through steps until round completion
+- Data is batch-upserted to server only at round completion or email submission
+
+**useAuth Integration:** The anonymous user flow leverages `civil-client`'s `useAuth` hook (see `node_modules/civil-client/app/components/use-auth.js`):
+
+- `methods.skip()` creates a temporary user account with a server-generated userId
+- Skip triggers a page reload with a session cookie (has expiration)
+- If email is not associated with the userId before cookie expires, the account becomes abandoned
+- After skip, `user.id` is valid and normal socket APIs work correctly
+
+### User Flow States
+
+```
+State 1: Unauthenticated User (Initial)
+- No userId yet
+- Answer step shows Terms & Privacy checkbox
+- User must check Terms or login to proceed
+- On Next button click (with Terms checked):
+  - Call useAuth.methods.skip()
+  - Page reloads with valid user.id
+- All subsequent data stored in localStorage with key: `cp_${discussionId}_${userId}`
+- Sign-up component NOT in step list
+
+State 2: Temporary User (Round 1 / round 0 in code)
+- Has user.id but no user.email
+- All data saved to localStorage (not immediately to server)
+- User completes Answer, comparison, grouping, ranking steps
+- Data persists across page refreshes via localStorage
+
+State 3: Round 1 Complete → Intermission
+- User prompted for email at intermission (if no user.email)
+- On email submission:
+  1. Call new batch-upsert API with all localStorage data
+  2. API internally calls finish-round with accumulated data
+  3. Server associates email with existing userId
+  4. Clear localStorage for completed round
+  5. User becomes authenticated
+
+State 4: Authenticated User (Round 2+)
+- Has user.email associated with account
+- Continues using localStorage throughout remaining rounds
+- Data batch-upserted after each round completion
+```
+
+### localStorage Data Structure
+
+```javascript
+// Key: `cp_${discussionId}_${userId}_${round}`
+{
+  discussionId: string,
+  userId: string, // from user.id after skip
+  round: number, // 0, 1, 2, etc.
+  pointById: { [pointId]: Point },
+  myWhyByCategoryByParentId: { most: {}, least: {} },
+  postRankByParentId: { [parentId]: Rank },
+  whyRankByParentId: { [parentId]: Rank },
+  groupIdsLists: [[string]],
+  jsformData: { [formName]: any },
+  timestamp: number,
+  roundComplete: boolean // Set to true when finish-round is called
+}
+```
+
+## Detailed Changes
+
+### Phase 1: Configuration & Step Order Changes
+
+#### 1.1 Update iotas.json
+
+**Files:** `iotas.json`
+
+- **DO NOT modify existing iotas** - create one new iota with a new path and \_id for testing
+- Remove `{ "webComponent": "SignUp", "startTab": "SignUp" }` from new iota's steps array
+- Move Jsform "moreDetails" step from position 2 to after Tournament step, before Intermission
+- Add `roundFilter: 0` to jsform step to only show in Round 1 (round 0 in code)
+
+**Example structure for new iota:**
+
+```json
+{
+  "_id": { "$oid": "NEW_ID_HERE" },
+  "path": "/late-signup-test",
+  "subject": "Test Late Sign-Up Flow",
+  "steps": [
+    // SignUp removed
+    {
+      "webComponent": "Tournament",
+      "steps": [
+        // Tournament internal steps
+      ]
+    },
+    {
+      "webComponent": "Jsform",
+      "name": "moreDetails",
+      "roundFilter": 0 // Only show in Round 1 (round 0 in code)
+      // ... existing schema
+    },
+    {
+      "webComponent": "Intermission"
+    },
+    {
+      "webComponent": "Conclusion"
+    }
+  ]
+}
+```
+
+### Phase 2: localStorage Integration
+
+#### 2.1 Create localStorage Utility Module
+
+**New File:** `app/lib/local-storage-manager.js`
+
+**Functions:**
+
+- `saveDeliberationData(discussionId, userId, round, data)` - Save data to localStorage
+- `loadDeliberationData(discussionId, userId, round)` - Load data from localStorage
+- `clearDeliberationData(discussionId, userId, round)` - Clear after successful upsert
+- `isLocalStorageAvailable()` - Check if localStorage is available
+
+**Implementation Notes:**
+
+- Store with composite key: `cp_${discussionId}_${userId}_${round}`
+- Include timestamp for data freshness validation
+- Handle quota exceeded errors gracefully (log error, fall back to server-side only)
+- Support data migration if schema version changes
+- Return null/undefined gracefully if localStorage unavailable
+
+#### 2.2 Update DeliberationContext
+
+**File:** `app/components/deliberation-context.js`
+
+**Changes:**
+
+- Always use localStorage as primary data store (when available)
+- Load localStorage data on mount for current round
+- Override upsert function to:
+  1. Update context state (existing behavior)
+  2. Save to localStorage
+  3. Do NOT immediately call socket APIs
+- Add method to batch-upsert localStorage data at round completion
+- Track current round in localStorage
+- After round completion and successful batch-upsert, clear that round's localStorage
+
+**New exports:**
+
+- `useLocalStorageIfAvailable()` - Returns boolean indicating if localStorage is being used
+- `flushRoundToServer(round, callback)` - Batch upsert method for a specific round
+
+### Phase 3: Step Component Modifications
+
+#### 3.1 Update Answer Step (Round 1 / round 0 only)
+
+**File:** `app/components/steps/answer.js`
+
+**Changes:**
+
+- Add Terms & Privacy UI at bottom of step (only if `!user?.email`)
+- Use `useAuth` hook from civil-client:
+  - `methods.onChangeAgree` for checkbox state
+  - `methods.skip()` to create temporary account on Next button click
+  - Display `state.info`, `state.error`, `state.success` from useAuth
+- Modify `handleOnDone`:
+  - Always save to localStorage (when available)
+  - Do NOT call socket emit
+- Valid status depends on:
+  - Answer and Why are valid AND
+  - (User has user.id OR Terms checkbox is checked)
+- On Next button click (via StepFooter):
+  - If Terms checked and no user.id: call `methods.skip()` which triggers page reload
+  - If user.id exists: proceed normally (StepSlider handles navigation)
+
+**New Components:**
+
+- `<TermsAgreement />` - Embedded at bottom of Answer step
+  - Checkbox for Terms & Privacy agreement
+  - Uses useAuth.methods.onChangeAgree
+  - Shows useAuth state messages (info/error/success)
+  - Note: Skip is called when user clicks Next button, not immediately on checkbox change
+
+#### 3.2 Update Rerank Step
+
+**File:** `app/components/steps/rerank.js`
+
+**Changes:**
+
+- Always save rank data to localStorage (when available)
+- Store onNext data in context state (not as a function reference)
+- When valid, prepare onNext callback but let StepSlider execute it normally
+- The onNext callback should save final round state to context:
+  - `shownStatementIds` with ranks
+  - `groupings`
+  - `finished: true`
+- Do NOT call `window.socket.emit('finish-round', ...)` here
+- The finish-round call will happen in intermission batch-upsert API
+
+#### 3.3 Update Intermission Step
+
+**File:** `app/components/intermission.jsx`
+
+**Changes:**
+
+- Check if user has `user.id` but no `user.email` and Round 1 (round 0 in code) just completed
+- If temporary user at Round 1 completion:
+  - Show email input form (already exists for unregistered users)
+  - On email submission:
+    1. Call new batch-upsert API with all localStorage data for the round
+    2. API internally handles finish-round logic
+    3. Server associates email with existing userId
+    4. Clear localStorage for completed round after successful response
+- Add loading state during batch upsert
+- Handle errors gracefully (allow retry, show error message)
+
+**New UI States:**
+
+- "Please provide your email to continue" (existing)
+- "Processing your responses..." (new, during batch upsert)
+- "Error saving data, please try again" (new, error state)
+
+#### 3.4 Update Other Steps with Socket Emits
+
+**Files:**
+
+- `app/components/steps/why.js`
+- `app/components/steps/rank.js`
+- `app/components/steps/compare-whys.js`
+- `app/components/jsform.jsx`
+- `app/components/steps/conclusion.js`
+
+**Changes for each:**
+
+- Import localStorage manager
+- Always save to localStorage (when available)
+- Do NOT immediately call socket emit APIs during round progression
+- Use consistent data structure for localStorage
+- Maintain existing behavior for reading data from server (get-points-of-ids, etc.)
+
+### Phase 4: Server-Side Changes
+
+#### 4.1 New Socket API: batch-upsert-deliberation-data
+
+**New File:** `app/socket-apis/batch-upsert-deliberation-data.js`
+
+**Purpose:** Accept accumulated localStorage data and process all upserts atomically, including finish-round logic
+
+**Parameters:**
+
+```javascript
+{
+  discussionId: string,
+  round: number,
+  email: string, // Optional, if provided associate with userId
+  data: {
+    pointById: {},
+    myWhyByCategoryByParentId: {},
+    postRankByParentId: {},
+    whyRankByParentId: {},
+    groupIdsLists: [],
+    jsformData: {},
+    uInfo: { // The round's uInfo with finished: true
+      shownStatementIds: {},
+      groupings: [],
+      finished: true
+    }
+  }
+}
+```
+
+**Process:**
+
+1. Verify `this.synuser.id` is valid, fail if not authenticated
+2. If email provided: associate email with `this.synuser.id`
+3. Overwrite any existing data for this user/discussion/round (no duplicate detection needed)
+4. Upsert all points using existing `insert-dturn-statement` logic
+5. Upsert all whys using existing `upsert-why` logic
+6. Upsert all ranks using existing `upsert-rank` logic
+7. Upsert jsform data using existing `upsert-jsform` logic
+8. Call `finish-round` logic internally with idRanks and groupings from data.uInfo
+9. Return success (do not return userId, server already knows it)
+
+**Error Handling:**
+
+- Validation failures for any data
+- Database errors
+- Sequential operations with idempotency checks (transactions deferred to Phase 2)
+- Return specific error messages for debugging
+
+**Implementation Notes:**
+
+- This consolidates multiple socket API calls into one atomic operation
+- Reuses existing validation logic from individual upsert APIs
+- The finish-round logic should be called last, after all data is successfully saved
+- **Phase 1 (initial)**: Sequential operations with idempotency checks
+- **Phase 2 (future)**: Add MongoDB transactions when replica set is available (requires M10+ Atlas tier or replica set in test environment)
+
+#### 4.2 Existing Socket APIs - No Changes Needed
+
+**Files:**
+
+- `app/socket-apis/insert-dturn-statement.js`
+- `app/socket-apis/upsert-why.js`
+- `app/socket-apis/upsert-rank.js`
+- `app/socket-apis/finish-round.js`
+
+**No changes required.** These APIs will be called by the new batch-upsert API on the server side, or can continue to work for any flows that don't use localStorage.
+
+#### 4.3 subscribe-deliberation - Likely No Changes Needed
+
+**File:** `app/socket-apis/subscribe-deliberation.js`
+
+**Analysis:** After `useAuth.skip()` is called and the page refreshes, `this.synuser.id` will be valid. The existing API should work without modification. If issues are discovered during implementation, document them here.
+
+### Phase 5: Step-Footer Integration
+
+#### 5.1 StepFooter - No Changes Needed
+
+**File:** `app/components/step-footer.jsx`
+
+**Analysis:** Answer step will control its own valid state by calling `onDone({ valid: false })` until Terms are checked or user has user.id. StepFooter already respects the `active` prop passed from step state. No changes needed.
+
+**Note:** Any "why Next is disabled" messaging should be shown in the Answer step itself, not in StepFooter.
+
+#### 5.2 StepSlider - No Changes Needed
+
+**File:** `app/components/step-slider.jsx`
+
+**Analysis:** With the always-use-localStorage approach, StepSlider can continue to execute onNext callbacks normally. The onNext callback from rerank will simply update context state (not call socket APIs). No queueing mechanism needed.
+
+**Note:** If issues arise during implementation, document them here.
+
+### Phase 6: Tournament Component Updates
+
+#### 6.1 Filter Steps by Round
+
+**File:** `app/components/tournament.js`
+
+**Changes:**
+
+- Add step filtering logic based on round
+- Filter out jsform "moreDetails" after Round 1 (round 0 in code)
+- Ensure step indices remain consistent across rounds
+
+**New function:**
+
+```javascript
+function filterStepsByRound(steps, round) {
+  return steps.filter(step => {
+    if (step.roundFilter === undefined) return true // No filter, show in all rounds
+    return step.roundFilter === round // Show only if round matches
+  })
+}
+```
+
+## Questions & Concerns
+
+### Critical Questions
+
+1. **Q:** How do we handle users who close the browser mid-Round 1 before providing email?
+   **A:** localStorage persists data across browser sessions. On return, check for existing data and restore state. Implement 7-day TTL to clean up abandoned sessions.
+
+2. **Q:** What happens if a user completes Round 1 on Device A, then tries to access on Device B?
+   **A:** The userId from skip is device-specific (tied to session cookie). After email signup on Device A, data is server-side and associated with email. Device B would need to login with that email to access the same account. Without email association, Device B starts as a new temporary user.
+
+3. **Q:** How do we prevent duplicate submissions or data corruption if batch-upsert fails mid-process?
+   **A:** For initial implementation, use sequential operations without MongoDB transactions (transactions require replica sets which aren't available on free tier or standard test setup). Implement idempotency and error recovery:
+
+   ```javascript
+   // Phase 1: Without transactions (initial implementation)
+   async function batchUpsert(data) {
+     try {
+       // Check if round already finished (idempotency)
+       const existingUInfo = await Dturns.findOne({
+         discussionId,
+         userId,
+         round,
+       })
+       if (existingUInfo?.finished) {
+         return { success: true, message: 'Round already completed' }
+       }
+
+       // Validate all data using Joi schemas before upserting
+       const pointSchema = Joi.object({
+         _id: Joi.string().required(),
+         subject: Joi.string().required(),
+         description: Joi.string().required(),
+         parentId: Joi.string().required(),
+         userId: Joi.string().required(),
+         // category is NOT required for points
+       })
+
+       const whySchema = Joi.object({
+         _id: Joi.string().required(),
+         subject: Joi.string().required(),
+         description: Joi.string().required(),
+         parentId: Joi.string().required(),
+         userId: Joi.string().required(),
+         category: Joi.string().required(), // category IS required for whys
+       })
+
+       // Use existing rankSchema from upsert-rank.js
+       const rankSchema = Joi.object({
+         _id: Joi.string(),
+         parentId: Joi.string().required(),
+         userId: Joi.string().required(),
+         category: Joi.string().required(),
+       })
+
+       // Prepare arrays for bulk operations
+       const points = Object.values(data.pointById)
+       const whys = []
+       for (const category in data.myWhyByCategoryByParentId) {
+         for (const why of Object.values(data.myWhyByCategoryByParentId[category])) {
+           whys.push({ ...why, category }) // Add category to why object
+         }
+       }
+       const ranks = Object.values(data.postRankByParentId)
+
+       // Validate all data
+       for (const point of points) {
+         const { error } = pointSchema.validate(point)
+         if (error) {
+           logger.error(`Point validation failed: ${error.message}`)
+           return cb(undefined)
+         }
+       }
+
+       for (const why of whys) {
+         const { error } = whySchema.validate(why)
+         if (error) {
+           logger.error(`Why validation failed: ${error.message}`)
+           return cb(undefined)
+         }
+       }
+
+       for (const rank of ranks) {
+         const { error } = rankSchema.validate(rank)
+         if (error) {
+           logger.error(`Rank validation failed: ${error.message}`)
+           return cb(undefined)
+         }
+       }
+
+       // Use MongoDB bulk operations for efficiency
+       // Points collection
+       if (points.length > 0) {
+         const pointOps = points.map(point => ({
+           updateOne: {
+             filter: { _id: point._id },
+             update: { $set: point },
+             upsert: true,
+           },
+         }))
+         await Point.bulkWrite(pointOps)
+       }
+
+       // Whys are also in Points collection (with category)
+       if (whys.length > 0) {
+         const whyOps = whys.map(why => ({
+           updateOne: {
+             filter: { _id: why._id },
+             update: { $set: why },
+             upsert: true,
+           },
+         }))
+         await Point.bulkWrite(whyOps)
+       }
+
+       // Ranks collection
+       if (ranks.length > 0) {
+         const rankOps = ranks.map(rank => ({
+           updateOne: {
+             filter: { parentId: rank.parentId, userId: rank.userId },
+             update: { $set: rank },
+             upsert: true,
+           },
+         }))
+         await Rank.bulkWrite(rankOps)
+       }
+
+       // Upsert jsform data if present
+       if (data.jsformData && Object.keys(data.jsformData).length > 0) {
+         for (const [name, formData] of Object.entries(data.jsformData)) {
+           await upsertJsform(discussionId, name, formData)
+         }
+       }
+
+       // Only mark as finished if all succeeded
+       await finishRound(discussionId, round, data.uInfo.groupings)
+
+       return cb({
+         points: points.length,
+         whys: whys.length,
+         ranks: ranks.length,
+       })
+     } catch (error) {
+       // Return undefined on error for client to handle
+       logger.error('Batch upsert failed:', error)
+       return cb(undefined)
+     }
+   }
+
+   // Phase 2: With transactions (future enhancement, requires replica set)
+   // TODO: Uncomment when MongoDB replica set is available
+   // const session = await Mongo.client.startSession()
+   // try {
+   //   await session.withTransaction(async () => {
+   //     await Point.bulkWrite(pointOps, { session })
+   //     await Point.bulkWrite(whyOps, { session })
+   //     await Rank.bulkWrite(rankOps, { session })
+   //     await finishRound(discussionId, round, groupings, { session })
+   //   })
+   // } finally {
+   //   await session.endSession()
+   // }
+   ```
+
+   **Recovery strategy:** If batch-upsert fails, client should retry the entire operation. The idempotency check prevents duplicate round completion. Partial data will be overwritten on retry (per spec requirement #3).
+
+4. **Q:** Should we allow users to continue past Round 1 without email?
+   **A:** No. Email is required at intermission to continue to Round 2. This is the natural checkpoint.
+
+5. **Q:** What if localStorage is disabled or quota exceeded?
+   **A:** Detect localStorage availability on mount. If unavailable, log error message and fall back to requiring sign-up upfront or proceeding with server-only mode (revert to immediate socket APIs). For quota exceeded: log error via `logger.error`, notify user, and attempt to proceed with server-only mode.
+
+6. **Q:** How do we handle the `finish-round` socket call?
+   **A:** The finish-round functionality is incorporated into the batch-upsert API. Only one API call is made from intermission, which handles all data upserts and finish-round logic internally on the server.
+
+7. **Q:** What about `initUitems` and `getStatementIds` for temporary users?
+   **A:** After `useAuth.skip()` is called and page reloads, `this.synuser.id` is valid. These calls work normally with the temporary userId - they use in-memory dturn state and don't require email association.
+
+### Technical Concerns
+
+1. **localStorage size limits**: Typical limit is 5-10MB. Need to monitor data size, especially for discussions with many points.
+
+2. **Race conditions**: Batch upsert during intermission could conflict with other socket operations. Need proper sequencing.
+
+3. **Testing complexity**: Need to test both authenticated and temporary user flows, localStorage edge cases, and migration scenarios.
+
+4. **Browser privacy modes**: Private/Incognito mode may block localStorage. Need graceful degradation.
+
+5. **Data consistency**: Ensure localStorage and server data structures remain in sync. Version the localStorage schema.
+
+6. **Security**: Handled by `useAuth.skip()` method - uses server-generated userId with session cookie.
+
+7. **Existing users**: Users who already have email should not see the Terms prompt. Detect via `user.email` property.
+
+8. **Mobile/responsive**: Ensure Terms checkbox works well on mobile screens.
+
+9. **Accessibility**: Terms checkbox must be keyboard navigable and screen-reader friendly.
+
+10. **Analytics**: Track temporary → authenticated conversion rate, drop-off points.
+
+## Implementation Phases
+
+### Phase 1: Foundation & Configuration
+
+**Priority: High**
+
+- [ ] Create localStorage manager utility (`app/lib/local-storage-manager.js`)
+- [ ] Create one new iota in iotas.json with new path and \_id (do not modify existing iotas)
+- [ ] Add roundFilter support to step filtering logic
+- [ ] Update documentation
+
+**Deliverables:**
+
+- Working localStorage utility with tests
+- New test iota configuration
+
+### Phase 2: DeliberationContext & Core Integration
+
+**Priority: High**
+
+- [ ] Update DeliberationContext to always use localStorage when available
+- [ ] Implement localStorage save on all upsert operations
+- [ ] Add batch-upsert function to context
+- [ ] Update context tests
+
+**Deliverables:**
+
+- Enhanced DeliberationContext with localStorage-first approach
+- Comprehensive unit tests for context changes
+
+### Phase 3: Answer Step & Terms Agreement UI
+
+**Priority: High**
+
+- [ ] Create `<TermsAgreement />` component using useAuth
+- [ ] Update Answer step with embedded Terms prompt (if !user.email)
+- [ ] Implement Terms checkbox validation
+- [ ] Integrate useAuth.skip() on Next button click
+- [ ] Update Answer step to save to localStorage
+- [ ] Create Storybook stories for new component
+
+**Deliverables:**
+
+- Working Answer step with Terms agreement
+- Storybook stories demonstrating all states
+- Unit tests for new component
+
+### Phase 4: Rerank & Intermission Updates
+
+**Priority: High**
+
+- [ ] Update Rerank step to save data to context (not call socket APIs)
+- [ ] Update Intermission to detect temporary users at Round 1 (round 0) completion
+- [ ] Implement batch-upsert UI flow in Intermission
+- [ ] Add loading and error states
+- [ ] Handle email association with userId
+
+**Deliverables:**
+
+- Updated Rerank and Intermission components
+- Working end-to-end flow through Round 1
+
+### Phase 5: Server-Side APIs
+
+**Priority: High**
+
+- [ ] Create `batch-upsert-deliberation-data.js` socket API
+- [ ] Implement sequential operations with idempotency checks (no transactions for Phase 1)
+- [ ] Add TODO comments for future transaction implementation
+- [ ] Incorporate finish-round logic into batch-upsert API
+- [ ] Add server-side tests for new API
+
+**Deliverables:**
+
+- Working batch-upsert API with finish-round integration
+- Integration tests
+- Clear comments for future transaction enhancement
+
+### Phase 6: Additional Steps & Components
+
+**Priority: Medium**
+
+- [ ] Update Why step with localStorage support
+- [ ] Update Rank step with localStorage support
+- [ ] Update Compare Whys step with localStorage support
+- [ ] Update Jsform with localStorage support
+- [ ] Update Conclusion step with localStorage support
+- [ ] Update Tournament component with step filtering by round
+
+**Deliverables:**
+
+- All steps support localStorage
+- Step filtering works correctly across rounds
+
+### Phase 7: Testing & Stories
+
+**Priority: High**
+
+- [ ] Add new story cases to tournament.stories.js for late sign-up flow
+- [ ] Add new story cases to civil-pursuit.stories.js for late sign-up
+- [ ] Update answer-step.stories.jsx with Terms agreement variants
+- [ ] Update intermission.stories.jsx with email prompt scenarios
+- [ ] Use real localStorage in Storybook (no mocks), clean up before/after each test
+- [ ] Create integration test for full temporary → authenticated flow
+- [ ] Verify all existing story cases still pass
+
+**Deliverables:**
+
+- Comprehensive Storybook coverage within existing files
+- Integration test suite
+- Backward compatibility verified
+
+### Phase 8: Edge Cases & Polish
+
+**Priority: Medium**
+
+- [ ] Handle localStorage disabled/unavailable scenario
+- [ ] Implement data expiration (7-day TTL)
+- [ ] Add localStorage quota exceeded handling (log via logger.error)
+- [ ] Implement localStorage data migration/versioning
+- [ ] Add user-facing error messages and recovery flows
+- [ ] Mobile/responsive testing and fixes
+- [ ] Accessibility audit and fixes
+
+**Deliverables:**
+
+- Robust error handling
+- Production-ready polish
+
+### Phase 9: Documentation & Deployment
+
+**Priority: Medium**
+
+- [ ] Update README with new flow description
+- [ ] Update developer documentation
+- [ ] Update deployment procedures
+- [ ] Create rollback plan
+- [ ] Monitor and tune after deployment
+
+**Deliverables:**
+
+- Complete documentation
+- Deployment plan
+- Monitoring dashboard
+
+## Files to Create
+
+### New Files
+
+1. `app/lib/local-storage-manager.js` - localStorage utility functions
+2. `app/lib/__tests__/local-storage-manager.test.js` - Unit tests
+3. `app/components/terms-agreement.jsx` - Embedded Terms & Privacy checkbox UI
+4. `app/socket-apis/batch-upsert-deliberation-data.js` - Batch upsert API with finish-round integration
+5. `app/socket-apis/__tests__/batch-upsert-deliberation-data.test.js` - API tests
+6. `stories/terms-agreement.stories.jsx` - Storybook stories
+
+## Files to Modify
+
+### High Priority (Core Flow)
+
+1. `iotas.json` - Add one new test iota (do not modify existing)
+2. `app/components/deliberation-context.js` - Always use localStorage when available
+3. `app/components/steps/answer.js` - Add Terms UI, localStorage support
+4. `app/components/steps/rerank.js` - Save to localStorage, update context state
+5. `app/components/intermission.jsx` - Add batch-upsert flow for temporary users
+6. `app/components/tournament.js` - Add step filtering by round
+
+### Medium Priority (Additional Steps)
+
+7. `app/components/steps/why.js` - localStorage support
+8. `app/components/steps/rank.js` - localStorage support
+9. `app/components/steps/compare-whys.js` - localStorage support
+10. `app/components/jsform.jsx` - localStorage support
+11. `app/components/steps/conclusion.js` - localStorage support
+
+### Low Priority (Stories & Documentation)
+
+12. `stories/tournament.stories.js` - Add new story cases for late sign-up
+13. `stories/civil-pursuit.stories.js` - Add new story cases for late sign-up
+14. `stories/answer-step.stories.jsx` - Add Terms agreement variants
+15. `stories/intermission.stories.jsx` - Add email prompt scenarios
+16. `README.md` - Update with new feature description
+
+**Note:** Based on analysis, the following files do NOT need changes:
+
+- `app/socket-apis/subscribe-deliberation.js` (works after skip)
+- `app/socket-apis/insert-dturn-statement.js` (called by batch API)
+- `app/socket-apis/upsert-why.js` (called by batch API)
+- `app/socket-apis/upsert-rank.js` (called by batch API)
+- `app/socket-apis/finish-round.js` (called by batch API)
+- `app/components/step-footer.jsx` (Answer controls valid state)
+- `app/components/step-slider.jsx` (onNext executes normally)
+
+## Testing Strategy
+
+### Unit Tests
+
+- localStorage manager utility (save, load, clear, error handling)
+- DeliberationContext localStorage integration
+- TermsAgreement component (all states, useAuth integration)
+- Each step component's localStorage integration
+- batch-upsert-deliberation-data API with sequential operations and idempotency
+
+### Integration Tests
+
+- Full temporary user flow: Answer → Rerank → Intermission → Authenticated
+- localStorage data persistence across page refreshes
+- Batch upsert success and failure scenarios
+- Round completion and localStorage clearing
+- Step filtering by round
+- Authenticated user flow (existing behavior should work)
+
+### Storybook Stories
+
+- Answer step with Terms agreement (checked/unchecked/has user.id/has user.email)
+- Intermission with email prompt (temporary user at Round 1 completion)
+- Tournament with late sign-up flow (add cases to existing file)
+- Civil Pursuit with late sign-up flow (add cases to existing file)
+- Error states (localStorage unavailable, batch upsert failure)
+
+### End-to-End Tests
+
+- Complete temporary → authenticated user journey
+- Browser refresh during Round 1
+- Multiple tabs with same deliberation
+- localStorage quota exceeded scenario
+- Private/Incognito mode behavior
+
+### Regression Tests
+
+- Existing authenticated flow must work unchanged
+- All existing tournament stories must pass
+- All existing civil-pursuit stories must pass
+
+## Success Metrics
+
+1. **Conversion Rate**: % of temporary users who provide email at intermission
+2. **Engagement**: % of users who complete Answer step (vs. bounce at old sign-up)
+3. **Data Integrity**: 0 data loss during batch upsert operations
+4. **Performance**: Batch upsert completes in <2 seconds for typical Round 1 data
+5. **Error Rate**: <1% of users encounter localStorage or upsert errors
+6. **Completion Rate**: % of users who complete Round 2 after late sign-up
+
+## Rollback Plan
+
+1. Use new test iota only - existing iotas remain unchanged for instant rollback
+2. Feature can be disabled by reverting to SignUp-first step order in iota
+3. Database operations are backward compatible (batch-upsert uses existing upsert logic)
+4. localStorage data has expiration (doesn't accumulate indefinitely)
+5. Monitor error rates and can revert iota configuration if issues arise
+
+## Future Enhancements
+
+1. **Cross-device Resume**: Allow users to enter email on Device A, receive link to resume on Device B with same userId
+2. **Social Login**: Add Google/Facebook OAuth as alternative to email at intermission
+3. **Progressive Disclosure**: Only ask for email, add name/demographics later in the flow
+4. **Email Pre-fill**: If user previously participated, recognize and pre-fill email at intermission
+5. **Offline Support**: Use Service Workers to enable offline participation with sync on reconnect
+6. **Data Export**: Allow users to download their localStorage data for transparency
+7. **Extended Anonymous Participation**: For research scenarios where full anonymity is desired beyond Round 1
+
+---
+
+## Starting Point (Original Requirements)
+
+Lets write a spec in this file for a new feature, "Late SignUp". It will require some refactoring.
+
+Currently:
+The user if first greeted with the app/components/sign-up page. However this is an obstacle to getting and idea for what this is all about, and building trust and interest in sighing up.
+But technically, as the user goes through the steps of the deliberation, the data is upseted in to the database through socket api calls and it needs to be associated to a userId.
+There is a Skip feature in the SignUp page that assigns a temporary userId for the user, but not many are doing that.
+
+New Stuff:
+The signon page is removed from the steps of civil pursuit, this is just a change to the iota in iotas.json for a deliberation.
+The next step is jsform which asks some questions of the users. That will be moved to after the end of round 1 of the deliberation. (careful in code round starts a 0 but as presented to the user it starts at 1 which is how I will refer to it)
+At the bottom of the Answer step, which is only show in round 1, if the user is not already logged in, we will show the checkmark for agreeing to the terms and privacy of the sign-up component or the user can login by entering email and password.
+If the user checks agree, and then clicks the Next button of the step-footer.jsx of the step-slider, then a termId will be generated.
+Next is not active until user check the box or logs in.
+Now, all the steps that upsert data through api calls, should be modified to save the data into local storage. If the user leaves the page and comes back, this data should be retained. Us the discussionId and userId to make sure you are getting the right data.
+The jsform step asking for moreDetails will be moved to the end of the steps of the tournament, just before the intermission step. And it will be filtered out from the steps after the first round.
+After the user completes the review step (steps/rerank.js) it is setting up an onNext function to be called after the user hits the next button, this action needs to be delayed until the intermission step.
+When the user gets to the intermission step for the first round, they will be asked to provide their email address.  
+After the user provides their email address, then all the upsert data from the steps will be upserted, and the actions of onNext in rereank will be done.
+
+Tests
+We need to update the stories for all the steps involved, and create a new tournament story for this new situation, leaving the current story as is and making sure that story continues to work too.
+The civil-pursuit story needs to be updated with a new story as well, and making sure the existing on continues to work.
+
+Background of operation:
+iotas.json is loaded into the Iotas collection on startup.
+When the user access a path on the server, the path, including the leading /, is looked for in the Iotas collection.
+Within the Iota, there is a webComponent property that has a webComponent property that is a string. That string is matched to the name of a component in app/web-components and that component is rendered with iota as one of it'ts props.
+We are talking about the CivilPursuit component.
+It renders a list of steps, which is a prop in iota, using step-slider.
+One of the steps is the Tournament step.
+That renders another series of steps, that are a prop in the above.
+The user goes through the steps one by one.
+We should look at "path": "/what-first-usa-1" as an example.

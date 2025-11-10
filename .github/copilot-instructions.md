@@ -56,15 +56,45 @@ Notes: many files mix `import`/`export` and `module.exports` — respect the exi
 
 ## Project-specific conventions & patterns
 
+- **GitHub issue links (REQUIRED)**: Every new file (components, utilities, tests, stories) MUST have a GitHub issue link or spec reference at the top:
+
+  ```javascript
+  // https://github.com/EnCiv/civil-pursuit/issues/[NUMBER]
+  // OR for spec-driven features:
+  // https://github.com/EnCiv/civil-pursuit/blob/main/docs/[spec-name].md
+  ```
+
+  - When creating new files, ask the user for the issue number or spec document if not provided
+  - NEVER use placeholder values like `XXX` or `[ISSUE_NUMBER]` without user confirmation
+  - Use full GitHub URLs (not relative paths) so links are clickable in VS Code
+  - For specs, use `/blob/main/docs/` path (will work after PR merge)
+  - This applies to: components, utilities (in `app/lib/`), test files, and Storybook stories
+
+- **Documentation style**: Use Markdown format in JSDoc-style comment blocks for better readability:
+  ```javascript
+  /**
+   * Brief description of function
+   *
+   * Optional detailed explanation if needed
+   *
+   * - `paramName` - Parameter description
+   * - `anotherParam` - Another parameter description
+   *
+   * Returns description of return value
+   */
+  ```
+  - Use bullet lists with backticks for parameters: `` - `paramName` - description ``
+  - Use inline code formatting for values: `` `true` ``, `` `false` ``, `` `null` ``
+  - Use "Returns" instead of `@returns` tag
+  - Avoid JSDoc tags like `@param`, `@returns`, `@type` in favor of Markdown formatting
 - **React coding style**: Follow the [EnCiv React Coding and Style Guidelines](https://github.com/EnCiv/.github/wiki/React-Coding-and-Style-Guidelines). Key points:
-  - Use `react-jss` with `createUseStyles` for styling; place styles at bottom of file
+  - Use `react-jss` with `createUseStyles` for styling; place styles at bottom of file (applies to components AND stories)
   - Accept `className` prop and combine with component classes using `cx(classes.componentName, className)`
   - Destructure `{ className, ...otherProps }` and spread `{...otherProps}` to outer tag for extensibility
   - Use theme from `app/components/theme.js` for colors, spacing, and other shared values
   - File names: lowercase with hyphens, `.js` extension (`.jsx` only for class components)
   - Components take width from parent, have no margin; use padding for internal spacing
   - Avoid `px` units; use `rem`, `em`, `vw`, `vh` for responsiveness
-  - Include GitHub issue link at top of component and story files
   - Components with user input accept `onDone` callback: `onDone({valid: bool, value: any})`
   - Create Storybook stories for each component with multiple test scenarios
 - dturn in-memory model: `Discussions[discussionId]` holds per-discussion state: `ShownStatements`, `ShownGroups`, `Gitems`, `Uitems`. The module exposes `initDiscussion`, `insertStatementId`, `getStatementIds`, `finishRound`, `putGroupings`, `rankMostImportant`, and `getDiscussionStatus`. Tests import `Discussions` for inspection — the export is intended for tests only.
