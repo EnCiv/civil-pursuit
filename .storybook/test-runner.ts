@@ -13,6 +13,12 @@ let a11yTestsDisabledMessage = false
 const a11yConfig: TestRunnerConfig = {
   async preVisit(page) {
     await injectAxe(page)
+    // Clear localStorage before each test to prevent data leakage between tests
+    await page.evaluate(() => {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.clear()
+      }
+    })
   },
   async postVisit(page, context) {
     // Get the entire context of a story, including parameters, args, argTypes, etc.

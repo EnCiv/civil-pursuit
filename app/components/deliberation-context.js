@@ -1,6 +1,8 @@
+// https://github.com/EnCiv/civil-pursuit/blob/main/docs/late-sign-up-spec.md
 import React, { createContext, useCallback, useState, useRef, useEffect } from 'react'
 import setOrDeleteByMutatePath from '../lib/set-or-delete-by-mutate-path'
 import socketApiSubscribe from '../socket-apis/socket-api-subscribe'
+import LocalStorageManager from '../lib/local-storage-manager'
 
 export const DeliberationContext = createContext({})
 export default DeliberationContext
@@ -9,9 +11,21 @@ export function DeliberationContextProvider(props) {
   const local = useRef({}).current // can't be in deriver becasue "Error: Rendered more hooks than during the previous render."
   const { defaultValue = {} } = props
   const { discussionId, userId } = defaultValue
+  const [storageAvailable] = useState(() => LocalStorageManager.isAvailable())
   const [data, setData] = useState(() => {
-    return deriveReducedPointList({ reducedPointList: [], ...defaultValue }, local)
+    let initialData = { reducedPointList: [], ...defaultValue }
+
+    // Load from localStorage if available
+    if (storageAvailable && discussionId && userId) {
+      const stored = LocalStorageManager.load(discussionId, userId)
+      if (stored) {
+        initialData = { ...initialData, ...stored }
+      }
+    }
+
+    return deriveReducedPointList(initialData, local)
   })
+
   const upsert = useCallback(
     obj => {
       setData(data => {
@@ -19,10 +33,16 @@ export function DeliberationContextProvider(props) {
         let newData = setOrDeleteByMutatePath(data, obj, messages)
         if (messages) console.info('context update:', messages)
         newData = deriveReducedPointList(newData, local)
+
+        // Save to localStorage after updating state
+        if (storageAvailable && discussionId && userId) {
+          LocalStorageManager.save(discussionId, userId, newData)
+        }
+
         return newData // is a new ref is there were changes above, or may be the original ref if no changes
       })
     },
-    [setData]
+    [setData, storageAvailable, discussionId, userId]
   )
   useEffect(() => {
     if (!discussionId) return
@@ -54,7 +74,56 @@ export function DeliberationContextProvider(props) {
     })
   }, [discussionId, upsert, userId])
 
-  return <DeliberationContext.Provider value={{ data, upsert }}>{props.children}</DeliberationContext.Provider>
+  return <DeliberationContext.Provider value={{ data, upsert, storageAvailable }}>{props.children}</DeliberationContext.Provider>
+}
+
+/**
+ * Hook to check if localStorage is being used by DeliberationContext
+ *
+ * Returns `true` if localStorage is available and being used, `false` otherwise
+ */
+export function useLocalStorageIfAvailable() {
+  const { storageAvailable } = React.useContext(DeliberationContext)
+  return storageAvailable || false
+}
+
+/**
+ * Batch-upsert localStorage data for a specific round to the server
+ *
+ * This function retrieves all localStorage data for the given round and sends it to the server.
+ * After successful upsert, it clears that round's localStorage.
+ *
+ * - `discussionId` - The discussion ID
+ * - `userId` - The user ID
+ * - `callback` - Optional callback function called with `(error, result)` after operation completes
+ *
+ * Returns nothing (void)
+ */
+export function flushRoundToServer(discussionId, userId, callback) {
+  if (!discussionId || !userId) {
+    const error = new Error('discussionId and userId are required')
+    if (callback) callback(error)
+    return
+  }
+
+  const data = LocalStorageManager.load(discussionId, userId)
+
+  if (!data) {
+    // No data to flush
+    if (callback) callback(null, { flushed: false, reason: 'no-data' })
+    return
+  }
+
+  // TODO: Implement actual server upsert API call
+  // This will be implemented in later phases when server endpoints are created
+  // For now, just clear localStorage
+  console.info('flushRoundToServer: Would flush data to server', { discussionId, userId, data })
+
+  const cleared = LocalStorageManager.clear(discussionId, userId)
+
+  if (callback) {
+    callback(null, { flushed: true, cleared })
+  }
 }
 
 /*

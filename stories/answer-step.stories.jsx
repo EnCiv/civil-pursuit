@@ -264,6 +264,8 @@ export const AnswerStepPreviousDataComesFromServer = {
 
     const pointId = '1'
     const whyId = '2'
+    const contextData = deliberationContextData(canvas)
+    console.error('deliberationContextData', JSON.stringify(contextData, null, 2))
     expect(deliberationContextData(canvas)).toMatchObject({
       myWhyByCategoryByParentId: { most: { [pointId]: { _id: whyId, description: 'Congress is too slow', parentId: pointId, subject: 'Congress', userId: 'a' } } },
       pointById: { [pointId]: { _id: pointId, description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } },
