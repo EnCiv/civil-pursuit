@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/137
+// https://github.com/EnCiv/civil-pursuit/blob/main/docs/late-sign-up-spec.md
 
 import React, { useState } from 'react'
 import Intermission from '../app/components/intermission'
@@ -23,6 +24,13 @@ export default {
     buildApiDecorator('set-user-info', (info, cb) => {
       if (!info.email) cb({ error: 'email address not valid' })
       else cb({ error: '' })
+    }),
+    buildApiDecorator('batch-upsert-deliberation-data', (batchData, cb) => {
+      if (batchData.email === 'batch-fail@email.com') {
+        cb({ error: 'Failed to save data. Please try again.' })
+      } else {
+        cb({ success: true, points: 1, whys: 1, ranks: 3 })
+      }
     }),
   ],
   parameters: {
@@ -177,4 +185,147 @@ export const DiscussionFinished = {
       })
     }),
   ],
+}
+
+// New test cases for Phase 4: Late Sign-Up temporary user flow
+
+export const TemporaryUserRound1Complete = {
+  args: {
+    defaultValue: {
+      discussionId: '123456',
+      userId: 'temp-user-123',
+      lastRound: 1,
+      dturn: { finalRound: 1 },
+      uInfo: uInfoRound0Complete,
+      pointById: { 1: { _id: '1', subject: 'Test Point', description: 'Test Description', userId: 'temp-user-123' } },
+      myWhyByCategoryByParentId: { most: { 1: { _id: '2', subject: 'Why', description: 'Because', userId: 'temp-user-123', category: 'most' } } },
+      postRankByParentId: { 1: { _id: '3', category: 'most', parentId: '1', userId: 'temp-user-123' } },
+    },
+    user: { id: 'temp-user-123' }, // Has ID but no email (temporary user)
+    round: 0,
+  },
+}
+
+export const TemporaryUserBatchUpsertSuccess = {
+  args: {
+    defaultValue: {
+      discussionId: '123456',
+      userId: 'temp-user-123',
+      lastRound: 1,
+      dturn: { finalRound: 1 },
+      uInfo: uInfoRound0Complete,
+      pointById: { 1: { _id: '1', subject: 'Test Point', description: 'Test Description', userId: 'temp-user-123' } },
+      myWhyByCategoryByParentId: { most: { 1: { _id: '2', subject: 'Why', description: 'Because', userId: 'temp-user-123', category: 'most' } } },
+      postRankByParentId: { 1: { _id: '3', category: 'most', parentId: '1', userId: 'temp-user-123' } },
+    },
+    user: { id: 'temp-user-123' }, // Has ID but no email (temporary user)
+    round: 0,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // Verify the temporary user prompt message
+    const promptMessage = canvas.getByText(/You've completed Round 1/)
+    expect(promptMessage).toBeInTheDocument()
+
+    // Enter email
+    const emailInput = canvas.getByPlaceholderText('Please provide your email')
+    await userEvent.type(emailInput, 'temp-user@email.com')
+
+    // Click save button
+    const saveButton = canvas.getByText('Save and Continue')
+    expect(saveButton).toBeInTheDocument()
+    await userEvent.click(saveButton)
+
+    // Wait for batch-upsert API call (processing happens quickly)
+    await waitFor(() => {
+      expect(window.socket._socketEmitHandlerResults['batch-upsert-deliberation-data']).toHaveLength(1)
+      const batchData = window.socket._socketEmitHandlerResults['batch-upsert-deliberation-data'][0][0]
+      expect(batchData).toMatchObject({
+        discussionId: '123456',
+        round: 0,
+        email: 'temp-user@email.com',
+      })
+      expect(batchData.data).toHaveProperty('pointById')
+      expect(batchData.data).toHaveProperty('myWhyByCategoryByParentId')
+      expect(batchData.data).toHaveProperty('postRankByParentId')
+    })
+
+    // Verify success message appears (may take a moment after API completes)
+    await waitFor(
+      () => {
+        const successMessage = canvas.getByText(/Success! Your data has been saved/)
+        expect(successMessage).toBeInTheDocument()
+      },
+      { timeout: 3000 }
+    )
+  },
+}
+
+export const TemporaryUserBatchUpsertFailure = {
+  args: {
+    defaultValue: {
+      discussionId: '123456',
+      userId: 'temp-user-123',
+      lastRound: 1,
+      dturn: { finalRound: 1 },
+      uInfo: uInfoRound0Complete,
+      pointById: { 1: { _id: '1', subject: 'Test Point', description: 'Test Description', userId: 'temp-user-123' } },
+      myWhyByCategoryByParentId: { most: { 1: { _id: '2', subject: 'Why', description: 'Because', userId: 'temp-user-123', category: 'most' } } },
+      postRankByParentId: { 1: { _id: '3', category: 'most', parentId: '1', userId: 'temp-user-123' } },
+    },
+    user: { id: 'temp-user-123' }, // Has ID but no email (temporary user)
+    round: 0,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // Enter email that will trigger failure
+    const emailInput = canvas.getByPlaceholderText('Please provide your email')
+    await userEvent.type(emailInput, 'batch-fail@email.com')
+
+    // Click save button
+    const saveButton = canvas.getByText('Save and Continue')
+    await userEvent.click(saveButton)
+
+    // Wait for error message
+    await waitFor(() => {
+      const errorMessage = canvas.getByText('Failed to save data. Please try again.')
+      expect(errorMessage).toBeInTheDocument()
+    })
+
+    // Verify button is re-enabled for retry
+    expect(saveButton).not.toBeDisabled()
+  },
+}
+
+export const TemporaryUserInvalidEmail = {
+  args: {
+    defaultValue: {
+      discussionId: '123456',
+      userId: 'temp-user-123',
+      lastRound: 1,
+      dturn: { finalRound: 1 },
+      uInfo: uInfoRound0Complete,
+    },
+    user: { id: 'temp-user-123' },
+    round: 0,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // Enter invalid email
+    const emailInput = canvas.getByPlaceholderText('Please provide your email')
+    await userEvent.type(emailInput, 'invalid-email')
+
+    // Click save button
+    const saveButton = canvas.getByText('Save and Continue')
+    await userEvent.click(saveButton)
+
+    // Wait for validation error
+    await waitFor(() => {
+      const errorMessage = canvas.getByText('email address not valid')
+      expect(errorMessage).toBeInTheDocument()
+    })
+  },
 }
