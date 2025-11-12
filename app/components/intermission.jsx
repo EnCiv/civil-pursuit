@@ -1,11 +1,13 @@
 // https://github.com/EnCiv/civil-pursuit/issues/137
+// https://github.com/EnCiv/civil-pursuit/blob/main/docs/late-sign-up-spec.md
 import React, { useState, useEffect, useContext } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { PrimaryButton, SecondaryButton } from './button'
 import Intermission_Icon from '../svgr/intermission-icon'
 import StatusBox from '../components/status-box'
-import DeliberationContext from './deliberation-context'
+import DeliberationContext, { useLocalStorageIfAvailable } from './deliberation-context'
+import * as LocalStorageManager from '../lib/local-storage-manager'
 
 // needs to be static because it used as a dependency in useEffect
 const goToEnCiv = () => location.pushState('https://enciv.org/')
@@ -14,13 +16,15 @@ const Intermission = props => {
   const { className = '', onDone = () => {}, user, round } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useContext(DeliberationContext)
-  const { lastRound, dturn, uInfo = {} } = data
+  const { lastRound, dturn, uInfo = {}, discussionId, userId } = data
   const { finalRound } = dturn || {}
+  const storageAvailable = useLocalStorageIfAvailable()
 
   const [validationError, setValidationError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
   const [email, setEmail] = useState('')
   const [copied, setCopied] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
 
   const validateEmail = email => {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -31,12 +35,67 @@ const Intermission = props => {
     window.socket.emit('set-user-info', { email: email }, callback)
   }
 
+  // Handle batch upsert for temporary users at Round 1 completion
+  const handleBatchUpsert = emailAddress => {
+    setIsProcessing(true)
+    setValidationError('')
+    setSuccessMessage('')
+
+    // Use data from context (which may be synced from localStorage)
+    // The context already has all the data we need
+    const batchData = {
+      discussionId,
+      round,
+      email: emailAddress,
+      data: {
+        pointById: data.pointById || {},
+        myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
+        postRankByParentId: data.postRankByParentId || {},
+        whyRankByParentId: data.whyRankByParentId || {},
+        groupIdsLists: data.groupIdsLists || [],
+        jsformData: data.jsformData || {},
+        uInfo: data.uInfo?.[round] || {},
+      },
+    }
+
+    // Call batch-upsert API
+    window.socket.emit('batch-upsert-deliberation-data', batchData, response => {
+      setIsProcessing(false)
+      if (!response || response.error) {
+        setValidationError(response?.error || 'Failed to save data. Please try again.')
+      } else {
+        // Success - clear localStorage for completed round if available
+        if (storageAvailable) {
+          LocalStorageManager.clear(discussionId, userId, round)
+        }
+        setSuccessMessage(`Success! Your data has been saved and we've sent a password email to ${emailAddress}.`)
+        // Reload page to get updated user info with email (skip in test environment)
+        if (!window.location.href.includes('iframe.html?viewMode=story')) {
+          setTimeout(() => {
+            window.location.reload()
+          }, 2000)
+        }
+      }
+    })
+  }
+
   const handleEmail = () => {
     setValidationError('')
     setSuccessMessage('')
     if (!validateEmail(email)) {
       setValidationError('email address not valid')
+      return
+    }
+
+    // Check if this is a temporary user at Round 1 completion
+    const isTemporaryUser = user?.id && !user?.email
+    const isRound1Complete = round === 0 && uInfo[round]?.finished
+
+    if (isTemporaryUser && isRound1Complete) {
+      // Use batch-upsert flow for temporary users
+      handleBatchUpsert(email)
     } else {
+      // Use existing flow for authenticated users or other scenarios
       setUserInfo(email, response => {
         if (response.error) {
           setValidationError(response.error)
@@ -84,15 +143,28 @@ const Intermission = props => {
     valid = true
     onNext = null
   } else if (!userIsRegistered) {
+    const isTemporaryUser = user?.id && !user?.email
+    const isRound1Complete = round === 0 && roundCompleted
+    const promptMessage =
+      isTemporaryUser && isRound1Complete
+        ? "Great! You've completed Round 1. Please provide your email to save your progress and continue to the next round."
+        : 'Great! To continue we need to be able to invite you back. So now is the last change to associate your email with this discussion'
+
     conditionalResponse = (
       <>
-        <div className={classes.headlineSmall}>Great! To continue we need to be able to invite you back. So now is the last change to associate your email with this discussion</div>
-        <input type="text" className={classes.input} value={email} onChange={e => setEmail(e.target.value)} placeholder="Please provide your email" />
-        <div className={classes.buttonContainer}>
-          <PrimaryButton onClick={handleEmail} title="Invite me back" disabled={false} disableOnClick={false}>
-            Invite me back
-          </PrimaryButton>
-        </div>
+        <div className={classes.headlineSmall}>{promptMessage}</div>
+        {isProcessing ? (
+          <StatusBox className={classes.infoMessage} status="notice" subject="Processing your responses..." />
+        ) : (
+          <>
+            <input type="text" className={classes.input} value={email} onChange={e => setEmail(e.target.value)} placeholder="Please provide your email" disabled={isProcessing} />
+            <div className={classes.buttonContainer}>
+              <PrimaryButton onClick={handleEmail} title="Invite me back" disabled={isProcessing} disableOnClick={false}>
+                {isTemporaryUser && isRound1Complete ? 'Save and Continue' : 'Invite me back'}
+              </PrimaryButton>
+            </div>
+          </>
+        )}
         {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
         {validationError && <StatusBox className={classes.errorMessage} status="error" subject={validationError} />}
       </>
@@ -274,6 +346,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
     zIndex: 1000,
     whiteSpace: 'nowrap',
+  },
+  infoMessage: {
+    marginTop: '1rem',
+  },
+  successMessage: {
+    marginTop: '1rem',
+  },
+  errorMessage: {
+    marginTop: '1rem',
   },
 }))
 
