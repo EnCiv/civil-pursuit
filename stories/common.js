@@ -60,6 +60,7 @@ export const socketEmitDecorator = Story => {
 
 export const DeliberationContextDecorator = (Story, context) => {
   const { defaultValue, ...otherArgs } = context.args
+  useState(() => window.localStorage.clear()) // clear localStorage to start fresh for each story
   return (
     <DeliberationContextProvider defaultValue={defaultValue}>
       <DeliberationData>

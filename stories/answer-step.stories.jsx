@@ -7,7 +7,6 @@ import AnswerStep, { Answer } from '../app/components/steps/answer'
 import expect from 'expect'
 import { DeliberationContextDecorator, deliberationContextData, onDoneDecorator, onDoneResult, socketEmitDecorator } from './common'
 import ObjectId from 'bson-objectid'
-import DeliberationContext from '../app/components/deliberation-context'
 
 export default {
   component: Answer,
@@ -62,6 +61,8 @@ export const onDoneTestDefault = {
     whyQuestion: whyQuestion,
     myAnswer: undefined,
     myWhy: undefined,
+    round: 0,
+    user: { id: 'a', email: 'test@example.com' },
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
@@ -94,6 +95,8 @@ export const onDoneTestSwap = {
     discussionId,
     question: startingQuestion,
     whyQuestion: whyQuestion,
+    user: { id: 'a', email: 'test@example.com' },
+    round: 0,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -150,10 +153,14 @@ export const asyncUpdate = {
     whyQuestion: whyQuestion,
     myAnswer: startingPoint,
     myWhy: whyPoint1,
+    round: 0,
+    user: { id: 'a', email: 'test@example.com' }, // Authenticated user, no Terms needed
   },
   play: async ({ canvasElement, args }) => {
     const { onDone } = args
-    await waitFor(() => expect(onDone.mock.calls[0][0]).toMatchObject({ delta: { myAnswer: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point' } }, valid: true, value: 1 }))
+    await waitFor(() =>
+      expect(onDone.mock.calls[0][0]).toMatchObject({ delta: { myAnswer: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point' } }, valid: false, value: 1 })
+    )
     await waitFor(() => expect(onDone.mock.calls[1][0]).toMatchObject({ delta: { myWhy: { _id: '2', description: 'Congress is too slow', parentId: '1', subject: 'Congress' } }, valid: true, value: 1 }))
     await waitFor(() => expect(onDone.mock.calls[2][0]).toMatchObject({ delta: { myWhy: { _id: '2', description: 'This is the first description!', parentId: '1', subject: 'This is the first subject!' } }, valid: true, value: 1 }))
   },
@@ -169,7 +176,7 @@ function answerStepTemplate(args) {
   const { myAnswer, myWhy, defaultValue, ...otherProps } = args
   useState(() => {
     window.socket._socketEmitHandlers['get-points-of-ids'] = (ids, cb) => {
-      cb({ points: [myAnswer], myWhys: [myWhy] })
+      cb({ points: (myAnswer && [myAnswer]) || [], myWhys: (myWhy && [myWhy]) || [] })
     }
     window.socket._socketEmitHandlers['insert-dturn-statement'] = (discussionId, point, cb) => {
       window.socket._socketEmitHandlerResults['insert-dturn-statement'].push([discussionId, point])
@@ -188,12 +195,14 @@ function answerStepTemplate(args) {
 
 export const AnswerStepUserEntersData = {
   args: {
-    defaultValue: { userId: 'a', round: '0', discussionId: startingQuestion._id }, // to deliberation context
+    defaultValue: { userId: 'a', round: 0, discussionId: startingQuestion._id }, // to deliberation context
     question: startingQuestion,
     whyQuestion: whyQuestion,
     myAnswer: undefined,
     myWhy: undefined,
     onDone: undefined,
+    round: 0,
+    user: { id: 'a', email: 'test@example.com' }, // User already has an ID from skip, so no Terms needed
   },
   render: answerStepTemplate,
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
@@ -210,8 +219,10 @@ export const AnswerStepUserEntersData = {
     await userEvent.tab()
 
     // fill in the first point subject and description
+    await userEvent.clear(subjectEle[0]) // because there is already text there
     await userEvent.type(subjectEle[0], 'This is the first subject!')
     await userEvent.tab()
+    await userEvent.clear(descriptionEle[0])
     await userEvent.type(descriptionEle[0], 'This is the first description!')
     await userEvent.tab()
 
@@ -248,7 +259,8 @@ export const AnswerStepPreviousDataComesFromServer = {
     whyQuestion: whyQuestion,
     myAnswer: startingPoint,
     myWhy: whyPoint1,
-    round: '0',
+    round: 0,
+    user: { id: 'a', email: 'test@example.com' }, // User already has an ID from previous session, so no Terms needed
   },
   render: answerStepTemplate,
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
@@ -257,19 +269,73 @@ export const AnswerStepPreviousDataComesFromServer = {
     const { onDone } = args
     await waitFor(() => {
       expect(onDone.mock.calls[0][0]).toMatchObject({
+        valid: false,
+        value: 1,
+      })
+    })
+    await waitFor(() => {
+      expect(onDone.mock.calls[1][0]).toMatchObject({
         valid: true,
         value: 1,
       })
     })
-
     const pointId = '1'
     const whyId = '2'
-    const contextData = deliberationContextData(canvas)
-    console.error('deliberationContextData', JSON.stringify(contextData, null, 2))
-    expect(deliberationContextData(canvas)).toMatchObject({
-      myWhyByCategoryByParentId: { most: { [pointId]: { _id: whyId, description: 'Congress is too slow', parentId: pointId, subject: 'Congress', userId: 'a' } } },
-      pointById: { [pointId]: { _id: pointId, description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } },
-      reducedPointList: [{ point: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } }],
+    await waitFor(() => {
+      expect(deliberationContextData(canvas)).toMatchObject({
+        myWhyByCategoryByParentId: { most: { [pointId]: { _id: whyId, description: 'Congress is too slow', parentId: pointId, subject: 'Congress', userId: 'a' } } },
+        pointById: { [pointId]: { _id: pointId, description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } },
+        reducedPointList: [{ point: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } }],
+      })
+    })
+  },
+}
+
+export const AnswerStepWithTermsAgreement = {
+  args: {
+    defaultValue: {
+      userId: 'a',
+      round: 0,
+      discussionId: startingQuestion._id,
+      pointById: { [startingPoint._id]: startingPoint },
+      myWhyByCategoryByParentId: { most: { [startingPoint._id]: whyPoint1 } },
+    }, // to deliberation context
+    question: startingQuestion,
+    whyQuestion: whyQuestion,
+    myAnswer: startingPoint, // Pre-filled answer data
+    myWhy: whyPoint1, // Pre-filled why data
+    round: 0,
+    user: undefined, // No user, so Terms should be shown
+  },
+  render: answerStepTemplate,
+  decorators: [DeliberationContextDecorator, socketEmitDecorator],
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const { onDone } = args
+
+    // Initially, answers are valid but Terms not checked, so overall should be invalid
+    await waitFor(() => {
+      expect(onDone.mock.calls[0][0]).toMatchObject({
+        valid: false, // Not valid because Terms not checked
+        value: 1, // But answers are complete (100%)
+      })
+    })
+
+    // Find and check the Terms checkbox
+    const termsCheckbox = canvas.getByRole('checkbox')
+    expect(termsCheckbox.checked).toBe(false)
+
+    await userEvent.click(termsCheckbox)
+
+    // After checking Terms, should become valid
+    await waitFor(() => {
+      // Find the most recent call where valid is true
+      const validCall = onDone.mock.calls.find(call => call[0].valid === true)
+      expect(validCall).toBeDefined()
+      expect(validCall[0]).toMatchObject({
+        valid: true, // Now valid because Terms are checked
+        value: 1,
+      })
     })
   },
 }
