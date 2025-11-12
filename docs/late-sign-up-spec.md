@@ -596,14 +596,14 @@ function filterStepsByRound(steps, round) {
 - ✅ Phase 1: localStorage Manager utility with full test coverage
 - ✅ Phase 2: DeliberationContext localStorage integration
 - ✅ Phase 3: Answer step with Terms agreement UI (skip() integration deferred)
+- ✅ Phase 4: Rerank & Intermission updates with batch-upsert flow
 
 **In Progress:**
 
-- 🔄 Phase 7: Testing & Stories (partial - answer-step and terms-agreement complete)
+- 🔄 Phase 7: Testing & Stories (partial - answer-step, terms-agreement, intermission complete)
 
 **Not Started:**
 
-- ⏳ Phase 4: Rerank & Intermission updates
 - ⏳ Phase 5: Server-side batch-upsert API
 - ⏳ Phase 6: Additional step components
 - ⏳ Phase 8: Edge cases & polish
@@ -615,6 +615,8 @@ function filterStepsByRound(steps, round) {
 - `deliberation-context`: 8 Storybook tests passing
 - `terms-agreement`: 8 Storybook tests passing
 - `answer-step`: 10 Storybook tests passing (including new Terms agreement test)
+- `rerank-step`: 10 Storybook tests passing (existing tests verify localStorage integration)
+- `intermission`: 14 Storybook tests passing (includes 4 new temporary user flow tests)
 
 **Key Files Created:**
 
@@ -626,7 +628,10 @@ function filterStepsByRound(steps, round) {
 
 - `app/components/deliberation-context.js` - Always uses localStorage when available
 - `app/components/steps/answer.js` - Shows Terms when !user, validates with calculateOverallValid
+- `app/components/steps/rerank.js` - Stores onNext data in context, doesn't call finish-round socket emit
+- `app/components/intermission.jsx` - Detects temporary users, handles batch-upsert flow with loading/error states
 - `stories/answer-step.stories.jsx` - Added AnswerStepWithTermsAgreement test
+- `stories/intermission.stories.jsx` - Added 4 new tests for temporary user batch-upsert flow
 - `stories/common.js` - localStorage clearing in DeliberationContextDecorator
 
 ---
@@ -709,16 +714,30 @@ function filterStepsByRound(steps, round) {
 
 **Priority: High**
 
-- [ ] Update Rerank step to save data to context (not call socket APIs)
-- [ ] Update Intermission to detect temporary users at Round 1 (round 0) completion
-- [ ] Implement batch-upsert UI flow in Intermission
-- [ ] Add loading and error states
-- [ ] Handle email association with userId
+- [x] Update Rerank step to save data to context (not call socket APIs)
+- [x] Update Intermission to detect temporary users at Round 1 (round 0) completion
+- [x] Implement batch-upsert UI flow in Intermission
+- [x] Add loading and error states
+- [x] Handle email association with userId
 
 **Deliverables:**
 
-- Updated Rerank and Intermission components
-- Working end-to-end flow through Round 1
+- ✅ Updated Rerank and Intermission components
+- ✅ Working end-to-end flow through Round 1 (client-side only, server API pending)
+- ✅ Storybook tests: rerank-step (10 passing), intermission (14 passing including 4 new tests)
+
+**Implementation Notes:**
+
+- Rerank step now stores `roundCompleteData` in context instead of calling `finish-round` socket emit
+- `onNext` callback in Rerank saves final round state (shownStatementIds, groupings, finished: true) to context
+- Intermission detects temporary users: `user.id` exists but `!user.email` at Round 1 completion
+- Batch-upsert flow uses context data (not localStorage directly) for flexibility in testing
+- Added loading state with "Processing your responses..." message during batch upsert
+- Error handling with retry capability if batch-upsert fails
+- Success message shows with 2-second delay before page reload (to get updated user info)
+- Page reload skipped when viewing in Storybook (checks for `'iframe.html?viewMode=story'` in URL)
+- localStorage cleared for completed round after successful batch-upsert (when available)
+- New Storybook tests: TemporaryUserRound1Complete, TemporaryUserBatchUpsertSuccess, TemporaryUserBatchUpsertFailure, TemporaryUserInvalidEmail
 
 ### Phase 5: Server-Side APIs
 
