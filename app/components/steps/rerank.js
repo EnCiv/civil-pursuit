@@ -18,6 +18,7 @@ export default function RerankStep(props) {
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
       upsert({ postRankByParentId: { [delta.parentId]: delta } })
+      // TODO: Phase 5 - remove socket emit, data will be batch-upserted at intermission
       window.socket.emit('upsert-rank', delta)
     }
     if (valid) {
@@ -31,10 +32,15 @@ export default function RerankStep(props) {
         } // else only need to change what's different
         return { [pointId]: rank }
       })
+      // Store onNext data in context state instead of calling finish-round here
+      // The intermission step will handle finish-round via batch-upsert API
       onNext = () => {
         const groupings = data.groupIdsLists || []
+        // Save final round state to context (and localStorage via context)
         upsert({ uInfo: { [round]: { shownStatementIds, groupings, finished: true } } })
-        window.socket.emit('finish-round', data.discussionId, round, idRanks, groupings, () => {})
+        // Store idRanks for intermission to use in batch-upsert
+        upsert({ roundCompleteData: { [round]: { idRanks, groupings } } })
+        // Do NOT call finish-round socket emit here - intermission will handle it
       }
     }
     onDone({ valid, value, onNext })
