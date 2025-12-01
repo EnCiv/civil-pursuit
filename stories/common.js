@@ -59,14 +59,36 @@ export const socketEmitDecorator = Story => {
 }
 
 export const DeliberationContextDecorator = (Story, context) => {
-  const { defaultValue, ...otherArgs } = context.args
-  useState(() => window.localStorage.clear()) // clear localStorage to start fresh for each story
+  const { defaultValue, preserveLocalStorage, ...otherArgs } = context.args
+  const [refreshKey, setRefreshKey] = useState(0)
+
+  useState(() => {
+    if (!preserveLocalStorage) {
+      window.localStorage.clear() // clear localStorage to start fresh for each story
+    }
+  })
+
+  const handleClearStorage = () => {
+    window.localStorage.clear()
+    setRefreshKey(prev => prev + 1) // Force re-render by changing key
+  }
+
   return (
-    <DeliberationContextProvider defaultValue={defaultValue}>
-      <DeliberationData>
-        <Story {...otherArgs} />
-      </DeliberationData>
-    </DeliberationContextProvider>
+    <>
+      {preserveLocalStorage && (
+        <div style={{ padding: '1rem', backgroundColor: '#fff3cd', border: '1px solid #ffc107', marginBottom: '1rem' }}>
+          <strong>localStorage Preserved Mode</strong> - Data persists across page reloads.{' '}
+          <button onClick={handleClearStorage} style={{ marginLeft: '1rem', padding: '0.25rem 0.5rem', cursor: 'pointer' }}>
+            Clear Storage
+          </button>
+        </div>
+      )}
+      <DeliberationContextProvider key={refreshKey} defaultValue={defaultValue}>
+        <DeliberationData>
+          <Story {...otherArgs} />
+        </DeliberationData>
+      </DeliberationContextProvider>
+    </>
   )
 }
 const DeliberationData = props => {
