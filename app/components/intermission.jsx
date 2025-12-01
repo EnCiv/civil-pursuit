@@ -13,10 +13,10 @@ import * as LocalStorageManager from '../lib/local-storage-manager'
 const goToEnCiv = () => location.pushState('https://enciv.org/')
 
 const Intermission = props => {
-  const { className = '', onDone = () => {}, user, round } = props
+  const { className = '', onDone = () => {}, round } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useContext(DeliberationContext)
-  const { lastRound, dturn, uInfo = {}, discussionId, userId } = data
+  const { lastRound, dturn, uInfo = {}, discussionId, user, userId } = data
   const { finalRound } = dturn || {}
   const storageAvailable = useLocalStorageIfAvailable()
 
@@ -52,9 +52,10 @@ const Intermission = props => {
         myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
         postRankByParentId: data.postRankByParentId || {},
         whyRankByParentId: data.whyRankByParentId || {},
-        groupIdsLists: data.groupIdsLists || [],
+        // groupIdsLists and idRanks: undefined means not done yet, [] means done but empty
+        groupIdsLists: data.groupIdsLists,
         jsformData: data.jsformData || {},
-        uInfo: data.uInfo?.[round] || {},
+        idRanks: data.roundCompleteData?.[round]?.idRanks, // Pre-calculated from rerank step
       },
     }
 
