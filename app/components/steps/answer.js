@@ -15,8 +15,9 @@ import { isEqual } from 'lodash'
 
 // Step wrapper component: handles fetching, state, and interaction with context
 export default function AnswerStep(props) {
-  const { onDone = () => {}, round, user, ...otherProps } = props
+  const { onDone = () => {}, round, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
+  const user = data.user // Get user from deliberation context
   const storageAvailable = useLocalStorageIfAvailable()
 
   // Fetch initial data and update context
@@ -25,8 +26,8 @@ export default function AnswerStep(props) {
     if (shownStatementIds.length <= 0) return
     window.socket.emit('get-points-of-ids', shownStatementIds, ({ points, myWhys }) => {
       upsert({
-        pointById: points.reduce((pById, point) => ((pById[point._id] = point), pById), {}),
-        myWhyByCategoryByParentId: myWhys.reduce((myWhyByCategoryByParentId, why) => {
+        pointById: (points || []).reduce((pById, point) => ((pById[point._id] = point), pById), {}),
+        myWhyByCategoryByParentId: (myWhys || []).reduce((myWhyByCategoryByParentId, why) => {
           if (!myWhyByCategoryByParentId[why.category]) myWhyByCategoryByParentId[why.category] = {}
           myWhyByCategoryByParentId[why.category][why.parentId] = why
           return myWhyByCategoryByParentId
@@ -38,40 +39,69 @@ export default function AnswerStep(props) {
   const question = useMemo(() => ({ _id: data.discussionId, subject: data.subject, description: data.description }), [data.discussionId, data.subject, data.description]) // the question use to be in the step, but it is also in the Iota. deprecate the question in the step
 
   const handleOnDone = React.useCallback(
-    ({ valid, value, delta }) => {
+    ({ valid, value, delta, onNext }) => {
       if (delta) {
         if (delta.myAnswer) {
           upsert({ pointById: { [delta.myAnswer._id]: delta.myAnswer } }) // Update context with delta changes
-          // Always make socket calls for backward compatibility
-          // TODO: Phase 3 - remove socket calls, localStorage will handle persistence
-          window.socket.emit('insert-dturn-statement', delta.myAnswer.parentId, delta.myAnswer)
+          // send to server if local storage is not available
+          if (!storageAvailable) window.socket.emit('insert-dturn-statement', delta.myAnswer.parentId, delta.myAnswer)
         }
         if (delta.myWhy) {
           // Only upsert the changed value for 'most', do not expand the whole object
           upsert({ myWhyByCategoryByParentId: { most: { [delta.myWhy.parentId]: delta.myWhy } } })
-          // Always make socket calls for backward compatibility
-          // TODO: Phase 3 - remove socket calls, localStorage will handle persistence
-          window.socket.emit('upsert-why', delta.myWhy)
+          // send to server if local storage is not available
+          if (!storageAvailable) window.socket.emit('upsert-why', delta.myWhy)
         }
       }
-      onDone({ valid, value })
+      onDone({ valid, value, onNext })
     },
     [onDone, upsert]
   )
 
-  return <Answer {...deriveMyAnswerAndMyWhy(data)} question={question} round={round} userId={data.userId} discussionId={data.discussionId} user={user} {...otherProps} onDone={handleOnDone} />
+  return <Answer {...deriveMyAnswerAndMyWhy(data)} question={question} round={round} discussionId={data.discussionId} user={user} userId={data.userId} {...otherProps} onDone={handleOnDone} />
 }
 
 // Presentation component: only renders UI and handles local user interactions
 export function Answer(props) {
-  const { className = '', question = {}, whyQuestion = '', onDone = () => {}, myAnswer, myWhy, discussionId, userId, stepIntro, maxWordCount, maxCharCount, round, user } = props
+  const { className = '', question = {}, whyQuestion = '', onDone = () => {}, myAnswer, myWhy, discussionId, stepIntro, maxWordCount, maxCharCount, user, userId, round } = props
   const classes = useStylesFromThemeFunction()
   const [validByType, setValidByType] = useState({ myAnswer: false, myWhy: false })
   const [state, methods] = useAuth()
 
-  // Check if user needs to see Terms agreement
-  // Show Terms when in Round 0 and there's no user (not logged in, no temporary ID yet)
-  const showTerms = !user
+  /**
+   * Authentication Flow for New Users
+   *
+   * When a new user first visits the site, `user` will be undefined. The flow is:
+   *
+   * 1. User sees Terms & Privacy checkbox (showTerms = true when !user?.id)
+   * 2. User must check the Terms checkbox to proceed
+   * 3. When user clicks Next button (and Terms is checked):
+   *    - StepFooter calls onDone with valid=true
+   *    - handleOnDone calls methods.skip() from useAuth
+   * 4. methods.skip():
+   *    - Makes POST request to /tempid endpoint
+   *    - Server creates temporary user account with generated userId
+   *    - Server sets session cookie with authentication
+   *    - useAuth calls authenticateSocketIo() which:
+   *      - Disconnects socket.io
+   *      - Reconnects socket.io (now with auth cookie in headers)
+   *      - Server authenticates the connection
+   *    - Page reloads/redirects with authenticated session
+   * 5. After reload:
+   *    - user prop is now { id: 'generated-user-id' } (no email yet)
+   *    - Terms checkbox no longer shows (showTerms = false)
+   *    - User continues through tournament with temporary ID
+   *    - All data saved to localStorage with key: cp_${discussionId}_${userId}
+   * 6. At intermission after Round 1:
+   *    - User prompted for email
+   *    - Email associates with temporary userId via batch-upsert API
+   *
+   * Note: The /tempid route must be mocked in .storybook/middleware.js for Storybook tests
+   */
+  const showTerms = !user?.id
+
+  // Store onNext callback so it persists and can be updated based on Terms state
+  const onNextRef = useRef(undefined)
 
   // myAnswer could be undefined initially, if so it needs to be initialized with an _id, and if the user types in the WhyAnswer first, it's parentId needs to be the answers _id
   const [_myAnswer, setMyAnswer] = useState(myAnswer || { _id: ObjectId().toString(), subject: '', description: '', parentId: discussionId, userId })
@@ -109,7 +139,7 @@ export function Answer(props) {
         const overallValid = calculateOverallValid(validByType, state.agree)
         if (valid)
           setTimeout(() => {
-            onDone({ valid: overallValid, value: percentDone(validByType), delta })
+            onDone({ valid: overallValid, value: percentDone(validByType), delta, onNext: onNextRef.current })
           })
         return validByType // abort the rerender
       })
@@ -119,7 +149,20 @@ export function Answer(props) {
   const handleTermsChange = ({ agree }) => {
     // Re-evaluate overall validity when Terms state changes
     const overallValid = calculateOverallValid(validByType, agree)
-    onDone({ valid: overallValid, value: percentDone(validByType) })
+
+    // Store or clear onNext callback based on Terms checkbox state
+    // If Terms are checked and user has no id, store callback to call skip
+    // If Terms are unchecked, clear the callback
+    if (agree && !user?.id) {
+      onNextRef.current = () => {
+        console.log('Terms agreed, calling skip to create temporary user')
+        methods.skip()
+      }
+    } else {
+      onNextRef.current = undefined
+    }
+
+    onDone({ valid: overallValid, value: percentDone(validByType), onNext: onNextRef.current })
   }
 
   return (
