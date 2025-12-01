@@ -115,15 +115,14 @@ export const NoEmailMobile = {
 
 export const CanContinueToNextRound = {
   args: {
-    defaultValue: { lastRound: 2, dturn: { finalRound: 1 }, uInfo: uInfoRound1Complete },
-    user: { id: '123456', email: 'user@email.com' },
+    defaultValue: { lastRound: 2, dturn: { finalRound: 1 }, uInfo: uInfoRound1Complete, user: { id: '123456', email: 'user@email.com' } },
+
     round: 1,
   },
 }
 export const CanContinueToNextRoundOnDone = {
   args: {
-    defaultValue: { lastRound: 2, dturn: { finalRound: 2 }, uInfo: uInfoRound1Complete },
-    user: { id: '123456', email: 'user@email.com' },
+    defaultValue: { lastRound: 2, dturn: { finalRound: 2 }, uInfo: uInfoRound1Complete, user: { id: '123456', email: 'user@email.com' } },
     round: 1,
   },
   play: async ({ canvasElement }) => {
@@ -150,24 +149,23 @@ export const CanContinueToNextRoundOnDone = {
 }
 export const CanNotFinishTheRound = {
   args: {
-    defaultValue: { lastRound: 1, dturn: { finalRound: 1 }, uInfo: uInfoRound0Incomplete },
-    user: { id: '123456', email: 'user@email.com' },
+    defaultValue: { lastRound: 1, dturn: { finalRound: 1 }, uInfo: uInfoRound0Incomplete, user: { id: '123456', email: 'user@email.com' } },
+
     round: 0,
   },
 }
 
 export const CanNotContinueToNextRound = {
   args: {
-    defaultValue: { lastRound: 0, dturn: { finalRound: 1 }, uInfo: uInfoRound0Complete },
-    user: { id: '123456', email: 'user@email.com' },
+    defaultValue: { lastRound: 0, dturn: { finalRound: 1 }, uInfo: uInfoRound0Complete, user: { id: '123456', email: 'user@email.com' } },
+
     round: 0,
   },
 }
 
 export const DiscussionFinished = {
   args: {
-    defaultValue: { discussionId: '123456', lastRound: 1, dturn: { finalRound: 1 }, uInfo: uInfoRound1Complete },
-    user: { id: '123456', email: 'user@email.com' },
+    defaultValue: { discussionId: '123456', lastRound: 1, dturn: { finalRound: 1 }, uInfo: uInfoRound1Complete, user: { id: '123456', email: 'user@email.com' } },
     round: 1,
   },
   decorators: [
@@ -193,6 +191,7 @@ export const TemporaryUserRound1Complete = {
   args: {
     defaultValue: {
       discussionId: '123456',
+      user: { id: 'temp-user-123' }, // Has ID but no email (temporary user)
       userId: 'temp-user-123',
       lastRound: 1,
       dturn: { finalRound: 1 },
@@ -210,6 +209,7 @@ export const TemporaryUserBatchUpsertSuccess = {
   args: {
     defaultValue: {
       discussionId: '123456',
+      user: { id: 'temp-user-123' }, // Has ID but no email (temporary user)
       userId: 'temp-user-123',
       lastRound: 1,
       dturn: { finalRound: 1 },
@@ -218,7 +218,6 @@ export const TemporaryUserBatchUpsertSuccess = {
       myWhyByCategoryByParentId: { most: { 1: { _id: '2', subject: 'Why', description: 'Because', userId: 'temp-user-123', category: 'most' } } },
       postRankByParentId: { 1: { _id: '3', category: 'most', parentId: '1', userId: 'temp-user-123' } },
     },
-    user: { id: 'temp-user-123' }, // Has ID but no email (temporary user)
     round: 0,
   },
   play: async ({ canvasElement }) => {
@@ -267,6 +266,7 @@ export const TemporaryUserBatchUpsertFailure = {
     defaultValue: {
       discussionId: '123456',
       userId: 'temp-user-123',
+      user: { id: 'temp-user-123' }, // Has ID but no email (temporary user)
       lastRound: 1,
       dturn: { finalRound: 1 },
       uInfo: uInfoRound0Complete,
@@ -274,7 +274,6 @@ export const TemporaryUserBatchUpsertFailure = {
       myWhyByCategoryByParentId: { most: { 1: { _id: '2', subject: 'Why', description: 'Because', userId: 'temp-user-123', category: 'most' } } },
       postRankByParentId: { 1: { _id: '3', category: 'most', parentId: '1', userId: 'temp-user-123' } },
     },
-    user: { id: 'temp-user-123' }, // Has ID but no email (temporary user)
     round: 0,
   },
   play: async ({ canvasElement }) => {
@@ -303,15 +302,18 @@ export const TemporaryUserInvalidEmail = {
   args: {
     defaultValue: {
       discussionId: '123456',
+      user: { id: 'temp-user-123' },
       userId: 'temp-user-123',
       lastRound: 1,
       dturn: { finalRound: 1 },
       uInfo: uInfoRound0Complete,
     },
-    user: { id: 'temp-user-123' },
     round: 0,
   },
   play: async ({ canvasElement }) => {
+    // Small delay to ensure Storybook context is fully initialized before running test
+    await new Promise(resolve => setTimeout(resolve, 100))
+
     const canvas = within(canvasElement)
 
     // Enter invalid email
