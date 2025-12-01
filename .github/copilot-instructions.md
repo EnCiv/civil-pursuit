@@ -13,7 +13,7 @@ Short guidance to help an AI coding agent be productive in this repository.
 **IMPORTANT**: When opening a new bash terminal, Node.js and npm are NOT available until the environment is properly configured. The following commands from `.bashrc` must be run to set up the Node.js environment:
 
 ```bash
-if [ ! -f .nvmrc ];then
+ if [ ! -f .nvmrc ];then
     export NODE_VERSION=$(cat ./package.json | grep '\"node\":' | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')
 else
     export NODE_VERSION=`cat .nvmrc`
@@ -23,7 +23,7 @@ $NVS_HOME/nvs add $NODE_VERSION
 source $NVS_HOME/nvs.sh use $NODE_VERSION
 ```
 
-**Without running these commands, `node` and `npm` commands will fail.** The user may need to manually enter these commands in new terminal sessions. While executing `./.bashrc` would be ideal, it can disconnect the agent from terminal output. If you encounter "command not found" errors for `node` or `npm`, this environment setup is likely the issue.
+**Without running these commands, `node` and `npm` commands will fail.** When initially opening the terminal, the ai agent should first run the commands above, including the space at the beginning of the first line. The user may need to manually enter these commands in new terminal sessions. While executing `./.bashrc` would be ideal, it can disconnect the agent from terminal output. If you encounter "command not found" errors for `node` or `npm`, this environment setup is likely the issue.
 
 ## Key files and directories
 
