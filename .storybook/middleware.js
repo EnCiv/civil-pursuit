@@ -1,5 +1,55 @@
-// Storybook is run on an express server, and this middleware fill lets routes be added
+// Storybook is run on an express server, and this middleware lets routes be added
 // To test the useAuth and AuthForm component we need to handle the post request and give a response
+
+/**
+ * Authentication Flow in Storybook
+ *
+ * This middleware mocks the authentication endpoints needed for civil-client's useAuth hook.
+ *
+ * ## New User Flow
+ * When a new user first visits the site:
+ *
+ * 1. `user` prop is undefined
+ * 2. Answer step shows Terms & Privacy checkbox
+ * 3. User checks Terms and clicks Next
+ * 4. `useAuth.methods.skip()` is called, which:
+ *    - Validates that Terms are agreed (!agree check)
+ *    - Generates a random password
+ *    - POSTs to /tempid endpoint with { email, password } (email may be undefined)
+ *    - Server responds with { userId: 'abc123', email }
+ *    - useAuth calls authenticateSocketIo() which:
+ *      - Closes socket.io connection
+ *      - Reopens socket.io (now with auth cookie in headers)
+ *      - Server authenticates the socket connection
+ *    - Page reloads/redirects with authenticated session
+ * 5. After reload:
+ *    - `user` prop is now { id: 'userId-from-server' }
+ *    - User continues through tournament with temporary ID
+ *    - All data saved to localStorage
+ *
+ * ## Storybook Testing Limitations
+ *
+ * In Storybook, the HTTP endpoints are mocked below, but:
+ * - Socket.io reconnection doesn't happen (no real socket server)
+ * - Page reload doesn't happen (Storybook story doesn't navigate)
+ * - User prop doesn't automatically update after skip
+ *
+ * **Workaround for Testing:**
+ * Tests that need to simulate the post-authentication state should start with
+ * `user: { id: 'temp-id' }` in the defaultValue, skipping the authentication step.
+ *
+ * **Testing the Terms Flow:**
+ * To test Terms checkbox and validation, use `user: undefined` but don't expect
+ * the skip() call to work - just test that onDone becomes valid when Terms are checked.
+ * See stories/answer-step.stories.jsx AnswerStepWithTermsAgreement for example.
+ *
+ * ## TODO: Investigate Modern Storybook Mocking
+ *
+ * Storybook 7+ has new ways to mock fetch/network requests:
+ * - msw-storybook-addon (Mock Service Worker)
+ * - fetch-mock addon
+ * These might provide better ways to test authentication flows.
+ */
 
 const express = require('express')
 
@@ -37,7 +87,24 @@ async function signUpHandler(req, res) {
     return
   }
 }
-// LOL
+
+/**
+ * Temporary ID (Skip) Handler
+ *
+ * Mocks the /tempid endpoint used by useAuth.methods.skip()
+ *
+ * - `req.body` contains: { email?, password, ...userInfo }
+ * - Email is optional (can be undefined for anonymous users)
+ * - Password is a randomly generated string (8-16 chars A-Z)
+ * - Returns: { userId: 'abc123', email } on success
+ * - Returns: 404 with error for invalid email (not 'success@email.com')
+ *
+ * In production, this endpoint:
+ * 1. Creates a new User document with the temporary credentials
+ * 2. Sets a session cookie for authentication
+ * 3. The session cookie is used to authenticate subsequent socket.io connections
+ * 4. If email is not associated before cookie expires, account becomes abandoned
+ */
 async function tempId(req, res) {
   console.info('tempId body', req.body)
   let { password, ..._body } = req.body // don't let the password show up in the logs
