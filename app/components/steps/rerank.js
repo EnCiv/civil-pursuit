@@ -35,12 +35,40 @@ export default function RerankStep(props) {
       // Store onNext data in context state instead of calling finish-round here
       // The intermission step will handle finish-round via batch-upsert API
       onNext = () => {
+        console.info('onNext upsert ...')
         const groupings = data.groupIdsLists || []
         // Save final round state to context (and localStorage via context)
-        upsert({ uInfo: { [round]: { shownStatementIds, groupings, finished: true } } })
         // Store idRanks for intermission to use in batch-upsert
-        upsert({ roundCompleteData: { [round]: { idRanks, groupings } } })
-        // Do NOT call finish-round socket emit here - intermission will handle it
+        upsert({
+          uInfo: { [round]: { shownStatementIds, groupings, finished: true } }, // only one upsert but it can have all the data
+          roundCompleteData: { [round]: { idRanks, groupings } },
+        }) // two separate upserts will cause a timing error
+
+        // If user already has email, call batch-upsert immediately
+        // Otherwise, intermission will prompt for email and call batch-upsert then
+        if (data.user?.email) {
+          const batchData = {
+            discussionId: data.discussionId,
+            round,
+            email: data.user.email,
+            data: {
+              pointById: data.pointById || {},
+              myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
+              postRankByParentId: data.postRankByParentId || {},
+              whyRankByParentId: data.whyRankByParentId || {},
+              groupIdsLists: groupings,
+              jsformData: data.jsformData || {},
+              idRanks,
+            },
+          }
+          window.socket.emit('batch-upsert-deliberation-data', batchData, response => {
+            if (response?.error) {
+              console.error('batch-upsert failed:', response.error)
+            } else {
+              console.log('batch-upsert succeeded:', response)
+            }
+          })
+        }
       }
     }
     onDone({ valid, value, onNext })
