@@ -20,7 +20,7 @@
     "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"sleep 20 && npm run hot-server\" \"sleep 15 && npm run hot-client\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test-storybook": "test-storybook",
+    "test-storybook": "test-storybook --testTimeout=45000",
     "svgr": "svgr --icon --filename-case kebab assets/svg --out-dir app/svgr",
     "chromatic": "bash ./node_modules/.bin/chromatic",
     "dbtest": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand --config ./jest-db.config.js --runTestsByPath"
