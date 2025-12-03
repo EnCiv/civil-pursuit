@@ -40,8 +40,8 @@ function buildChildren(steps, round) {
     const { webComponent, ...props } = step
     const LookupResult = WebComponents[webComponent]
     if (LookupResult) {
-      // Pass all props from step obj except WebComponent
-      return <LookupResult {...props} />
+      // Pass all props from step obj except WebComponent, plus round
+      return <LookupResult {...props} round={round} />
     } else {
       console.error(`Couldn't render step - component '${webComponent}' was not found in WebComponents.`)
       return <div>Couldn't render step - component '{webComponent}' was not found in WebComponents.</div>
