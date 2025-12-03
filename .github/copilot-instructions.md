@@ -8,9 +8,11 @@ Short guidance to help an AI coding agent be productive in this repository.
 - Client: `app/` contains React components (JSX) and client code. `app/index.js` exports top-level `Components` used by the server to render UI.
 - Build: source lives in `app/`. The repo uses Babel to transpile ES modules (and some CommonJS) into `dist/` and Webpack for client bundles.
 
-## Terminal environment setup (CRITICAL)
+## Terminal environment setup for AI agents (CRITICAL)
 
-**IMPORTANT**: When opening a new bash terminal, Node.js and npm are NOT available until the environment is properly configured. The following commands from `.bashrc` must be run to set up the Node.js environment:
+**IMPORTANT**: Do not `cd` to an absolute path. Do not use `cd` at the beginning of terminal commands unless you need to move to a directory other than the project root. The terminal is already in the project root.
+
+**IMPORTANT**: When opening a new bash terminal, Node.js and npm are NOT available until the environment is properly configured. The following commands must be run to set up the Node.js environment, including the space at the beginning of the first line:
 
 ```bash
  if [ ! -f .nvmrc ];then
@@ -22,8 +24,6 @@ export NVS_HOME="$HOME/AppData/Local/nvs/"
 $NVS_HOME/nvs add $NODE_VERSION
 source $NVS_HOME/nvs.sh use $NODE_VERSION
 ```
-
-**Without running these commands, `node` and `npm` commands will fail.** When initially opening the terminal, the ai agent should first run the commands above, including the space at the beginning of the first line. The user may need to manually enter these commands in new terminal sessions. While executing `./.bashrc` would be ideal, it can disconnect the agent from terminal output. If you encounter "command not found" errors for `node` or `npm`, this environment setup is likely the issue.
 
 ## Key files and directories
 
@@ -108,6 +108,7 @@ Notes: many files mix `import`/`export` and `module.exports` — respect the exi
 
 ## Testing notes
 
+- **Avoid setTimeout in tests**: Do not use `setTimeout` or `new Promise(resolve => setTimeout(...))` delays in Storybook tests or Jest tests. Instead, use `waitFor` to wait for specific UI conditions (elements appearing, buttons becoming enabled, etc.). If you think a delay is needed, discuss the issue first - there's usually a better condition to wait for. The `waitForStepSlider` helper is available for waiting on step transitions. Quick experimental setTimeout usage is acceptable for debugging, but should be removed before committing.
 - Jest roots are `app/` (see `jest.config.js`). Setup files include `jest-test-setup.js` and `jest-enzyme` integration.
 - DB tests rely on `@shelf/jest-mongodb` and `mongodb-memory-server`.
 - Use `npm run dbtest` for debug-friendly runs.
