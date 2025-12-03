@@ -70,25 +70,28 @@ export const authFlowDecorator = (Story, context) => {
   const testState = context.args.testState
 
   if (!window.socket) window.socket = {} // was really expecting this to be setup by socketEmitDecorator
-  if (!window.socket.close)
-    window.socket.close = () => {
-      if (window.socket._onHandlers?.connect) setTimeout(window.socket._onHandlers.connect, 1000)
-      else console.error('No connect handler registered')
-    }
-  if (!window.socket.removeListener)
-    window.socket.removeListener = (handle, func) => {
-      // useAuth closes and reconnects the socket to authenticate the user after /tempid
-      // then it calls removeListener and that's our queue to set the new user.id in args and the DeliberationContext
-      if (handle === 'connect')
-        setTimeout(() => {
-          context.args.user = { id: 'temp-user-123' }
-          console.log('✅ args updated with new user after tempid:', context.args.user)
-          if (context.args.testState.upsert) {
-            context.args.testState.upsert({ user: { ...context.args.user }, userId: context.args.user.id })
-            console.log('✅ User set in DeliberationContext via upsert:', context.args.user)
-          } else console.error('testState.upsert not yet available to set user in context')
-        }, 100)
-    }
+  
+  // Always re-register these handlers to ensure the current context is used
+  // This fixes test isolation issues when switching between stories without reload
+  window.socket.close = () => {
+    if (window.socket._onHandlers?.connect) setTimeout(window.socket._onHandlers.connect, 1000)
+    else console.error('No connect handler registered')
+  }
+  window.socket.removeListener = (handle, func) => {
+    // useAuth closes and reconnects the socket to authenticate the user after /tempid
+    // then it calls removeListener and that's our queue to set the new user.id in args and the DeliberationContext
+    if (handle === 'connect')
+      setTimeout(() => {
+        context.args.user = { id: 'temp-user-123' }
+        console.log('✅ args updated with new user after tempid:', context.args.user)
+        if (context.args.testState.upsert) {
+          context.args.testState.upsert({ user: { ...context.args.user }, userId: context.args.user.id })
+          console.log('✅ User set in DeliberationContext via upsert:', context.args.user)
+          // Set flag for tests to wait on
+          context.args.testState.authFlowUserSet = true
+        } else console.error('testState.upsert not yet available to set user in context')
+      }, 100)
+  }
 
   // Import superagent and wrap its post method
   React.useEffect(() => {
