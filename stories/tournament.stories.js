@@ -4,10 +4,9 @@ import React, { useState } from 'react'
 import Tournament from '../app/components/tournament'
 import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator, buildApiDecorator, deliberationContextData } from './common'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
-import DeliberationContext from '../app/components/deliberation-context'
 import { userEvent, within, waitFor, expect } from '@storybook/test'
 import { authFlowDecorators, withAuthTestState } from './mocks/auth-flow'
-import { set } from 'lodash'
+import { waitForStepSlider } from './step-slider.stories'
 
 const pointItems = Array.from({ length: 30 }, (_, index) => ({
   _id: index + 'a', //
@@ -238,6 +237,7 @@ export const tournamentSteps = [
 ]
 
 export default {
+  title: 'Tournament',
   component: Tournament,
   args: {
     steps: tournamentSteps,
@@ -789,12 +789,14 @@ export const BatchUpsertInteractionTest = {
       })
     }),
   ],
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
+    const { testState } = args
 
-    // Initialize tracking arrays
+    // Initialize tracking arrays and auth flow state
     window.batchUpsertCalls = []
     window.setUserInfoCalls = []
+    testState.authFlowUserSet = false
 
     // Map of step names to their identifying content
     const stepMarkers = {
@@ -817,103 +819,60 @@ export const BatchUpsertInteractionTest = {
       // First wait for the current step's content to be visible
       const marker = stepMarkers[currentStep]
       if (marker) {
-        await waitFor(
-          () => {
-            let element
-            if (marker.type === 'text') {
-              element = canvas.queryByText(marker.pattern)
-            } else if (marker.type === 'role') {
-              element = canvas.queryAllByRole(marker.role)[0]
-            } else if (marker.type === 'placeholder') {
-              element = canvas.queryByPlaceholderText(marker.pattern)
-            }
-            if (!element) throw new Error(`${currentStep} step content not found`)
-            return element
-          },
-          { timeout: 5000 }
-        )
+        await waitFor(() => {
+          let element
+          if (marker.type === 'text') {
+            element = canvas.queryByText(marker.pattern)
+          } else if (marker.type === 'role') {
+            element = canvas.queryAllByRole(marker.role)[0]
+          } else if (marker.type === 'placeholder') {
+            element = canvas.queryByPlaceholderText(marker.pattern)
+          }
+          if (!element) throw new Error(`${currentStep} step content not found`)
+          return element
+        })
         console.log(`    ✓ ${currentStep} content visible`)
       }
 
       // Wait for Next button to appear and be enabled
-      const nextButton = await waitFor(
-        () => {
-          const btn = canvas.queryByRole('button', { name: /Next/i })
-          expect(btn).toBeInTheDocument()
-          expect(btn).not.toBeDisabled()
-          return btn
-        },
-        { timeout: 5000 }
-      )
-
-      // Get the step slider wrapper before clicking
-      const stepSliderWrapper = canvasElement.querySelector('[data-transitioning]')
-      if (!stepSliderWrapper) {
-        console.warn('⚠️ Could not find step slider wrapper')
-      }
+      const nextButton = await waitFor(() => {
+        const btn = canvas.queryByRole('button', { name: /Next/i })
+        expect(btn).toBeInTheDocument()
+        expect(btn).not.toBeDisabled()
+        return btn
+      })
 
       await userEvent.click(nextButton)
       console.log(`    → Clicked Next`)
 
-      // Wait for all transitions and animations to complete
-      if (stepSliderWrapper) {
-        // First wait for the CSS transition (left property animation)
-        await waitFor(
-          () => {
-            const isComplete = stepSliderWrapper.getAttribute('data-transition-complete')
-            expect(isComplete).toBe('true')
-          },
-          { timeout: 2000, interval: 50 }
-        )
-        console.log(`    ✓ CSS transition complete`)
-
-        // Then wait for height adjustment and scrollIntoView to settle
-        await waitFor(
-          () => {
-            console.log('data-height-stable=', stepSliderWrapper.getAttribute('data-height-stable'))
-            const isStable = stepSliderWrapper.getAttribute('data-height-stable')
-            expect(isStable).toBe('true')
-          },
-          { timeout: 1000, interval: 50 }
-        )
-        console.log(`    ✓ Height stable and all animations complete`)
-        console.log('before timeout data-height-stable=', stepSliderWrapper.getAttribute('data-height-stable'))
-        await new Promise(resolve => setTimeout(resolve, 1))
-        console.log('after timeout data-height-stable=', stepSliderWrapper.getAttribute('data-height-stable'))
-
-        // waiting again just to make sure that the height event and scroll events have both ended their transitions
-        await waitFor(
-          () => {
-            const isStable = stepSliderWrapper.getAttribute('data-height-stable')
-            console.log('second pass data-height-stable=', stepSliderWrapper.getAttribute('data-height-stable'))
-            expect(isStable).toBe('true')
-          },
-          { timeout: 1000, interval: 50 }
-        )
-        console.log(`    ✓ Height stable and all animations complete`)
-      } else {
-        // Fallback to timeout if we can't find the wrapper
-        await new Promise(resolve => setTimeout(resolve, 600))
-      }
+      // Wait for step slider transition to complete
+      await waitForStepSlider(canvasElement)
+      console.log(`    ✓ Step transition complete`)
     }
 
     // Step 1: Answer step - check "Yes, I agree" then click Next
     console.log('Step 1: Answer step')
 
     // Wait for Terms checkbox and click it
-    await waitFor(
-      () => {
-        const termsCheckbox = canvas.queryByRole('checkbox')
-        if (!termsCheckbox) throw new Error('Terms checkbox not found')
-        return termsCheckbox
-      },
-      { timeout: 5000 }
-    )
+    await waitFor(() => {
+      const termsCheckbox = canvas.queryByRole('checkbox')
+      if (!termsCheckbox) throw new Error('Terms checkbox not found')
+      return termsCheckbox
+    })
     const termsCheckbox = canvas.getByRole('checkbox')
     await userEvent.click(termsCheckbox)
     console.log('  Clicked "Yes, I agree" checkbox')
 
     await clickNext('answer')
+
+    // Wait for auth flow to complete - user must be set in context before clicking save
+    await waitFor(
+      () => {
+        expect(testState.authFlowUserSet).toBe(true)
+      },
+      { timeout: 3000 }
+    )
+    console.log('  Auth flow complete - user set in context')
 
     // Step 2: Grouping step
     console.log('Step 2: Grouping step')
@@ -945,20 +904,16 @@ export const BatchUpsertInteractionTest = {
 
     // Step 9: Jsform (Feedback) step
     console.log('Step 9: Jsform (Feedback) step')
-
     await clickNext('jsform')
 
     // Step 10: Intermission - should now be visible
     console.log('Step 10: Intermission - entering email')
 
     // Wait for intermission content and ensure round is marked complete
-    await waitFor(
-      () => {
-        const emailInput = canvas.queryByPlaceholderText('Please provide your email')
-        expect(emailInput).toBeInTheDocument()
-      },
-      { timeout: 5000 }
-    )
+    await waitFor(() => {
+      const emailInput = canvas.queryByPlaceholderText('Please provide your email')
+      expect(emailInput).toBeInTheDocument()
+    })
 
     // Debug: Check the current state before clicking button
     console.log('  Checking intermission state...')
@@ -986,7 +941,6 @@ export const BatchUpsertInteractionTest = {
     const saveButton = canvas.getByRole('button', { name: /(Save and Continue|Invite me back)/i })
     console.log('  Clicking button:', saveButton.textContent)
     await userEvent.click(saveButton)
-
     // Wait for batch-upsert API to be called
     await waitFor(
       () => {
@@ -1009,32 +963,60 @@ export const BatchUpsertInteractionTest = {
 
     // Verify the batch-upsert call data
     const batchData = window.batchUpsertCalls[0]
+    console.log('  📊 Verifying batch-upsert data...')
+
+    // This test uses pre-populated data with known IDs, so no ID normalization needed
     expect(batchData).toMatchObject({
       discussionId: '5d0137260dacd06732a1d814',
       round: 0,
       email: 'success@email.com',
       data: {
         pointById: {
-          '67bf9d6ae49200d1349ab350': expect.objectContaining({
+          1: { _id: '1', subject: 'Point 0', description: 'Point Description 0', parentId: 'd' },
+          2: { _id: '2', subject: 'Point 1', description: 'Point Description 1', parentId: 'd' },
+          3: { _id: '3', subject: 'Point 2', description: 'Point Description 2', parentId: 'd' },
+          4: { _id: '4', subject: 'Point 3', description: 'Point Description 3', parentId: 'd' },
+          5: { _id: '5', subject: 'Point 4', description: 'Point Description 4', parentId: 'd' },
+          6: { _id: '6', subject: 'Point 5', description: 'Point Description 5', parentId: 'd' },
+          7: { _id: '7', subject: 'Point 6', description: 'Point Description 6', parentId: 'd' },
+          8: { _id: '8', subject: 'Point 7', description: 'Point Description 7', parentId: 'd' },
+          9: { _id: '9', subject: 'Point 8', description: 'Point Description 8', parentId: 'd' },
+          '67bf9d6ae49200d1349ab350': {
             _id: '67bf9d6ae49200d1349ab350',
             subject: 'My Important Issue',
-          }),
+            description: 'This is why this issue matters',
+            userId: 'temp-user-123',
+            parentId: '5d0137260dacd06732a1d814',
+          },
         },
         myWhyByCategoryByParentId: {
           most: {
-            1: expect.objectContaining({
+            1: {
+              _id: '67bf9d6ae49200d1349ab352',
               subject: 'Why Also Most',
               description: 'Another most explanation',
               parentId: '1',
               category: 'most',
-            }),
+              userId: 'temp-user-123',
+            },
+            '67bf9d6ae49200d1349ab350': {
+              _id: '67bf9d6ae49200d1349ab351',
+              subject: 'Why Most Important',
+              description: 'Explanation for most',
+              parentId: '67bf9d6ae49200d1349ab350',
+              category: 'most',
+              userId: 'temp-user-123',
+            },
           },
           least: {
-            9: expect.objectContaining({
+            9: {
+              _id: '67bf9d6ae49200d1349ab353',
               subject: 'Why Least Important',
+              description: 'Explanation for least',
               parentId: '9',
               category: 'least',
-            }),
+              userId: 'temp-user-123',
+            },
           },
         },
         groupIdsLists: [
@@ -1046,7 +1028,22 @@ export const BatchUpsertInteractionTest = {
         jsformData: {},
       },
     })
+    console.log('  ✓ batch-upsert data structure verified')
+    // need to wait for the final message to appear and all rendering before ending the test
+    await waitFor(() => {
+      const finalMessage = canvas.getByText("Success! Your data has been saved and we've sent a password email to success@email.com.")
+      expect(finalMessage).toBeInTheDocument()
+    })
+    /*** 
+**there is still rendering going on** and we need to make sure it settles before returning from this test or when we will get errors during test-storybook 
+  
+    ● tournament › BatchUpsertInteractionTest › play-test
+    page.evaluate: Execution context was destroyed, most likely because of a navigation
 
+*/
+    await new Promise(resolve => setTimeout(resolve, 0))
+    // sometime on this test we get that error even after the above, so we add one more
+    await new Promise(resolve => setTimeout(resolve, 0))
     console.log('✅ All batch-upsert assertions passed!')
   },
 }
