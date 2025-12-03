@@ -47,6 +47,8 @@ This specification describes the "Late Sign-Up" feature that allows users to exp
 
 ### User Flow States
 
+The late sign-up feature supports several user flow states, each tested by dedicated Storybook stories:
+
 ```
 State 1: Unauthenticated User (Initial)
 - No userId yet
@@ -58,26 +60,55 @@ State 1: Unauthenticated User (Initial)
 - All subsequent data stored in localStorage with key: `cp_${discussionId}_${userId}`
 - Sign-up component NOT in step list
 
-State 2: Temporary User (Round 1 / round 0 in code)
+State 2a: Temporary User - Early Exit (Not Enough Participants)
 - Has user.id but no user.email
-- All data saved to localStorage (not immediately to server)
-- User completes Answer, comparison, grouping, ranking steps
-- Data persists across page refreshes via localStorage
+- User completes Answer step
+- Not enough participants to continue (< 2 * group_size)
+- User goes directly to Intermission step
+- User provides email, then batch-upsert only the Answer step data
+- Only data for completed steps is sent (pointById, myWhyByCategoryByParentId)
+- No groupIdsLists, idRanks, postRankByParentId, or whyRankByParentId
+- Test: tournament-early-user.stories.js (NewUserNotEnoughParticipants)
 
-State 3: Round 1 Complete → Intermission
-- User prompted for email at intermission (if no user.email)
-- On email submission:
-  1. Call new batch-upsert API with all localStorage data
-  2. API internally calls finish-round with accumulated data
-  3. Server associates email with existing userId
-  4. Clear localStorage for completed round
-  5. User becomes authenticated
+State 2b: Temporary User - Full Flow (Enough Participants)
+- Has user.id but no user.email
+- User completes all 10 steps via UI interactions:
+  Answer → Grouping → Rank → Why Most → Why Least → 
+  Compare Why Most → Compare Why Least → Review → Feedback → Intermission
+- All data saved to localStorage throughout (not immediately to server)
+- User provides email at Intermission, then batch-upsert all data
+- Test: tournament-full-flow.stories.js (NewUserFullFlow)
 
-State 4: Authenticated User (Round 2+)
+State 3: Authenticated User - Returning to Complete Steps
+- Has user.id AND user.email (authenticated)
+- Previously completed Answer step (data in localStorage and also sent down by the server)
+- Returns to complete remaining steps 2-10 via UI interactions
+- Starts at Answer step with previous data, user clicks Next to get to Grouping step
+- On reaching Intermission, batch-upsert all data
+- Test: tournament-returning-user.stories.js (ReturningUserFlow)
+
+State 4: Authenticated User (All Rounds)
 - Has user.email associated with account
-- Continues using localStorage throughout remaining rounds
+- Continues using localStorage throughout all rounds
 - Data batch-upserted after each round completion
 ```
+
+**Storybook Test Coverage:**
+
+| Story File | Test Name | User State | Steps Covered |
+|------------|-----------|------------|---------------|
+| `tournament-early-user.stories.js` | NewUserNotEnoughParticipants | Temp user, early exit | Answer → Intermission |
+| `tournament-full-flow.stories.js` | NewUserFullFlow | Temp user, full flow | All 10 steps with UI input |
+| `tournament-returning-user.stories.js` | ReturningUserFlow | Authenticated, returning | Steps 2-10 with pre-loaded data |
+| `tournament.stories.js` | BatchUpsertInteractionTest | Temp user, pre-populated | All steps (data in context) |
+
+**Key Implementation Notes:**
+
+1. **Batch-upsert only includes completed step data** - If a user exits early (State 2a), only `pointById` and `myWhyByCategoryByParentId` are sent. Fields like `groupIdsLists`, `idRanks`, `postRankByParentId`, and `whyRankByParentId` are omitted since those steps weren't completed.
+
+2. **UI-driven tests vs context-populated tests** - `tournament-full-flow.stories.js` and `tournament-returning-user.stories.js` use actual UI interactions (typing, clicking, drag-and-drop) to populate data. `tournament.stories.js` (BatchUpsertInteractionTest) pre-populates data via context for faster testing of the batch-upsert flow itself.
+
+3. **Dynamic ID normalization in tests** - Stories that create new data via UI (answer points, why entries) generate random ObjectIds. Tests normalize these IDs before `toMatchObject` assertions to ensure deterministic verification.
 
 ### localStorage Data Structure
 
