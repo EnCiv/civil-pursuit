@@ -55,7 +55,7 @@ export default function CompareWhysStep(props) {
 
 // pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]
 export function CompareWhys(props) {
-  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round, subject, description } = props
+  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round, stepIntro } = props
   const classes = useStyles()
   // completedByPointId does not effect rendering, so no need to set state, just mutate.
   const [completedByPointId] = useState(
@@ -92,7 +92,7 @@ export function CompareWhys(props) {
   }
   return (
     <div className={classes.container}>
-      <StepIntro subject={subject} description={description} />
+      <StepIntro {...stepIntro} />
       {!pointWithWhyRankListList ? (
         <div className={classes.headlineTitle}>Nothing to do here, hit Next to continue</div>
       ) : (
