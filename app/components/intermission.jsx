@@ -35,7 +35,7 @@ const Intermission = props => {
     window.socket.emit('set-user-info', { email: email }, callback)
   }
 
-  // Handle batch upsert for temporary users at Round 1 completion
+  // Handle batch upsert for temporary users at Round 1 completion (full round data)
   const handleBatchUpsert = emailAddress => {
     setIsProcessing(true)
     setValidationError('')
@@ -80,6 +80,45 @@ const Intermission = props => {
     })
   }
 
+  // Handle batch upsert for temporary users who only completed the Answer step
+  // (not enough participants to continue, so round is not complete)
+  const handleBatchUpsertAnswer = emailAddress => {
+    setIsProcessing(true)
+    setValidationError('')
+    setSuccessMessage('')
+
+    // Only include answer data (pointById and myWhyByCategoryByParentId)
+    const batchData = {
+      discussionId,
+      round,
+      email: emailAddress,
+      data: {
+        pointById: data.pointById || {},
+        myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
+      },
+    }
+
+    // Call batch-upsert API
+    window.socket.emit('batch-upsert-deliberation-data', batchData, response => {
+      setIsProcessing(false)
+      if (!response || response.error) {
+        setValidationError(response?.error || 'Failed to save data. Please try again.')
+      } else {
+        // Success - clear localStorage for completed round if available
+        if (storageAvailable) {
+          LocalStorageManager.clear(discussionId, userId, round)
+        }
+        setSuccessMessage(`Success! Your answer has been saved and we've sent a password email to ${emailAddress}. We'll invite you back when more participants join.`)
+        // Reload page to get updated user info with email (skip in test environment)
+        if (!window.location.href.includes('iframe.html?viewMode=story')) {
+          setTimeout(() => {
+            window.location.reload()
+          }, 2000)
+        }
+      }
+    })
+  }
+
   const handleEmail = () => {
     setValidationError('')
     setSuccessMessage('')
@@ -88,13 +127,16 @@ const Intermission = props => {
       return
     }
 
-    // Check if this is a temporary user at Round 1 completion
+    // Check if this is a temporary user (has id but no email)
     const isTemporaryUser = user?.id && !user?.email
     const isRound1Complete = round === 0 && uInfo[round]?.finished
 
     if (isTemporaryUser && isRound1Complete) {
-      // Use batch-upsert flow for temporary users
+      // Use batch-upsert flow for temporary users with complete round
       handleBatchUpsert(email)
+    } else if (isTemporaryUser && round === 0 && !uInfo[round]?.finished) {
+      // Use batch-upsert for answer-only data when round not complete (early user flow)
+      handleBatchUpsertAnswer(email)
     } else {
       // Use existing flow for authenticated users or other scenarios
       setUserInfo(email, response => {
