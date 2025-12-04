@@ -138,7 +138,17 @@ export default async function batchUpsertDeliberationData(batchData, cb) {
     }
 
     // Step 2: Prepare and validate data arrays
-    const points = Object.values(data.pointById || {})
+    // Use myPointById (filtered by client to only include user's own points)
+    // Filter for points with userId matching the socket's userId or 'unknown'
+    const allPoints = Object.values(data.myPointById || {})
+    const points = allPoints.filter(point => point.userId === userId || point.userId === 'unknown')
+
+    // Update 'unknown' userId to actual userId
+    for (const point of points) {
+      if (point.userId === 'unknown') {
+        point.userId = userId
+      }
+    }
 
     // Validate that user has only inserted one statement (their answer)
     if (points.length > 1) {
@@ -166,8 +176,8 @@ export default async function batchUpsertDeliberationData(batchData, cb) {
     }
 
     // Step 3: Validate all points
+    // Note: userId was already set to actual userId above (replacing 'unknown')
     for (const point of points) {
-      point.userId = userId // Ensure userId is set
       const { error } = pointSchema.validate(point)
       if (error) {
         return cbFailure(`Point validation failed: ${error.message}`)
