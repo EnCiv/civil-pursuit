@@ -1,5 +1,85 @@
 // https://github.com/EnCiv/civil-pursuit/issues/151
 
+/**
+ * # Important Notes for Writing Tournament Interaction Tests
+ *
+ * These stories use play functions to simulate user interactions through multi-step
+ * tournament flows. When writing or modifying these tests, keep the following in mind:
+ *
+ * ## 1. Wait for Rendering to Complete
+ *
+ * - Always ensure all rendering is complete before the play function returns
+ * - Use `waitFor()` to wait for expected UI elements to appear
+ * - Failure to do this will cause errors during `test-storybook` runs
+ * - Example:
+ *   ```js
+ *   await waitFor(() => expect(canvas.getByText('Success')).toBeInTheDocument())
+ *   ```
+ *
+ * ## 2. Previous Step Panels Remain in the DOM
+ *
+ * - The step-slider keeps all previous step panels in the DOM (for back navigation)
+ * - When querying for input elements, you **MUST** scope to the current step's panel
+ * - Use the step's heading to find the wrapper, then query within it:
+ *   ```js
+ *   const heading = canvas.queryByRole('heading', { name: /Why it's Least Important/i })
+ *   const wrapper = heading.parentNode.parentNode
+ *   const input = wrapper.querySelector('input[placeholder="Type some thing here"]')
+ *   ```
+ * - Using `canvas.getAllByPlaceholderText()` may find inputs from previous steps!
+ *
+ * ## 3. Wait for Step Transitions
+ *
+ * - Use `waitForStepSlider(canvasElement)` after clicking Next to wait for:
+ *   - The CSS transition to complete
+ *   - The new step's height to stabilize
+ * - This helper is imported from `'./step-slider.stories'`
+ *
+ * ## 4. Test Isolation
+ *
+ * - Reset global state at the start of play functions:
+ *   ```js
+ *   window.batchUpsertCalls = []
+ *   if (window.socket?._socketEmitHandlerResults) {
+ *     Object.keys(window.socket._socketEmitHandlerResults).forEach(key => {
+ *       window.socket._socketEmitHandlerResults[key] = []
+ *     })
+ *   }
+ *   ```
+ * - The `DeliberationContextDecorator` clears localStorage automatically before each story
+ *   (unless `preserveLocalStorage: true` is set in args)
+ * - If you need to manually clear localStorage in a play function:
+ *   ```js
+ *   window.localStorage.clear()
+ *   ```
+ *
+ * ## 5. Shared Test Data
+ *
+ * - Common data (`demInfoDecorator`, `samplePoints`, `sampleWhys`, `tournamentSteps`, etc.)
+ *   is exported from this file for use in other tournament story files
+ * - This reduces duplication and ensures consistency across tests
+ *
+ * ## 6. Verifying Results with toMatchObject
+ *
+ * - Use `toMatchObject()` to explicitly show what properties are important in results
+ * - This makes it easier for reviewers to verify what should and shouldn't be there
+ * - Development workflow:
+ *   1. First use `console.log(JSON.stringify(result, null, 2))` to see the actual object
+ *   2. Copy the relevant properties into your `toMatchObject()` assertion
+ *   3. Normalize dynamic values (IDs, timestamps) to predictable values if needed
+ * - Example:
+ *   ```js
+ *   // Good: explicitly shows expected structure
+ *   expect(batchUpsertCalls[0]).toMatchObject({
+ *     upserts: {
+ *       postRankByParentId: { 'point-1': { rank: 0 } }
+ *     }
+ *   })
+ *   // Avoid: doesn't show what's actually being tested
+ *   expect(batchUpsertCalls).toHaveLength(1)
+ *   ```
+ */
+
 import React, { useState } from 'react'
 import Tournament from '../app/components/tournament'
 import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator, buildApiDecorator, deliberationContextData } from './common'
@@ -246,7 +326,7 @@ export default {
     layout: 'fullscreen',
   },
   decorators: [DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator],
-  excludeStories: ['tournamentDecorators', 'tournamentDefaultValue', 'tournamentSteps'],
+  excludeStories: ['tournamentDecorators', 'tournamentDefaultValue', 'tournamentSteps', 'demInfoDecorator', 'samplePoints', 'sampleWhys', 'tournamentDefaultValueMinimal', 'tournamentDecoratorsWithPointData'],
 }
 
 function makePoints(n) {
@@ -289,7 +369,7 @@ function byParentIdList(docs) {
 }
 
 // Shared DemInfo decorator for all tournament stories
-const demInfoDecorator = Story => {
+export const demInfoDecorator = Story => {
   // Each DemInfoProvider has its own requestedById tracking
 
   // DemInfoSetup runs inside the provider so useContext works correctly
@@ -318,6 +398,62 @@ const demInfoDecorator = Story => {
       <Story />
     </DemInfoProvider>
   )
+}
+
+// Sample points for grouping/ranking steps - shared across tournament stories
+export const samplePoints = [
+  {
+    _id: 'point-1',
+    subject: 'Issue One',
+    description: 'Description of issue one',
+    parentId: '5d0137260dacd06732a1d814',
+  },
+  {
+    _id: 'point-2',
+    subject: 'Issue Two',
+    description: 'Description of issue two',
+    parentId: '5d0137260dacd06732a1d814',
+  },
+  {
+    _id: 'point-3',
+    subject: 'Issue Three',
+    description: 'Description of issue three',
+    parentId: '5d0137260dacd06732a1d814',
+  },
+  {
+    _id: 'point-4',
+    subject: 'Issue Four',
+    description: 'Description of issue four',
+    parentId: '5d0137260dacd06732a1d814',
+  },
+]
+
+// Sample whys for compare-whys step - shared across tournament stories
+export const sampleWhys = {
+  ranks: [],
+  whys: [
+    {
+      _id: 'why-most-1',
+      subject: 'Reason why this is most important',
+      description: 'This issue is most important because...',
+      parentId: 'point-4', // The point ranked as Most
+      category: 'most',
+    },
+    {
+      _id: 'why-least-1',
+      subject: 'First reason for least important',
+      description: 'Reason for issue one',
+      parentId: 'point-1', // The point ranked as Least
+      category: 'least',
+    },
+    {
+      _id: 'why-least-2',
+      subject: 'Second reason for least important',
+      description: 'Another reason for issue one',
+      parentId: 'point-1',
+      category: 'least',
+    },
+  ],
 }
 
 // Common API decorators shared by all tournament stories
@@ -966,21 +1102,14 @@ export const BatchUpsertInteractionTest = {
     console.log('  📊 Verifying batch-upsert data...')
 
     // This test uses pre-populated data with known IDs, so no ID normalization needed
+    // Note: myPointById only contains user's own point (filtered by intermission.jsx)
     expect(batchData).toMatchObject({
       discussionId: '5d0137260dacd06732a1d814',
       round: 0,
       email: 'success@email.com',
       data: {
-        pointById: {
-          1: { _id: '1', subject: 'Point 0', description: 'Point Description 0', parentId: 'd' },
-          2: { _id: '2', subject: 'Point 1', description: 'Point Description 1', parentId: 'd' },
-          3: { _id: '3', subject: 'Point 2', description: 'Point Description 2', parentId: 'd' },
-          4: { _id: '4', subject: 'Point 3', description: 'Point Description 3', parentId: 'd' },
-          5: { _id: '5', subject: 'Point 4', description: 'Point Description 4', parentId: 'd' },
-          6: { _id: '6', subject: 'Point 5', description: 'Point Description 5', parentId: 'd' },
-          7: { _id: '7', subject: 'Point 6', description: 'Point Description 6', parentId: 'd' },
-          8: { _id: '8', subject: 'Point 7', description: 'Point Description 7', parentId: 'd' },
-          9: { _id: '9', subject: 'Point 8', description: 'Point Description 8', parentId: 'd' },
+        myPointById: {
+          // Only user's point - points 1-9 are from other users and not sent
           '67bf9d6ae49200d1349ab350': {
             _id: '67bf9d6ae49200d1349ab350',
             subject: 'My Important Issue',
