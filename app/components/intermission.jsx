@@ -41,14 +41,16 @@ const Intermission = props => {
     setValidationError('')
     setSuccessMessage('')
 
+    // Filter pointById to only include user's own points (matching userId or 'unknown')
+    const myPointById = Object.fromEntries(Object.entries(data.pointById || {}).filter(([id, point]) => point.userId === userId || point.userId === 'unknown'))
+
     // Use data from context (which may be synced from localStorage)
-    // The context already has all the data we need
     const batchData = {
       discussionId,
       round,
       email: emailAddress,
       data: {
-        pointById: data.pointById || {},
+        myPointById, // Only user's points (filtered from pointById)
         myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
         postRankByParentId: data.postRankByParentId || {},
         whyRankByParentId: data.whyRankByParentId || {},
@@ -65,7 +67,19 @@ const Intermission = props => {
       if (!response || response.error) {
         setValidationError(response?.error || 'Failed to save data. Please try again.')
       } else {
-        // Success - clear localStorage for completed round if available
+        // Success - update local points that had 'unknown' userId to actual userId
+        if (userId) {
+          const updatedPointById = {}
+          for (const [id, point] of Object.entries(data.pointById || {})) {
+            if (point.userId === 'unknown') {
+              updatedPointById[id] = { ...point, userId }
+            }
+          }
+          if (Object.keys(updatedPointById).length > 0) {
+            upsert({ pointById: updatedPointById })
+          }
+        }
+        // Clear localStorage for completed round if available
         if (storageAvailable) {
           LocalStorageManager.clear(discussionId, userId, round)
         }
@@ -87,13 +101,16 @@ const Intermission = props => {
     setValidationError('')
     setSuccessMessage('')
 
-    // Only include answer data (pointById and myWhyByCategoryByParentId)
+    // Filter pointById to only include user's own points (matching userId or 'unknown')
+    const myPointById = Object.fromEntries(Object.entries(data.pointById || {}).filter(([id, point]) => point.userId === userId || point.userId === 'unknown'))
+
+    // Only include answer data (myPointById and myWhyByCategoryByParentId)
     const batchData = {
       discussionId,
       round,
       email: emailAddress,
       data: {
-        pointById: data.pointById || {},
+        myPointById, // Only user's points (filtered from pointById)
         myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
       },
     }
@@ -104,7 +121,19 @@ const Intermission = props => {
       if (!response || response.error) {
         setValidationError(response?.error || 'Failed to save data. Please try again.')
       } else {
-        // Success - clear localStorage for completed round if available
+        // Success - update local points that had 'unknown' userId to actual userId
+        if (userId) {
+          const updatedPointById = {}
+          for (const [id, point] of Object.entries(data.pointById || {})) {
+            if (point.userId === 'unknown') {
+              updatedPointById[id] = { ...point, userId }
+            }
+          }
+          if (Object.keys(updatedPointById).length > 0) {
+            upsert({ pointById: updatedPointById })
+          }
+        }
+        // Clear localStorage for completed round if available
         if (storageAvailable) {
           LocalStorageManager.clear(discussionId, userId, round)
         }
