@@ -5,94 +5,9 @@
 import React from 'react'
 import Tournament from '../app/components/tournament'
 import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator } from './common'
-import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 import { userEvent, within, waitFor, expect } from '@storybook/test'
-import { tournamentSteps } from './tournament.stories'
+import { tournamentSteps, demInfoDecorator, samplePoints, sampleWhys } from './tournament.stories'
 import { waitForStepSlider } from './step-slider.stories'
-
-const demInfoDecorator = Story => {
-  const DemInfoSetup = () => {
-    const { upsert } = React.useContext(DemInfoContext)
-    React.useEffect(() => {
-      if (upsert) {
-        upsert({
-          uischema: {
-            type: 'VerticalLayout',
-            elements: [
-              { type: 'Control', scope: '#/properties/yearOfBirth' },
-              { type: 'Control', scope: '#/properties/stateOfResidence' },
-              { type: 'Control', scope: '#/properties/politicalParty' },
-            ],
-          },
-        })
-      }
-    }, [upsert])
-    return null
-  }
-
-  return (
-    <DemInfoProvider>
-      <DemInfoSetup />
-      <Story />
-    </DemInfoProvider>
-  )
-}
-
-// Sample points for grouping/ranking steps (same as tournament-full-flow)
-const samplePoints = [
-  {
-    _id: 'point-1',
-    subject: 'Issue One',
-    description: 'Description of issue one',
-    parentId: '5d0137260dacd06732a1d814',
-  },
-  {
-    _id: 'point-2',
-    subject: 'Issue Two',
-    description: 'Description of issue two',
-    parentId: '5d0137260dacd06732a1d814',
-  },
-  {
-    _id: 'point-3',
-    subject: 'Issue Three',
-    description: 'Description of issue three',
-    parentId: '5d0137260dacd06732a1d814',
-  },
-  {
-    _id: 'point-4',
-    subject: 'Issue Four',
-    description: 'Description of issue four',
-    parentId: '5d0137260dacd06732a1d814',
-  },
-]
-
-// Sample whys for compare-whys step
-const sampleWhys = {
-  ranks: [],
-  whys: [
-    {
-      _id: 'why-most-1',
-      subject: 'Reason why this is most important',
-      description: 'This issue is most important because...',
-      parentId: 'point-4',
-      category: 'most',
-    },
-    {
-      _id: 'why-least-1',
-      subject: 'First reason for least important',
-      description: 'Reason for issue one',
-      parentId: 'point-1',
-      category: 'least',
-    },
-    {
-      _id: 'why-least-2',
-      subject: 'Second reason for least important',
-      description: 'Another reason for issue one',
-      parentId: 'point-1',
-      category: 'least',
-    },
-  ],
-}
 
 // User's previously saved answer point (from localStorage)
 const userAnswerPoint = {
@@ -305,26 +220,14 @@ export const ReturningUserCompleteFlow = {
 
     // ========== STEP 4: Why Most step ==========
     console.log('Step 4: Why Most step')
-
+    let whyMostHeading
     await waitFor(() => {
-      const heading = canvas.queryByRole('heading', { name: /Why it's Most Important/i })
-      expect(heading).toBeInTheDocument()
+      whyMostHeading = canvas.queryByRole('heading', { name: /Why it's Most Important/i })
+      expect(whyMostHeading).toBeInTheDocument()
     })
     console.log('  ✓ Why Most step loaded')
-
-    // Enter why for the most important point
-    const whyMostInputs = canvas.getAllByPlaceholderText(/type some thing here/i)
-    const whyMostDescs = canvas.getAllByPlaceholderText(/description/i)
-
-    if (whyMostInputs.length > 0) {
-      await userEvent.type(whyMostInputs[0], 'This is why it matters most')
-      await userEvent.tab()
-      if (whyMostDescs.length > 0) {
-        await userEvent.type(whyMostDescs[0], 'Detailed explanation of importance')
-        await userEvent.tab()
-      }
-      console.log('  ✓ Entered why most data')
-    }
+    // the why Most was previously filled out in the Answer Step, and that was selected as most in the ranking step
+    // so just continue
 
     nextButton = await waitFor(() => {
       const btn = canvas.queryByRole('button', { name: /Next/i })
@@ -339,19 +242,16 @@ export const ReturningUserCompleteFlow = {
     // ========== STEP 5: Why Least step ==========
     console.log('Step 5: Why Least step - need to provide input')
 
+    let whyLeastHeading
     await waitFor(() => {
-      const heading = canvas.queryByRole('heading', { name: /Why it's Least Important/i })
-      expect(heading).toBeInTheDocument()
+      whyLeastHeading = canvas.queryByRole('heading', { name: /Why it's Least Important/i })
+      expect(whyLeastHeading).toBeInTheDocument()
     })
     console.log('  ✓ Why Least step loaded')
-
-    // Find the why input fields - use the last ones which are on the current step
-    const allSubjectInputs = canvas.getAllByPlaceholderText(/type some thing here/i)
-    const allDescriptionInputs = canvas.getAllByPlaceholderText(/description/i)
-
-    const whySubjectInput = allSubjectInputs[allSubjectInputs.length - 1]
-    const whyDescriptionInput = allDescriptionInputs[allDescriptionInputs.length - 1]
-
+    const whyLeastWrapper = whyLeastHeading.parentNode.parentNode
+    // Find the why input fields
+    const whySubjectInput = whyLeastWrapper.querySelector('input[placeholder="Type some thing here"]')
+    const whyDescriptionInput = whyLeastWrapper.querySelector('textarea[placeholder="Description"]')
     await userEvent.type(whySubjectInput, 'This is why it is least important')
     await userEvent.tab()
     console.log('  ✓ Filled in why subject')
@@ -450,19 +350,26 @@ export const ReturningUserCompleteFlow = {
 
     // ========== STEP 8: Review/Rerank step ==========
     console.log('Step 8: Rerank step - reranking after seeing whys')
-
+    function contains(elements, text) {
+      return Array.prototype.filter.call(elements, function (element) {
+        return RegExp(text).test(element.textContent)
+      })
+    }
     // Wait for rerank step - look for heading
+    let rerankHeading
     await waitFor(() => {
-      const heading = canvas.queryByRole('heading', { name: /Re-Rank Responses|Review/i })
-      expect(heading).toBeInTheDocument()
+      rerankHeading = canvas.queryByRole('heading', { name: /Re-Rank Responses|Review/i })
+      expect(rerankHeading).toBeInTheDocument()
     })
     console.log('  ✓ Rerank step loaded')
+    const rerankWrapper = rerankHeading.parentNode.parentNode
 
     // Get all the radio button groups - need to rank again
     // Rank first as Least, last as Most, others Neutral
-    const rerankMostButtons = canvas.getAllByRole('radio', { name: 'Most' })
-    const rerankNeutralButtons = canvas.getAllByRole('radio', { name: 'Neutral' })
-    const rerankLeastButtons = canvas.getAllByRole('radio', { name: 'Least' })
+    // there are actually 2 sets of radio buttons rendered, one for desktop and one for mobile. toRowContent is for desktop
+    const rerankMostButtons = contains(rerankWrapper.querySelectorAll('[class^="topRowContent"] div[role="radio"]'), 'Most')
+    const rerankNeutralButtons = contains(rerankWrapper.querySelectorAll('[class^="topRowContent"] div[role="radio"]'), 'Neutral')
+    const rerankLeastButtons = contains(rerankWrapper.querySelectorAll('[class^="topRowContent"] div[role="radio"]'), 'Least')
 
     console.log(`  Found ${rerankMostButtons.length} points to rerank`)
 
@@ -577,37 +484,13 @@ export const ReturningUserCompleteFlow = {
       round: 0,
       email: 'returning@example.com',
       data: {
-        pointById: {
+        myPointById: {
           'user-answer-point-123': {
             _id: 'user-answer-point-123',
-            subject: 'My Previously Saved IssueThis is why it matters most',
-            description: 'This is an issue I entered in a previous sessionDetailed explanation of importance',
+            subject: 'My Previously Saved Issue',
+            description: 'This is an issue I entered in a previous session',
             parentId: '5d0137260dacd06732a1d814',
             userId: 'returning-user-456',
-          },
-          'point-1': {
-            _id: 'point-1',
-            subject: 'Issue One',
-            description: 'Description of issue one',
-            parentId: '5d0137260dacd06732a1d814',
-          },
-          'point-2': {
-            _id: 'point-2',
-            subject: 'Issue Two',
-            description: 'Description of issue two',
-            parentId: '5d0137260dacd06732a1d814',
-          },
-          'point-3': {
-            _id: 'point-3',
-            subject: 'Issue Three',
-            description: 'Description of issue three',
-            parentId: '5d0137260dacd06732a1d814',
-          },
-          'point-4': {
-            _id: 'point-4',
-            subject: 'Issue Four',
-            description: 'Description of issue four',
-            parentId: '5d0137260dacd06732a1d814',
           },
         },
         myWhyByCategoryByParentId: {
@@ -651,7 +534,7 @@ export const ReturningUserCompleteFlow = {
           'point-1': {
             //_id: '692fb880f074d84b7d4bd2be',
             stage: 'post',
-            category: 'neutral',
+            category: 'least',
             parentId: 'point-1',
             round: 0,
             discussionId: '5d0137260dacd06732a1d814',
@@ -659,7 +542,7 @@ export const ReturningUserCompleteFlow = {
           'user-answer-point-123': {
             //_id: '692fb880f074d84b7d4bd2bd',
             stage: 'post',
-            category: 'neutral',
+            category: 'most',
             parentId: 'user-answer-point-123',
             round: 0,
             discussionId: '5d0137260dacd06732a1d814',
@@ -703,9 +586,6 @@ export const ReturningUserCompleteFlow = {
         jsformData: {},
         idRanks: [
           {
-            'user-answer-point-123': 0,
-          },
-          {
             'point-1': 0,
           },
           {
@@ -715,7 +595,10 @@ export const ReturningUserCompleteFlow = {
             'point-3': 0,
           },
           {
-            'point-4': 1,
+            'point-4': 0,
+          },
+          {
+            'user-answer-point-123': 1,
           },
         ],
       },
