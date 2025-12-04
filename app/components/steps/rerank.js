@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/61
 // https://github.com/EnCiv/civil-pursuit/issues/215
+// https://github.com/EnCiv/civil-pursuit/blob/main/docs/late-sign-up-spec.md
 
 'use strict'
 import React, { useState, useEffect, useRef, useContext, useMemo } from 'react'
@@ -14,8 +15,8 @@ export default function RerankStep(props) {
   const { onDone, round } = props
   const { data, upsert } = useContext(DeliberationContext)
   const fetchDemInfo = useFetchDemInfo()
-  let onNext
   const handleOnDone = ({ valid, value, delta }) => {
+    let onNext
     if (delta) {
       upsert({ postRankByParentId: { [delta.parentId]: delta } })
       // TODO: Phase 5 - remove socket emit, data will be batch-upserted at intermission
@@ -47,12 +48,15 @@ export default function RerankStep(props) {
         // If user already has email, call batch-upsert immediately
         // Otherwise, intermission will prompt for email and call batch-upsert then
         if (data.user?.email) {
+          // Filter pointById to only include user's own points (matching userId or 'unknown')
+          const myPointById = Object.fromEntries(Object.entries(data.pointById || {}).filter(([id, point]) => point.userId === data.userId || point.userId === 'unknown'))
+
           const batchData = {
             discussionId: data.discussionId,
             round,
             email: data.user.email,
             data: {
-              pointById: data.pointById || {},
+              myPointById, // Only user's points (filtered from pointById)
               myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
               postRankByParentId: data.postRankByParentId || {},
               whyRankByParentId: data.whyRankByParentId || {},
@@ -61,6 +65,8 @@ export default function RerankStep(props) {
               idRanks,
             },
           }
+          //at the moment that onNext is instantiated, the upsert({ postRankByParentId: { [delta.parentId]: delta } }) above is not present in data
+          if (delta) batchData.data.postRankByParentId = { ...batchData.data.postRankByParentId, [delta.parentId]: delta } // ensure latest delta is included
           window.socket.emit('batch-upsert-deliberation-data', batchData, response => {
             if (response?.error) {
               console.error('batch-upsert failed:', response.error)
