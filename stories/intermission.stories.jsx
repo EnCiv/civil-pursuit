@@ -245,7 +245,7 @@ export const TemporaryUserBatchUpsertSuccess = {
         round: 0,
         email: 'temp-user@email.com',
       })
-      expect(batchData.data).toHaveProperty('pointById')
+      expect(batchData.data).toHaveProperty('myPointById')
       expect(batchData.data).toHaveProperty('myWhyByCategoryByParentId')
       expect(batchData.data).toHaveProperty('postRankByParentId')
     })
