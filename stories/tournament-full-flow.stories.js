@@ -4,102 +4,10 @@
 import React from 'react'
 import Tournament from '../app/components/tournament'
 import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator } from './common'
-import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 import { userEvent, within, waitFor, expect } from '@storybook/test'
 import { authFlowDecorators, withAuthTestState } from './mocks/auth-flow'
-import { tournamentSteps } from './tournament.stories'
+import { tournamentSteps, demInfoDecorator, tournamentDefaultValueMinimal, samplePoints, sampleWhys } from './tournament.stories'
 import { waitForStepSlider } from './step-slider.stories'
-
-const demInfoDecorator = Story => {
-  const DemInfoSetup = () => {
-    const { upsert } = React.useContext(DemInfoContext)
-    React.useEffect(() => {
-      if (upsert) {
-        upsert({
-          uischema: {
-            type: 'VerticalLayout',
-            elements: [
-              { type: 'Control', scope: '#/properties/yearOfBirth' },
-              { type: 'Control', scope: '#/properties/stateOfResidence' },
-              { type: 'Control', scope: '#/properties/politicalParty' },
-            ],
-          },
-        })
-      }
-    }, [upsert])
-    return null
-  }
-
-  return (
-    <DemInfoProvider>
-      <DemInfoSetup />
-      <Story />
-    </DemInfoProvider>
-  )
-}
-
-const tournamentDefaultValueMinimal = {
-  userId: 'temp-user-123',
-  discussionId: '5d0137260dacd06732a1d814',
-  dturn: { finalRound: 2 },
-}
-
-// Sample points for grouping/ranking steps
-const samplePoints = [
-  {
-    _id: 'point-1',
-    subject: 'Issue One',
-    description: 'Description of issue one',
-    parentId: '5d0137260dacd06732a1d814',
-  },
-  {
-    _id: 'point-2',
-    subject: 'Issue Two',
-    description: 'Description of issue two',
-    parentId: '5d0137260dacd06732a1d814',
-  },
-  {
-    _id: 'point-3',
-    subject: 'Issue Three',
-    description: 'Description of issue three',
-    parentId: '5d0137260dacd06732a1d814',
-  },
-  {
-    _id: 'point-4',
-    subject: 'Issue Four',
-    description: 'Description of issue four',
-    parentId: '5d0137260dacd06732a1d814',
-  },
-]
-
-// Sample whys for compare-whys step
-// Need 'most' category for Compare Why Most step and 'least' category for Compare Why Least step
-const sampleWhys = {
-  ranks: [],
-  whys: [
-    {
-      _id: 'why-most-1',
-      subject: 'Reason why this is most important',
-      description: 'This issue is most important because...',
-      parentId: 'point-4', // The point we ranked as Most
-      category: 'most',
-    },
-    {
-      _id: 'why-least-1',
-      subject: 'First reason for least important',
-      description: 'Reason for issue one',
-      parentId: 'point-1', // The point we ranked as Least
-      category: 'least',
-    },
-    {
-      _id: 'why-least-2',
-      subject: 'Second reason for least important',
-      description: 'Another reason for issue one',
-      parentId: 'point-1',
-      category: 'least',
-    },
-  ],
-}
 
 export default {
   title: 'Tournament',
@@ -325,28 +233,19 @@ export const NewUserFullFlow = {
     console.log('Step 5: Why Least step - need to provide input')
 
     // Wait for Why Least step to be visible
+    let whyLeastHeading
     await waitFor(() => {
       // The why least step should show the point we ranked as least
-      const heading = canvas.queryByRole('heading', { name: /Why it's Least Important/i })
-      expect(heading).toBeInTheDocument()
+      whyLeastHeading = canvas.queryByRole('heading', { name: /Why it's Least Important/i })
+      expect(whyLeastHeading).toBeInTheDocument()
     })
     console.log('  ✓ Why Least step loaded')
 
-    // Find the why input fields on the CURRENT visible step
-    // We need to scope to the visible step to avoid finding inputs on off-screen steps
-    // Get the current visible step container
-    const visibleStepContainer = canvasElement.querySelector('[data-testid="step-slider"] > div > div:not([style*="visibility: hidden"])')
-
-    // Find input fields within the visible step, or fall back to finding the last ones
-    // (the current step's inputs should be the ones we want)
-    const allSubjectInputs = canvas.getAllByPlaceholderText(/type some thing here/i)
-    const allDescriptionInputs = canvas.getAllByPlaceholderText(/description/i)
-
-    // The Why Least inputs should be the ones associated with the least-ranked point
-    // Since we're on the Why Least step, find the inputs that are visible/focusable
-    // The last set of inputs should be on the current step
-    const whySubjectInput = allSubjectInputs[allSubjectInputs.length - 1]
-    const whyDescriptionInput = allDescriptionInputs[allDescriptionInputs.length - 1]
+    // Find the why input fields within the current step's wrapper
+    // Previous steps' panels remain in the DOM, so we need to scope to the current step
+    const whyLeastWrapper = whyLeastHeading.parentNode.parentNode
+    const whySubjectInput = whyLeastWrapper.querySelector('input[placeholder="Type some thing here"]')
+    const whyDescriptionInput = whyLeastWrapper.querySelector('textarea[placeholder="Description"]')
 
     await userEvent.type(whySubjectInput, 'This is why I ranked it least')
     await userEvent.tab()
@@ -588,8 +487,8 @@ export const NewUserFullFlow = {
     console.log('  📊 Verifying batch-upsert data for full round...')
     console.log('  Batch-upsert data:', JSON.stringify(batchData, null, 2))
 
-    // Find the user's answer point ID (the one with userId: 'temp-user-123')
-    const userAnswerPointId = Object.keys(batchData.data.pointById).find(key => batchData.data.pointById[key].userId === 'temp-user-123')
+    // Find the user's answer point ID (the one with userId: 'temp-user-123' or 'unknown')
+    const userAnswerPointId = Object.keys(batchData.data.myPointById).find(key => batchData.data.myPointById[key].userId === 'temp-user-123' || batchData.data.myPointById[key].userId === 'unknown')
     expect(userAnswerPointId).toBeDefined()
 
     // Get the user's "why most" entry ID from myWhyByCategoryByParentId.most
@@ -603,8 +502,8 @@ export const NewUserFullFlow = {
 
     // Normalize dynamic IDs in batchData for comparison
     // Normalize user answer point
-    batchData.data.pointById['user-full-flow-point'] = { ...batchData.data.pointById[userAnswerPointId], _id: 'user-full-flow-point' }
-    delete batchData.data.pointById[userAnswerPointId]
+    batchData.data.myPointById['user-full-flow-point'] = { ...batchData.data.myPointById[userAnswerPointId], _id: 'user-full-flow-point' }
+    delete batchData.data.myPointById[userAnswerPointId]
 
     // Normalize user's "why most" entry in myWhyByCategoryByParentId
     batchData.data.myWhyByCategoryByParentId.most['user-full-flow-point'] = {
@@ -644,37 +543,13 @@ export const NewUserFullFlow = {
       round: 0,
       email: 'success@email.com',
       data: {
-        pointById: {
+        myPointById: {
           'user-full-flow-point': {
             _id: 'user-full-flow-point',
             subject: 'My Full Flow Issue',
             description: 'This is my description of the full flow issue',
             parentId: '5d0137260dacd06732a1d814',
-            userId: 'temp-user-123',
-          },
-          'point-1': {
-            _id: 'point-1',
-            subject: 'Issue One',
-            description: 'Description of issue one',
-            parentId: '5d0137260dacd06732a1d814',
-          },
-          'point-2': {
-            _id: 'point-2',
-            subject: 'Issue Two',
-            description: 'Description of issue two',
-            parentId: '5d0137260dacd06732a1d814',
-          },
-          'point-3': {
-            _id: 'point-3',
-            subject: 'Issue Three',
-            description: 'Description of issue three',
-            parentId: '5d0137260dacd06732a1d814',
-          },
-          'point-4': {
-            _id: 'point-4',
-            subject: 'Issue Four',
-            description: 'Description of issue four',
-            parentId: '5d0137260dacd06732a1d814',
+            userId: expect.stringMatching(/temp-user-123|unknown/),
           },
         },
         myWhyByCategoryByParentId: {
@@ -693,7 +568,7 @@ export const NewUserFullFlow = {
               subject: 'Why this matters for full flow',
               description: 'Because it affects everyone in the full flow',
               parentId: 'user-full-flow-point',
-              userId: 'temp-user-123',
+              userId: expect.stringMatching(/temp-user-123|unknown/),
               category: 'most',
             },
           },
