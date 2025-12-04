@@ -91,6 +91,66 @@ export const onDoneTestDefault = {
   },
 }
 
+// Test that verifies 'unknown' userId is used when user has no id (new user before skip())
+export const onDoneTestUnknownUserId = {
+  args: {
+    discussionId,
+    question: startingQuestion,
+    whyQuestion: whyQuestion,
+    myAnswer: undefined,
+    myWhy: undefined,
+    round: 0,
+    user: undefined, // No user - simulates new user before skip() is called
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const { onDone } = args
+    const subjectEle = canvas.getAllByPlaceholderText(/type some thing here/i)
+    const descriptionEle = canvas.getAllByPlaceholderText(/description/i)
+
+    // fill in the first point subject and description
+    await userEvent.type(subjectEle[0], 'My new user issue')
+    await userEvent.tab()
+    await userEvent.type(descriptionEle[0], 'Description of my new user issue')
+    await userEvent.tab()
+
+    // fill in the second point subject and description
+    await userEvent.type(subjectEle[1], 'Why this matters')
+    await userEvent.tab()
+    await userEvent.type(descriptionEle[1], 'Because it affects everyone')
+    await userEvent.tab()
+
+    // Verify myAnswer has userId: 'unknown'
+    expect(onDone.mock.calls[0][0]).toMatchObject({
+      delta: {
+        myAnswer: {
+          description: 'Description of my new user issue',
+          parentId: '5d0137260dacd06732a1d814',
+          subject: 'My new user issue',
+          userId: 'unknown', // Key assertion: new user gets 'unknown' userId
+        },
+      },
+      valid: false,
+      value: 0.5,
+    })
+    expect(ObjectId.isValid(onDone.mock.calls[0][0].delta.myAnswer._id)).toBe(true)
+
+    // Verify myWhy also has userId: 'unknown'
+    expect(onDone.mock.calls[1][0]).toMatchObject({
+      delta: {
+        myWhy: {
+          description: 'Because it affects everyone',
+          subject: 'Why this matters',
+          userId: 'unknown', // Key assertion: new user gets 'unknown' userId
+        },
+      },
+      valid: false, // Still not valid because Terms checkbox not checked
+    })
+    expect(onDone.mock.calls[1][0].delta.myWhy.parentId).toEqual(onDone.mock.calls[0][0].delta.myAnswer._id)
+    expect(ObjectId.isValid(onDone.mock.calls[1][0].delta.myWhy._id)).toBe(true)
+  },
+}
+
 export const onDoneTestSwap = {
   args: {
     discussionId,
