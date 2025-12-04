@@ -65,7 +65,7 @@ describe('batch-upsert-deliberation-data', () => {
       round: 0,
       email: 'test@example.com',
       data: {
-        pointById: {
+        myPointById: {
           [POINT1]: {
             _id: POINT1,
             subject: 'Test Point',
@@ -223,7 +223,7 @@ describe('batch-upsert-deliberation-data', () => {
       round: 0,
       data: {
         idRanks: [],
-        pointById: {
+        myPointById: {
           [POINT1]: {
             _id: POINT1,
             subject: '', // Invalid - empty subject
@@ -251,7 +251,7 @@ describe('batch-upsert-deliberation-data', () => {
       round: 0,
       data: {
         idRanks: [],
-        pointById: {
+        myPointById: {
           [POINT1]: {
             _id: POINT1,
             subject: 'First Point',
@@ -319,7 +319,7 @@ describe('batch-upsert-deliberation-data', () => {
       round: 0,
       data: {
         idRanks: [{ [POINT1]: 1 }],
-        pointById: {
+        myPointById: {
           [POINT1]: {
             _id: POINT1,
             subject: 'Test Point',
@@ -358,7 +358,7 @@ describe('batch-upsert-deliberation-data', () => {
       round: 0,
       data: {
         idRanks: [],
-        pointById: {},
+        myPointById: {},
       },
     }
 
@@ -385,7 +385,7 @@ describe('batch-upsert-deliberation-data', () => {
       round: 0,
       data: {
         idRanks: [],
-        pointById: {},
+        myPointById: {},
         myWhyByCategoryByParentId: {},
         postRankByParentId: {},
         groupIdsLists: [],
@@ -467,7 +467,7 @@ describe('batch-upsert-deliberation-data', () => {
       // No email provided
       data: {
         idRanks: [{ [POINT1]: 1 }],
-        pointById: {
+        myPointById: {
           [POINT1]: {
             _id: POINT1,
             subject: 'Test Point',
@@ -501,7 +501,7 @@ describe('batch-upsert-deliberation-data', () => {
         // idRanks and groupIdsLists are undefined (not done yet)
         idRanks: undefined,
         groupIdsLists: undefined,
-        pointById: {
+        myPointById: {
           [POINT1]: {
             _id: POINT1,
             subject: 'Early User Point',
@@ -537,7 +537,7 @@ describe('batch-upsert-deliberation-data', () => {
         // Empty array means user did the step but found no items to rank
         idRanks: [],
         groupIdsLists: [],
-        pointById: {
+        myPointById: {
           [POINT1]: {
             _id: POINT1,
             subject: 'Point with empty ranks',
@@ -605,7 +605,7 @@ describe('batch-upsert-deliberation-data integration with dturn', () => {
       email: 'firstuser@example.com',
       data: {
         idRanks,
-        pointById: {
+        myPointById: {
           [POINT_ID]: {
             _id: POINT_ID,
             subject: 'First User Answer',
@@ -724,7 +724,7 @@ describe('batch-upsert-deliberation-data integration with dturn', () => {
       email: 'returnuser@example.com', // Same email
       data: {
         idRanks,
-        pointById: {
+        myPointById: {
           // Same point as before (already in DB)
           [POINT_ID]: {
             _id: POINT_ID,
