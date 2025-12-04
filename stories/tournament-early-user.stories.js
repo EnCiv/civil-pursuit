@@ -4,44 +4,9 @@
 import React from 'react'
 import Tournament from '../app/components/tournament'
 import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator } from './common'
-import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 import { userEvent, within, waitFor, expect } from '@storybook/test'
 import { authFlowDecorators, withAuthTestState } from './mocks/auth-flow'
-import { tournamentSteps } from './tournament.stories'
-
-const demInfoDecorator = Story => {
-  const DemInfoSetup = () => {
-    const { upsert } = React.useContext(DemInfoContext)
-    React.useEffect(() => {
-      if (upsert) {
-        upsert({
-          uischema: {
-            type: 'VerticalLayout',
-            elements: [
-              { type: 'Control', scope: '#/properties/yearOfBirth' },
-              { type: 'Control', scope: '#/properties/stateOfResidence' },
-              { type: 'Control', scope: '#/properties/politicalParty' },
-            ],
-          },
-        })
-      }
-    }, [upsert])
-    return null
-  }
-
-  return (
-    <DemInfoProvider>
-      <DemInfoSetup />
-      <Story />
-    </DemInfoProvider>
-  )
-}
-
-const tournamentDefaultValueMinimal = {
-  userId: 'temp-user-123',
-  discussionId: '5d0137260dacd06732a1d814',
-  dturn: { finalRound: 2 },
-}
+import { tournamentSteps, demInfoDecorator, tournamentDefaultValueMinimal } from './tournament.stories'
 
 export default {
   title: 'Tournament',
@@ -200,8 +165,8 @@ export const NewUserNotEnoughParticipants = {
     console.log('  📊 Verifying batch-upsert data...')
     console.log('  Batch-upsert data:', JSON.stringify(batchData, null, 2))
 
-    // Find the user's answer point ID (the one with userId: 'temp-user-123')
-    const userAnswerPointId = Object.keys(batchData.data.pointById).find(key => batchData.data.pointById[key].userId === 'temp-user-123')
+    // Find the user's answer point ID (the one with userId: 'temp-user-123' or 'unknown')
+    const userAnswerPointId = Object.keys(batchData.data.myPointById).find(key => batchData.data.myPointById[key].userId === 'temp-user-123' || batchData.data.myPointById[key].userId === 'unknown')
     expect(userAnswerPointId).toBeDefined()
 
     // Get the user's "why most" entry ID
@@ -210,8 +175,8 @@ export const NewUserNotEnoughParticipants = {
 
     // Normalize dynamic IDs in batchData for comparison
     // Normalize user answer point
-    batchData.data.pointById['user-early-point'] = { ...batchData.data.pointById[userAnswerPointId], _id: 'user-early-point' }
-    delete batchData.data.pointById[userAnswerPointId]
+    batchData.data.myPointById['user-early-point'] = { ...batchData.data.myPointById[userAnswerPointId], _id: 'user-early-point' }
+    delete batchData.data.myPointById[userAnswerPointId]
 
     // Normalize user's "why most" entry in myWhyByCategoryByParentId
     batchData.data.myWhyByCategoryByParentId.most['user-early-point'] = {
@@ -226,7 +191,7 @@ export const NewUserNotEnoughParticipants = {
       round: 0,
       email: 'success@email.com',
       data: {
-        pointById: {
+        myPointById: {
           'user-early-point': {
             _id: 'user-early-point',
             subject: 'My Early User Issue',
