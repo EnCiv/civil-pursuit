@@ -104,13 +104,15 @@ export function Answer(props) {
   const onNextRef = useRef(undefined)
 
   // myAnswer could be undefined initially, if so it needs to be initialized with an _id, and if the user types in the WhyAnswer first, it's parentId needs to be the answers _id
-  const [_myAnswer, setMyAnswer] = useState(myAnswer || { _id: ObjectId().toString(), subject: '', description: '', parentId: discussionId, userId })
+  // Use 'unknown' for userId if user doesn't have an id yet (new user before skip)
+  const effectiveUserId = userId || 'unknown'
+  const [_myAnswer, setMyAnswer] = useState(myAnswer || { _id: ObjectId().toString(), subject: '', description: '', parentId: discussionId, userId: effectiveUserId })
   useEffect(() => {
     if (myAnswer && !isEqual(myAnswer, _myAnswer)) setMyAnswer(myAnswer)
   }, [myAnswer])
 
   // myWhy could be undefined initially if so it needs to be initialized with an _id and parentId
-  const [_myWhy, setMyWhy] = useState(myWhy || { _id: ObjectId().toString(), subject: '', description: '', parentId: _myAnswer._id, userId })
+  const [_myWhy, setMyWhy] = useState(myWhy || { _id: ObjectId().toString(), subject: '', description: '', parentId: _myAnswer._id, userId: effectiveUserId })
   useEffect(() => {
     if (myWhy && !isEqual(myWhy, _myWhy)) setMyWhy(myWhy)
   }, [myWhy])
@@ -190,7 +192,8 @@ export function Answer(props) {
 export function deriveMyAnswerAndMyWhy(data) {
   const local = useRef({}).current
   if (data.pointById !== local.pointById) {
-    const myAnswer = Object.values(data.pointById || {}).find(p => p.userId === data.userId)
+    // Find user's answer - match userId or 'unknown' (for new users before skip)
+    const myAnswer = Object.values(data.pointById || {}).find(p => p.userId === data.userId || p.userId === 'unknown')
     local.myAnswer = myAnswer
     local.pointById = data.pointById
   }
