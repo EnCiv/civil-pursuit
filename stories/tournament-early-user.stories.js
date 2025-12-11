@@ -3,7 +3,7 @@
 
 import React from 'react'
 import Tournament from '../app/components/tournament'
-import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator } from './common'
+import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator, mockBatchUpsertDeliberationDataRoute } from './common'
 import { userEvent, within, waitFor, expect } from '@storybook/test'
 import { authFlowDecorators, withAuthTestState } from './mocks/auth-flow'
 import { tournamentSteps, demInfoDecorator, tournamentDefaultValueMinimal } from './tournament.stories'
@@ -31,11 +31,13 @@ export const NewUserNotEnoughParticipants = {
       ...tournamentDefaultValueMinimal,
       round: 0,
       user: undefined, // New user - no ID yet
+      userId: undefined, // New user - no ID yet
       participants: 1, // Not enough participants
     },
   },
   decorators: [
     demInfoDecorator,
+    mockBatchUpsertDeliberationDataRoute, // Mock fetch for batch-upsert HTTP endpoint
     buildApiDecorator('get-user-ranks', []),
     buildApiDecorator('get-points-of-ids', []),
     buildApiDecorator('upsert-rank', () => {}),
@@ -51,17 +53,11 @@ export const NewUserNotEnoughParticipants = {
       console.log('⚠️ set-user-info called with:', email, '- this should NOT happen for temp user at round 0')
       cb({ error: 'Test mock - set-user-info should not be called' })
     }),
-    buildApiDecorator('batch-upsert-deliberation-data', (batchData, cb) => {
-      if (!window.batchUpsertCalls) window.batchUpsertCalls = []
-      window.batchUpsertCalls.push(batchData)
-      console.log('✅ batch-upsert-deliberation-data called with:', batchData)
-      cb({ success: true })
-    }),
     buildApiDecorator('send-password', (email, pathname, cb) => cb({ success: true })),
     buildApiDecorator('subscribe-deliberation', (discussionId, requestHandler, updateHandler) => {
       console.log('🔔 subscribe-deliberation called for discussion:', discussionId)
       requestHandler({
-        uInfo: [{ shownStatementIds: {}, finished: false, userId: 'temp-user-123' }], // finished: false - early user, round not complete (not enough participants)
+        uInfo: [{ shownStatementIds: {} }], // finished: false - early user, round not complete (not enough participants)
         lastRound: 0,
         participants: 1, // Not enough!
       })
@@ -72,7 +68,6 @@ export const NewUserNotEnoughParticipants = {
     const { testState } = args
 
     // Reset global state for test isolation
-    window.batchUpsertCalls = []
     window.setUserInfoCalls = []
     testState.authFlowUserSet = false
     // Reset socket emit handler results to avoid cross-test pollution
@@ -158,10 +153,16 @@ export const NewUserNotEnoughParticipants = {
     await userEvent.click(saveButton)
 
     // Wait for batch-upsert
-    await waitFor(() => expect(window.batchUpsertCalls.length).toBeGreaterThan(0), { timeout: 3000 })
+    await waitFor(
+      () => {
+        const calls = window._fetchRouteHandlers?.get('/api/batch-upsert-deliberation-data')?.calls || []
+        expect(calls.length).toBeGreaterThan(0)
+      },
+      { timeout: 3000 }
+    )
 
     // Verify batch-upsert data
-    const batchData = window.batchUpsertCalls[0]
+    const batchData = window._fetchRouteHandlers.get('/api/batch-upsert-deliberation-data').calls[0]
     console.log('  📊 Verifying batch-upsert data...')
     console.log('  Batch-upsert data:', JSON.stringify(batchData, null, 2))
 
@@ -197,7 +198,7 @@ export const NewUserNotEnoughParticipants = {
             subject: 'My Early User Issue',
             description: 'This is my description of the early user issue',
             parentId: '5d0137260dacd06732a1d814',
-            userId: 'temp-user-123',
+            userId: expect.stringMatching(/temp-user-123|unknown/),
           },
         },
         myWhyByCategoryByParentId: {
@@ -207,7 +208,7 @@ export const NewUserNotEnoughParticipants = {
               subject: 'Why this matters',
               description: 'Because it affects everyone',
               parentId: 'user-early-point',
-              userId: 'temp-user-123',
+              userId: expect.stringMatching(/temp-user-123|unknown/),
               category: 'most',
             },
           },

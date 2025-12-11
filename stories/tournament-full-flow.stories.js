@@ -3,7 +3,7 @@
 
 import React from 'react'
 import Tournament from '../app/components/tournament'
-import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator } from './common'
+import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator, mockBatchUpsertDeliberationDataRoute } from './common'
 import { userEvent, within, waitFor, expect } from '@storybook/test'
 import { authFlowDecorators, withAuthTestState } from './mocks/auth-flow'
 import { tournamentSteps, demInfoDecorator, tournamentDefaultValueMinimal, samplePoints, sampleWhys } from './tournament.stories'
@@ -43,6 +43,7 @@ export const NewUserFullFlow = {
   },
   decorators: [
     demInfoDecorator,
+    mockBatchUpsertDeliberationDataRoute, // Mock fetch for batch-upsert HTTP endpoint
     buildApiDecorator('get-user-ranks', []),
     buildApiDecorator('get-points-of-ids', []),
     buildApiDecorator('upsert-rank', () => {}),
@@ -62,12 +63,6 @@ export const NewUserFullFlow = {
       console.log('⚠️ set-user-info called - this should NOT happen for temp user completing full round')
       cb({ error: 'Test mock - set-user-info should not be called' })
     }),
-    buildApiDecorator('batch-upsert-deliberation-data', (batchData, cb) => {
-      if (!window.batchUpsertCalls) window.batchUpsertCalls = []
-      window.batchUpsertCalls.push(batchData)
-      console.log('✅ batch-upsert-deliberation-data called with:', batchData)
-      cb({ success: true })
-    }),
     buildApiDecorator('send-password', (email, pathname, cb) => cb({ success: true })),
     buildApiDecorator('subscribe-deliberation', (discussionId, requestHandler, updateHandler) => {
       console.log('🔔 subscribe-deliberation called for discussion:', discussionId)
@@ -83,7 +78,6 @@ export const NewUserFullFlow = {
     const { testState } = args
 
     // Reset global state for test isolation
-    window.batchUpsertCalls = []
     window.setUserInfoCalls = []
     testState.authFlowUserSet = false
     // Reset socket emit handler results to avoid cross-test pollution
@@ -480,10 +474,16 @@ export const NewUserFullFlow = {
     await userEvent.click(saveButton)
 
     // Wait for batch-upsert
-    await waitFor(() => expect(window.batchUpsertCalls.length).toBeGreaterThan(0), { timeout: 3000 })
+    await waitFor(
+      () => {
+        const calls = window._fetchRouteHandlers?.get('/api/batch-upsert-deliberation-data')?.calls || []
+        expect(calls.length).toBeGreaterThan(0)
+      },
+      { timeout: 3000 }
+    )
 
     // Verify batch-upsert data for full round using toMatchObject
-    const batchData = window.batchUpsertCalls[0]
+    const batchData = window._fetchRouteHandlers.get('/api/batch-upsert-deliberation-data').calls[0]
     console.log('  📊 Verifying batch-upsert data for full round...')
     console.log('  Batch-upsert data:', JSON.stringify(batchData, null, 2))
 

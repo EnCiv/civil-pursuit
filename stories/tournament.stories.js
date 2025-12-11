@@ -82,7 +82,7 @@
 
 import React, { useState } from 'react'
 import Tournament from '../app/components/tournament'
-import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator, buildApiDecorator, deliberationContextData } from './common'
+import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator, buildApiDecorator, deliberationContextData, mockBatchUpsertDeliberationDataRoute } from './common'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 import { userEvent, within, waitFor, expect } from '@storybook/test'
 import { authFlowDecorators, withAuthTestState } from './mocks/auth-flow'
@@ -530,7 +530,7 @@ export const tournamentDefaultValue = {
   // this goes into the deliberation context
   userId: 'temp-user-123',
   discussionId: '5d0137260dacd06732a1d814',
-  dturn: { finalRound: 2 },
+  dturn: { finalRound: 2, group_size: 5 },
   pointById: byId(pointList),
   groupIdsLists: [],
   randomWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
@@ -542,7 +542,7 @@ export const tournamentDefaultValue = {
 export const tournamentDefaultValueMinimal = {
   userId: 'temp-user-123',
   discussionId: '5d0137260dacd06732a1d814',
-  dturn: { finalRound: 2 },
+  dturn: { finalRound: 2, group_size: 5 },
 }
 
 // Decorators for LocalStoragePreserved story - provides data via API calls
@@ -871,6 +871,7 @@ export const BatchUpsertInteractionTest = {
   decorators: [
     ...tournamentDecoratorsWithPointData.slice(0, -1), // All except subscribe-deliberation
     ...authFlowDecorators, // Add auth flow decorators for /tempid interception
+    mockBatchUpsertDeliberationDataRoute, // Mock fetch for batch-upsert HTTP endpoint
     // Provide jsform data via API
     buildApiDecorator('get-jsform', (discussionId, cb) => {
       cb({
@@ -882,17 +883,17 @@ export const BatchUpsertInteractionTest = {
         },
       })
     }),
-    // Capture batch-upsert-deliberation-data calls
+    // Capture batch-upsert-deliberation-data socket calls (for authenticated users)
     buildApiDecorator('batch-upsert-deliberation-data', (batchData, cb) => {
       // Store the call for inspection in browser console and window object
       if (!window.batchUpsertCalls) window.batchUpsertCalls = []
       window.batchUpsertCalls.push(batchData)
-      console.log('✅ batch-upsert-deliberation-data called with:', batchData)
+      console.log('✅ batch-upsert-deliberation-data socket called with:', batchData)
       console.log('📊 Summary:', {
         discussionId: batchData.discussionId,
         round: batchData.round,
         email: batchData.email,
-        points: Object.keys(batchData.data?.pointById || {}).length,
+        points: Object.keys(batchData.data?.myPointById || {}).length,
         groupings: batchData.data?.groupIdsLists?.length,
         idRanksLength: batchData.data?.idRanks?.length,
         jsformKeys: Object.keys(batchData.data?.jsformData || {}),
@@ -930,8 +931,11 @@ export const BatchUpsertInteractionTest = {
     const { testState } = args
 
     // Initialize tracking arrays and auth flow state
-    window.batchUpsertCalls = []
-    window.setUserInfoCalls = []
+    // Clear existing arrays instead of creating new ones (decorator may have created them)
+    if (window.batchUpsertCalls) window.batchUpsertCalls.length = 0
+    else window.batchUpsertCalls = []
+    if (window.setUserInfoCalls) window.setUserInfoCalls.length = 0
+    else window.setUserInfoCalls = []
     testState.authFlowUserSet = false
 
     // Map of step names to their identifying content
@@ -1160,7 +1164,7 @@ export const BatchUpsertInteractionTest = {
     console.log('  ✓ batch-upsert data structure verified')
     // need to wait for the final message to appear and all rendering before ending the test
     await waitFor(() => {
-      const finalMessage = canvas.getByText("Success! Your data has been saved and we've sent a password email to success@email.com.")
+      const finalMessage = canvas.getByText(/Success! Your data has been saved and we've sent a password email to success@email.com/)
       expect(finalMessage).toBeInTheDocument()
     })
     /*** 

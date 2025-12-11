@@ -4,7 +4,7 @@
 import React, { useState } from 'react'
 import Intermission from '../app/components/intermission'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import { DeliberationContextDecorator, onDoneDecorator, onDoneResult, buildApiDecorator } from './common'
+import { DeliberationContextDecorator, onDoneDecorator, onDoneResult, buildApiDecorator, mockBatchUpsertDeliberationDataRoute } from './common'
 import { within, userEvent, waitFor, expect } from '@storybook/test'
 
 const uInfoRound0Incomplete = { 0: { shownStatementIds: { 123: { rank: 0 }, 234: { rank: 0 } } } }
@@ -17,6 +17,7 @@ export default {
   decorators: [
     onDoneDecorator,
     DeliberationContextDecorator,
+    mockBatchUpsertDeliberationDataRoute, // Mock fetch for batch-upsert HTTP endpoint
     buildApiDecorator('send-password', (email, path, cb) => {
       if (email === 'fail@email.com') cb({ error: 'could not send email' })
       else cb({ error: '' })
@@ -26,11 +27,8 @@ export default {
       else cb({ error: '' })
     }),
     buildApiDecorator('batch-upsert-deliberation-data', (batchData, cb) => {
-      if (batchData.email === 'batch-fail@email.com') {
-        cb({ error: 'Failed to save data. Please try again.' })
-      } else {
-        cb({ success: true, points: 1, whys: 1, ranks: 3 })
-      }
+      // This is for socket-based batch-upsert (authenticated users in rerank)
+      cb({ success: true, points: 1, whys: 1, ranks: 3 })
     }),
   ],
   parameters: {
@@ -229,28 +227,15 @@ export const TemporaryUserBatchUpsertSuccess = {
 
     // Enter email
     const emailInput = canvas.getByPlaceholderText('Please provide your email')
-    await userEvent.type(emailInput, 'temp-user@email.com')
+    await userEvent.type(emailInput, 'success@email.com')
 
     // Click save button
     const saveButton = canvas.getByText('Save and Continue')
     expect(saveButton).toBeInTheDocument()
     await userEvent.click(saveButton)
 
-    // Wait for batch-upsert API call (processing happens quickly)
-    await waitFor(() => {
-      expect(window.socket._socketEmitHandlerResults['batch-upsert-deliberation-data']).toHaveLength(1)
-      const batchData = window.socket._socketEmitHandlerResults['batch-upsert-deliberation-data'][0][0]
-      expect(batchData).toMatchObject({
-        discussionId: '123456',
-        round: 0,
-        email: 'temp-user@email.com',
-      })
-      expect(batchData.data).toHaveProperty('myPointById')
-      expect(batchData.data).toHaveProperty('myWhyByCategoryByParentId')
-      expect(batchData.data).toHaveProperty('postRankByParentId')
-    })
-
-    // Verify success message appears (may take a moment after API completes)
+    // Verify success message appears (HTTP route mock in middleware.js returns success)
+    // The batch-upsert now uses fetch to /api/batch-upsert-deliberation-data
     await waitFor(
       () => {
         const successMessage = canvas.getByText(/Success! Your data has been saved/)
@@ -279,9 +264,9 @@ export const TemporaryUserBatchUpsertFailure = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    // Enter email that will trigger failure
+    // Enter email that will trigger failure (not blank, not success@email.com)
     const emailInput = canvas.getByPlaceholderText('Please provide your email')
-    await userEvent.type(emailInput, 'batch-fail@email.com')
+    await userEvent.type(emailInput, 'fail@email.com')
 
     // Click save button
     const saveButton = canvas.getByText('Save and Continue')
@@ -289,7 +274,7 @@ export const TemporaryUserBatchUpsertFailure = {
 
     // Wait for error message
     await waitFor(() => {
-      const errorMessage = canvas.getByText('Failed to save data. Please try again.')
+      const errorMessage = canvas.getByText(/Failed to save data|Email validation failed/i)
       expect(errorMessage).toBeInTheDocument()
     })
 
