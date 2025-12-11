@@ -348,19 +348,26 @@ export const NewUserFullFlow = {
 
     // ========== STEP 8: Rerank step ==========
     console.log('Step 8: Rerank step - reranking after seeing whys')
-
+    function contains(elements, text) {
+      return Array.prototype.filter.call(elements, function (element) {
+        return RegExp(text).test(element.textContent)
+      })
+    }
     // Wait for rerank step - look for heading
+    let rerankHeading
     await waitFor(() => {
-      const heading = canvas.queryByRole('heading', { name: /Re-Rank Responses|Review/i })
-      expect(heading).toBeInTheDocument()
+      rerankHeading = canvas.queryByRole('heading', { name: /Re-Rank Responses|Review/i })
+      expect(rerankHeading).toBeInTheDocument()
     })
     console.log('  ✓ Rerank step loaded')
+    const rerankWrapper = rerankHeading.parentNode.parentNode
 
     // Get all the radio button groups - need to rank again
     // Rank first as Least, last as Most, others Neutral
-    const rerankMostButtons = canvas.getAllByRole('radio', { name: 'Most' })
-    const rerankNeutralButtons = canvas.getAllByRole('radio', { name: 'Neutral' })
-    const rerankLeastButtons = canvas.getAllByRole('radio', { name: 'Least' })
+    // there are actually 2 sets of radio buttons rendered, one for desktop and one for mobile. toRowContent is for desktop
+    const rerankMostButtons = contains(rerankWrapper.querySelectorAll('[class^="topRowContent"] div[role="radio"]'), 'Most')
+    const rerankNeutralButtons = contains(rerankWrapper.querySelectorAll('[class^="topRowContent"] div[role="radio"]'), 'Neutral')
+    const rerankLeastButtons = contains(rerankWrapper.querySelectorAll('[class^="topRowContent"] div[role="radio"]'), 'Least')
 
     console.log(`  Found ${rerankMostButtons.length} points to rerank`)
 
@@ -523,6 +530,13 @@ export const NewUserFullFlow = {
     batchData.data.whyRankByParentId['user-full-flow-why'] = { ...batchData.data.whyRankByParentId[userWhyMostId], parentId: 'user-full-flow-why' }
     delete batchData.data.whyRankByParentId[userWhyMostId]
 
+    // Normalize preRankByParentId for user's answer
+    batchData.data.preRankByParentId['user-full-flow-point'] = {
+      ...batchData.data.preRankByParentId[userAnswerPointId],
+      parentId: 'user-full-flow-point',
+    }
+    delete batchData.data.preRankByParentId[userAnswerPointId]
+
     // Normalize postRankByParentId for user's answer
     batchData.data.postRankByParentId['user-full-flow-point'] = {
       ...batchData.data.postRankByParentId[userAnswerPointId],
@@ -573,6 +587,43 @@ export const NewUserFullFlow = {
             },
           },
         },
+        preRankByParentId: {
+          'point-1': {
+            stage: 'pre',
+            category: 'least',
+            parentId: 'point-1',
+            round: 0,
+            discussionId: '5d0137260dacd06732a1d814',
+          },
+          'point-2': {
+            stage: 'pre',
+            category: 'neutral',
+            parentId: 'point-2',
+            round: 0,
+            discussionId: '5d0137260dacd06732a1d814',
+          },
+          'point-3': {
+            stage: 'pre',
+            category: 'neutral',
+            parentId: 'point-3',
+            round: 0,
+            discussionId: '5d0137260dacd06732a1d814',
+          },
+          'point-4': {
+            stage: 'pre',
+            category: 'neutral',
+            parentId: 'point-4',
+            round: 0,
+            discussionId: '5d0137260dacd06732a1d814',
+          },
+          'user-full-flow-point': {
+            stage: 'pre',
+            category: 'most',
+            parentId: 'user-full-flow-point',
+            round: 0,
+            discussionId: '5d0137260dacd06732a1d814',
+          },
+        },
         postRankByParentId: {
           'point-3': {
             stage: 'post',
@@ -590,7 +641,7 @@ export const NewUserFullFlow = {
           },
           'point-1': {
             stage: 'post',
-            category: 'neutral',
+            category: 'least',
             parentId: 'point-1',
             round: 0,
             discussionId: '5d0137260dacd06732a1d814',
