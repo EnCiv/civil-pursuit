@@ -60,9 +60,10 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
 
   if (!this.synuser?.id) {
     // use not logged in, let them know the number of participants
-    // TBD load the deliberation and figure out the number of participantsbut will have to set the updates function in the future because this has no server.to
-    const response = {}
-    if (Discussions[deliberationId]) response.participants = Discussions[deliberationId]?.participants ?? 0
+    // TBD load the deliberation and figure out the number of participants but will have to set the updates function in the future because this has no server.to
+    const response = { lastRound: 0, uInfo: [{ shownStatementIds: {} }] } // with late-sign-up uInfo needs to be there to indicate round 0
+    if (Discussions[deliberationId]) response.participants = Discussions[deliberationId]?.participants ?? 0 // **TBD** it would be nice to get participants out of the iota if there.
+    if (Discussions[deliberationId]) response.lastRound = Discussions[deliberationId]?.lastRound ?? 0
     requestHandler?.(response)
     return
   }
