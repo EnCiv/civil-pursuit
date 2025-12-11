@@ -376,6 +376,169 @@ export const TestFlushWithNoData = {
   },
 }
 
+export const TestTTLExpiration = {
+  render: () => {
+    const TestComponent = () => {
+      const { data } = useContext(DeliberationContext)
+      const [status, setStatus] = useState('initial')
+
+      const handleTest = async () => {
+        const discussionId = data.discussionId
+        const userId = data.userId
+
+        // Save data with a timestamp that's 200ms away from expiring (7 days - 200ms)
+        const TTL_MS = 7 * 24 * 60 * 60 * 1000
+        const almostExpiredTimestamp = Date.now() - TTL_MS + 200
+
+        // Manually save to localStorage with old timestamp
+        const key = `civil-pursuit-deliberation-${discussionId}-${userId}`
+        const payload = {
+          data: {
+            discussionId,
+            userId,
+            pointById: { point1: { subject: 'Almost Expired Point' } },
+          },
+          timestamp: almostExpiredTimestamp,
+          discussionId,
+          userId,
+        }
+        localStorage.setItem(key, JSON.stringify(payload))
+
+        // Verify it loads initially (still within TTL)
+        const loaded = LocalStorageManager.load(discussionId, userId)
+        if (loaded?.pointById?.point1) {
+          setStatus('loaded-initially')
+        } else {
+          setStatus('failed-to-load')
+          return
+        }
+
+        // Wait 300ms for it to expire
+        await new Promise(resolve => setTimeout(resolve, 300))
+
+        // Try to load again - should be expired and return null
+        const loadedAfterExpiry = LocalStorageManager.load(discussionId, userId)
+        if (loadedAfterExpiry === null) {
+          setStatus('expired-correctly')
+        } else {
+          setStatus('failed-to-expire')
+        }
+      }
+
+      return (
+        <div>
+          <button data-testid="ttl-test-button" onClick={handleTest}>
+            Test TTL
+          </button>
+          <div data-testid="ttl-status">{status}</div>
+        </div>
+      )
+    }
+
+    return (
+      <DeliberationContextProvider defaultValue={{ discussionId: 'test-ttl', userId: 'user-ttl' }}>
+        <TestComponent />
+      </DeliberationContextProvider>
+    )
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const button = canvas.getByTestId('ttl-test-button')
+    await userEvent.click(button)
+
+    // Wait for initial load verification
+    await waitFor(
+      () => {
+        const status = canvas.getByTestId('ttl-status')
+        expect(status.textContent).toBe('loaded-initially')
+      },
+      { timeout: 500 }
+    )
+
+    // Wait for expiration verification (300ms + buffer)
+    await waitFor(
+      () => {
+        const status = canvas.getByTestId('ttl-status')
+        expect(status.textContent).toBe('expired-correctly')
+      },
+      { timeout: 1000 }
+    )
+
+    // Cleanup
+    LocalStorageManager.clear('test-ttl', 'user-ttl')
+  },
+}
+
+export const TestClearExpiredOnInit = {
+  render: () => {
+    // Pre-populate localStorage with expired data
+    const discussionId = 'test-clear-expired'
+    const userId = 'user-clear-expired'
+    const TTL_MS = 7 * 24 * 60 * 60 * 1000
+
+    // Create expired entry
+    const expiredKey = `civil-pursuit-deliberation-${discussionId}-expired`
+    const expiredPayload = {
+      data: { pointById: { point1: { subject: 'Expired Point' } } },
+      timestamp: Date.now() - TTL_MS - 1000, // Expired 1 second ago
+      discussionId,
+      userId: 'expired',
+    }
+    localStorage.setItem(expiredKey, JSON.stringify(expiredPayload))
+
+    // Create valid entry
+    const validKey = `civil-pursuit-deliberation-${discussionId}-valid`
+    const validPayload = {
+      data: { pointById: { point2: { subject: 'Valid Point' } } },
+      timestamp: Date.now(),
+      discussionId,
+      userId: 'valid',
+    }
+    localStorage.setItem(validKey, JSON.stringify(validPayload))
+
+    const TestComponent = () => {
+      const [result, setResult] = useState('')
+
+      useEffect(() => {
+        // Check if expired entry was cleaned up
+        const expiredExists = localStorage.getItem(expiredKey) !== null
+        const validExists = localStorage.getItem(validKey) !== null
+
+        if (!expiredExists && validExists) {
+          setResult('expired-cleared-valid-kept')
+        } else if (expiredExists && validExists) {
+          setResult('expired-not-cleared')
+        } else {
+          setResult('unexpected-state')
+        }
+
+        // Cleanup
+        localStorage.removeItem(expiredKey)
+        localStorage.removeItem(validKey)
+      }, [])
+
+      return <div data-testid="clear-expired-result">{result || 'checking'}</div>
+    }
+
+    return (
+      <DeliberationContextProvider defaultValue={{ discussionId, userId }}>
+        <TestComponent />
+      </DeliberationContextProvider>
+    )
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await waitFor(
+      () => {
+        const result = canvas.getByTestId('clear-expired-result')
+        expect(result.textContent).toBe('expired-cleared-valid-kept')
+      },
+      { timeout: 500 }
+    )
+  },
+}
+
 // Styles at bottom per EnCiv coding guidelines
 const useStyles = createUseStyles({
   container: {
