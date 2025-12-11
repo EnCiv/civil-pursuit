@@ -49,6 +49,7 @@ import { finishRound as dturnFinishRound, getDiscussionStatus, insertStatementId
  * - `batchData.email` - Optional email to associate with userId
  * - `batchData.data.pointById` - Object of points by ID (max 1 point allowed per user)
  * - `batchData.data.myWhyByCategoryByParentId` - Object of whys by category by parent ID
+ * - `batchData.data.preRankByParentId` - Object of initial ranks by parent ID (from rank step, 'pre' category)
  * - `batchData.data.postRankByParentId` - Object of ranks by parent ID (empty for early users)
  * - `batchData.data.groupIdsLists` - Array of groupings (undefined if not shown yet, [] if incomplete)
  * - `batchData.data.jsformData` - Object of jsform data by form name
@@ -165,7 +166,10 @@ export default async function batchUpsertDeliberationData(batchData, cb) {
         }
       }
     }
-    const ranks = Object.values(data.postRankByParentId || {})
+    // Combine preRankByParentId and postRankByParentId for processing
+    const preRanks = Object.values(data.preRankByParentId || {})
+    const postRanks = Object.values(data.postRankByParentId || {})
+    const ranks = [...preRanks, ...postRanks]
     const groupings = data.groupIdsLists // Can be undefined if not done yet
     const jsformData = data.jsformData || {}
     const idRanks = data.idRanks // Can be undefined if not done yet
