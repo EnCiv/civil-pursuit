@@ -141,7 +141,10 @@ export async function batchUpsertHandler(req, res, next) {
         }
       }
     }
-    const ranks = Object.values(data.postRankByParentId || {})
+    // Combine preRankByParentId and postRankByParentId for processing
+    const preRanks = Object.values(data.preRankByParentId || {})
+    const postRanks = Object.values(data.postRankByParentId || {})
+    const ranks = [...preRanks, ...postRanks]
     const groupings = data.groupIdsLists // Can be undefined if not done yet
     const jsformData = data.jsformData || {}
     const idRanks = data.idRanks // Can be undefined if not done yet
