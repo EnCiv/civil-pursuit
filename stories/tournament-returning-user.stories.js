@@ -514,6 +514,43 @@ export const ReturningUserCompleteFlow = {
             },
           },
         },
+        preRankByParentId: {
+          'point-1': {
+            stage: 'pre',
+            category: 'least',
+            parentId: 'point-1',
+            round: 0,
+            discussionId: '5d0137260dacd06732a1d814',
+          },
+          'point-2': {
+            stage: 'pre',
+            category: 'neutral',
+            parentId: 'point-2',
+            round: 0,
+            discussionId: '5d0137260dacd06732a1d814',
+          },
+          'point-3': {
+            stage: 'pre',
+            category: 'neutral',
+            parentId: 'point-3',
+            round: 0,
+            discussionId: '5d0137260dacd06732a1d814',
+          },
+          'point-4': {
+            stage: 'pre',
+            category: 'neutral',
+            parentId: 'point-4',
+            round: 0,
+            discussionId: '5d0137260dacd06732a1d814',
+          },
+          'user-answer-point-123': {
+            stage: 'pre',
+            category: 'most',
+            parentId: 'user-answer-point-123',
+            round: 0,
+            discussionId: '5d0137260dacd06732a1d814',
+          },
+        },
         postRankByParentId: {
           'point-3': {
             //_id: '692fb881f074d84b7d4bd2c0',
