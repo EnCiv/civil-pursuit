@@ -108,6 +108,7 @@ const Intermission = props => {
     const dataToSave = {
       myPointById, // Only user's points (filtered from pointById)
       myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
+      preRankByParentId: data.preRankByParentId || {}, // Initial rankings with 'pre' category
       postRankByParentId: data.postRankByParentId || {},
       whyRankByParentId: data.whyRankByParentId || {},
       // groupIdsLists and idRanks: undefined means not done yet, [] means done but empty
