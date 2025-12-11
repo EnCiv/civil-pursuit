@@ -5,7 +5,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { useState, useEffect, useContext } from 'react'
 import { H } from 'react-accessible-headings'
-import DeliberationContext from '../deliberation-context'
+import DeliberationContext, { useLocalStorageIfAvailable } from '../deliberation-context'
 
 import StepIntro from '../step-intro'
 import ShowDualPointList from '../../components/show-dual-point-list'
@@ -16,6 +16,7 @@ export default function Conclusion(props) {
   const { className, discussionId, stepIntro, onDone = () => {}, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useContext(DeliberationContext)
+  const storageAvailable = useLocalStorageIfAvailable()
 
   useEffect(() => {
     if (!data?.topPointAndWhys) {
@@ -26,7 +27,9 @@ export default function Conclusion(props) {
   }, [])
 
   const handleOnDone = ({ valid, value }) => {
-    window.socket.emit('upsert-jsform', discussionId, 'conclusion', { howDoYouFeel: value })
+    if (!storageAvailable) {
+      window.socket.emit('upsert-jsform', discussionId, 'conclusion', { howDoYouFeel: value })
+    }
     onDone({ valid })
   }
 

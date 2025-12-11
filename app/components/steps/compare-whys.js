@@ -8,18 +8,21 @@ import PairCompare from '../pair-compare'
 import { H, Level } from 'react-accessible-headings'
 import StepIntro from '../step-intro'
 
-import DeliberationContext from '../deliberation-context'
+import DeliberationContext, { useLocalStorageIfAvailable } from '../deliberation-context'
 import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 
 export default function CompareWhysStep(props) {
   const { onDone, round, category } = props
   const { data, upsert } = useContext(DeliberationContext)
+  const storageAvailable = useLocalStorageIfAvailable()
   const fetchDemInfo = useFetchDemInfo()
   const args = { ...derivePointWithWhyRankListListByCategory(data, category) }
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
       upsert({ whyRankByParentId: { [delta.parentId]: delta } })
-      window.socket.emit('upsert-rank', delta)
+      if (!storageAvailable) {
+        window.socket.emit('upsert-rank', delta)
+      }
     }
     onDone({ valid, value })
   }

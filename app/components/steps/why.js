@@ -2,7 +2,7 @@
 //https://github.com/EnCiv/civil-pursuit/issues/214
 
 import React, { useEffect, useContext, useRef, useState } from 'react'
-import DeliberationContext from '../deliberation-context'
+import DeliberationContext, { useLocalStorageIfAvailable } from '../deliberation-context'
 import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 import WhyInput from '../why-input'
 import { H, Level } from 'react-accessible-headings'
@@ -14,6 +14,7 @@ import StepIntro from '../step-intro'
 export default function WhyStep(props) {
   const { data, upsert } = useContext(DeliberationContext)
   const { category, onDone, ...otherProps } = props
+  const storageAvailable = useLocalStorageIfAvailable()
   const fetchDemInfo = useFetchDemInfo()
 
   useEffect(() => {
@@ -46,21 +47,23 @@ export default function WhyStep(props) {
         },
       })
       if (newData === data) return // if no change, don't send up
-      window.socket.emit('upsert-why', delta, updatedDoc => {
-        if (updatedDoc) {
-          if (!isEqual(updatedDoc, delta)) {
-            upsert({
-              myWhyByCategoryByParentId: {
-                [category]: {
-                  [delta.parentId]: updatedDoc,
+      if (!storageAvailable) {
+        window.socket.emit('upsert-why', delta, updatedDoc => {
+          if (updatedDoc) {
+            if (!isEqual(updatedDoc, delta)) {
+              upsert({
+                myWhyByCategoryByParentId: {
+                  [category]: {
+                    [delta.parentId]: updatedDoc,
+                  },
                 },
-              },
-            })
+              })
+            }
+          } else {
+            console.error('Failed to upsert why')
           }
-        } else {
-          console.error('Failed to upsert why')
-        }
-      })
+        })
+      }
     }
     onDone({ valid, value })
   }

@@ -7,7 +7,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ObjectId from 'bson-objectid'
 
-import DeliberationContext from '../deliberation-context.js'
+import DeliberationContext, { useLocalStorageIfAvailable } from '../deliberation-context.js'
 import Point from '../point'
 import PointGroup from '../point-group' // should be using PointGroup but it needs to support children
 import { ModifierButton } from '../button'
@@ -35,11 +35,14 @@ const minSelectionsTable = {
 export default function RankStep(props) {
   const { onDone, round, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
+  const storageAvailable = useLocalStorageIfAvailable()
 
   function handleOnDone({ valid, value, delta }) {
     if (delta) {
       upsert({ preRankByParentId: { [delta.parentId]: delta } })
-      window.socket.emit('upsert-rank', delta)
+      if (!storageAvailable) {
+        window.socket.emit('upsert-rank', delta)
+      }
     }
     onDone({ valid, value })
   }
