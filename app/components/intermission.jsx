@@ -8,6 +8,7 @@ import Intermission_Icon from '../svgr/intermission-icon'
 import StatusBox from '../components/status-box'
 import DeliberationContext, { useLocalStorageIfAvailable } from './deliberation-context'
 import * as LocalStorageManager from '../lib/local-storage-manager'
+import { authenticateSocketIo } from 'civil-client/dist/components/use-auth'
 
 // needs to be static because it used as a dependency in useEffect
 const goToEnCiv = () => location.pushState('https://enciv.org/')
@@ -35,117 +36,102 @@ const Intermission = props => {
     window.socket.emit('set-user-info', { email: email }, callback)
   }
 
-  // Handle batch upsert for temporary users at Round 1 completion (full round data)
-  const handleBatchUpsert = emailAddress => {
+  /**
+   * Common batch upsert logic for temporary users
+   * Uses HTTP route instead of socket API so the cookie can be updated with email
+   *
+   * - `emailAddress` - The user's email address
+   * - `dataToSave` - Object containing the data fields to save (myPointById, myWhyByCategoryByParentId, etc.)
+   * - `successMsg` - Success message to display after successful save
+   */
+  const doBatchUpsert = async (emailAddress, dataToSave, successMsg) => {
     setIsProcessing(true)
     setValidationError('')
     setSuccessMessage('')
 
+    const batchData = {
+      discussionId,
+      round,
+      email: emailAddress,
+      data: dataToSave,
+    }
+
+    try {
+      // Call batch-upsert HTTP route (allows cookie update)
+      const response = await fetch('/api/batch-upsert-deliberation-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(batchData),
+        credentials: 'include', // Include cookies in request
+      })
+      const result = await response.json()
+
+      setIsProcessing(false)
+      if (!response.ok || result.error) {
+        setValidationError(result?.error || 'Failed to save data. Please try again.')
+      } else {
+        // Success - update user in context with email
+        upsert({ user: { ...user, email: emailAddress } })
+        // Update local points that had 'unknown' userId to actual userId
+        if (userId) {
+          const updatedPointById = {}
+          for (const [id, point] of Object.entries(data.pointById || {})) {
+            if (point.userId === 'unknown') {
+              updatedPointById[id] = { ...point, userId }
+            }
+          }
+          if (Object.keys(updatedPointById).length > 0) {
+            upsert({ pointById: updatedPointById })
+          }
+        }
+        // Clear localStorage for completed round if available
+        if (storageAvailable) {
+          LocalStorageManager.clear(discussionId, userId, round)
+        }
+        setSuccessMessage(successMsg)
+        // Reconnect socket to get updated authentication with email in cookie
+        authenticateSocketIo()
+      }
+    } catch (error) {
+      setIsProcessing(false)
+      console.error('batch-upsert fetch error:', error)
+      setValidationError('Failed to save data. Please try again.')
+    }
+  }
+
+  // Handle batch upsert for temporary users at Round 1 completion (full round data)
+  const handleBatchUpsert = async emailAddress => {
     // Filter pointById to only include user's own points (matching userId or 'unknown')
     const myPointById = Object.fromEntries(Object.entries(data.pointById || {}).filter(([id, point]) => point.userId === userId || point.userId === 'unknown'))
 
     // Use data from context (which may be synced from localStorage)
-    const batchData = {
-      discussionId,
-      round,
-      email: emailAddress,
-      data: {
-        myPointById, // Only user's points (filtered from pointById)
-        myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
-        postRankByParentId: data.postRankByParentId || {},
-        whyRankByParentId: data.whyRankByParentId || {},
-        // groupIdsLists and idRanks: undefined means not done yet, [] means done but empty
-        groupIdsLists: data.groupIdsLists,
-        jsformData: data.jsformData || {},
-        idRanks: data.roundCompleteData?.[round]?.idRanks, // Pre-calculated from rerank step
-      },
+    const dataToSave = {
+      myPointById, // Only user's points (filtered from pointById)
+      myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
+      postRankByParentId: data.postRankByParentId || {},
+      whyRankByParentId: data.whyRankByParentId || {},
+      // groupIdsLists and idRanks: undefined means not done yet, [] means done but empty
+      groupIdsLists: data.groupIdsLists,
+      jsformData: data.jsformData || {},
+      idRanks: data.roundCompleteData?.[round]?.idRanks, // Pre-calculated from rerank step
     }
 
-    // Call batch-upsert API
-    window.socket.emit('batch-upsert-deliberation-data', batchData, response => {
-      setIsProcessing(false)
-      if (!response || response.error) {
-        setValidationError(response?.error || 'Failed to save data. Please try again.')
-      } else {
-        // Success - update local points that had 'unknown' userId to actual userId
-        if (userId) {
-          const updatedPointById = {}
-          for (const [id, point] of Object.entries(data.pointById || {})) {
-            if (point.userId === 'unknown') {
-              updatedPointById[id] = { ...point, userId }
-            }
-          }
-          if (Object.keys(updatedPointById).length > 0) {
-            upsert({ pointById: updatedPointById })
-          }
-        }
-        // Clear localStorage for completed round if available
-        if (storageAvailable) {
-          LocalStorageManager.clear(discussionId, userId, round)
-        }
-        setSuccessMessage(`Success! Your data has been saved and we've sent a password email to ${emailAddress}.`)
-        // Reload page to get updated user info with email (skip in test environment)
-        if (!window.location.href.includes('iframe.html?viewMode=story')) {
-          setTimeout(() => {
-            window.location.reload()
-          }, 2000)
-        }
-      }
-    })
+    await doBatchUpsert(emailAddress, dataToSave, `Success! Your data has been saved and we've sent a password email to ${emailAddress}.`)
   }
 
   // Handle batch upsert for temporary users who only completed the Answer step
   // (not enough participants to continue, so round is not complete)
-  const handleBatchUpsertAnswer = emailAddress => {
-    setIsProcessing(true)
-    setValidationError('')
-    setSuccessMessage('')
-
+  const handleBatchUpsertAnswer = async emailAddress => {
     // Filter pointById to only include user's own points (matching userId or 'unknown')
     const myPointById = Object.fromEntries(Object.entries(data.pointById || {}).filter(([id, point]) => point.userId === userId || point.userId === 'unknown'))
 
     // Only include answer data (myPointById and myWhyByCategoryByParentId)
-    const batchData = {
-      discussionId,
-      round,
-      email: emailAddress,
-      data: {
-        myPointById, // Only user's points (filtered from pointById)
-        myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
-      },
+    const dataToSave = {
+      myPointById, // Only user's points (filtered from pointById)
+      myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
     }
 
-    // Call batch-upsert API
-    window.socket.emit('batch-upsert-deliberation-data', batchData, response => {
-      setIsProcessing(false)
-      if (!response || response.error) {
-        setValidationError(response?.error || 'Failed to save data. Please try again.')
-      } else {
-        // Success - update local points that had 'unknown' userId to actual userId
-        if (userId) {
-          const updatedPointById = {}
-          for (const [id, point] of Object.entries(data.pointById || {})) {
-            if (point.userId === 'unknown') {
-              updatedPointById[id] = { ...point, userId }
-            }
-          }
-          if (Object.keys(updatedPointById).length > 0) {
-            upsert({ pointById: updatedPointById })
-          }
-        }
-        // Clear localStorage for completed round if available
-        if (storageAvailable) {
-          LocalStorageManager.clear(discussionId, userId, round)
-        }
-        setSuccessMessage(`Success! Your answer has been saved and we've sent a password email to ${emailAddress}. We'll invite you back when more participants join.`)
-        // Reload page to get updated user info with email (skip in test environment)
-        if (!window.location.href.includes('iframe.html?viewMode=story')) {
-          setTimeout(() => {
-            window.location.reload()
-          }, 2000)
-        }
-      }
-    })
+    await doBatchUpsert(emailAddress, dataToSave, `Success! Your answer has been saved and we've sent a password email to ${emailAddress}. We'll invite you back when more participants join.`)
   }
 
   const handleEmail = () => {
@@ -203,6 +189,37 @@ const Intermission = props => {
     }
   }, [allRoundsCompleted])
 
+  // the ref of the object the user's answer is stored in will change when they edit their answer
+  // this is built around there being only one answer per user per round. When that changes we need to revisit this
+  const myPoint = round === 0 && Object.entries(data.pointById || {}).filter(([id, point]) => point.userId === userId || point.userId === 'unknown')[0]
+  // Save answer data for registered users when round is not complete
+  // This handles the case where a user with email returns, edits their answer, and arrives at intermission
+  useEffect(() => {
+    if (myPoint && userIsRegistered && !roundCompleted && round === 0) {
+      // Filter pointById to only include user's own points
+      const myPointById = { [myPoint._id]: myPoint }
+
+      // Only save if there's data to save
+      if (Object.keys(myPointById).length > 0) {
+        const batchData = {
+          discussionId,
+          round,
+          email: user.email,
+          data: {
+            myPointById,
+            myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
+          },
+        }
+
+        window.socket.emit('batch-upsert-deliberation-data', batchData, result => {
+          if (result?.error) {
+            console.error('Failed to save answer data:', result.error)
+          }
+        })
+      }
+    }
+  }, [myPoint, data.myWhyByCategoryByParentId]) // only do this on mount or the data changes - if userIsRegistered changes (from not registered to registered) the batch upsert was done when they assigned their email
+
   let valid
   let onNext
   let conditionalResponse
@@ -237,8 +254,6 @@ const Intermission = props => {
             </div>
           </>
         )}
-        {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
-        {validationError && <StatusBox className={classes.errorMessage} status="error" subject={validationError} />}
       </>
     )
     valid = false
@@ -311,7 +326,6 @@ const Intermission = props => {
             Remind Me Later
           </SecondaryButton>
         </div>
-        {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
       </>
     )
     if (successMessage) {
@@ -337,6 +351,8 @@ const Intermission = props => {
         <Intermission_Icon className={classes.icon} />
       </div>
       {conditionalResponse}
+      {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
+      {validationError && <StatusBox className={classes.errorMessage} status="error" subject={validationError} />}
     </div>
   )
 }
