@@ -403,17 +403,14 @@ if (validPoints.length > 1) {
   round: number,
   email: string, // Optional, if provided associate with userId
   data: {
-    pointById: {},
-    myWhyByCategoryByParentId: {},
-    postRankByParentId: {},
-    whyRankByParentId: {},
-    groupIdsLists: [],
-    jsformData: {},
-    uInfo: { // The round's uInfo with finished: true
-      shownStatementIds: {},
-      groupings: [],
-      finished: true
-    }
+    myPointById: {}, // User's own points only (filtered from pointById)
+    myWhyByCategoryByParentId: {}, // User's why entries
+    preRankByParentId: {}, // Initial rankings with 'pre' category (from rank step)
+    postRankByParentId: {}, // Post-rerank rankings
+    whyRankByParentId: {}, // Rankings for why comparisons
+    groupIdsLists: [], // User's groupings
+    jsformData: {}, // Form data (moreDetails, conclusion, etc.)
+    idRanks: [] // Final ranked order for finish-round (from roundCompleteData)
   }
 }
 ```
@@ -425,9 +422,9 @@ if (validPoints.length > 1) {
 3. Overwrite any existing data for this user/discussion/round (no duplicate detection needed)
 4. Upsert all points using existing `insert-dturn-statement` logic
 5. Upsert all whys using existing `upsert-why` logic
-6. Upsert all ranks using existing `upsert-rank` logic
+6. Upsert all ranks (preRankByParentId, postRankByParentId, whyRankByParentId) using existing `upsert-rank` logic
 7. Upsert jsform data using existing `upsert-jsform` logic
-8. Call `finish-round` logic internally with idRanks and groupings from data.uInfo
+8. Call `finish-round` logic internally with idRanks and groupings
 9. Return success (do not return userId, server already knows it)
 
 **Error Handling:**
@@ -704,7 +701,7 @@ function filterStepsByRound(steps, round) {
 
 ## Implementation Phases
 
-### Current Status (as of December 1, 2025)
+### Current Status (as of December 8, 2025)
 
 **Completed:**
 
@@ -713,15 +710,26 @@ function filterStepsByRound(steps, round) {
 - ✅ Phase 3: Answer Step & Terms Agreement UI (new component + tests)
 - ✅ Phase 4: Rerank & Intermission Updates (batch-upsert flow implemented)
 - ✅ Phase 5: Server-side batch-upsert API (17 Jest tests passing)
+- ✅ Phase 6.1: Answer step localStorage integration (complete)
+- ✅ Phase 6.2: Rerank step localStorage integration (complete)
 - ✅ Phase 7: Testing & Stories (auth-flow mocking, answer-step, intermission, tournament tests)
+- ✅ Phase 7.1: myPointById refactoring (client filtering, server validation)
 
 **In Progress:**
 
-- 🔄 Phase 6: Additional step components (answer, rerank, intermission complete; jsform, conclusion pending)
-- 🔄 Phase 8: Edge cases & polish (transition tracking complete, a11y tests temporarily disabled)
+- 🔄 Phase 6.3: Remove socket emit calls when using localStorage
+  - ✅ Answer step: conditionally calls socket APIs only when `!storageAvailable`
+  - ❌ **Rank step: Still calls `window.socket.emit('upsert-rank', ...)` - needs localStorage check**
+  - ❌ **Why step: Still calls `window.socket.emit('upsert-why', ...)` - needs localStorage check**
+  - ❌ **Compare-whys step: Still calls `window.socket.emit('upsert-rank', ...)` - needs localStorage check**
+  - ❌ **Conclusion step: Still calls `window.socket.emit('upsert-jsform', ...)` - needs localStorage check**
+  - Note: GET socket APIs (get-points-of-ids, get-user-whys, get-user-ranks, etc.) should continue working as-is
 
 **Not Started:**
 
+- ⏳ Phase 6.4: Create new test iota in iotas.json (currently using `/civil-pursuit-late-signup-test`)
+- ⏳ Phase 6.5: Implement step filtering by `stepVisibility` (recently refactored to declarative system)
+- ⏳ Phase 8: Edge cases & polish (localStorage disabled, quota exceeded, 7-day TTL)
 - ⏳ Phase 9: Documentation & deployment
 
 **Test Results:**
@@ -1119,6 +1127,330 @@ Due to Storybook's architecture, certain authentication flows cannot be fully te
 5. **Offline Support**: Use Service Workers to enable offline participation with sync on reconnect
 6. **Data Export**: Allow users to download their localStorage data for transparency
 7. **Extended Anonymous Participation**: For research scenarios where full anonymity is desired beyond Round 1
+
+---
+
+## Remaining Tasks
+
+Last updated: December 10, 2025
+
+### Critical Tasks (Must Complete)
+
+#### 1. Add localStorage Checks to Socket Emits
+
+**Status:** ✅ Complete (December 10, 2025)
+
+**Completed changes:**
+
+1. ✅ `app/components/steps/rank.js` - Added `useLocalStorageIfAvailable()` check before `window.socket.emit('upsert-rank', delta)`
+2. ✅ `app/components/steps/why.js` - Added check before `window.socket.emit('upsert-why', ...)`
+3. ✅ `app/components/steps/compare-whys.js` - Added check before `window.socket.emit('upsert-rank', delta)`
+4. ✅ `app/components/steps/conclusion.js` - Added check before `window.socket.emit('upsert-jsform', ...)`
+
+**Implementation:** All socket emits now check `if (!storageAvailable)` before calling the API, preventing duplicate operations when localStorage is active. Data is still saved to context via `upsert()` in all cases.
+
+---
+
+#### 2. Update Iota Configurations with stepVisibility
+
+**Status:** ⏹️ Deferred (December 10, 2025)
+
+**Decision:** Skip updating production iotas for now. The code has backward compatibility - if `stepVisibility` is not present, it uses the old filtering methods (`allowedRounds`, hardcoded step names). This allows safer production rollout.
+
+**Strategy:** Code supports both old and new methods. Once the new system is proven stable, production iotas can be migrated incrementally.
+
+**Current State:**
+
+- ✅ `/civil-pursuit-late-signup-test` - Complete (11 steps with stepVisibility)
+- ⏹️ 7 production iotas - Deferred, using legacy filtering for now
+
+**Note:** See "stepVisibility System" section below for complete documentation.
+
+---
+
+### Important Tasks (Should Complete Soon)
+
+#### 3. Add preRankByParentId to Batch-Upsert
+
+**Status:** ❌ Not started (identified December 10, 2025)
+
+**Problem:** The `preRankByParentId` data generated by the rank step (initial pre-rerank rankings with 'pre' category) is not currently being sent to the server in batch-upsert. This data needs to be persisted so users can review and modify their initial rankings.
+
+**Files to Update:**
+
+**1. `app/components/intermission.jsx` - Add preRankByParentId to dataToSave**
+
+In `handleBatchUpsert` function (line ~104), add preRankByParentId to the data object:
+
+```javascript
+const dataToSave = {
+  myPointById,
+  myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
+  preRankByParentId: data.preRankByParentId || {}, // ADD THIS LINE
+  postRankByParentId: data.postRankByParentId || {},
+  whyRankByParentId: data.whyRankByParentId || {},
+  groupIdsLists: data.groupIdsLists,
+  jsformData: data.jsformData || {},
+  idRanks: data.roundCompleteData?.[round]?.idRanks,
+}
+```
+
+**2. `app/routes/batch-upsert-deliberation-data.js` - Process preRankByParentId**
+
+Add processing for preRankByParentId ranks in the upsert logic:
+
+```javascript
+// After processing postRankByParentId, add preRankByParentId handling
+// Pre-ranks (from initial ranking step before rerank)
+if (data.preRankByParentId && Object.keys(data.preRankByParentId).length > 0) {
+  const preRanks = Object.values(data.preRankByParentId).map(rank => ({
+    ...rank,
+    userId: synuser.id,
+    category: 'pre', // Ensure category is 'pre'
+  }))
+
+  for (const rank of preRanks) {
+    const { error } = rankSchema.validate(rank)
+    if (error) {
+      logger.error(`Pre-rank validation failed: ${error.message}`)
+      return res.status(400).json({ error: 'Invalid pre-rank data' })
+    }
+  }
+
+  const preRankOps = preRanks.map(rank => ({
+    updateOne: {
+      filter: { parentId: rank.parentId, userId: rank.userId, category: 'pre' },
+      update: { $set: rank },
+      upsert: true,
+    },
+  }))
+
+  await Rank.bulkWrite(preRankOps)
+}
+```
+
+**3. `app/socket-apis/batch-upsert-deliberation-data.js` - Process preRankByParentId (if used)**
+
+Apply the same logic to the socket API version if it's still being used by authenticated users:
+
+```javascript
+// Add preRankByParentId processing similar to route implementation
+if (data.preRankByParentId && Object.keys(data.preRankByParentId).length > 0) {
+  // ... same validation and bulk write logic as route
+}
+```
+
+**4. Update Tests**
+
+Update test files to verify preRankByParentId is being sent and processed:
+
+- `stories/tournament-full-flow.stories.js` - Verify preRankByParentId is in batch-upsert data
+- `stories/tournament-early-user.stories.js` - Verify early user doesn't send preRankByParentId (not reached that step)
+- `app/socket-apis/__tests__/batch-upsert-deliberation-data.test.js` - Add test cases for preRankByParentId
+- `app/routes/__tests__/batch-upsert-deliberation-data.test.js` - Add test cases (if route tests exist)
+
+**5. Update Spec Documentation**
+
+Update the batch-upsert parameters section (around line 405) to include preRankByParentId:
+
+```javascript
+{
+  discussionId: string,
+  round: number,
+  email: string,
+  data: {
+    myPointById: {},
+    myWhyByCategoryByParentId: {},
+    preRankByParentId: {}, // Initial rankings with 'pre' category
+    postRankByParentId: {}, // Post-rerank rankings
+    whyRankByParentId: {}, // Rankings for why comparisons
+    groupIdsLists: [],
+    jsformData: {},
+    idRanks: [] // Final ranked order for finish-round
+  }
+}
+```
+
+**Testing Checklist:**
+
+- [ ] Verify rank step saves to `preRankByParentId` in context (already working)
+- [ ] Verify `preRankByParentId` is included in batch-upsert request body
+- [ ] Verify server validates and saves preRankByParentId to Rank collection
+- [ ] Verify category is set to 'pre' for all pre-rank entries
+- [ ] Verify existing tests still pass
+- [ ] Verify user can reload page and see their initial rankings preserved
+
+**Estimated Time:** 2-3 hours
+
+---
+
+#### 4. Refactor batch-upsert from Socket API to HTTP Route
+
+**Status:** ✅ Complete (as of December 10, 2025)
+
+- ✅ Refactored `batch-upsert-deliberation-data` from socket API to HTTP route
+- ✅ Updated `intermission.jsx` to use fetch instead of socket.emit
+- ✅ Updated all tournament stories to use `mockBatchUpsertDeliberationDataRoute`
+- ✅ All tests passing
+
+**Notes:** This was done to enable cookie updates when associating email with temporary userId. The socket API version remains available for authenticated users in rerank step (though it may not be needed).
+
+---
+
+#### 4. Implement 7-Day TTL for localStorage
+
+**Status:** ❌ Not started
+
+**Task:** Add expiration logic to prevent abandoned localStorage data from accumulating.
+
+**Implementation needed in `app/lib/local-storage-manager.js`:**
+
+- Add `timestamp` field to saved data
+- Check timestamp on load and return `null` if > 7 days old
+- Add cleanup method `cleanupExpiredData()` to scan and remove expired entries
+- Call cleanup on app initialization
+
+**Estimated Time:** 2-3 hours
+
+---
+
+#### 5. Handle localStorage Quota Exceeded
+
+**Status:** ⏳ Partially implemented (logs error, needs user-facing flow)
+
+**Enhancement needed:**
+
+- Show user-friendly message when quota exceeded
+- Offer recovery options:
+  1. Continue without localStorage (fall back to immediate socket APIs)
+  2. Clear old data and retry
+  3. Export data and clear
+
+**Estimated Time:** 3-4 hours
+
+---
+
+### Nice-to-Have Tasks
+
+#### 6. Add civil-pursuit.stories.js Story
+
+**Status:** ❌ Not started
+
+Create a comprehensive late sign-up flow story at the top level (civil-pursuit stories) to complement the existing tournament stories.
+
+**Estimated Time:** 2-3 hours
+
+---
+
+#### 7. Mobile/Responsive Testing
+
+**Status:** ❌ Not started
+
+Verify all new UI elements (Terms checkbox, email prompt, loading states, error messages) work well on mobile screens and don't break layout.
+
+**Estimated Time:** 2-3 hours
+
+---
+
+#### 8. Accessibility Audit
+
+**Status:** ⏳ Partially complete (a11y tests temporarily disabled)
+
+**TODO:**
+
+- Re-enable a11y tests in `.storybook/test-runner.ts`
+- Fix any violations found
+- Add ARIA labels where needed
+- Test keyboard navigation thoroughly
+
+**Estimated Time:** 3-4 hours
+
+---
+
+### Documentation Tasks
+
+#### 9. Update README
+
+**Status:** ❌ Not started
+
+Add late sign-up feature description, user flow diagram, configuration instructions, and testing instructions to main README.
+
+**Estimated Time:** 1-2 hours
+
+---
+
+#### 10. Create Deployment Guide
+
+**Status:** ❌ Not started
+
+Document deployment procedure, rollback plan, pre-deployment checklist, monitoring setup.
+
+**Estimated Time:** 2-3 hours
+
+---
+
+### Summary
+
+**Total Remaining Estimated Time:** 21-33 hours
+
+**Critical Path (Must Complete Before Production):**
+
+1. ✅ Add localStorage checks to socket emits (COMPLETE)
+2. ⏹️ Update iota configurations (DEFERRED - backward compatible)
+3. ❌ Implement 7-day TTL (2-3 hours)
+
+**Remaining Critical Work:** 5-6 hours
+
+**Priority Order:**
+
+1. ✅ Socket emit localStorage checks (COMPLETE)
+2. ⏹️ Remaining iota stepVisibility updates (DEFERRED - backward compatible)
+3. 7-day TTL (prevents localStorage bloat)
+4. Quota exceeded handling (improves user experience)
+5. Documentation (deployment readiness)
+6. Mobile/accessibility (polish)
+7. Additional stories (testing completeness)
+
+---
+
+## stepVisibility System
+
+The late sign-up feature uses a declarative `stepVisibility` system to control which steps appear based on round number, participant count, and discussion state. This replaced hardcoded visibility logic in the Tournament component.
+
+### Overview
+
+Each step in the Tournament `steps` array can have an optional `stepVisibility` object that declares when it should be visible:
+
+```json
+{
+  "webComponent": "Answer",
+  "stepName": "Answer",
+  "stepVisibility": {
+    "rounds": [0],
+    "hideWhenAllComplete": true
+  }
+}
+```
+
+### stepVisibility Properties
+
+- **`always`** (boolean, optional) - If `true`, step is always shown regardless of other filters. Overrides all other visibility rules. Used for Intermission.
+
+- **`rounds`** (array of numbers, optional) - Array of round numbers where this step should appear (e.g., `[0]` for round 0 only, `[0, 1]` for rounds 0 and 1). Omit to show in all rounds.
+
+- **`minParticipants`** (boolean, optional) - If `true`, requires minimum participants for deliberation (calculated as `2 * group_size`). Typically used for grouping, ranking, and comparison steps.
+
+- **`hideWhenAllComplete`** (boolean, optional) - If `true`, hide this step when all rounds are complete. Useful for Answer step which shouldn't appear after tournament ends.
+
+### Backward Compatibility
+
+If `stepVisibility` is omitted entirely, the step uses **legacy filter rules** for backward compatibility:
+
+- If participants < threshold (2 \* group_size): show only `Answer` and `Intermission` steps
+- If all rounds complete: show only `Intermission` step
+- During active rounds: hide `Answer` after round 0, respect `allowedRounds` property
+
+**Note:** This legacy behavior ensures existing iotas continue working while allowing gradual migration to the new system.
 
 ---
 
