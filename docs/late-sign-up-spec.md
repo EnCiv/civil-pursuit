@@ -1219,15 +1219,15 @@ Last updated: December 10, 2025
 
 #### 5. Handle localStorage Quota Exceeded
 
-**Status:** ⏳ Partially implemented (logs error, needs user-facing flow)
+**Status:** ⏹️ Not needed (data size expected to be only a few KB)
 
-**Enhancement needed:**
+The amount of data stored per user session is minimal (typically < 5KB):
+- A few point objects with subjects and descriptions
+- Rankings (category per point)
+- Why explanations
+- Form responses
 
-- Show user-friendly message when quota exceeded
-- Offer recovery options:
-  1. Continue without localStorage (fall back to immediate socket APIs)
-  2. Clear old data and retry
-  3. Export data and clear
+Quota issues are extremely unlikely in practice. If encountered, the existing error logging in LocalStorageManager.save() is sufficient for debugging.
 
 **Estimated Time:** 3-4 hours
 
@@ -1257,16 +1257,16 @@ Verify all new UI elements (Terms checkbox, email prompt, loading states, error 
 
 #### 8. Accessibility Audit
 
-**Status:** ⏳ Partially complete (a11y tests temporarily disabled)
+**Status:** ⏹️ Delayed until Storybook upgrade
 
-**TODO:**
+Accessibility tests were disabled in `.storybook/test-runner.ts` due to technical issues with the test-runner package. This will be addressed when upgrading to the latest version of Storybook.
 
-- Re-enable a11y tests in `.storybook/test-runner.ts`
+**Deferred TODO:**
+
+- Re-enable a11y tests after Storybook upgrade
 - Fix any violations found
 - Add ARIA labels where needed
 - Test keyboard navigation thoroughly
-
-**Estimated Time:** 3-4 hours
 
 ---
 
@@ -1274,21 +1274,17 @@ Verify all new UI elements (Terms checkbox, email prompt, loading states, error 
 
 #### 9. Update README
 
-**Status:** ❌ Not started
+**Status:** ⏹️ Not needed (spec is sufficient)
 
-Add late sign-up feature description, user flow diagram, configuration instructions, and testing instructions to main README.
-
-**Estimated Time:** 1-2 hours
+Detailed feature documentation belongs in this spec document. The README already links to relevant specs and provides basic setup instructions.
 
 ---
 
 #### 10. Create Deployment Guide
 
-**Status:** ❌ Not started
+**Status:** ⏹️ Not needed
 
-Document deployment procedure, rollback plan, pre-deployment checklist, monitoring setup.
-
-**Estimated Time:** 2-3 hours
+Standard deployment procedures apply. The late sign-up feature is backward compatible and doesn't require special deployment steps.
 
 ---
 
@@ -1300,15 +1296,24 @@ Document deployment procedure, rollback plan, pre-deployment checklist, monitori
 
 1. ✅ Add localStorage checks to socket emits (COMPLETE)
 2. ⏹️ Update iota configurations (DEFERRED - backward compatible)
-3. ❌ Implement 7-day TTL (2-3 hours)
+3. ✅ Implement 7-day TTL (COMPLETE)
 
-**Remaining Critical Work:** 5-6 hours
+**Completed Changes:**
+
+- **TTL Implementation (Task 3)**: The LocalStorageManager already implements full TTL support:
+  - Saves timestamp with each localStorage entry
+  - Checks TTL (7 days) on load and removes expired data
+  - Provides clearExpired() to clean up old entries
+  - DeliberationContext calls clearExpired() on initialization
+  - Added tests: TestTTLExpiration and TestClearExpiredOnInit in deliberation-context.stories.js
+
+**Remaining Work:** 3-4 hours
 
 **Priority Order:**
 
 1. ✅ Socket emit localStorage checks (COMPLETE)
-2. ⏹️ Remaining iota stepVisibility updates (DEFERRED - backward compatible)
-3. 7-day TTL (prevents localStorage bloat)
+2. ✅ 7-day TTL (COMPLETE - prevents localStorage bloat)
+3. ⏹️ Remaining iota stepVisibility updates (DEFERRED - backward compatible)
 4. Quota exceeded handling (improves user experience)
 5. Documentation (deployment readiness)
 6. Mobile/accessibility (polish)
