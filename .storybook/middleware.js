@@ -118,11 +118,50 @@ async function tempId(req, res) {
   }
 }
 
+/**
+ * Batch Upsert Deliberation Data Handler
+ *
+ * Mocks the /api/batch-upsert-deliberation-data endpoint used by intermission.jsx
+ *
+ * This HTTP route is used instead of the socket API when:
+ * - Email is being associated with a temporary user account
+ * - The cookie needs to be updated with the new email
+ *
+ * In production, this endpoint:
+ * 1. Validates and upserts points, whys, ranks to database
+ * 2. Associates email with user account
+ * 3. Updates the synuser cookie to include email
+ * 4. Client reconnects socket to get authenticated with email
+ */
+async function batchUpsertDeliberationData(req, res) {
+  console.info('batch-upsert-deliberation-data body', JSON.stringify(req.body, null, 2))
+  const { email } = req.body
+
+  // Track calls for test assertions
+  if (!global.batchUpsertCalls) global.batchUpsertCalls = []
+  global.batchUpsertCalls.push(req.body)
+
+  // Also put on window for browser-side test access
+  // This is a server-side handler, so we need to track differently
+  // Tests should check the response or use socket mock alongside
+
+  if (email === 'batch-fail@email.com') {
+    res.status(500).json({ error: 'Failed to save data. Please try again.' })
+  } else {
+    // Simulate setting cookie (in real server, setUserCookie middleware does this)
+    if (email) {
+      res.cookie('synuser', { id: 'temp-user-123', email }, { path: '/', httpOnly: true })
+    }
+    res.json({ success: true, points: 1, whys: 1, ranks: 0 })
+  }
+}
+
 const expressMiddleWare = router => {
   router.use(express.json())
   router.use(express.urlencoded({ extended: true }))
   router.post('/sign/in', signInHandler)
   router.post('/sign/up', signUpHandler)
   router.post('/tempid', tempId)
+  router.post('/api/batch-upsert-deliberation-data', batchUpsertDeliberationData)
 }
 module.exports = expressMiddleWare
