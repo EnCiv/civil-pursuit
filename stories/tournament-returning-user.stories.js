@@ -47,7 +47,7 @@ export const ReturningUserCompleteFlow = {
     defaultValue: {
       userId: 'returning-user-456',
       discussionId: '5d0137260dacd06732a1d814',
-      dturn: { finalRound: 2 },
+      dturn: { finalRound: 2, group_size: 5 },
       round: 0,
       // User is authenticated (has id and email)
       user: { id: 'returning-user-456', email: 'returning@example.com' },
