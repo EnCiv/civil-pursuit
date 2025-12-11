@@ -58,6 +58,7 @@ export default function RerankStep(props) {
             data: {
               myPointById, // Only user's points (filtered from pointById)
               myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
+              preRankByParentId: data.preRankByParentId || {},
               postRankByParentId: data.postRankByParentId || {},
               whyRankByParentId: data.whyRankByParentId || {},
               groupIdsLists: groupings,
