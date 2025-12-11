@@ -17,6 +17,9 @@ export function DeliberationContextProvider(props) {
 
     // Load from localStorage if available
     if (storageAvailable && discussionId && userId) {
+      // Clean up any expired data first
+      LocalStorageManager.clearExpired()
+      
       const stored = LocalStorageManager.load(discussionId, userId)
       if (stored) {
         initialData = { ...initialData, ...stored }
