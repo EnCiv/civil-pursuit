@@ -33,9 +33,72 @@ const WebComponents = {
   Jsform: Jsform,
 }
 
-function buildChildren(steps, round) {
-  // don't do the Answer step after the first round
+/**
+ * Filter steps based on stepVisibility configuration
+ *
+ * Each step can have a `stepVisibility` object with the following properties:
+ * - `always` - Boolean, if `true` the step is always shown (overrides all other filters)
+ * - `rounds` - Array of round numbers where step appears (e.g., `[0]` for round 0 only)
+ * - `minParticipants` - Boolean, if `true` requires minimum participants (2 * group_size)
+ * - `hideWhenAllComplete` - Boolean, if `true` hide when all rounds are complete
+ *
+ * If `stepVisibility` is omitted, falls back to legacy hardcoded rules for backward compatibility.
+ * @deprecated The legacy filter logic will be removed in a future version. Please add stepVisibility to all steps.
+ *
+ * - `step` - The step object from iota configuration
+ * - `context` - Object containing `{ round, participants, finalRound, roundsStatus, groupSize }`
+ *
+ * Returns `true` if step should be shown, `false` otherwise
+ */
+function stepFilter(step, context) {
+  const { round, participants, finalRound, roundsStatus, groupSize } = context
+  const vis = step.stepVisibility
 
+  // If no stepVisibility, use legacy filter logic for backward compatibility
+  // @deprecated This fallback will be removed in a future version
+  if (!vis) {
+    const threshold = 2 * (groupSize || 10)
+    
+    // Not enough participants: show only Answer and Intermission
+    if (participants < threshold) {
+      return step.stepName === 'Answer' || step.stepName === 'Intermission'
+    }
+    
+    // All rounds complete: show only Intermission
+    if (round >= finalRound && roundsStatus[round] === 'complete') {
+      return step.stepName === 'Intermission'
+    }
+    
+    // During active rounds: hide Answer after round 0, check allowedRounds
+    if (step.stepName === 'Answer' && round > 0) return false
+    if (step.allowedRounds && !step.allowedRounds.includes(round)) return false
+    
+    return true
+  }
+
+  // New declarative stepVisibility logic
+  // Explicit always = always show (overrides other filters)
+  if (vis.always === true) return true
+
+  // Round filter
+  if (vis.rounds && !vis.rounds.includes(round)) return false
+
+  // Minimum participants (2 * group_size for deliberation)
+  if (vis.minParticipants === true) {
+    const threshold = 2 * (groupSize || 5)
+    if (participants < threshold) return false
+  }
+
+  // Hide when all complete
+  if (vis.hideWhenAllComplete) {
+    const allComplete = round >= finalRound && roundsStatus[round] === 'complete'
+    if (allComplete) return false
+  }
+
+  return true
+}
+
+function buildChildren(steps, round) {
   return steps.map(step => {
     const { webComponent, ...props } = step
     const LookupResult = WebComponents[webComponent]
@@ -129,12 +192,15 @@ function Tournament(props) {
     } // if uInfo not set yet, don't do anything
   }, [uInfo, finalRound])
 
-  const filteredSteps =
-    (data.participants || 0) < 2 * (data.dturn?.group_size || 10)
-      ? steps.filter(step => step.stepName === 'Answer' || step.stepName === 'Intermission')
-      : round < finalRound || (round === finalRound && roundsStatus[round] !== 'complete')
-      ? steps.filter(step => !((step.stepName === 'Answer' && round > 0) || (step.allowedRounds && !step.allowedRounds.includes(round)))) // don't show Answer step after the first round
-      : steps.filter(step => step.stepName === 'Intermission') // all rounds done, just go to intermission
+  const filteredSteps = steps.filter(step =>
+    stepFilter(step, {
+      round,
+      participants: data.participants || 0,
+      finalRound,
+      roundsStatus,
+      groupSize: dturn?.group_size,
+    })
+  )
   const stepInfo = filteredSteps.map(step => {
     return {
       name: step.stepName,
