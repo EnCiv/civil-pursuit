@@ -57,7 +57,11 @@ function CivilPursuitContent({ subject, description, steps, user, _id, minPartic
       const stepsList = steps || []
       const moreDetailsStep = stepsList.find(s => s.webComponent === 'Jsform' && s.name === 'moreDetails')
       if (moreDetailsStep?.uischema) upsert({ uischema: moreDetailsStep.uischema })
-    }, [steps, upsert])
+    }, [steps])
+    // user will be updated if user logs in or signs up
+    React.useEffect(() => {
+      upsert({ user })
+    }, [user])
   } catch (e) {
     // if context not available, skip
   }
