@@ -1,11 +1,11 @@
 // https://github.com/EnCiv/civil-pursuit/issues/152
 
-import React, { useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { Level } from 'react-accessible-headings'
 
-import { DeliberationContextProvider } from '../components/deliberation-context'
+import { DeliberationContextProvider, useDeliberationContext } from '../components/deliberation-context'
 import { DemInfoProvider, useDemInfoContext } from '../components/dem-info-context'
 
 import QuestionBox from '../components/question-box'
@@ -48,32 +48,41 @@ function buildChildren(steps) {
   })
 }
 
-function CivilPursuitContent({ subject, description, steps, user, _id, minParticipants, children }) {
+// This content is static it does not change as the user interacts with the app
+// but we don't want to keep rerendering it every time the context changes
+function CivilPursuitStaticContent(props) {
+  const { subject, description, _id, minParticipants, children } = props
   const classes = useStylesFromThemeFunction()
-  // upsert uischema into DemInfoContext
-  try {
-    const { upsert } = useDemInfoContext()
-    React.useEffect(() => {
-      const stepsList = steps || []
-      const moreDetailsStep = stepsList.find(s => s.webComponent === 'Jsform' && s.name === 'moreDetails')
-      if (moreDetailsStep?.uischema) upsert({ uischema: moreDetailsStep.uischema })
-    }, [steps])
-    // user will be updated if user logs in or signs up
-    React.useEffect(() => {
-      upsert({ user })
-    }, [user])
-  } catch (e) {
-    // if context not available, skip
-  }
-
   return (
     <div className={cx(classes.civilPursuit)}>
       <QuestionBox className={classes.question} subject={subject} description={description} discussionId={_id} minParticipants={minParticipants} />
       <Level>
-        <StepSlider className={classes.stepPadding} children={children} user={user} discussionId={_id} />
+        <StepSlider className={classes.stepPadding} children={children} discussionId={_id} />
       </Level>
     </div>
   )
+}
+
+function CivilPursuitContent({ subject, description, steps, user, _id, minParticipants, children }) {
+  // upsert uischema into DemInfoContext
+  // upsert user and userId into DeliberationContext if it changes (like after login)
+  try {
+    const { upsert } = useDemInfoContext()
+    const { upsert: upsertDeliberationContext } = useDeliberationContext()
+    useEffect(() => {
+      const stepsList = steps || []
+      const moreDetailsStep = stepsList.find(s => s.webComponent === 'Jsform' && s.name === 'moreDetails')
+      if (moreDetailsStep?.uischema) upsert({ uischema: moreDetailsStep.uischema })
+    }, [steps])
+    useEffect(() => {
+      if (user && user.id) upsertDeliberationContext({ user, userId: user.id })
+    }, [user])
+  } catch (e) {
+    // if context not available, skip
+  }
+  // don't keep rerendering EVERYTHING just because the context has changed. The above hooks change context, but not props to this component
+  const StaticContent = useRef(<CivilPursuitStaticContent subject={subject} description={description} steps={steps} _id={_id} minParticipants={minParticipants} children={children} />).current // render this only once
+  return StaticContent
 }
 
 function CivilPursuit(props) {
