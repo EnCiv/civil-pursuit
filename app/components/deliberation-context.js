@@ -1,5 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/blob/main/docs/late-sign-up-spec.md
-import React, { createContext, useCallback, useState, useRef, useEffect } from 'react'
+import React, { createContext, useCallback, useState, useRef, useEffect, useContext } from 'react'
 import setOrDeleteByMutatePath from '../lib/set-or-delete-by-mutate-path'
 import socketApiSubscribe from '../socket-apis/socket-api-subscribe'
 import LocalStorageManager from '../lib/local-storage-manager'
@@ -19,7 +19,7 @@ export function DeliberationContextProvider(props) {
     if (storageAvailable && discussionId && userId) {
       // Clean up any expired data first
       LocalStorageManager.clearExpired()
-      
+
       const stored = LocalStorageManager.load(discussionId, userId)
       if (stored) {
         initialData = { ...initialData, ...stored }
@@ -177,4 +177,9 @@ export function deriveReducedPointList(data, local) {
     return { ...data }
   }
   return data
+}
+
+export function useDeliberationContext() {
+  const ctx = useContext(DeliberationContext)
+  return ctx || null
 }
