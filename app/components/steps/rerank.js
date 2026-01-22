@@ -3,24 +3,26 @@
 // https://github.com/EnCiv/civil-pursuit/blob/main/docs/late-sign-up-spec.md
 
 'use strict'
-import React, { useState, useEffect, useRef, useContext, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { createUseStyles } from 'react-jss'
 import ReviewPoint from '../review-point'
-import DeliberationContext from '../deliberation-context'
+import { useDeliberationContext, useLocalStorageIfAvailable } from '../deliberation-context'
 import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 import StepIntro from '../step-intro'
 import { useRankByParentId } from './rank'
 
 export default function RerankStep(props) {
   const { onDone, round } = props
-  const { data, upsert } = useContext(DeliberationContext)
+  const { data, upsert } = useDeliberationContext()
+  const storageAvailable = useLocalStorageIfAvailable()
   const fetchDemInfo = useFetchDemInfo()
   const handleOnDone = ({ valid, value, delta }) => {
     let onNext
     if (delta) {
-      upsert({ postRankByParentId: { [delta.parentId]: delta } })
-      // TODO: Phase 5 - remove socket emit, data will be batch-upserted at intermission
-      window.socket.emit('upsert-rank', delta)
+      upsert({ postRankByParentId: { [delta.parentId]: delta }, roundCompleteData: { [round]: undefined } }) // clear any previous roundCompleteData for this round
+      if (!storageAvailable) {
+        window.socket.emit('upsert-rank', delta)
+      }
     }
     if (valid) {
       const shownStatementIds = {} // only change objects in shownStatementIds if they have changed
@@ -41,7 +43,7 @@ export default function RerankStep(props) {
         // Save final round state to context (and localStorage via context)
         // Store idRanks for intermission to use in batch-upsert
         upsert({
-          uInfo: { [round]: { shownStatementIds, groupings, finished: true } }, // only one upsert but it can have all the data
+          uInfo: { [round]: { shownStatementIds, groupings } }, // only one upsert but it can have all the data
           roundCompleteData: { [round]: { idRanks, groupings } },
         }) // two separate upserts will cause a timing error
 
@@ -72,6 +74,10 @@ export default function RerankStep(props) {
             if (response?.error) {
               console.error('batch-upsert failed:', response.error)
             } else {
+              // only after the data has been sent to the server and succeeded, mark the round as finished locally
+              upsert({
+                uInfo: { [round]: { finished: true } },
+              })
               console.log('batch-upsert succeeded:', response)
             }
           })
