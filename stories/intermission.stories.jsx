@@ -1,20 +1,21 @@
 // https://github.com/EnCiv/civil-pursuit/issues/137
 // https://github.com/EnCiv/civil-pursuit/blob/main/docs/late-sign-up-spec.md
 
-import React, { useState } from 'react'
+import React from 'react'
 import Intermission from '../app/components/intermission'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { DeliberationContextDecorator, onDoneDecorator, onDoneResult, buildApiDecorator, mockBatchUpsertDeliberationDataRoute } from './common'
+import { authFlowDecorator } from './mocks/auth-flow'
 import { within, userEvent, waitFor, expect } from '@storybook/test'
 
-const uInfoRound0Incomplete = { 0: { shownStatementIds: { 123: { rank: 0 }, 234: { rank: 0 } } } }
-const uInfoRound0Complete = { 0: { shownStatementIds: { 123: { rank: 1 }, 234: { rank: 0 } }, finished: true } }
-const uInfoRound1Incomplete = { 0: { shownStatementIds: { 123: { rank: 1 }, 234: { rank: 0 } } }, 1: { shownStatementIds: { 345: { rank: 0 }, 456: { rank: 0 } } } }
-const uInfoRound1Complete = { 0: { shownStatementIds: { 123: { rank: 1 }, 234: { rank: 0 } }, finished: true }, 1: { shownStatementIds: { 345: { rank: 1 }, 456: { rank: 0 } }, finished: true } }
+const round0Incomplete = { 0: undefined }
+const round0Complete = { 0: { idRanks: [] } }
+const round1Complete = { 0: { idRanks: [] }, 1: { idRanks: [] } }
+const round1Incomplete = { 0: { idRanks: [] }, 1: undefined }
 
 export default {
   component: Intermission,
   decorators: [
+    authFlowDecorator, // because batch-upsert is calling authenticateSocketIo
     onDoneDecorator,
     DeliberationContextDecorator,
     mockBatchUpsertDeliberationDataRoute, // Mock fetch for batch-upsert HTTP endpoint
@@ -31,11 +32,6 @@ export default {
       cb({ success: true, points: 1, whys: 1, ranks: 3 })
     }),
   ],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 export const Empty = {
@@ -44,17 +40,15 @@ export const Empty = {
 
 export const NoEmail = {
   args: {
-    defaultValue: { lastRound: 1, dturn: { finalRound: 1 } },
-    user: {},
-    round: 1,
+    defaultValue: { lastRound: 1, dturn: { group_size: 5, finalRound: 1 }, user: { id: '123456' }, userId: '123456' },
+    round: 0,
   },
   decorators: [],
 }
 
 export const NoEmailSuccess = {
   args: {
-    defaultValue: { lastRound: 1, dturn: { finalRound: 1 } },
-    user: {},
+    defaultValue: { lastRound: 1, participants: 40, dturn: { group_size: 5, finalRound: 1 }, user: { id: '123456' }, userId: '123456' },
     round: 1,
   },
   play: async ({ canvasElement }) => {
@@ -77,8 +71,7 @@ export const NoEmailSuccess = {
 
 export const NoEmailFail = {
   args: {
-    defaultValue: { lastRound: 1, dturn: { finalRound: 1 } },
-    user: {},
+    defaultValue: { lastRound: 1, participants: 40, dturn: { group_size: 5, finalRound: 1 }, user: { id: '123456' }, userId: '123456' },
     round: 1,
   },
   play: async ({ canvasElement }) => {
@@ -100,8 +93,7 @@ export const NoEmailFail = {
 }
 export const NoEmailMobile = {
   args: {
-    defaultValue: { lastRound: 1, dturn: { finalRound: 1 }, uInfo: uInfoRound0Incomplete },
-    user: {},
+    defaultValue: { lastRound: 1, participants: 40, dturn: { group_size: 5, finalRound: 1 }, user: { id: '123456' }, userId: '123456' },
     round: 1,
   },
   parameters: {
@@ -113,14 +105,13 @@ export const NoEmailMobile = {
 
 export const CanContinueToNextRound = {
   args: {
-    defaultValue: { lastRound: 2, dturn: { finalRound: 1 }, uInfo: uInfoRound1Complete, user: { id: '123456', email: 'user@email.com' } },
-
-    round: 1,
+    defaultValue: { lastRound: 2, participants: 40, dturn: { group_size: 5, finalRound: 1 }, roundCompleteData: round1Complete, user: { id: '123456', email: 'user@email.com' } },
+    round: 0,
   },
 }
 export const CanContinueToNextRoundOnDone = {
   args: {
-    defaultValue: { lastRound: 2, dturn: { finalRound: 2 }, uInfo: uInfoRound1Complete, user: { id: '123456', email: 'user@email.com' } },
+    defaultValue: { lastRound: 2, participants: 40, dturn: { group_size: 5, finalRound: 2 }, roundCompleteData: round1Complete, user: { id: '123456', email: 'user@email.com' } },
     round: 1,
   },
   play: async ({ canvasElement }) => {
@@ -147,23 +138,21 @@ export const CanContinueToNextRoundOnDone = {
 }
 export const CanNotFinishTheRound = {
   args: {
-    defaultValue: { lastRound: 1, dturn: { finalRound: 1 }, uInfo: uInfoRound0Incomplete, user: { id: '123456', email: 'user@email.com' } },
-
+    defaultValue: { lastRound: 1, participants: 41, dturn: { group_size: 5, finalRound: 1 }, roundCompleteData: round0Incomplete, user: { id: '123456', email: 'user@email.com' } },
     round: 0,
   },
 }
 
 export const CanNotContinueToNextRound = {
   args: {
-    defaultValue: { lastRound: 0, dturn: { finalRound: 1 }, uInfo: uInfoRound0Complete, user: { id: '123456', email: 'user@email.com' } },
-
+    defaultValue: { lastRound: 0, participants: 40, dturn: { group_size: 5, finalRound: 1 }, roundCompleteData: round0Complete, user: { id: '123456', email: 'user@email.com' } },
     round: 0,
   },
 }
 
 export const DiscussionFinished = {
   args: {
-    defaultValue: { discussionId: '123456', lastRound: 1, dturn: { finalRound: 1 }, uInfo: uInfoRound1Complete, user: { id: '123456', email: 'user@email.com' } },
+    defaultValue: { discussionId: '123456', lastRound: 1, participants: 40, dturn: { group_size: 5, finalRound: 1 }, roundCompleteData: round1Complete, user: { id: '123456', email: 'user@email.com' } },
     round: 1,
   },
   decorators: [
@@ -192,8 +181,8 @@ export const TemporaryUserRound1Complete = {
       user: { id: 'temp-user-123' }, // Has ID but no email (temporary user)
       userId: 'temp-user-123',
       lastRound: 1,
-      dturn: { finalRound: 1 },
-      uInfo: uInfoRound0Complete,
+      dturn: { group_size: 5, finalRound: 1 },
+      roundCompleteData: round0Complete,
       pointById: { 1: { _id: '1', subject: 'Test Point', description: 'Test Description', userId: 'temp-user-123' } },
       myWhyByCategoryByParentId: { most: { 1: { _id: '2', subject: 'Why', description: 'Because', userId: 'temp-user-123', category: 'most' } } },
       postRankByParentId: { 1: { _id: '3', category: 'most', parentId: '1', userId: 'temp-user-123' } },
@@ -210,8 +199,8 @@ export const TemporaryUserBatchUpsertSuccess = {
       user: { id: 'temp-user-123' }, // Has ID but no email (temporary user)
       userId: 'temp-user-123',
       lastRound: 1,
-      dturn: { finalRound: 1 },
-      uInfo: uInfoRound0Complete,
+      dturn: { group_size: 5, finalRound: 1 },
+      roundCompleteData: round0Complete,
       pointById: { 1: { _id: '1', subject: 'Test Point', description: 'Test Description', userId: 'temp-user-123' } },
       myWhyByCategoryByParentId: { most: { 1: { _id: '2', subject: 'Why', description: 'Because', userId: 'temp-user-123', category: 'most' } } },
       postRankByParentId: { 1: { _id: '3', category: 'most', parentId: '1', userId: 'temp-user-123' } },
@@ -253,8 +242,8 @@ export const TemporaryUserBatchUpsertFailure = {
       userId: 'temp-user-123',
       user: { id: 'temp-user-123' }, // Has ID but no email (temporary user)
       lastRound: 1,
-      dturn: { finalRound: 1 },
-      uInfo: uInfoRound0Complete,
+      dturn: { group_size: 5, finalRound: 1 },
+      roundCompleteData: round0Complete,
       pointById: { 1: { _id: '1', subject: 'Test Point', description: 'Test Description', userId: 'temp-user-123' } },
       myWhyByCategoryByParentId: { most: { 1: { _id: '2', subject: 'Why', description: 'Because', userId: 'temp-user-123', category: 'most' } } },
       postRankByParentId: { 1: { _id: '3', category: 'most', parentId: '1', userId: 'temp-user-123' } },
@@ -290,8 +279,8 @@ export const TemporaryUserInvalidEmail = {
       user: { id: 'temp-user-123' },
       userId: 'temp-user-123',
       lastRound: 1,
-      dturn: { finalRound: 1 },
-      uInfo: uInfoRound0Complete,
+      dturn: { group_size: 5, finalRound: 1 },
+      roundCompleteData: round0Complete,
     },
     round: 0,
   },
