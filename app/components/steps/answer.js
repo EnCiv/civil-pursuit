@@ -2,12 +2,12 @@
 // https://github.com/EnCiv/civil-pursuit/blob/main/docs/late-sign-up-spec.md
 
 'use strict'
-import React, { useState, useContext, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import cx from 'classnames'
 import StepIntro from '../step-intro'
 import WhyInput from '../why-input'
 import { createUseStyles } from 'react-jss'
-import { DeliberationContext, useLocalStorageIfAvailable } from '../deliberation-context'
+import { useDeliberationContext, useLocalStorageIfAvailable } from '../deliberation-context'
 import { useAuth } from 'civil-client'
 import TermsAgreement from '../terms-agreement'
 import ObjectId from 'bson-objectid'
@@ -16,15 +16,17 @@ import { isEqual } from 'lodash'
 // Step wrapper component: handles fetching, state, and interaction with context
 export default function AnswerStep(props) {
   const { onDone = () => {}, round, ...otherProps } = props
-  const { data, upsert } = useContext(DeliberationContext)
+  const { data, upsert } = useDeliberationContext()
   const user = data.user // Get user from deliberation context
   const storageAvailable = useLocalStorageIfAvailable()
 
   // Fetch initial data and update context
   useEffect(() => {
     const shownStatementIds = Object.keys(data?.uInfo?.[round]?.shownStatementIds || {})
+    if (shownStatementIds.length > 1 && Object.keys(data.pointById || {}).length === shownStatementIds.length) return // already have all the shown statements
     if (shownStatementIds.length <= 0) return
     window.socket.emit('get-points-of-ids', shownStatementIds, ({ points, myWhys }) => {
+      console.log('Fetched points and myWhys for AnswerStep', { points, myWhys })
       upsert({
         pointById: (points || []).reduce((pById, point) => ((pById[point._id] = point), pById), {}),
         myWhyByCategoryByParentId: (myWhys || []).reduce((myWhyByCategoryByParentId, why) => {
