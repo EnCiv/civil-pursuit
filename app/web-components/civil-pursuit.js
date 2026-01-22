@@ -5,7 +5,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { Level } from 'react-accessible-headings'
 
-import { DeliberationContextProvider, useDeliberationContext } from '../components/deliberation-context'
+import { DeliberationContextProvider } from '../components/deliberation-context'
 import { DemInfoProvider, useDemInfoContext } from '../components/dem-info-context'
 
 import QuestionBox from '../components/question-box'
@@ -64,22 +64,6 @@ function CivilPursuitStaticContent(props) {
 }
 
 function CivilPursuitContent({ subject, description, steps, user, _id, minParticipants, children }) {
-  // upsert uischema into DemInfoContext
-  // upsert user and userId into DeliberationContext if it changes (like after login)
-  try {
-    const { upsert } = useDemInfoContext()
-    const { upsert: upsertDeliberationContext } = useDeliberationContext()
-    useEffect(() => {
-      const stepsList = steps || []
-      const moreDetailsStep = stepsList.find(s => s.webComponent === 'Jsform' && s.name === 'moreDetails')
-      if (moreDetailsStep?.uischema) upsert({ uischema: moreDetailsStep.uischema })
-    }, [steps])
-    useEffect(() => {
-      if (user && user.id) upsertDeliberationContext({ user, userId: user.id })
-    }, [user])
-  } catch (e) {
-    // if context not available, skip
-  }
   // don't keep rerendering EVERYTHING just because the context has changed. The above hooks change context, but not props to this component
   const StaticContent = useRef(<CivilPursuitStaticContent subject={subject} description={description} steps={steps} _id={_id} minParticipants={minParticipants} children={children} />).current // render this only once
   return StaticContent
@@ -88,11 +72,18 @@ function CivilPursuitContent({ subject, description, steps, user, _id, minPartic
 function CivilPursuit(props) {
   const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, participants, minParticipants, ...otherProps } = props
   const [children] = useState(buildChildren(steps)) // just do this once so we don't get rerenders. steps don't change so there's no need for useMemo and dependencies
-
+  let moreDetailsStep = steps.find(s => s.webComponent === 'Jsform' && s.name === 'moreDetails')
+  if (!moreDetailsStep) {
+    const tournamentStep = steps.find(s => s.webComponent === 'Tournament')
+    if (tournamentStep) {
+      moreDetailsStep = tournamentStep.steps.find(s => s.webComponent === 'Jsform' && s.name === 'moreDetails')
+    }
+  }
+  const uiSchema = moreDetailsStep?.uischema
   return (
     <DeliberationContextProvider defaultValue={{ discussionId: _id, user, userId: user?.id, participants, subject, description, ...otherProps }}>
-      <DemInfoProvider>
-        <CivilPursuitContent subject={subject} description={description} steps={steps} user={user} _id={_id} minParticipants={minParticipants} children={children} />
+      <DemInfoProvider demInfoProviderDefault={{ uiSchema }}>
+        <CivilPursuitStaticContent subject={subject} description={description} _id={_id} minParticipants={minParticipants} children={children} />
       </DemInfoProvider>
     </DeliberationContextProvider>
   )
