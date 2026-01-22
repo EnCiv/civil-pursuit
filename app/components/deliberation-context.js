@@ -10,7 +10,7 @@ export default DeliberationContext
 export function DeliberationContextProvider(props) {
   const local = useRef({}).current // can't be in deriver becasue "Error: Rendered more hooks than during the previous render."
   const { defaultValue = {} } = props
-  const { discussionId, userId } = defaultValue
+  const { discussionId, userId, user } = defaultValue
   const [storageAvailable] = useState(() => defaultValue.storageAvailable ?? LocalStorageManager.isAvailable()) // defaultValue.storageAvailable is for testing
   const [data, setData] = useState(() => {
     let initialData = { reducedPointList: [], ...defaultValue }
@@ -50,8 +50,10 @@ export function DeliberationContextProvider(props) {
   useEffect(() => {
     if (!discussionId) return
     // steps are looking for userId in the context, if the user is not logged in to start, context needs to be updated
-    upsert({ discussionId, userId })
+    upsert({ discussionId, userId, user })
+  }, [discussionId, upsert, userId, user])
 
+  useEffect(() => {
     function onSubscribeHandler(data) {
       let currentRound = 0
       if (data.uInfo) {
@@ -75,7 +77,7 @@ export function DeliberationContextProvider(props) {
       console.log('Reconnected to socket')
       socketApiSubscribe('subscribe-deliberation', discussionId, onSubscribeHandler, onUpdateHandler)
     })
-  }, [discussionId, upsert, userId])
+  }, [discussionId, userId])
 
   return <DeliberationContext.Provider value={{ data, upsert, storageAvailable }}>{props.children}</DeliberationContext.Provider>
 }
