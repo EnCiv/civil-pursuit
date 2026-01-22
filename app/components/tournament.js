@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/151
 
-import React, { useState, useEffect, useContext, useReducer } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
@@ -15,7 +15,7 @@ import WhyStep from './steps/why'
 import CompareReasons from './steps/compare-whys'
 import Intermission from './intermission'
 import Jsform from './jsform'
-import DeliberationContext from './deliberation-context'
+import { useDeliberationContext } from './deliberation-context'
 import Conclusion from './steps/conclusion'
 
 const WebComponents = {
@@ -43,10 +43,10 @@ const WebComponents = {
  * - `hideWhenAllComplete` - Boolean, if `true` hide when all rounds are complete
  *
  * If `stepVisibility` is omitted, falls back to legacy hardcoded rules for backward compatibility.
- * @deprecated The legacy filter logic will be removed in a future version. Please add stepVisibility to all steps.
+ * The legacy filter logic will be removed in a future version. Please add stepVisibility to all steps.
  *
- * - `step` - The step object from iota configuration
- * - `context` - Object containing `{ round, participants, finalRound, roundsStatus, groupSize }`
+ * - `step` {object} - The step object from iota configuration
+ * - `context` {object} - Object containing `{ round, participants, finalRound, roundsStatus, groupSize }`
  *
  * Returns `true` if step should be shown, `false` otherwise
  */
@@ -58,21 +58,21 @@ function stepFilter(step, context) {
   // @deprecated This fallback will be removed in a future version
   if (!vis) {
     const threshold = 2 * (groupSize || 10)
-    
+
     // Not enough participants: show only Answer and Intermission
     if (participants < threshold) {
       return step.stepName === 'Answer' || step.stepName === 'Intermission'
     }
-    
+
     // All rounds complete: show only Intermission
     if (round >= finalRound && roundsStatus[round] === 'complete') {
       return step.stepName === 'Intermission'
     }
-    
+
     // During active rounds: hide Answer after round 0, check allowedRounds
     if (step.stepName === 'Answer' && round > 0) return false
     if (step.allowedRounds && !step.allowedRounds.includes(round)) return false
-    
+
     return true
   }
 
@@ -158,7 +158,9 @@ function reducer(state, action) {
       const clearContextForNextRound = Object.keys(action.data).reduce((contextData, key) => ((contextData[key] = undefined), contextData), {})
       ;['discussionId', 'user', 'userId', 'participants', 'dturn', 'uInfo', 'lastRound'].forEach(key => delete clearContextForNextRound[key])
       clearContextForNextRound.round = nextRound // set the next round to clear context for
-      setTimeout(() => action.upsert(clearContextForNextRound)) // can't update context while rendering this component
+      setTimeout(() => {
+        action.upsert(clearContextForNextRound)
+      }) // can't update context while rendering this component
       return { ...state, round: nextRound, roundsStatus, stepComponents: undefined }
     }
     case 'updateRounds': {
@@ -174,7 +176,7 @@ function reducer(state, action) {
 function Tournament(props) {
   const { className, steps = [], onDone, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
-  const { data, upsert } = useContext(DeliberationContext)
+  const { data, upsert } = useDeliberationContext()
   const { uInfo, dturn } = data
   const { finalRound = 0 } = dturn || {}
   const [prev] = useState({ uInfoSet: !!data.uInfo })
@@ -192,15 +194,8 @@ function Tournament(props) {
     } // if uInfo not set yet, don't do anything
   }, [uInfo, finalRound])
 
-  const filteredSteps = steps.filter(step =>
-    stepFilter(step, {
-      round,
-      participants: data.participants || 0,
-      finalRound,
-      roundsStatus,
-      groupSize: dturn?.group_size,
-    })
-  )
+  const stepContext = { round, participants: data.participants || 0, finalRound, roundsStatus, groupSize: dturn?.group_size }
+  const filteredSteps = steps.filter(step => stepFilter(step, stepContext))
   const stepInfo = filteredSteps.map(step => {
     return {
       name: step.stepName,
@@ -211,7 +206,6 @@ function Tournament(props) {
     // if state.round is undefined, round will be 0 but don't build children yet
     state.stepComponents = buildChildren(filteredSteps, round)
   }
-
   return (
     <div className={cx(classes.tournament, className)}>
       <RoundTracker className={classes.roundTracker} roundsStatus={roundsStatus} />
