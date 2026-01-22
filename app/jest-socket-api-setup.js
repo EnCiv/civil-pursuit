@@ -63,3 +63,10 @@ export default async function jestSocketApiSetup(userId, handleApiPairs) {
     })
   })
 }
+
+export function jestSocketApiTeardown() {
+  if (window.socket) {
+    window.socket.close()
+    delete window.socket
+  }
+}
