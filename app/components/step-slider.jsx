@@ -152,13 +152,13 @@ export const StepSlider = props => {
       ...children[currentStep].props,
       key: currentStep,
       onDone: ({ valid, value, onNext }) => {
+        if (valid && onNext) _this.onNexts[currentStep] = onNext // save onNext for later use
+        else delete _this.onNexts[currentStep] // delete onNext if not valid
         if (valid && value === 'skip') {
           dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: true } })
           dispatch({ type: 'increment' })
         } else if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
         else dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: value === 'skip' } })
-        if (valid && onNext) _this.onNexts[currentStep] = onNext // save onNext for later use
-        else delete _this.onNexts[currentStep] // delete onNext if not valid
       },
     })
   }
