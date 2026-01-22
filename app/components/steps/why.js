@@ -1,8 +1,8 @@
 //https://github.com/EnCiv/civil-pursuit/issues/103
 //https://github.com/EnCiv/civil-pursuit/issues/214
 
-import React, { useEffect, useContext, useRef, useState } from 'react'
-import DeliberationContext, { useLocalStorageIfAvailable } from '../deliberation-context'
+import React, { useEffect, useRef, useState } from 'react'
+import { useDeliberationContext, useLocalStorageIfAvailable } from '../deliberation-context'
 import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 import WhyInput from '../why-input'
 import { H, Level } from 'react-accessible-headings'
@@ -12,7 +12,7 @@ import { isEqual } from 'lodash'
 import StepIntro from '../step-intro'
 
 export default function WhyStep(props) {
-  const { data, upsert } = useContext(DeliberationContext)
+  const { data, upsert } = useDeliberationContext()
   const { category, onDone, ...otherProps } = props
   const storageAvailable = useLocalStorageIfAvailable()
   const fetchDemInfo = useFetchDemInfo()

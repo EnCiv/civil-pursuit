@@ -2,12 +2,12 @@
 // https://github.com/EnCiv/civil-pursuit/issues/191
 // https://github.com/EnCiv/civil-pursuit/issues/199
 
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import ObjectId from 'bson-objectid'
 
-import DeliberationContext, { useLocalStorageIfAvailable } from '../deliberation-context.js'
+import { useDeliberationContext, useLocalStorageIfAvailable } from '../deliberation-context.js'
 import Point from '../point'
 import PointGroup from '../point-group' // should be using PointGroup but it needs to support children
 import { ModifierButton } from '../button'
@@ -34,7 +34,7 @@ const minSelectionsTable = {
 
 export default function RankStep(props) {
   const { onDone, round, ...otherProps } = props
-  const { data, upsert } = useContext(DeliberationContext)
+  const { data, upsert } = useDeliberationContext()
   const storageAvailable = useLocalStorageIfAvailable()
 
   function handleOnDone({ valid, value, delta }) {
