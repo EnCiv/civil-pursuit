@@ -13,6 +13,7 @@ import Ranks from '../models/ranks'
 import Jsforms from '../models/jsforms'
 import { User } from 'civil-server'
 import { finishRound as dturnFinishRound, getDiscussionStatus, insertStatementId } from '../dturn/dturn'
+import sendPassword from 'civil-server/dist/socket-apis/send-password.js'
 
 /**
  * HTTP Route version of batch-upsert-deliberation-data
@@ -107,6 +108,30 @@ export async function batchUpsertHandler(req, res, next) {
 
         // Set req.user so setUserCookie middleware will update the cookie with email
         req.user = { _id: userId, email }
+
+        // Send password reset email after successfully associating email
+        // Create a mock socket context for the send-password API
+        const mockSocket = {
+          handshake: {
+            headers: {
+              host: req.headers.host,
+            },
+          },
+        }
+
+        // Call send-password with mock socket context
+        await new Promise((resolve, reject) => {
+          sendPassword.call(mockSocket, email, req.originalUrl || '/', error => {
+            if (error) {
+              logger.error('batch-upsert-deliberation-data route: Error sending password email:', { userId, email }, error)
+              // Don't fail the entire request if email send fails
+              resolve()
+            } else {
+              console.log('batch-upsert-deliberation-data route: Password reset email sent to', email)
+              resolve()
+            }
+          })
+        })
       } catch (error) {
         console.error('batch-upsert-deliberation-data route: Error updating user email:', error.message || error)
         return sendError(500, 'Failed to associate email with user')
