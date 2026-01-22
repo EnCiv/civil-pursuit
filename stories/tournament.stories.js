@@ -1164,7 +1164,7 @@ export const BatchUpsertInteractionTest = {
     console.log('  ✓ batch-upsert data structure verified')
     // need to wait for the final message to appear and all rendering before ending the test
     await waitFor(() => {
-      const finalMessage = canvas.getByText(/Success! Your data has been saved and we've sent a password email to success@email.com/)
+      const finalMessage = canvas.getByText(/Success! Your data has been saved and we've sent a password reset email to success@email.com/)
       expect(finalMessage).toBeInTheDocument()
     })
     /*** 
