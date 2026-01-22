@@ -26,7 +26,6 @@ export default function AnswerStep(props) {
     if (shownStatementIds.length > 1 && Object.keys(data.pointById || {}).length === shownStatementIds.length) return // already have all the shown statements
     if (shownStatementIds.length <= 0) return
     window.socket.emit('get-points-of-ids', shownStatementIds, ({ points, myWhys }) => {
-      console.log('Fetched points and myWhys for AnswerStep', { points, myWhys })
       upsert({
         pointById: (points || []).reduce((pById, point) => ((pById[point._id] = point), pById), {}),
         myWhyByCategoryByParentId: (myWhys || []).reduce((myWhyByCategoryByParentId, why) => {
