@@ -130,7 +130,7 @@ async function insertStatementId(discussionId, userId, statementId) {
 
   // Only run updates if participants or round changes
   const participants = Object.keys(Discussions[discussionId].Uitems).length
-  const lastRound = Discussions[discussionId].lastRound ?? Object.keys(Discussions[discussionId].ShownStatements).length - 1
+  const lastRound = Discussions[discussionId].lastRound ?? Discussions[discussionId].ShownStatements.length - 1
 
   if (lastRound != Discussions[discussionId].lastRound || participants != Discussions[discussionId].participants) {
     Discussions[discussionId].participants = participants
@@ -225,6 +225,10 @@ async function getStatementIds(discussionId, round, userId) {
   if (round > Discussions[discussionId].finalRound) return undefined
 
   const dis = Discussions[discussionId]
+  if (round > 0 && !dis.Uitems[userId]?.[round - 1]?.finished) {
+    console.error(`User ${userId} called getStatementIds but has not finished round ${round - 1} in discussion ${discussionId}`)
+    return undefined
+  }
   const statementIds = []
   let authoredId // id of statement the user authored -- if the shownGroup is incomplete
   if (dis.Uitems?.[userId]?.[round]) {
@@ -413,7 +417,7 @@ function deltaShownItemsRank(discussionId, round, statementId, delta) {
   const dis = Discussions[discussionId]
   const sitem = dis.ShownStatements[round].find(i => statementId === i.statementId)
   if (!sitem) {
-    console.error("incrementShownItemsRank couldn't find", statementId, 'for round', round)
+    console.error("deltaShownItemsRank couldn't find", statementId, 'for round', round)
     return
   }
   sitem.rank += delta
@@ -717,7 +721,7 @@ async function reconstructDiscussionFromUInfo(discussionId) {
   }
 
   // Set lastRound but don't send updates
-  Discussions[discussionId]['lastRound'] = Discussions[discussionId].ShownStatements.length
+  Discussions[discussionId]['lastRound'] = Discussions[discussionId].ShownStatements.length - 1
 }
 
 export async function getConclusionIds(discussionId) {
