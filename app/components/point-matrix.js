@@ -47,8 +47,8 @@ function PointMatrix(props) {
           <div className={classes.response}>
             <H>Response</H>
           </div>
-          <div className={cx(classes.before, classes.cellRating)}>Rating Before</div>
-          <div className={cx(classes.after, classes.cellRating)}>Rating After</div>
+          <div className={cx(classes.pre, classes.cellRating)}>Rating Before</div>
+          <div className={cx(classes.post, classes.cellRating)}>Rating After</div>
         </div>
 
         <Level>
@@ -61,10 +61,10 @@ function PointMatrix(props) {
                   <Point point={entry.point} vState="secondary" />
                 </div>
                 <div className={cx(classes.cell, classes.cellRating)}>
-                  <StatusBadge status={getRatingStatus(entry.before)} name={formatRatingDisplay(entry.before)} className={classes.statusBadgeText} />
+                  <StatusBadge status={getRatingStatus(entry.pre)} name={formatRatingDisplay(entry.pre)} className={classes.statusBadgeText} />
                 </div>
                 <div className={cx(classes.cell, classes.cellRating, isLastRow && classes.cellRatingLast)}>
-                  <StatusBadge status={getRatingStatus(entry.after)} name={formatRatingDisplay(entry.after)} className={classes.statusBadgeText} />
+                  <StatusBadge status={getRatingStatus(entry.post)} name={formatRatingDisplay(entry.post)} className={classes.statusBadgeText} />
                 </div>
               </div>
             )
@@ -141,7 +141,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       fontSize: '1.2rem',
     },
   },
-  before: {
+  pre: {
     padding: '0 2.5rem',
     margin: '0rem',
     display: 'flex',
@@ -159,7 +159,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       fontSize: '1rem',
     },
   },
-  after: {
+  post: {
     padding: '0 2.5rem',
     margin: '0rem',
     display: 'flex',

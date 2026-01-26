@@ -57,12 +57,80 @@ export default async function getActivity(discussionId, cb) {
       })
     }
 
-    // Return the subject, description, user response, and rank counts
+    // Get user's ranks for all points in the discussion
+    const userRanks = await Ranks.aggregate([
+      {
+        $match: {
+          discussionId: discussionId,
+          userId: userId,
+          stage: { $in: ['pre', 'post'] },
+        },
+      },
+      {
+        $group: {
+          _id: { parentId: '$parentId', round: '$round' },
+          ranks: {
+            $push: {
+              stage: '$stage',
+              category: '$category',
+            },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: '$_id.round',
+          entries: {
+            $push: {
+              parentId: '$_id.parentId',
+              ranks: '$ranks',
+            },
+          },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]).toArray()
+
+    // Get the points for user ranks and format the result by rounds
+    const allPointIds = []
+    userRanks.forEach(round => {
+      round.entries.forEach(entry => {
+        allPointIds.push(new ObjectId(entry.parentId))
+      })
+    })
+
+    const points = allPointIds.length > 0 ? await Points.find({ _id: { $in: allPointIds } }).toArray() : []
+
+    const userRanksByRound = userRanks.map(round => {
+      return round.entries
+        .map(entry => {
+          const point = points.find(p => p._id.toString() === entry.parentId)
+          if (!point) return null
+
+          const preRank = entry.ranks.find(r => r.stage === 'pre')
+          const postRank = entry.ranks.find(r => r.stage === 'post')
+
+          return {
+            point: {
+              subject: point.subject,
+              description: point.description,
+            },
+            pre: preRank ? preRank.category : null,
+            post: postRank ? postRank.category : null,
+          }
+        })
+        .filter(Boolean)
+    })
+
+    // Return the subject, description, user response, rank counts, and user ranks organized by rounds
     const result = {
       subject: iota.subject || '',
       description: iota.description || '',
       userResponse: userResponse || null,
       rankCounts: rankCounts,
+      userRanks: userRanksByRound,
     }
 
     cb(result)

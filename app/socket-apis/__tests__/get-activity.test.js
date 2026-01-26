@@ -152,6 +152,123 @@ test('Return data from in-progress discussion.', async () => {
   expect(leastRanks).toHaveLength(7)
   expect(neutralRanks).toHaveLength(5)
 
+  // Create additional points and user ranks to test userRanks functionality
+  const testPoint1 = {
+    _id: new ObjectId(),
+    subject: 'Test Point 1',
+    description: 'Test point for ranking',
+    parentId: DISCUSSION_ID2,
+    userId: new ObjectId().toString(),
+    category: 'support',
+    round: 1,
+  }
+
+  const testPoint2 = {
+    _id: new ObjectId(),
+    subject: 'Test Point 2',
+    description: 'Another test point for ranking',
+    parentId: DISCUSSION_ID2,
+    userId: new ObjectId().toString(),
+    category: 'support',
+    round: 1,
+  }
+
+  await Points.insertMany([testPoint1, testPoint2])
+
+  // Create points for round 2 to test multi-round functionality
+  const testPoint3 = {
+    _id: new ObjectId(),
+    subject: 'Test Point 3 Round 2',
+    description: 'Round 2 test point for ranking',
+    parentId: DISCUSSION_ID2,
+    userId: new ObjectId().toString(),
+    category: 'support',
+    round: 2,
+  }
+
+  const testPoint4 = {
+    _id: new ObjectId(),
+    subject: 'Test Point 4 Round 2',
+    description: 'Another round 2 test point',
+    parentId: DISCUSSION_ID2,
+    userId: new ObjectId().toString(),
+    category: 'support',
+    round: 2,
+  }
+
+  await Points.insertMany([testPoint3, testPoint4])
+
+  // Create user ranks for these points (both round 1 and round 2)
+  const userRanksData = [
+    // Round 1 ranks
+    {
+      _id: new ObjectId(),
+      parentId: testPoint1._id.toString(),
+      userId: userId,
+      discussionId: DISCUSSION_ID2,
+      round: 1,
+      stage: 'pre',
+      category: 'most',
+    },
+    {
+      _id: new ObjectId(),
+      parentId: testPoint1._id.toString(),
+      userId: userId,
+      discussionId: DISCUSSION_ID2,
+      round: 1,
+      stage: 'post',
+      category: 'least',
+    },
+    {
+      _id: new ObjectId(),
+      parentId: testPoint2._id.toString(),
+      userId: userId,
+      discussionId: DISCUSSION_ID2,
+      round: 1,
+      stage: 'pre',
+      category: 'neutral',
+    },
+    // Round 2 ranks
+    {
+      _id: new ObjectId(),
+      parentId: testPoint3._id.toString(),
+      userId: userId,
+      discussionId: DISCUSSION_ID2,
+      round: 2,
+      stage: 'pre',
+      category: 'least',
+    },
+    {
+      _id: new ObjectId(),
+      parentId: testPoint3._id.toString(),
+      userId: userId,
+      discussionId: DISCUSSION_ID2,
+      round: 2,
+      stage: 'post',
+      category: 'most',
+    },
+    {
+      _id: new ObjectId(),
+      parentId: testPoint4._id.toString(),
+      userId: userId,
+      discussionId: DISCUSSION_ID2,
+      round: 2,
+      stage: 'pre',
+      category: 'most',
+    },
+    {
+      _id: new ObjectId(),
+      parentId: testPoint4._id.toString(),
+      userId: userId,
+      discussionId: DISCUSSION_ID2,
+      round: 2,
+      stage: 'post',
+      category: 'neutral',
+    },
+  ]
+
+  await Ranks.insertMany(userRanksData)
+
   await getActivity.call(synuser, DISCUSSION_ID2, cb)
 
   expect(cb).toHaveBeenCalledTimes(1)
@@ -180,5 +297,45 @@ test('Return data from in-progress discussion.', async () => {
       leasts: 7,
       neutrals: 5,
     },
+    userRanks: [
+      // Round 1 entries
+      expect.arrayContaining([
+        expect.objectContaining({
+          point: expect.objectContaining({
+            subject: 'Test Point 1',
+            description: 'Test point for ranking',
+          }),
+          pre: 'most',
+          post: 'least',
+        }),
+        expect.objectContaining({
+          point: expect.objectContaining({
+            subject: 'Test Point 2',
+            description: 'Another test point for ranking',
+          }),
+          pre: 'neutral',
+          post: null,
+        }),
+      ]),
+      // Round 2 entries
+      expect.arrayContaining([
+        expect.objectContaining({
+          point: expect.objectContaining({
+            subject: 'Test Point 3 Round 2',
+            description: 'Round 2 test point for ranking',
+          }),
+          pre: 'least',
+          post: 'most',
+        }),
+        expect.objectContaining({
+          point: expect.objectContaining({
+            subject: 'Test Point 4 Round 2',
+            description: 'Another round 2 test point',
+          }),
+          pre: 'most',
+          post: 'neutral',
+        }),
+      ]),
+    ],
   })
 })

@@ -9,24 +9,24 @@ const sampleData = [
       subject: 'Inequality',
       description: 'Inequality can hinder economic growth and stability',
     },
-    before: 'neutral',
-    after: 'most',
+    pre: 'neutral',
+    post: 'most',
   },
   {
     point: {
       subject: 'Separation of wealth',
       description: 'Inequality can hinder economic growth and stability',
     },
-    before: 'neutral',
-    after: 'most',
+    pre: 'neutral',
+    post: 'most',
   },
   {
     point: {
       subject: 'Equality is a human right',
       description: 'Inequality can hinder economic growth and stability',
     },
-    before: 'most',
-    after: 'least',
+    pre: 'most',
+    post: 'least',
   },
 ]
 
@@ -56,16 +56,16 @@ export const fiveEntries = {
           subject: 'Economic distribution',
           description: 'How wealth is distributed impacts society',
         },
-        before: 'neutral',
-        after: 'most',
+        pre: 'neutral',
+        post: 'most',
       },
       {
         point: {
           subject: 'Fair taxation',
           description: 'Progressive taxation can reduce inequality',
         },
-        before: 'least',
-        after: 'neutral',
+        pre: 'least',
+        post: 'neutral',
       },
     ],
   },
@@ -74,15 +74,15 @@ export const fiveEntries = {
 export const allRatingCombinations = {
   args: {
     entries: [
-      { point: { subject: 'Most to Most', description: '' }, before: 'most', after: 'most' },
-      { point: { subject: 'Most to Neutral', description: '' }, before: 'most', after: 'neutral' },
-      { point: { subject: 'Most to Least', description: '' }, before: 'most', after: 'least' },
-      { point: { subject: 'Neutral to Most', description: '' }, before: 'neutral', after: 'most' },
-      { point: { subject: 'Neutral to Neutral', description: '' }, before: 'neutral', after: 'neutral' },
-      { point: { subject: 'Neutral to Least', description: '' }, before: 'neutral', after: 'least' },
-      { point: { subject: 'Least to Most', description: '' }, before: 'least', after: 'most' },
-      { point: { subject: 'Least to Neutral', description: '' }, before: 'least', after: 'neutral' },
-      { point: { subject: 'Least to Least', description: '' }, before: 'least', after: 'least' },
+      { point: { subject: 'Most to Most', description: '' }, pre: 'most', post: 'most' },
+      { point: { subject: 'Most to Neutral', description: '' }, pre: 'most', post: 'neutral' },
+      { point: { subject: 'Most to Least', description: '' }, pre: 'most', post: 'least' },
+      { point: { subject: 'Neutral to Most', description: '' }, pre: 'neutral', post: 'most' },
+      { point: { subject: 'Neutral to Neutral', description: '' }, pre: 'neutral', post: 'neutral' },
+      { point: { subject: 'Neutral to Least', description: '' }, pre: 'neutral', post: 'least' },
+      { point: { subject: 'Least to Most', description: '' }, pre: 'least', post: 'most' },
+      { point: { subject: 'Least to Neutral', description: '' }, pre: 'least', post: 'neutral' },
+      { point: { subject: 'Least to Least', description: '' }, pre: 'least', post: 'least' },
     ],
   },
 }

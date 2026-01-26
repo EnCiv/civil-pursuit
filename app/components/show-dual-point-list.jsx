@@ -72,7 +72,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     paddingLeft: '1.75rem',
     margin: '0rem',
     backgroundColor: theme.colors.lightSuccess,
-    fontSize: '1.7rem', // Default font size
+    fontSize: '1.4rem', // Default font size
     wordWrap: 'break-word',
     overflow: 'hidden',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
@@ -85,7 +85,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     paddingLeft: '1.75rem',
     margin: '0rem',
     backgroundColor: theme.colors.statusBadgeProgressBackground,
-    fontSize: '1.7rem', // Default font size
+    fontSize: '1.4rem', // Default font size
     wordWrap: 'break-word',
     overflow: 'hidden',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
