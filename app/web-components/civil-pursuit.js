@@ -50,23 +50,19 @@ function buildChildren(steps) {
 
 // This content is static it does not change as the user interacts with the app
 // but we don't want to keep rerendering it every time the context changes
+// Note: this is for static props, but user will change if the user logs in. Ideally we would take out user, and signup would get user from context or from main.js
 function CivilPursuitStaticContent(props) {
-  const { subject, description, _id, minParticipants, children } = props
+  const { subject, description, _id, minParticipants, user, children } = props
+  // tournaments steps should get user from deliberation context, but signup does not use context and expect user as a props.
   const classes = useStylesFromThemeFunction()
   return (
     <div className={cx(classes.civilPursuit)}>
       <QuestionBox className={classes.question} subject={subject} description={description} discussionId={_id} minParticipants={minParticipants} />
       <Level>
-        <StepSlider className={classes.stepPadding} children={children} discussionId={_id} />
+        <StepSlider className={classes.stepPadding} children={children} discussionId={_id} user={user} />
       </Level>
     </div>
   )
-}
-
-function CivilPursuitContent({ subject, description, steps, user, _id, minParticipants, children }) {
-  // don't keep rerendering EVERYTHING just because the context has changed. The above hooks change context, but not props to this component
-  const StaticContent = useRef(<CivilPursuitStaticContent subject={subject} description={description} steps={steps} _id={_id} minParticipants={minParticipants} children={children} />).current // render this only once
-  return StaticContent
 }
 
 function CivilPursuit(props) {
@@ -83,7 +79,7 @@ function CivilPursuit(props) {
   return (
     <DeliberationContextProvider defaultValue={{ discussionId: _id, user, userId: user?.id, participants, subject, description, ...otherProps }}>
       <DemInfoProvider demInfoProviderDefault={{ uiSchema }}>
-        <CivilPursuitStaticContent subject={subject} description={description} _id={_id} minParticipants={minParticipants} children={children} />
+        <CivilPursuitStaticContent subject={subject} description={description} _id={_id} minParticipants={minParticipants} user={user} children={children} />
       </DemInfoProvider>
     </DeliberationContextProvider>
   )
