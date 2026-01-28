@@ -1,6 +1,6 @@
 //https://github.com/EnCiv/civil-pursuit/issues/134
 
-const Ranks = require('../models/ranks')
+import Ranks from '../models/ranks'
 
 async function validateRankObj(rankObj) {
   // Basic validation to check required fields
@@ -13,7 +13,7 @@ async function validateRankObj(rankObj) {
   return true
 }
 
-async function rankWhy(rankObj, cb) {
+export default async function rankWhy(rankObj, cb) {
   if (!this.synuser || !this.synuser.id) {
     console.error('rankWhy called but no user logged in')
     return cb && cb(undefined) // No user logged in
@@ -41,5 +41,3 @@ async function rankWhy(rankObj, cb) {
     cb(undefined) // Return null indicating an error
   }
 }
-
-module.exports = rankWhy

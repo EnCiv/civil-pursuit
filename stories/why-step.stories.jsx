@@ -27,20 +27,22 @@ const preRankByParentId = {
   '60b8d295f1c8ab1d2f4a1c02': { category: 'most' },
 }
 
-const myWhyByParentId = {
-  '60b8d295f1c8ab1d2f4a1c01': {
-    _id: '60b8d295f1c8ab1d2f4a1c03',
-    parentId: '60b8d295f1c8ab1d2f4a1c01',
-    subject: 'Existing Subject 1',
-    description: 'Existing Description 1',
-    category: 'most',
-  },
-  '60b8d295f1c8ab1d2f4a1c02': {
-    _id: '60b8d295f1c8ab1d2f4a1c04',
-    parentId: '60b8d295f1c8ab1d2f4a1c02',
-    subject: 'Existing Subject 2',
-    description: 'Existing Description 2',
-    category: 'most',
+const myWhyByCategoryByParentId = {
+  most: {
+    '60b8d295f1c8ab1d2f4a1c01': {
+      _id: '60b8d295f1c8ab1d2f4a1c03',
+      parentId: '60b8d295f1c8ab1d2f4a1c01',
+      subject: 'Existing Subject 1',
+      description: 'Existing Description 1',
+      category: 'most',
+    },
+    '60b8d295f1c8ab1d2f4a1c02': {
+      _id: '60b8d295f1c8ab1d2f4a1c04',
+      parentId: '60b8d295f1c8ab1d2f4a1c02',
+      subject: 'Existing Subject 2',
+      description: 'Existing Description 2',
+      category: 'most',
+    },
   },
 }
 
@@ -49,7 +51,9 @@ const whyStepTemplate = args => {
     window.socket._socketEmitHandlers['get-user-whys'] = (ids, cb) => {
       window.socket._socketEmitHandlerResults['get-user-whys'] = ids
       setTimeout(() => {
-        const whys = Object.values(args.myWhyByParentId || {})
+        // Flatten whys for the current category
+        const category = args.category || 'most'
+        const whys = args.myWhyByCategoryByParentId && args.myWhyByCategoryByParentId[category] ? Object.values(args.myWhyByCategoryByParentId[category]) : []
         cb(whys)
       }, 1000)
     }
@@ -69,7 +73,7 @@ const emptyTemplate = args => <WhyStep {...args} />
 export const Empty = {
   args: {
     defaultValue: {},
-    myWhyByParentId: {},
+    myWhyByCategoryByParentId: {},
   },
   render: emptyTemplate,
   decorators: [],
@@ -79,11 +83,11 @@ export const InitialNoData = {
   args: {
     defaultValue: {
       reducedPointList,
-      myWhyByParentId: {},
+      myWhyByCategoryByParentId: {},
       preRankByParentId: preRankByParentId,
     },
     category: 'most',
-    myWhyByParentId: {},
+    myWhyByCategoryByParentId: {},
     intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
   },
   render: whyStepTemplate,
@@ -94,13 +98,12 @@ export const ReturningUser = {
   args: {
     defaultValue: {
       reducedPointList,
-      myWhyByParentId,
+      myWhyByCategoryByParentId,
       preRankByParentId: preRankByParentId,
     },
     category: 'most',
     intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
-
-    myWhyByParentId,
+    myWhyByCategoryByParentId,
   },
   render: whyStepTemplate,
   decorators: [DeliberationContextDecorator],
@@ -112,7 +115,7 @@ export const UserEntersInitialData = {
       //_showUpsertDeltas: true, // use for debugging
       reducedPointList,
       preRankByParentId: preRankByParentId,
-      myWhyByParentId: {},
+      myWhyByCategoryByParentId: {},
     },
     category: 'most',
     intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
@@ -148,20 +151,22 @@ export const UserEntersInitialData = {
         value: 1,
       })
       expect(deliberationContextData(canvas)).toMatchObject({
-        myWhyByParentId: {
-          '60b8d295f1c8ab1d2f4a1c02': {
-            subject: 'User Subject 2',
-            description: 'User Description 2',
-            //_id: '67afd889de6a473c380615b1', ids are random
-            parentId: '60b8d295f1c8ab1d2f4a1c02',
-            category: 'most',
-          },
-          '60b8d295f1c8ab1d2f4a1c01': {
-            subject: 'User Subject 1',
-            description: 'User Description 1',
-            //_id: '67afd888de6a473c380615b0', ids are random
-            parentId: '60b8d295f1c8ab1d2f4a1c01',
-            category: 'most',
+        myWhyByCategoryByParentId: {
+          most: {
+            '60b8d295f1c8ab1d2f4a1c02': {
+              subject: 'User Subject 2',
+              description: 'User Description 2',
+              //_id: '67afd889de6a473c380615b1', ids are random
+              parentId: '60b8d295f1c8ab1d2f4a1c02',
+              category: 'most',
+            },
+            '60b8d295f1c8ab1d2f4a1c01': {
+              subject: 'User Subject 1',
+              description: 'User Description 1',
+              //_id: '67afd888de6a473c380615b0', ids are random
+              parentId: '60b8d295f1c8ab1d2f4a1c01',
+              category: 'most',
+            },
           },
         },
       })
@@ -188,7 +193,7 @@ export const UserUpdatesExistingData = {
       reducedPointList: reducedPointList,
       preRankByParentId: preRankByParentId,
     },
-    myWhyByParentId: myWhyByParentId, // will be used by get-user-whys
+    myWhyByCategoryByParentId: myWhyByCategoryByParentId, // will be used by get-user-whys
     category: 'most',
     intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
   },

@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/206
 
-const Points = require('../models/points')
-async function getUserWhys(ids, cb) {
+import Points from '../models/points'
+export default async function getUserWhys(ids, cb) {
   const cbFailure = errorMsg => {
     if (errorMsg) console.error(errorMsg)
     if (cb) cb(undefined)
@@ -33,5 +33,3 @@ async function getUserWhys(ids, cb) {
   if (cb) cb(pointsList)
   return
 }
-
-module.exports = getUserWhys

@@ -1,5 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/215
-import { derivePointWithWhyRankListLisyByCategory } from '../compare-whys'
+import { derivePointWithWhyRankListListByCategory } from '../compare-whys'
 jest.mock('react', () => {
   const obj = {}
   return {
@@ -37,13 +37,13 @@ jest.mock('react-accessible-headings', () => {
 const data = {}
 describe('test derivePoinMostsLeastsRankList', () => {
   test('no data yields no chanage', () => {
-    const { pointWithWhyRankListList } = derivePointWithWhyRankListLisyByCategory(data, 'most')
+    const { pointWithWhyRankListList } = derivePointWithWhyRankListListByCategory(data, 'most')
     expect(pointWithWhyRankListList).toBe(undefined)
   })
   test('can insert initial data', () => {
     data.reducedPointList = [{ point: { _id: '1', subject: '1', description: '1' } }, { point: { _id: '2', subject: '2', description: '2' } }, { point: { _id: '3', subject: '3', description: '3' } }]
     data.preRankByParentId = { 1: { _id: 51, stage: 'pre', category: 'most', parentId: '1' }, 2: { _id: 53, stage: 'pre', category: 'most', parentId: '2' }, 3: { _id: 53, stage: 'pre', category: 'most', parentId: '3' } }
-    const { pointWithWhyRankListList } = derivePointWithWhyRankListLisyByCategory(data, 'most')
+    const { pointWithWhyRankListList } = derivePointWithWhyRankListListByCategory(data, 'most')
     expect(pointWithWhyRankListList).toMatchObject([
       { point: { _id: '1', subject: '1', description: '1' }, whyRankList: [] },
       { point: { _id: '2', subject: '2', description: '2' }, whyRankList: [] },
@@ -51,15 +51,15 @@ describe('test derivePoinMostsLeastsRankList', () => {
     ])
   })
   test("ref doesn't change if data doesn't change", () => {
-    const { pointWithWhyRankListList } = derivePointWithWhyRankListLisyByCategory(data, 'most')
-    const newRef = derivePointWithWhyRankListLisyByCategory(data, 'most').pointWithWhyRankListList
+    const { pointWithWhyRankListList } = derivePointWithWhyRankListListByCategory(data, 'most')
+    const newRef = derivePointWithWhyRankListListByCategory(data, 'most').pointWithWhyRankListList
     expect(newRef).toBe(pointWithWhyRankListList)
   })
   test('ref does change if a point changes', () => {
-    const pointWithWhyRankListList = derivePointWithWhyRankListLisyByCategory(data)
+    const pointWithWhyRankListList = derivePointWithWhyRankListListByCategory(data)
     data.reducedPointList[1] = { point: { ...data.reducedPointList[1].point } }
     data.reducedPointList = [...data.reducedPointList]
-    const newRef = derivePointWithWhyRankListLisyByCategory(data, 'most')
+    const newRef = derivePointWithWhyRankListListByCategory(data, 'most')
     expect(newRef).not.toBe(pointWithWhyRankListList)
     expect(newRef).toEqual(pointWithWhyRankListList)
   })
@@ -70,7 +70,7 @@ describe('test derivePoinMostsLeastsRankList', () => {
       6: { _id: '6', subject: '2.6 random most', description: '2.6 random most', parentId: '2', category: 'most' },
       7: { _id: '7', subject: '2.7 random least', description: '2.7 random least', parentId: '2', category: 'most' },
     }
-    const { pointWithWhyRankListList } = derivePointWithWhyRankListLisyByCategory(data, 'most')
+    const { pointWithWhyRankListList } = derivePointWithWhyRankListListByCategory(data, 'most')
     const calculatedReviewPoints = data.reducedPointList.map(({ point }) => {
       // if there are no mosts or leasts, the entry should not be present
       const mosts = Object.values(data.randomWhyById).filter(why => why.parentId === point._id && why.category === 'most')
@@ -84,24 +84,24 @@ describe('test derivePoinMostsLeastsRankList', () => {
     expect(pointWithWhyRankListList).toMatchObject(calculatedReviewPoints)
   })
   test("ref doesn't change if point and random whys doesn't change", () => {
-    const { pointWithWhyRankListList } = derivePointWithWhyRankListLisyByCategory(data, 'most')
-    const newRef = derivePointWithWhyRankListLisyByCategory(data, 'most').pointWithWhyRankListList
+    const { pointWithWhyRankListList } = derivePointWithWhyRankListListByCategory(data, 'most')
+    const newRef = derivePointWithWhyRankListListByCategory(data, 'most').pointWithWhyRankListList
     expect(newRef).toBe(pointWithWhyRankListList)
   })
   test('ref does change if a point changes when there are whys', () => {
-    const { pointWithWhyRankListList } = derivePointWithWhyRankListLisyByCategory(data, 'most')
+    const { pointWithWhyRankListList } = derivePointWithWhyRankListListByCategory(data, 'most')
     data.reducedPointList[1] = { point: { ...data.reducedPointList[1].point } }
     data.reducedPointList = [...data.reducedPointList]
-    const newRef = derivePointWithWhyRankListLisyByCategory(data, 'most').pointWithWhyRankListList
+    const newRef = derivePointWithWhyRankListListByCategory(data, 'most').pointWithWhyRankListList
     expect(newRef).not.toBe(pointWithWhyRankListList)
     expect(newRef).toEqual(pointWithWhyRankListList)
   })
   test('ref does change if a why is changed', () => {
-    const { pointWithWhyRankListList } = derivePointWithWhyRankListLisyByCategory(data, 'most')
+    const { pointWithWhyRankListList } = derivePointWithWhyRankListListByCategory(data, 'most')
     const item1 = pointWithWhyRankListList[1]
     data.randomWhyById['6'] = { ...data.randomWhyById['6'] }
     data.randomWhyById = { ...data.randomWhyById }
-    const newRef = derivePointWithWhyRankListLisyByCategory(data, 'most').pointWithWhyRankListList
+    const newRef = derivePointWithWhyRankListListByCategory(data, 'most').pointWithWhyRankListList
     expect(newRef).not.toBe(pointWithWhyRankListList)
     expect(newRef).toEqual(pointWithWhyRankListList)
     expect(newRef[1]).toEqual(item1)
@@ -112,7 +112,7 @@ describe('test derivePoinMostsLeastsRankList', () => {
       5: { _id: '9', category: 'neutral', parentId: '5', stage: 'why' },
       6: { _id: '10', category: 'neutral', parentId: '6', stage: 'why' },
     }
-    const { pointWithWhyRankListList } = derivePointWithWhyRankListLisyByCategory(data, 'most')
+    const { pointWithWhyRankListList } = derivePointWithWhyRankListListByCategory(data, 'most')
     expect(pointWithWhyRankListList).toMatchObject([
       {
         point: { _id: '1', subject: '1', description: '1' },

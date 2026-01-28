@@ -2,7 +2,7 @@ import PairCompare from '../app/components/pair-compare'
 import { onDoneDecorator, onDoneResult, asyncSleep } from './common'
 import { within, userEvent, waitFor } from '@storybook/test'
 import expect from 'expect'
-import React from 'react'
+import React, { useState } from 'react'
 
 export default {
   component: PairCompare,
@@ -57,7 +57,7 @@ export const empty = {
   pointList: [],
 }
 
-export const onePointCanBeYesStartOverNo = {
+export const onePointCanBeUsefulStartOverNotUseful = {
   args: {
     mainPoint: {
       subject: 'Global Warming',
@@ -67,8 +67,8 @@ export const onePointCanBeYesStartOverNo = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const Yes = canvas.getByText('Yes')
-    await userEvent.click(Yes)
+    const Useful = canvas.getByText('Useful')
+    await userEvent.click(Useful)
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
         count: 1,
@@ -94,8 +94,8 @@ export const onePointCanBeYesStartOverNo = {
         },
       })
     })
-    const No = canvas.getByText('No')
-    await userEvent.click(No)
+    const NotUseful = canvas.getByText('Not useful')
+    await userEvent.click(NotUseful)
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
         count: 3,
@@ -184,8 +184,8 @@ export const UserChoosesNoPoint = {
         },
       })
     })
-    const No = canvas.getByText('No')
-    await userEvent.click(No)
+    const NotUseful = canvas.getByText('Not useful')
+    await userEvent.click(NotUseful)
     await waitFor(() => {
       expect(onDoneResult(canvas)).toMatchObject({
         count: 3,
@@ -275,6 +275,62 @@ export const onDoneTest = {
             parentId: '4',
             stage: 'why',
           },
+        },
+      })
+    })
+  },
+}
+
+export const OnePointRankedInitially = {
+  args: {
+    mainPoint: {
+      subject: 'Global Warming',
+      description: 'Climate change and global warming',
+    },
+    whyRankList: [rankedWhyRankList[0]],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await waitFor(() => {
+      const StartOver = canvas.getByText('Start Over')
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 1,
+        onDoneResult: {
+          valid: true,
+        },
+      })
+    })
+  },
+}
+
+export const OnePointRankedAfterFirstRendered = {
+  args: {
+    mainPoint: {
+      subject: 'Global Warming',
+      description: 'Climate change and global warming',
+    },
+    whyRankList: [whyRankList[0]],
+  },
+  decorators: [
+    (Story, context) => {
+      const [updated, setUpdated] = useState(false)
+      // after it's rendered without a rank, add the rank - as if fetched from the db
+      setTimeout(() => {
+        context.args.whyRankList[0].rank = { _id: '11', parentId: '1', stage: 'why', category: 'most' }
+        context.args.whyRankList = [...context.args.whyRankList] // make it different to force it to rerender
+        setUpdated(true)
+      }, 100)
+      return <Story />
+    },
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await waitFor(() => {
+      const StartOver = canvas.getByText('Start Over')
+      expect(onDoneResult(canvas)).toMatchObject({
+        count: 1,
+        onDoneResult: {
+          valid: true,
         },
       })
     })

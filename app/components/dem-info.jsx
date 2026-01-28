@@ -2,62 +2,62 @@
 import React from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
+import { useDemInfoContext } from './dem-info-context'
 
-export default function DemInfo(props) {
-  const { state, dob, party, className, ...otherProps } = props
-  const classes = useStylesFromThemeFunction()
-  if (!(state && dob && party)) return null // if no data, render not
-
-  const userState = state || ''
-  const userAge = dob ? calculateAge(dob) : ''
-  const userPoliticalParty = party || ''
-
-  let contentText = ''
-  if (userPoliticalParty && (userAge || userState)) {
-    contentText += `${userPoliticalParty} | `
-  } else if (userPoliticalParty) {
-    contentText += `${userPoliticalParty}`
-  }
-
-  if (userAge && userState) {
-    contentText += `${userAge}, ${userState}`
-  } else if (userAge || userState) {
-    contentText += userAge || userState
-  }
-
-  return (
-    <span className={cx(classes.infoText, className)} {...otherProps}>
-      {contentText}
-    </span>
-  )
+function parseUISchemaOrder(uischema) {
+  if (!uischema || !uischema.elements) return null
+  return uischema.elements
+    .filter(e => e.type === 'Control' && typeof e.scope === 'string')
+    .map(e => {
+      const m = e.scope.match(/#\/properties\/(.+)$/)
+      return m ? m[1] : null
+    })
+    .filter(Boolean)
 }
 
-/**
- * Calculate user age based on birthdate from User Schema
- * @param {String} birthdayStr
- * @return {Number} age (in years)
- */
-function calculateAge(birthdayStr) {
-  const birthday = new Date(birthdayStr)
-  const today = new Date()
-  let age = today.getFullYear() - birthday.getFullYear()
-  const month = today.getMonth() - birthday.getMonth()
+export default function DemInfo({ pointId, className }) {
+  const classes = useStyles()
+  const context = useDemInfoContext()
 
-  if (month < 0 || (month === 0 && today.getDate() < birthday.getDate())) {
-    age--
+  // Handle case where context isn't available (e.g., in isolated stories)
+  if (!context) return null
+  if (!pointId) return null
+
+  const { data } = context
+  if (!data) return null
+
+  const demInfo = data.demInfoById?.[pointId]
+  const uischema = data.uischema
+
+  if (!demInfo) return null
+  if (typeof demInfo !== 'object') return null
+
+  const order = parseUISchemaOrder(uischema) || Object.keys(demInfo).sort()
+  const values = []
+  for (const key of order) {
+    if (key === 'shareInfo') continue
+    const v = demInfo[key]
+    if (v === undefined || v === null || v === '') continue
+
+    // Special handling for yearOfBirth: calculate age
+    if (key === 'yearOfBirth') {
+      const currentYear = new Date().getFullYear()
+      const age = currentYear - v
+      values.push(String(age))
+    } else {
+      values.push(String(v))
+    }
   }
+  if (!values.length) return null
 
-  return age
+  return <div className={cx(classes.demInfo, className)}>{values.join(' • ')}</div>
 }
 
-const useStylesFromThemeFunction = createUseStyles(theme => ({
-  infoText: {
-    fontFamily: 'Inter',
-    fontSize: '1rem',
-    fontWeight: '400',
-    lineHeight: '1.5rem',
-    letterSpacing: '0rem',
-    textAlign: 'left',
-    color: '#5D5D5C',
+const useStyles = createUseStyles({
+  demInfo: {
+    color: 'inherit', // Inherit color from parent
+    opacity: 0.6, // Make it lighter than the parent color
+    fontSize: '0.85em',
+    display: 'inline-block',
   },
-}))
+})

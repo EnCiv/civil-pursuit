@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/44
+// https://github.com/EnCiv/civil-pursuit/issues/288
 
 'use strict'
 import React, { useEffect, useRef, useState } from 'react'
@@ -106,8 +107,15 @@ function PointInput(props) {
         onBlur={handleOnBlur}
         className={cx(classes.subject, classes.sharedInputStyle, subjCharCount > maxCharCount && classes.errorInput)}
       ></input>
-      <span className={subjCharCount > maxCharCount ? classes.errorWordCount : classes.wordCount}>
-        {subjCharCount} / {maxCharCount}
+      <span className={cx(subjCharCount > maxCharCount ? classes.errorWordCount : classes.wordCount)}>
+        Character count{' '}
+        <span
+          className={cx({
+            [classes.wordCountLimitReached]: subjCharCount >= maxCharCount, // make the text bold
+          })}
+        >
+          {subjCharCount} / {maxCharCount}
+        </span>
       </span>
 
       <textarea
@@ -118,8 +126,15 @@ function PointInput(props) {
         onBlur={handleOnBlur}
         className={cx(classes.description, classes.sharedInputStyle, descWordCount > maxWordCount && classes.errorInput)}
       ></textarea>
-      <span className={descWordCount > maxWordCount ? classes.errorWordCount : classes.wordCount}>
-        {descWordCount} / {maxWordCount}
+      <span className={cx(descWordCount > maxWordCount ? classes.errorWordCount : classes.wordCount)}>
+        Word count{' '}
+        <span
+          className={cx({
+            [classes.wordCountLimitReached]: descWordCount >= maxWordCount, // make the text bold
+          })}
+        >
+          {descWordCount} / {maxWordCount}
+        </span>
       </span>
     </div>
   )
@@ -148,7 +163,7 @@ const useStyles = createUseStyles(theme => ({
     '&[type="text"]': {
       border: `0.0625rem solid ${theme.colors.inputBorder}`,
       color: theme.colors.title,
-      fontSize: '1rem',
+      fontSize: '1.25rem',
       lineHeight: '1.5rem',
     },
     '&[type="text"]:hover': {
@@ -157,6 +172,7 @@ const useStyles = createUseStyles(theme => ({
   },
   description: {
     resize: 'none',
+    fontSize: '1rem',
     marginTop: '0.9375rem',
     padding: '0.9375rem 0.9375rem 1.25rem 0.9375rem',
     '&::placeholder': {
@@ -186,6 +202,9 @@ const useStyles = createUseStyles(theme => ({
   errorWordCount: {
     color: theme.colors.inputErrorWordCount,
     ...sharedWordCountStyle(theme),
+  },
+  wordCountLimitReached: {
+    fontWeight: 'bold',
   },
 }))
 

@@ -1,21 +1,21 @@
 //https://github.com/EnCiv/civil-pursuit/issues/211
 import { ObjectId } from 'mongodb'
 
-const Joi = require('joi')
-const Ranks = require('../models/ranks')
+import Joi from 'joi'
+import Ranks from '../models/ranks'
 
 // Define the validation schema using Joi
 const rankSchema = Joi.object({
   _id: Joi.string().optional(), // _id is optional when creating a new document
   stage: Joi.string().valid('pre', 'post', 'why').required(), // stage must be one of 'pre', 'post', 'why'
-  category: Joi.string().valid('most', 'least', 'neutral').required(), // category must be one of 'most', 'least', 'neutral'
+  category: Joi.string().valid('most', 'least', 'neutral', '').optional(), // category may be cleared after being set
   parentId: Joi.string().required(), // parentId is required
   userId: Joi.string().optional(), // userId is optional and will be deleted later if needed
   discussionId: Joi.string().required(), // discussionId is required
   round: Joi.number().integer().min(0).required(), // round must be an integer >= 1
 })
 
-async function upsertRank(rankObj, cb) {
+export default async function upsertRank(rankObj, cb) {
   if (!this.synuser || !this.synuser.id) {
     console.error('upsertRank called but no user logged in')
     return cb && cb(undefined) // No user logged in
@@ -51,5 +51,3 @@ async function upsertRank(rankObj, cb) {
     cb()
   }
 }
-
-module.exports = upsertRank

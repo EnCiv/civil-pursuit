@@ -5,61 +5,69 @@
 // groupedPoints and pointList are both a list of pointObj
 // pointList is the original list of points, we set groupedPoints to pointList if it is empty
 'use strict'
-import React, { useRef, useState, useContext } from 'react'
+import React, { useRef, useState, useContext, useEffect } from 'react'
 import DeliberationContext, { deriveReducedPointList } from '../deliberation-context'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import PointGroup from '../point-group'
 import { PrimaryButton } from '../button'
 import StatusBadge from '../status-badge'
+import StepIntro from '../step-intro'
+import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 
 const MIN_GROUPS = 0 // the minimum number of groups the user has to make
 
 export default function GroupingStep(props) {
-  const { onDone, ...otherProps } = props
+  const { onDone, round, ...otherProps } = props
   const { data, upsert } = useContext(DeliberationContext)
+  const fetchDemInfo = useFetchDemInfo()
 
-  const { discussionId, round } = data
+  const { discussionId } = data
   const args = deriveReducedPointList(data, useRef({}).current)
 
   const handleOnDone = ({ valid, delta }) => {
     if (delta) {
-      const groupings = delta.map(pG => [pG.point._id, ...pG.group.map(gp => gp._id)])
-      upsert({ groupIdsLists: groupings })
-      window.socket.emit('put-groupings', discussionId, round, groupings)
+      const groupings = delta.map(pG => [pG.point._id, ...(pG.group || []).map(gp => gp._id)]).filter(g => g.length > 1)
+      upsert({ groupIdsLists: groupings, uInfo: { [round]: { groupings } } })
+      //window.socket.emit('post-point-groups', discussionId, round, groupings)
     }
     onDone({ valid })
   }
   // fetch previous data
-  if (typeof window !== 'undefined')
-    useState(() => {
-      // on the browser, do this once and only once when this component is first rendered
-      const { discussionId, round } = data
+  useEffect(() => {
+    // on the browser, do this once and only once when this component is first rendered
+    const { discussionId, uInfo } = data
 
-      window.socket.emit('get-points-for-round', discussionId, round, result => {
-        if (!result) return // there was an error
-
-        const [points] = result
-        const pointById = points.reduce((pointById, point) => ((pointById[point._id] = point), pointById), {})
-        upsert({ pointById })
-
-        if (points.length <= 1) {
-          onDone({ valid: false, value: 'intermission' })
+    window.socket.emit('get-points-for-round', discussionId, round, points => {
+      if (!points) return onDone({ valid: true, value: 'Intermission' }) // there was an error
+      if (points.length <= 1) {
+        onDone({ valid: true, value: 'Intermission' })
+      }
+      const pointById = {}
+      const uInfoRound = uInfo?.[round] || {}
+      if (!uInfoRound.shownStatementIds) uInfoRound.shownStatementIds = {}
+      for (const point of points) {
+        pointById[point._id] = point
+        if (!uInfoRound.shownStatementIds[point._id]) {
+          uInfoRound.shownStatementIds[point._id] = { rank: 0 } // initialize the shownStatementIds for this point
         }
-      })
-    })
-  return <GroupPoints {...args} round={data.round} discussionId={data.discussionId} onDone={handleOnDone} {...otherProps} />
-}
+      }
+      upsert({ pointById, uInfo: { ...uInfo, [round]: uInfoRound } })
 
+      // Fetch demographic info for all points
+      const pointIds = points.map(p => p._id)
+      fetchDemInfo(pointIds)
+    })
+  }, [round])
+  return <GroupPoints {...args} round={round} discussionId={data.discussionId} onDone={handleOnDone} {...otherProps} />
+}
 // pG stand for point group meaning {point, group}
 
 export function GroupPoints(props) {
-  const { reducedPointList, onDone = () => {}, className, discussionId, round, ...otherProps } = props
+  const { reducedPointList, onDone = () => {}, className, discussionId, round, stepIntro } = props
 
   const classes = useStylesFromThemeFunction(props)
-
-  // Don't render if list is missing
-  if (!reducedPointList) return null
+  const delayedOnDone = value => setTimeout(() => onDone(value), 0)
 
   // using an object for gs (grouping-state) makes it easier understand which variable in the code refers to the new value being generated, and which refers to the old
   // also reduces the number of different set-somethings that have to be called each time.
@@ -70,6 +78,11 @@ export function GroupPoints(props) {
     yourGroupsSelected: [], // points that have been grouped that have been selected again to be incorporated into a group
     selectLead: null, // the new point group, with no point but with a group for selecting the Lead
   })
+
+  // on original render, notify parent this is done (if it is)
+  useEffect(() => {
+    if (!gs.selectedIds.length && !gs.selectLead && !gs.yourGroupsSelected.length) delayedOnDone({ valid: true, value: {} })
+  }, [])
 
   const [prev] = useState({ reducedPointList })
   if (prev.reducedPointList !== reducedPointList) {
@@ -84,12 +97,14 @@ export function GroupPoints(props) {
 
   const togglePointSelection = _id => {
     setGs(oldGs => {
+      if (oldGs.selectLead) return oldGs // ignore clicks while in selectLead mode
       // if the _id is already in there, remove it
       const selectedIds = oldGs.selectedIds.filter(id => id !== _id)
       // if the _id wasn't in there, push it
       if (selectedIds.length === oldGs.selectedIds.length) selectedIds.push(_id)
-      if (selectedIds.length) onDone({ valid: false, value: {} })
-
+      if (selectedIds.length) delayedOnDone({ valid: false })
+      const valid = !selectedIds.length && !oldGs.selectLead && !oldGs.yourGroupsSelected.length
+      delayedOnDone({ valid, value: {} })
       return { ...oldGs, selectedIds }
     })
   }
@@ -116,14 +131,14 @@ export function GroupPoints(props) {
           yourGroups.push(pG)
         }
       }
-      onDone({ valid: false, value: {} })
+      delayedOnDone({ valid: false })
       return {
         ...oldGs,
         pGsToGroup,
         yourGroups,
         yourGroupsSelected,
         selectedIds: [],
-        selectLead: { group: groupedPoints },
+        selectLead: { group: groupedPoints.map(({ point, group }) => point) }, // group is a list of points, not a list of pointGroups
       }
     })
   }
@@ -144,10 +159,18 @@ export function GroupPoints(props) {
         }
       }
       if (value.pointGroup) {
+        const subPoints = new Set(value.pointGroup.group || [])
+        // need to gather the points from the groups in the other selected groups
+        for (const { point, group } of oldGs.yourGroupsSelected) {
+          for (const sP of group) {
+            subPoints.add(sP)
+          }
+        }
+        value.pointGroup.group = [...subPoints]
         yourGroups.push(value.pointGroup)
         // we have to change it because the new one may have different children
       }
-      setTimeout(() => onDone({ valid: true, delta: yourGroups }))
+      delayedOnDone({ valid: true, delta: yourGroups })
       return { ...oldGs, pGsToGroup, yourGroups, yourGroupsSelected: [], selectLead: null }
     })
   }
@@ -159,11 +182,11 @@ export function GroupPoints(props) {
       const pGsToGroup = [...oldGs.pGsToGroup]
       let yourGroups = [...oldGs.yourGroups]
       let selectedIds = [...oldGs.selectedIds]
-      for (const point of value.removedPgs || []) {
+      for (const pG of value.removedPgs || []) {
         // move it back to the ungrouped points
-        pGsToGroup.push(point)
-        yourGroups = yourGroups.filter(pGD => pGD.point._id !== point._id)
-        selectedIds = selectedIds.filter(id => id !== point._id)
+        pGsToGroup.push(pG)
+        yourGroups = yourGroups.filter(pGD => pGD.point._id !== pG._id)
+        selectedIds = selectedIds.filter(id => id !== pG._id)
       }
       // it doesn't create a new pointObj, but it delete it, or change the existing one.
       if (value.pointGroup) {
@@ -174,27 +197,31 @@ export function GroupPoints(props) {
             pGsToGroup.push(value.pointGroup)
           }
           selectedIds = selectedIds.filter(id => id !== value.pointGroup.point._id)
-        } else if (yourGroups.some(pGD => pGD.point._id === value.pointGroup.point._id)) {
-          //do nothing
+        } else if ((index = yourGroups.findIndex(pGD => pGD.point._id === value.pointGroup.point._id)) >= 0) {
+          // group has changed in the pointGroup, replace it
+          yourGroups.splice(index, 1, value.pointGroup)
         } else {
           // lead point is changed - find the old one
           index = yourGroups.findIndex(pGD => pGD.group.some(p => p._id === value.pointGroup.point._id))
           if (index >= 0) {
-            yourGroups.splice(index, 1)
-            yourGroups.push(value.pointGroup)
+            yourGroups.splice(index, 1, value.pointGroup)
           } else {
             console.info("got new pointDoc don't know why")
             yourGroups.push(value.pointGroup)
           }
         }
       }
-      onDone({ valid: true, value: pGsToGroup.concat(yourGroups) })
+      delayedOnDone({ valid: true, delta: pGsToGroup.concat(yourGroups) })
       return { ...oldGs, pGsToGroup, yourGroups, selectedIds }
     })
   }
 
+  // Don't render if list is missing or if there's nothing to group yet, but do call all the hooks because they can't change after the first render
+  if (!reducedPointList || reducedPointList.length <= 1) return null
+
   return (
-    <div className={cx(classes.groupingStep, className)} {...otherProps}>
+    <div className={cx(classes.groupingStep, className)}>
+      <StepIntro {...stepIntro} />
       <div className={classes.statusContainer}>
         <div className={classes.statusBadges}>
           <StatusBadge name="Groups Created" status={gs.yourGroups.length == 0 ? 'inactive' : 'complete'} number={gs.yourGroups.length} />
@@ -202,7 +229,7 @@ export function GroupPoints(props) {
         </div>
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
-            <PrimaryButton disabled={gs.selectedIds.length < MIN_GROUPS} className={`${classes.primaryButton} ${gs.selectedIds.length < MIN_GROUPS ? classes.createGroupDisabled : ''}`} onClick={handleCreateGroupClick}>
+            <PrimaryButton disabled={gs.selectedIds.length < 2} className={`${classes.primaryButton} ${gs.selectedIds.length < 2 ? classes.createGroupDisabled : ''}`} onClick={handleCreateGroupClick}>
               Create Group
             </PrimaryButton>
           </div>
@@ -216,44 +243,50 @@ export function GroupPoints(props) {
           </SecondaryButton> */}
         </div>
       </div>
-      {gs.selectLead != null ? (
+      {gs.selectLead && (
         <div className={classes.selectLead}>
           <PointGroup pointGroup={gs.selectLead} vState={'selectLead'} onDone={onSelectLeadDone} />
         </div>
-      ) : null}
-      <div className={classes.groupsContainer}>
-        {gs.pGsToGroup.map(pGD => (
-          <PointGroup key={pGD.point._id} pointGroup={pGD} vState="default" select={gs.selectedIds.some(id => id === pGD.point._id)} onClick={() => togglePointSelection(pGD.point._id)} />
-        ))}
-      </div>
-      {!!gs.yourGroups.length && (
-        <div className={classes.yourGroupsWrapper}>
-          <div className={classes.yourGroupsTitle}>{'Your Groups'}</div>
-          <div className={classes.groupsContainer}>
-            {gs.yourGroups.map(pointGroup => {
-              return (
-                pointGroup && (
-                  <PointGroup
-                    className={classes.yourGroupsPoint}
-                    key={pointGroup.point?._id}
-                    pointGroup={pointGroup}
-                    vState="editable"
-                    select={gs.selectedIds.some(id => id === pointGroup.point._id)}
-                    onClick={() => togglePointSelection(pointGroup.point._id)}
-                    onDone={onYourPointEdited}
-                  />
-                )
-              )
-            })}
-          </div>
-        </div>
       )}
+      {
+        /*!gs.selectLead&& */ <div className={classes.groupsContainer}>
+          {gs.pGsToGroup.map(pGD => (
+            <PointGroup key={pGD.point._id} pointGroup={pGD} vState={gs.selectLead ? 'disabled' : 'view'} select={gs.selectedIds.some(id => id === pGD.point._id)} onClick={() => togglePointSelection(pGD.point._id)} />
+          ))}
+        </div>
+      }
+      {
+        /*!gs.selectLead && **/ !!gs.yourGroups.length && (
+          <div className={classes.yourGroupsWrapper}>
+            <div className={classes.yourGroupsTitle}>{'Your Groups'}</div>
+            <div className={classes.groupsContainer}>
+              {gs.yourGroups.map(pointGroup => {
+                return (
+                  pointGroup && (
+                    <PointGroup
+                      className={classes.yourGroupsPoint}
+                      key={pointGroup.point?._id}
+                      pointGroup={pointGroup}
+                      vState={gs.selectLead ? 'disabled' : 'editable'}
+                      select={gs.selectedIds.some(id => id === pointGroup.point._id)}
+                      onClick={() => togglePointSelection(pointGroup.point._id)}
+                      onDone={onYourPointEdited}
+                    />
+                  )
+                )
+              })}
+            </div>
+          </div>
+        )
+      }
     </div>
   )
 }
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-  groupingStep: {},
+  groupingStep: {
+    marginBottom: '1rem', // for box shadow of children
+  },
   groupsContainer: {
     paddingLeft: '2rem',
     paddingRight: '2rem',

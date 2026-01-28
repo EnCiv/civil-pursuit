@@ -61,8 +61,8 @@ describe('test deriveMyAnswerAndMyWhy', () => {
   })
 
   test('user why is not there', () => {
-    data.myWhyByParentId = {}
-    data.myWhyByParentId['0'] = { _id: '2', subject: 'Why', description: 'Why Description', userId: 'b', parentId: '0' }
+    data.myWhyByCategoryByParentId = { most: {} }
+    data.myWhyByCategoryByParentId.most['0'] = { _id: '2', subject: 'Why', description: 'Why Description', userId: 'b', parentId: '0' }
     const result = deriveMyAnswerAndMyWhy(data)
     expect(result).toEqual({ myAnswer: data.pointById['1'], myWhy: undefined })
   })
@@ -70,8 +70,8 @@ describe('test deriveMyAnswerAndMyWhy', () => {
   test('why only but answer not there', () => {
     delete data.pointById['1']
     data.pointById = { ...data.pointById }
-    data.myWhyByParentId['1'] = { _id: '3', subject: 'Why', description: 'Why Description', userId: 'a', parentId: '1' }
-    data.myWhyByParentId = { ...data.myWhyByParentId }
+    data.myWhyByCategoryByParentId.most['1'] = { _id: '3', subject: 'Why', description: 'Why Description', userId: 'a', parentId: '1' }
+    data.myWhyByCategoryByParentId.most = { ...data.myWhyByCategoryByParentId.most }
     const result = deriveMyAnswerAndMyWhy(data)
     expect(result).toEqual({ myAnswer: undefined, myWhy: undefined })
   })
@@ -81,8 +81,10 @@ describe('test deriveMyAnswerAndMyWhy', () => {
   test('answer and why', () => {
     data.pointById['1'] = { _id: '1', subject: 'Answer', description: 'Answer Description', userId: 'a' }
     data.pointById = { ...data.pointById }
+    data.myWhyByCategoryByParentId.most['1'] = { _id: '3', subject: 'Why', description: 'Why Description', userId: 'a', parentId: '1' }
+    data.myWhyByCategoryByParentId.most = { ...data.myWhyByCategoryByParentId.most }
     const result = deriveMyAnswerAndMyWhy(data)
-    expect(result).toEqual({ myAnswer: data.pointById['1'], myWhy: data.myWhyByParentId['1'] })
+    expect(result).toEqual({ myAnswer: data.pointById['1'], myWhy: data.myWhyByCategoryByParentId.most['1'] })
     savedMyAnswer = result.myAnswer
     savedMyWhy = result.myWhy
     const result2 = deriveMyAnswerAndMyWhy(data)
@@ -94,7 +96,7 @@ describe('test deriveMyAnswerAndMyWhy', () => {
     data.pointById['1'] = { _id: '1', subject: 'Answer Changed', description: 'Answer Changed Description', userId: 'a' }
     data.pointById = { ...data.pointById }
     const result = deriveMyAnswerAndMyWhy(data)
-    expect(result).toEqual({ myAnswer: data.pointById['1'], myWhy: data.myWhyByParentId['1'] })
+    expect(result).toEqual({ myAnswer: data.pointById['1'], myWhy: data.myWhyByCategoryByParentId.most['1'] })
     expect(result.myAnswer).not.toBe(savedMyAnswer)
     expect(result.myWhy).toBe(savedMyWhy)
     savedMyAnswer = result.myAnswer
@@ -102,11 +104,11 @@ describe('test deriveMyAnswerAndMyWhy', () => {
   })
 
   test('why is changed', () => {
-    data.myWhyByParentId['1'] = { _id: '3', subject: 'Why Changed', description: 'Why Changed Description', userId: 'a', parentId: '1' }
-    data.myWhyByParentId = { ...data.myWhyByParentId }
+    data.myWhyByCategoryByParentId.most['1'] = { _id: '3', subject: 'Why Changed', description: 'Why Changed Description', userId: 'a', parentId: '1' }
+    data.myWhyByCategoryByParentId.most = { ...data.myWhyByCategoryByParentId.most }
     const result = deriveMyAnswerAndMyWhy(data)
     expect(result.myAnswer).toBe(savedMyAnswer)
     expect(result.myWhy).not.toBe(savedMyWhy)
-    expect(result.myWhy).toEqual(data.myWhyByParentId['1'])
+    expect(result.myWhy).toEqual(data.myWhyByCategoryByParentId.most['1'])
   })
 })

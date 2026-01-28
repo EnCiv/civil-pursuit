@@ -20,7 +20,6 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import StatusBadge from './status-badge'
 import Markdown from 'markdown-to-jsx'
 
 const QuestionBox = props => {
@@ -28,16 +27,24 @@ const QuestionBox = props => {
   const classes = useStylesFromThemeFunction({ ...props, contentAlign })
 
   return (
-    <div className={cx(classes.container, className)} {...otherProps}>
+    <div className={cx(classes.questionBox, className)} {...otherProps}>
       <div className={classes.topic}>
         {tagline && <div className={classes.fixedText}>{tagline}</div>}
-        <div className={classes.subject}>{subject}</div>
+        <h1 className={classes.subject}>{subject}</h1>
         <div className={classes.description}>
           <Markdown>{description}</Markdown>
         </div>
         <div className={classes.children}>
-          {children?.map(row => (
-            <div className={classes.row}>{row.length ? row.map(item => <div className={classes.item}>{item}</div>) : row}</div>
+          {children?.map((row, rowIndex) => (
+            <div key={rowIndex} className={classes.row}>
+              {row.length
+                ? row.map((item, itemIndex) => (
+                    <div key={itemIndex} className={classes.item}>
+                      {item}
+                    </div>
+                  ))
+                : row}
+            </div>
           ))}
         </div>
       </div>
@@ -46,7 +53,8 @@ const QuestionBox = props => {
 }
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-  container: {
+  questionBox: {
+    position: 'relative',
     borderRadius: '1.875rem',
     border: `0.0625rem solid ${theme.colors.secondaryDivider}`,
     backgroundColor: 'rgba(235, 235, 235, 0.4)',
@@ -80,6 +88,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   subject: {
+    marginBlockStart: '0',
+    marginBlockEnd: '0',
     fontFamily: 'Inter',
     fontWeight: 700,
     fontSize: '3.75rem',
@@ -99,7 +109,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1rem',
     lineHeight: '1.5rem',
     color: theme.colors.primaryButtonBlue,
-    textAlign: props => props.contentAlign,
+    textAlign: 'left',
   },
   children: {},
   row: {

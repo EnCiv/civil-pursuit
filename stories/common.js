@@ -3,18 +3,57 @@
 import React, { useState, useCallback, useContext } from 'react'
 import { DeliberationContext, DeliberationContextProvider } from '../app/components/deliberation-context'
 import { fn } from '@storybook/test'
+import { Level } from 'react-accessible-headings'
+
+// usage: {decorators: [buildApiDecorator('handle', result)]}
+// where handle is the name of the socket emit handler and result is the result to return
+// if result is a function, it will be called with the arguments passed to the socket emit handler
+// if result is not a function, it will be returned as is
+export const buildApiDecorator = (handle, result) => {
+  return Story => {
+    useState(() => {
+      // execute this code once, before the component is initially rendered
+      setupSocketEmitHandlers()
+      window.socket._socketEmitHandlerResults[handle] = []
+      window.socket._socketEmitHandlers[handle] = (...args) => {
+        const cb = args.pop() // call back is the last argument
+        window.socket._socketEmitHandlerResults[handle].push(args)
+        setTimeout(() => {
+          if (typeof result === 'function') {
+            args.push(cb)
+            result(...args)
+          } else cb(result)
+        })
+      }
+    })
+    return <Story />
+  }
+}
+
+// use buildApiDecorator instead
+function setupSocketEmitHandlers() {
+  // caution! every story that runs with this decorator will rewrite the socket variable
+  // you'd think each story is separate but they all run in the same window
+  if (window.socket && window.socket._socketEmitHandlers) return
+  if (!window.socket) window.socket = {}
+  window.socket._socketEmitHandlers = {}
+  window.socket._socketEmitHandlerResults = []
+  window.socket.emit = (handle, ...args) => {
+    if (window.socket._socketEmitHandlers[handle]) window.socket._socketEmitHandlers[handle](...args)
+    else console.error('socketEmitDecorator: no handle found', handle, ...args)
+  }
+  window.socket.on = (handle, fn) => {
+    if (!window.socket._onHandlers) window.socket._onHandlers = {}
+    if (!window.socket._onHandlers[handle]) console.info('socketEmitDecorator window.socket.on adding handler', handle)
+    else console.info('socketEmitDecorator window.socket.on replacing handler', handle)
+    window.socket._onHandlers[handle] = fn
+  }
+  if (!window.logger) window.logger = console
+}
 
 export const socketEmitDecorator = Story => {
   useState(() => {
-    // caution! every story that runs with this decorator will rewrite the socket variable
-    // you'd think each story is separate but they all run in the same window
-    window.socket = {}
-    window.socket._socketEmitHandlers = {}
-    window.socket._socketEmitHandlerResults = []
-    window.socket.emit = (handle, ...args) => {
-      if (window.socket._socketEmitHandlers[handle]) window.socket._socketEmitHandlers[handle](...args)
-      else console.error('socketEmitDecorator: no handle found', handle, ...args)
-    }
+    setupSocketEmitHandlers()
   })
   return <Story />
 }
@@ -52,8 +91,6 @@ const DeliberationData = props => {
 export function deliberationContextData() {
   return JSON.parse(document.getElementById('deliberation-context-data').innerHTML)
 }
-
-import { Level } from 'react-accessible-headings'
 
 export const outerStyle = { maxWidth: 980, margin: 'auto' }
 
@@ -156,8 +193,19 @@ export function onDoneDecorator(Story, context) {
     </>
   )
 }
+
 export function onDoneResult() {
-  return JSON.parse(document.getElementById('onDoneResult').innerHTML)
+  const el = document.getElementById('onDoneResult')
+  if (!el) {
+    console.warn('[onDoneResult] No onDoneResult element found yet')
+    return { count: 0 } // safe default
+  }
+  try {
+    return JSON.parse(el.innerHTML)
+  } catch (e) {
+    console.error('[onDoneResult] Failed to parse innerHTML:', el.innerHTML, e)
+    return { count: 0 }
+  }
 }
 
 export function onBackDecorator(Story, context) {
@@ -190,11 +238,14 @@ export function onBackResult() {
 
 // Create the level adjustment decorator
 export const levelDecorator = (Story, context) => {
-  return (
-    <Level>
-      <Story {...context} />
-    </Level>
-  )
+  // The CivilPursuit component renders it's own initial Level
+  if (context?.component?.name === 'CivilPursuit') return <Story {...context} />
+  else
+    return (
+      <Level>
+        <Story {...context} />
+      </Level>
+    )
 }
 
 export default {

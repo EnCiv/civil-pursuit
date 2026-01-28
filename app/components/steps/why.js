@@ -3,37 +3,59 @@
 
 import React, { useEffect, useContext, useRef, useState } from 'react'
 import DeliberationContext from '../deliberation-context'
+import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 import WhyInput from '../why-input'
 import { H, Level } from 'react-accessible-headings'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { isEqual } from 'lodash'
+import StepIntro from '../step-intro'
 
 export default function WhyStep(props) {
   const { data, upsert } = useContext(DeliberationContext)
   const { category, onDone, ...otherProps } = props
+  const fetchDemInfo = useFetchDemInfo()
 
   useEffect(() => {
-    if (!data?.myWhyByParentId && data?.reducedPointList?.length > 0) {
-      const ids = data.reducedPointList.map(point => point._id)
+    if (!data?.myWhyByCategoryByParentId && data?.reducedPointList?.length > 0) {
+      const ids = data.reducedPointList.map(pG => pG.point._id)
       window.socket.emit('get-user-whys', ids, results => {
-        const myWhyByParentId = results.reduce((acc, point) => {
-          acc[point.parentId] = point
-          return acc
-        }, {})
-        upsert({ myWhyByParentId })
+        // Group whys by category, then by parentId
+        const myWhyByCategoryByParentId = {}
+        for (const point of results) {
+          if (!myWhyByCategoryByParentId[point.category]) myWhyByCategoryByParentId[point.category] = {}
+          myWhyByCategoryByParentId[point.category][point.parentId] = point
+        }
+        upsert({ myWhyByCategoryByParentId })
+
+        // Fetch dem-info for whys
+        fetchDemInfo(results.map(w => w._id))
       })
     }
   }, [])
 
   function handleOnDone({ valid, value, delta }) {
     if (delta) {
-      const newData = upsert({ myWhyByParentId: { [delta.parentId]: delta } })
+      // Upsert only the changed value for the correct category
+      const category = delta.category || props.category
+      const newData = upsert({
+        myWhyByCategoryByParentId: {
+          [category]: {
+            [delta.parentId]: delta,
+          },
+        },
+      })
       if (newData === data) return // if no change, don't send up
       window.socket.emit('upsert-why', delta, updatedDoc => {
         if (updatedDoc) {
           if (!isEqual(updatedDoc, delta)) {
-            upsert({ myWhyByParentId: { [delta.parentId]: updatedDoc } })
+            upsert({
+              myWhyByCategoryByParentId: {
+                [category]: {
+                  [delta.parentId]: updatedDoc,
+                },
+              },
+            })
           }
         } else {
           console.error('Failed to upsert why')
@@ -53,11 +75,12 @@ export default function WhyStep(props) {
 export function Why(props) {
   const {
     className = '',
-    intro = '',
-    pointWhyList = [],
+    pointWhyList,
     category = '', // "most" or "least"
     onDone = () => {},
-    ...otherProps
+    stepIntro,
+    maxWordCount,
+    maxCharCount,
   } = props
 
   const classes = useStylesFromThemeFunction()
@@ -65,20 +88,20 @@ export function Why(props) {
   // for every point, we need to keep track of whether the user has completed the why input, and the ref of the input so we can mark it as incomplete if it changes from above.
   // we only know it's completed it valid is passed up by onDone
   const [completedByPointId] = useState(() => {
-    return pointWhyList.reduce((completedByPointId, { point, why }) => {
+    return (pointWhyList || []).reduce((completedByPointId, { point, why }) => {
       completedByPointId[point._id] = { completed: false, why }
       return completedByPointId
     }, {})
   })
 
-  // not useEffect because we need to do this when the pointWhyList changes and before the chidlren are rendered and possibly make onDone calls
+  // not useEffect because we need to do this when the pointWhyList changes and before the children are rendered and possibly make onDone calls
   const [prev] = useState({ pointWhyList })
   if (prev.pointWhyList !== pointWhyList) {
     prev.pointWhyList = pointWhyList
     const oldIds = new Set(Object.keys(completedByPointId).map(id => id + '')) // convert to string because some tests (incorrectly) pass a number but when used as a key to an object it's a string. But set doesn't convert numbers to strings
-    for (const { point, why } of pointWhyList) {
+    for (const { point, why } of pointWhyList || []) {
       if (!completedByPointId[point._id] || completedByPointId[point._id].why !== why) {
-        const completed = completedByPointId[point._id].completed && isEqual(completedByPointId[point._id].why, why) // happens when subject or description is changed by user - context returns and updated object
+        const completed = completedByPointId[point._id]?.completed && isEqual(completedByPointId[point._id].why, why) // happens when subject or description is changed by user - context returns and updated object
         completedByPointId[point._id] = { completed, why }
       }
       oldIds.delete(point._id)
@@ -110,22 +133,27 @@ export function Why(props) {
     }, 0)
   }
 
+  useEffect(() => {
+    // if there nothing to do, skip this step
+    if (!pointWhyList) {
+      onDone({ valid: true, value: 'skip' })
+      return
+    }
+  }, [pointWhyList])
+
   if (!pointWhyList?.length) {
-    return null
+    return <div className={cx(classes.wrapper, className)}>Nothing to do here. Hit Next to continue.</div>
   }
 
   return (
-    <div className={cx(classes.wrapper, className)} {...otherProps}>
-      <div className={classes.introContainer}>
-        <H className={classes.introTitle}>{`Why it's ${category && category[0].toUpperCase() + category.slice(1)} Important`}</H>
-        <div className={classes.introText}>{intro}</div>
-      </div>
+    <div className={cx(classes.wrapper, className)}>
+      <StepIntro {...stepIntro} />
       <Level>
         <div className={classes.pointsContainer}>
-          {pointWhyList.map(({ point, why }) => (
+          {pointWhyList.map(({ point, why }, i) => (
             <div key={point._id}>
-              <hr className={classes.pointsHr}></hr>
-              <WhyInput point={point} value={why} onDone={handleOnDone} />
+              {i > 0 && <hr className={classes.pointsHr}></hr>}
+              <WhyInput point={point} value={why} onDone={handleOnDone} maxWordCount={maxWordCount} maxCharCount={maxCharCount} />
             </div>
           ))}
         </div>
@@ -142,11 +170,12 @@ export function derivePointWhyListByCategory(data, category) {
     pointWhyList: undefined,
   }).current
 
-  const { reducedPointList = [], myWhyByParentId = {}, preRankByParentId = {} } = data || {}
+  const { reducedPointList = [], myWhyByCategoryByParentId = {}, preRankByParentId = {} } = data || {}
+  const myWhyByParentId = myWhyByCategoryByParentId[category] || {}
 
   let updated = false
 
-  if (local.reducedPointList !== reducedPointList) {
+  if (local.reducedPointList !== reducedPointList || local.preRankByParentId !== preRankByParentId) {
     const pointsInCategory = reducedPointList.filter(item => {
       const pId = item.point?._id
       return pId && preRankByParentId[pId]?.category === category
@@ -174,6 +203,7 @@ export function derivePointWhyListByCategory(data, category) {
     }
 
     local.reducedPointList = reducedPointList
+    local.preRankByParentId = preRankByParentId
   }
 
   if (local.myWhyByParentId !== myWhyByParentId) {

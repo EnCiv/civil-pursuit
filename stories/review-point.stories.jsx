@@ -25,15 +25,13 @@ const point0 = {
 const point1 = {
   _id: '1',
   subject: 'Equality is a human right',
-  description:
-    'Suspendisse eget tortor sit amet sapien facilisis dictum sed et nisl. Nam pellentesque dapibus sem id ullamcorper.',
+  description: 'Suspendisse eget tortor sit amet sapien facilisis dictum sed et nisl. Nam pellentesque dapibus sem id ullamcorper.',
 }
 
 const point2 = {
   _id: '2',
   subject: 'Income equality reduction',
-  description:
-    'Proin nec metus facilisis, dignissim erat a, scelerisque leo. Quisque a posuere arcu, sed luctus mi. Sed fermentum vel ante eget consequat.',
+  description: 'Proin nec metus facilisis, dignissim erat a, scelerisque leo. Quisque a posuere arcu, sed luctus mi. Sed fermentum vel ante eget consequat.',
 }
 
 const point3 = {
@@ -51,15 +49,13 @@ const point4 = {
 const point5 = {
   _id: '5',
   subject: 'Poverty',
-  description:
-    'Suspendisse eget tortor sit amet sapien facilisis dictum sed et nisl. Nam pellentesque dapibus sem id ullamcorper.',
+  description: 'Suspendisse eget tortor sit amet sapien facilisis dictum sed et nisl. Nam pellentesque dapibus sem id ullamcorper.',
 }
 
 const point6 = {
   _id: '6',
   subject: 'Poverty increasing with time',
-  description:
-    'Proin nec metus facilisis, dignissim erat a, scelerisque leo. Quisque a posuere arcu, sed luctus mi. Sed fermentum vel ante eget consequat.',
+  description: 'Proin nec metus facilisis, dignissim erat a, scelerisque leo. Quisque a posuere arcu, sed luctus mi. Sed fermentum vel ante eget consequat.',
 }
 
 export const Empty = {
@@ -105,10 +101,12 @@ export const ReviewOnDone = {
   decorators: [onDoneDecorator],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    // Click to open the why lists
     await userEvent.click(canvas.getByTitle('open'))
-    await userEvent.click(canvas.getByText('Expand Chart'))
-    await userEvent.click(canvas.getByText('Collapse Chart'))
-    await userEvent.click(canvas.getByText('Most'))
+    await userEvent.click(canvas.getByText('Collapse Table'))
+    await userEvent.click(canvas.getByText('Expand Table'))
+    // Select the "Most" ranking option using role="radio" to avoid ambiguity with header text
+    await userEvent.click(canvas.getByRole('radio', { name: 'Most' }))
     expect(onDoneResult(canvas)).toMatchObject({
       onDoneResult: {
         valid: true,

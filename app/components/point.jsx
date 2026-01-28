@@ -9,14 +9,14 @@ import React, { forwardRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { H, Level } from 'react-accessible-headings'
-import DemInfo from './dem-info.jsx'
+import DemInfo from './dem-info'
 
 const Point = forwardRef((props, ref) => {
-  const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, ...otherProps } = props
+  const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, topRow, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
 
-  const { subject = '', description = '', demInfo = {} } = point || {}
+  const { subject = '', description = '', _id } = point || {}
 
   const onMouseIn = () => {
     setIsHovered(true)
@@ -39,6 +39,7 @@ const Point = forwardRef((props, ref) => {
   return (
     <div className={cx(classes.sharedBorderStyle, classes[vState + 'Border'], className)} {...otherProps} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} ref={ref}>
       <div className={classes.contentContainer}>
+        {topRow && <div className={classes.topRow}>{topRow}</div>}
         <div className={classes.informationGrid}>
           {(isLoading || subject) && (
             <H className={isLoading ? cx(classes.loadingAnimation, classes.loadingAnimationSubject) : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'], isInvalid ? classes.invalidText : undefined)}>{isLoading ? '' : subject}</H>
@@ -48,7 +49,7 @@ const Point = forwardRef((props, ref) => {
               {isLoading ? '' : description}
             </p>
           )}
-          <DemInfo {...demInfo} />
+          <DemInfo className={cx(classes[vState + 'DemInfo'])} pointId={_id} />
           <Level>{childrenWithProps}</Level>
         </div>
       </div>
@@ -64,6 +65,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'flex-start',
     gap: '0.625rem',
+  },
+
+  topRow: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '1rem',
+    marginBottom: '0.5rem',
   },
 
   informationGrid: {
@@ -184,10 +193,25 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'none',
   },
 
+  // demInfo states
+  defaultDemInfo: {
+    color: theme.colors.title,
+  },
+  selectedDemInfo: {
+    color: theme.colors.success,
+  },
+  disabledDemInfo: {
+    color: theme.colors.title,
+  },
+  collapsedDemInfo: {
+    display: 'none',
+  },
+
   // shared styling
   sharedBorderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: theme.boxShadowRightBottom,
+    paddingBottom: '0.5rem',
   },
   sharedSubjectStyle: {
     ...theme.font,
@@ -203,6 +227,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1rem',
     fontWeight: '400',
     lineHeight: '1.5rem',
+    whiteSpace: 'pre-wrap',
+    marginBottom: '0.25rem',
   },
   invalidText: {
     color: theme.colors.rankInvalidText,

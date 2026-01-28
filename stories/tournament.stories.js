@@ -2,29 +2,8 @@
 
 import React, { useState } from 'react'
 import Tournament from '../app/components/tournament'
-import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator } from './common'
-
-const createPointDoc = (
-  _id,
-  subject,
-  description = 'Point Description',
-  groupedPoints = [],
-  demInfo = {
-    dob: '1990-10-20T00:00:00.000Z',
-    state: 'NY',
-    party: 'Independent',
-  },
-  userId = '1000'
-) => {
-  return {
-    _id,
-    subject,
-    description,
-    groupedPoints,
-    demInfo,
-    userId,
-  }
-}
+import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator, buildApiDecorator } from './common'
+import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 
 const pointItems = Array.from({ length: 30 }, (_, index) => ({
   _id: index + 'a', //
@@ -33,12 +12,16 @@ const pointItems = Array.from({ length: 30 }, (_, index) => ({
   userId: '1000' + index,
 }))
 
-const defaultSharedPointsWhyStep = {
-  mosts: [pointItems[1], pointItems[2]],
-  leasts: [pointItems[3], pointItems[4]],
-  whyMosts: [pointItems[1], pointItems[2]],
-  whyLeasts: [pointItems[3], pointItems[4]],
-}
+// Generate demographic data for each point
+const demInfoByPointId = pointItems.reduce((acc, point, index) => {
+  acc[point._id] = {
+    yearOfBirth: (1960 + index).toString(), // Increments from 1960 to 1989
+    stateOfResidence: ['California', 'Texas', 'New York', 'Florida', 'Illinois'][index % 5],
+    politicalParty: ['Democrat', 'Republican', 'Independent', 'Green', 'Libertarian'][index % 5],
+    shareInfo: 'Yes',
+  }
+  return acc
+}, {})
 
 const reviewPoint1 = {
   point: pointItems[0],
@@ -96,7 +79,7 @@ const startingQuestionAnswerStep = {
 
 const whyQuestionAnswerStep = 'Why should everyone consider solving this issue?'
 
-const testSteps = [
+export const tournamentSteps = [
   {
     webComponent: 'Answer',
     stepName: 'Answer',
@@ -180,6 +163,66 @@ const testSteps = [
     reviewPoints: [reviewPoint1, reviewPoint2, reviewPoint3],
   },
   {
+    webComponent: 'Jsform',
+    name: 'earlyFeedback',
+    stepName: 'Feedback',
+    allowedRounds: [0], // only show this step in round 0
+    stepIntro: {
+      subject: 'Feedback',
+      description: "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters.",
+    },
+    schema: {
+      type: 'object',
+      properties: {
+        experience: {
+          title: 'Rating',
+          type: 'string',
+          enum: ['Very Positive', 'Somewhat Positive', 'Neutral', 'Somewhat Negative', 'Very Negative'],
+        },
+        comfort: {
+          title: 'Rating',
+          type: 'string',
+          enum: ['Very Comfortable', 'Somewhat Comfortable', 'Neutral', 'Somewhat Uncomfortable', 'Very Uncomfortable'],
+        },
+        interest: {
+          title: 'Rating',
+          type: 'string',
+          enum: ['Very Interested', 'Somewhat Interested', 'Neutral', 'Somewhat Uninterested', 'Very Uninterested'],
+        },
+        improvements: {
+          title: 'Description',
+          type: 'string',
+        },
+      },
+    },
+    uischema: {
+      type: 'VerticalLayout',
+      elements: [
+        { type: 'H', text: 'How has your experience been so far?' },
+        {
+          type: 'Control',
+          scope: '#/properties/experience',
+        },
+        { type: 'H', text: 'How comfortable would you feel inviting close friends or family to participate in this discussion too?' },
+        {
+          type: 'Control',
+          scope: '#/properties/comfort',
+        },
+        { type: 'H', text: 'How interested are you in getting to the next round of this discussion?' },
+        {
+          type: 'Control',
+          scope: '#/properties/interest',
+        },
+        { type: 'H', text: 'What can we do to make this tool better?' },
+        {
+          type: 'Control',
+          scope: '#/properties/improvements',
+          options: { multi: true, rows: 5 },
+        },
+      ],
+    },
+  },
+  {
     webComponent: 'Intermission',
     stepName: 'Intermission',
     stepIntro: {
@@ -187,20 +230,19 @@ const testSteps = [
       description: 'When more people have gotten to this point we will invite you back to continue the deliberation.',
     },
     user: { email: 'example@gmail.com', tempid: '123456' },
-    round: 1,
-    lastRound: 2,
   },
 ]
 
 export default {
   component: Tournament,
   args: {
-    steps: testSteps,
+    steps: tournamentSteps,
   },
   parameters: {
     layout: 'fullscreen',
   },
   decorators: [DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator],
+  excludeStories: ['tournamentDecorators', 'tournamentDefaultValue', 'tournamentSteps'],
 }
 
 function makePoints(n) {
@@ -208,52 +250,129 @@ function makePoints(n) {
 }
 const pointList = makePoints(9)
 
+// Add demographic data for pointList items
+pointList.forEach((point, index) => {
+  demInfoByPointId[point._id] = {
+    yearOfBirth: (1990 + index).toString(), // Increments from 1990
+    stateOfResidence: ['California', 'Texas', 'New York', 'Florida', 'Illinois'][index % 5],
+    politicalParty: ['Democrat', 'Republican', 'Independent', 'Green', 'Libertarian'][index % 5],
+    shareInfo: 'Yes',
+  }
+})
+
 let id = 100
 function make5Whys(points, category) {
-  return points.map(point => Array.from({ length: 5 }, (_, i) => ({ _id: id++, subject: `Why ${category} ` + point._id + i, description: `Why ${category} Description ` + point._id + i, parentId: point._id, category })))
+  return points.map(point =>
+    Array.from({ length: 5 }, (_, i) => {
+      const whyPoint = { _id: id++, subject: `Why ${category} ` + point._id + i, description: `Why ${category} Description ` + point._id + i, parentId: point._id, category }
+      // Add demographic data for why points
+      demInfoByPointId[whyPoint._id] = {
+        yearOfBirth: (1970 + (id % 30)).toString(), // Increments based on id
+        stateOfResidence: ['California', 'Texas', 'New York', 'Florida', 'Illinois'][id % 5],
+        politicalParty: ['Democrat', 'Republican', 'Independent', 'Green', 'Libertarian'][id % 5],
+        shareInfo: 'Yes',
+      }
+      return whyPoint
+    })
+  )
 }
 function byId(docs) {
   return docs.reduce((byId, doc) => ((byId[doc._id] = doc), byId), {})
 }
-export const Default = {
-  args: {
-    testSteps,
-    defaultValue: {
-      // this goes into the deliberation context
-      userId: '67bf9d6ae49200d1349ab34a',
-      discussionId: '5d0137260dacd06732a1d814',
-      pointById: byId(pointList),
-      groupIdsLists: [],
-      randomWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
-      whyRankByParentId: {},
-      topWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
-      postRankByParentId: {},
-    },
+
+function byParentIdList(docs) {
+  return docs.reduce((byPId, doc) => (byPId[doc.parentId] ? byPId[doc.parentId].push(doc) : (byPId[doc.parentId] = [doc]), byPId), {})
+}
+
+// export so they can be used in other stories like civil-pursuit
+export const tournamentDecorators = [
+  Story => {
+    // Each DemInfoProvider has its own requestedById tracking
+
+    // DemInfoSetup runs inside the provider so useContext works correctly
+    const DemInfoSetup = () => {
+      const { upsert } = React.useContext(DemInfoContext)
+      React.useEffect(() => {
+        if (upsert) {
+          upsert({
+            uischema: {
+              type: 'VerticalLayout',
+              elements: [
+                { type: 'Control', scope: '#/properties/yearOfBirth' },
+                { type: 'Control', scope: '#/properties/stateOfResidence' },
+                { type: 'Control', scope: '#/properties/politicalParty' },
+              ],
+            },
+          })
+        }
+      }, [upsert])
+      return null
+    }
+
+    return (
+      <DemInfoProvider>
+        <DemInfoSetup />
+        <Story />
+      </DemInfoProvider>
+    )
   },
-  render: args => {
-    useState(() => {
-      // execute this code once, before the component is initally rendered
-      // the api call will provide the new data for this step
-      window.socket._socketEmitHandlerResults['get-user-ranks'] = []
-      window.socket._socketEmitHandlers['get-user-ranks'] = (discussionId, round, ids, cb) => {
-        window.socket._socketEmitHandlerResults['get-user-ranks'].push([discussionId, round, ids])
-        setTimeout(() => {
-          cb([]) // return empty ranks
-        })
-      }
-      window.socket._socketEmitHandlerResults['get-points-of-ids'] = []
-      window.socket._socketEmitHandlers['upsert-rank'] = (rank, cb) => {
-        window.socket._socketEmitHandlerResults['upsert-rank'].push([rank])
-        cb && cb()
-      }
-      window.socket._socketEmitHandlerResults['upsert-rank'] = []
-      window.socket._socketEmitHandlers['get-why-ranks-and-points'] = (discussionId, round, mostIds, leastIds, cb) => {
-        cb({
-          ranks: [],
-          whys: [],
-        })
+  buildApiDecorator('get-user-ranks', []),
+  buildApiDecorator('get-points-of-ids', []),
+  buildApiDecorator('get-why-ranks-and-points', { ranks: [], whys: [] }),
+  buildApiDecorator('get-user-post-ranks-and-top-ranked-whys', (discussionId, round, parentIds, cb) => {
+    // Return ranks and whys for the review step (RerankStep)
+    const ranks = [] // Empty ranks array - user hasn't ranked yet in this step
+    const whys = make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())
+    cb({ ranks, whys })
+  }),
+  buildApiDecorator('upsert-rank', () => {}),
+  buildApiDecorator('get-conclusion', (discussionId, cb) => {
+    cb && cb([{ point: pointList[0], mosts: make5Whys([pointList[0]], 'most').flat(), leasts: make5Whys([pointList[0]], 'least').flat(), counts: { most: 7, neutral: 2, least: 5 } }])
+  }),
+  buildApiDecorator('get-dem-info', (pointIds, cb) => {
+    const demInfo = {}
+    pointIds.forEach(id => {
+      if (demInfoByPointId[id]) {
+        demInfo[id] = demInfoByPointId[id]
       }
     })
-    return <Tournament {...args} />
+    cb(demInfo)
+  }),
+  // subscribe-deliberation is at the end so it can be sliced off and replaced
+  buildApiDecorator('subscribe-deliberation', (discussionId, requestHandler, updateHandler) => {
+    requestHandler({ uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }], lastRound: 0, participants: 20 })
+  }),
+]
+
+export const tournamentDefaultValue = {
+  // this goes into the deliberation context
+  userId: '67bf9d6ae49200d1349ab34a',
+  discussionId: '5d0137260dacd06732a1d814',
+  dturn: { finalRound: 2 },
+  pointById: byId(pointList),
+  groupIdsLists: [],
+  randomWhyById: byId(make5Whys(pointList, 'most').flat().concat(make5Whys(pointList, 'least').flat())),
+  whyRankByParentId: {},
+  postRankByParentId: {},
+}
+
+export const Normal = {
+  args: {
+    testSteps: tournamentSteps,
+    defaultValue: tournamentDefaultValue,
   },
+  decorators: [...tournamentDecorators],
+}
+
+export const NotEnoughParticipantsYet = {
+  args: {
+    testSteps: tournamentSteps,
+    defaultValue: tournamentDefaultValue,
+  },
+  decorators: [
+    ...tournamentDecorators.slice(0, -1),
+    buildApiDecorator('subscribe-deliberation', (discussionId, requestHandler, updateHandler) => {
+      requestHandler({ uInfo: [{ shownStatementIds: {}, userId: '67bf9d6ae49200d1349ab34a' }], lastRound: 0, participants: 1 })
+    }),
+  ],
 }
