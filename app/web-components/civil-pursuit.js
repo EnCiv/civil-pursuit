@@ -69,12 +69,12 @@ function CivilPursuitContent({ subject, description, steps, user, _id, minPartic
   return (
     <div className={cx(classes.civilPursuit)}>
       <InvisibleButton />
-      <QuestionBox 
-        className={classes.question} 
-        subject={subject} 
-        description={description} 
-        children={[<ParticipantsBadge minParticipants={minParticipants} />, <DeliberationStats />]} 
-      />
+      <QuestionBox className={classes.question} subject={subject} description={description}>
+        <div>
+          <ParticipantsBadge minParticipants={minParticipants} />
+        </div>
+        <DeliberationStats />
+      </QuestionBox>
       <Level>
         <StepSlider className={classes.stepPadding} children={children} user={user} discussionId={_id} />
       </Level>
