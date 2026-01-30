@@ -13,12 +13,14 @@ const DeliberationStats = props => {
   }
 
   return (
-    <div className={cx(classes.status, className)} {...otherProps}>
-      {Object.entries(status).map(([key, value]) => (
-        <div key={key} className={classes.statusItem}>
-          <strong>{key}:</strong> {typeof value !== 'undefined' ? JSON.stringify(value, null, 2) : ''}
-        </div>
-      ))}
+    <div className={className} {...otherProps}>
+      <div className={cx(classes.status)}>
+        {Object.entries(status).map(([key, value]) => (
+          <div key={key} className={classes.statusItem}>
+            <strong>{key}:</strong> {typeof value !== 'undefined' ? JSON.stringify(value, null, 2) : ''}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
