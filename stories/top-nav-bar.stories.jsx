@@ -118,6 +118,63 @@ export const MakeSureDropDownsAppear = {
   ],
 }
 
+export const VerifyDropDownFAQVisible = {
+  args: {
+    menu: menuArray,
+    defaultSelectedItem: 'Home',
+    UserOrSignInUp,
+  },
+  decorators: [
+    Story => {
+      return (
+        <>
+          <Story />
+          <div style={{ position: 'relative', backgroundColor: 'blue', width: '100%', height: '30rem' }}></div>
+        </>
+      )
+    },
+  ],
+  play: async ({ canvasElement }) => {
+    await Common.asyncSleep(1000)
+    const canvas = within(canvasElement)
+    const aboutButton = canvas.getByText('About \u25BE')
+
+    // Initially, FAQ should not be in the document or should be hidden
+    expect(canvas.queryByText('FAQ')).toBeNull()
+
+    // Hover over the About button
+    userEvent.hover(aboutButton)
+    await Common.asyncSleep(600)
+
+    // Now verify that the FAQ item is visible in the dropdown
+    const faqButton = canvas.getByText('FAQ')
+    expect(faqButton).toBeVisible()
+    expect(faqButton).toBeInTheDocument()
+
+    // Verify that Contact is also visible
+    const contactButton = canvas.getByText('Contact')
+    expect(contactButton).toBeVisible()
+    expect(contactButton).toBeInTheDocument()
+
+    // Verify the dropdown menu itself is visible (find parent div containing the dropdown items)
+    const dropdownMenu = faqButton.parentElement
+    expect(dropdownMenu).toBeVisible()
+    expect(dropdownMenu).toBeInTheDocument()
+
+    // Check that FAQ is actually visually accessible by checking what element is at its center point
+    const faqRect = faqButton.getBoundingClientRect()
+    const centerX = faqRect.left + faqRect.width / 2
+    const centerY = faqRect.top + faqRect.height / 2
+
+    // Get the topmost element at the FAQ button's center position
+    const elementAtPoint = document.elementFromPoint(centerX, centerY)
+
+    // The element at this point should be either the FAQ button itself or one of its descendants
+    // If it's the blue div or something else, the FAQ is covered
+    expect(elementAtPoint === faqButton || faqButton.contains(elementAtPoint)).toBeTruthy()
+  },
+}
+
 export const ClickMenuItem = {
   args: {
     menu: menuArray,
@@ -187,6 +244,44 @@ export const TransparentMobileMode = {
   args: {
     menu: menuArray,
     mode: 'transparent',
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphonex',
+    },
+  },
+}
+
+export const DarkTransparentMode = {
+  args: {
+    menu: menuArray,
+    mode: 'dark-transparent',
+  },
+}
+
+export const DarkTransparentMobileMode = {
+  args: {
+    menu: menuArray,
+    mode: 'dark-transparent',
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'iphonex',
+    },
+  },
+}
+
+export const LightTransparentMode = {
+  args: {
+    menu: menuArray,
+    mode: 'light-transparent',
+  },
+}
+
+export const LightTransparentMobileMode = {
+  args: {
+    menu: menuArray,
+    mode: 'light-transparent',
   },
   parameters: {
     viewport: {
