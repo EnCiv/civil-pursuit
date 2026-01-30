@@ -1,50 +1,80 @@
 // https://github.com/EnCiv/civil-pursuit/issues/100
 // https://github.com/EnCiv/civil-pursuit/issues/221
-import React, { useState } from 'react'
+// https://github.com/EnCiv/civil-pursuit/issues/224
+
+/**
+ * # QuestionBox
+ *
+ * A styled container for displaying questions with optional tagline, subject, description, and children.
+ *
+ * ## Props
+ *
+ * - `className` (string, default: '') - Additional CSS class names to apply to the outer container
+ * - `subject` (string, default: '') - Main subject/title text displayed prominently
+ * - `description` (string, default: '') - Description text that supports Markdown formatting
+ * - `contentAlign` (string, default: 'center') - Alignment for content ('center', 'left', or 'right')
+ * - `tagline` (string, default: '') - Optional tagline displayed above the subject
+ * - `children` (React.ReactNode|Array, optional) - Child components to render below the description
+ *
+ * ## Children Behavior
+ *
+ * - Each child element is rendered as a separate row in a flex column layout
+ * - Children are cloned and receive merged className props including alignment styles
+ * - **Children must accept className prop and spread it to their outer element**
+ * - The `contentAlign` prop controls horizontal alignment (justifyContent) of each child
+ * - Can pass children as an array prop or use JSX children syntax
+ *
+ * ## Examples
+ *
+ * Using JSX children syntax:
+ * ```jsx
+ * <QuestionBox subject="Question?" contentAlign="left">
+ *   <StatusBadge name="100 participants" />
+ *   <PrimaryButton>Continue</PrimaryButton>
+ * </QuestionBox>
+ * ```
+ *
+ * Using children as array prop:
+ * ```jsx
+ * <QuestionBox
+ *   subject="Question?"
+ *   contentAlign="center"
+ *   children={[<StatusBadge />, <PrimaryButton />]}
+ * />
+ * ```
+ *
+ * See stories in question-box.stories.jsx for more examples.
+ */
+
+import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import StatusBadge from './status-badge'
 import Markdown from 'markdown-to-jsx'
-import DeliberationContext from './deliberation-context'
 
 const QuestionBox = props => {
-  const { className = '', subject = '', description = '', discussionId, contentAlign = 'center', tagline = '', minParticipants = 0, ...otherProps } = props
+  const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', children = [], ...otherProps } = props
   const classes = useStylesFromThemeFunction({ ...props, contentAlign })
-  const { data } = React.useContext(DeliberationContext)
-  const participants = data?.participants
-  const badgeName = `${participants || 0} participant` + (participants > 1 ? 's' : '')
-  const [status, setStatus] = useState(null)
-  const detectStatus = event => {
-    window.socket.emit('get-discussion-status', discussionId, status => {
-      if (!status) return
-      setStatus(status)
-    })
-  }
 
   return (
     <div className={cx(classes.questionBox, className)} {...otherProps}>
-      <div className={classes.invisibleButtonInUpperRight} onClick={detectStatus} />
       <div className={classes.topic}>
         {tagline && <div className={classes.fixedText}>{tagline}</div>}
         <h1 className={classes.subject}>{subject}</h1>
         <div className={classes.description}>
           <Markdown>{description}</Markdown>
         </div>
+        <div className={classes.children}>
+          {React.Children.map(children, (child, index) =>
+            child
+              ? React.cloneElement(child, {
+                  key: index,
+                  ...child.props,
+                  className: cx(child.props?.className, classes.item, classes[`align${contentAlign.charAt(0).toUpperCase() + contentAlign.slice(1)}`]),
+                })
+              : null
+          )}
+        </div>
       </div>
-      {!!participants && participants >= minParticipants && (
-        <div className={classes.participants}>
-          <StatusBadge name={badgeName} status="" />
-        </div>
-      )}
-      {status && (
-        <div className={classes.status}>
-          {Object.entries(status).map(([key, value]) => (
-            <div key={key} className={classes.statusItem}>
-              <strong>{key}:</strong> {typeof value !== undefined ? JSON.stringify(value, null, 2) : ''}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   )
 }
@@ -108,22 +138,25 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: theme.colors.primaryButtonBlue,
     textAlign: 'left',
   },
-
-  participants: {
+  children: {
     display: 'flex',
-    alignItems: 'center',
-    paddingTop: '1.6875rem',
+    flexDirection: 'column',
+    gap: '2.5rem',
+    padding: '1rem 0',
   },
-  status: {
-    marginTop: '2rem',
+  item: {
+    display: 'flex',
+    flex: 1,
+    gap: '1rem',
   },
-  invisibleButtonInUpperRight: {
-    width: '1rem',
-    height: '1rem',
-    position: 'absolute',
-    backgroundColor: 'transparent',
-    right: 0,
-    top: 0,
+  alignCenter: {
+    justifyContent: 'center',
+  },
+  alignLeft: {
+    justifyContent: 'flex-start',
+  },
+  alignRight: {
+    justifyContent: 'flex-end',
   },
 }))
 
