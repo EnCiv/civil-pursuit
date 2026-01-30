@@ -1,6 +1,12 @@
 // https://github.com/EnCiv/civil-pursuit/issues/129
 
 import { Collection } from '@enciv/mongo-collections'
+import Joi from 'joi'
+import JoiObjectID from 'joi-objectid'
+import enforceRequiredFields from './lib/enforceRequiredFields'
+import Validation from './lib/validation'
+
+Joi.objectId = JoiObjectID(Joi)
 
 class Points extends Collection {
   static collectionName = 'points' // name of the collection in MongoDB
@@ -8,12 +14,27 @@ class Points extends Collection {
   // Optional: Collection options objectt as defined in MongoDB createCollection
   static collectionOptions = {}
 
-  // Optional: Validation function
-  static validate(doc) {
-    if (typeof doc.subject !== 'string' || typeof doc.description !== 'string') {
-      return { error: 'subject and description are required strings' }
+  // Optional: indexes array as defined in db.collection.createIndexes
+  static collectionIndexes = [{ key: { subject: 1 }, name: 'subject_index', unique: false }]
+
+  static joiSchema = Joi.object({
+    _id: Validation.ObjectID(),
+    subject: Validation.String(),
+    description: Validation.String(),
+    parentId: Validation.String(),
+    category: Validation.String(),
+    userId: Validation.String(),
+    round: Validation.Number(), // for whys
+  })
+
+  static validate(doc, requiredFields) {
+    const schema = requiredFields ? enforceRequiredFields(this.joiSchema, requiredFields) : this.joiSchema
+
+    const { error, value } = schema.validate(doc)
+    if (error) {
+      return { error: error.details[0].message }
     }
-    return { result: doc }
+    return { result: value }
   }
 }
 

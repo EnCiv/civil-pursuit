@@ -71,6 +71,7 @@ export default async function getConclusion(discussionId, cb) {
       ]).toArray()
 
       const point = await Point.findOne({ _id: new ObjectId(statementId) })
+
       const convertedPoint = { ...point, _id: point._id.toString() }
       const newCounts = counts[0]?.countByCategory || {}
       ;['most', 'neutral', 'least'].forEach(cat => {
