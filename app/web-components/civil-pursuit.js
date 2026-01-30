@@ -14,6 +14,8 @@ import SignUp from '../components/sign-up'
 import Jsform from '../components/jsform'
 import Tournament from '../components/tournament'
 import Conclusion from '../components/steps/conclusion'
+import ParticipantsBadge from '../components/participants-badge'
+import { useDeliberationStats } from '../components/use-deliberation-stats'
 
 const WebComponents = {
   SignUp: SubWrap(SignUp),
@@ -55,9 +57,28 @@ function CivilPursuitStaticContent(props) {
   const { subject, description, _id, minParticipants, user, children } = props
   // tournaments steps should get user from deliberation context, but signup does not use context and expect user as a props.
   const classes = useStylesFromThemeFunction()
+  const [DeliberationStats, InvisibleButton] = useDeliberationStats(_id)
+
+  // upsert uischema into DemInfoContext
+  try {
+    const { upsert } = useDemInfoContext()
+    React.useEffect(() => {
+      const stepsList = steps || []
+      const moreDetailsStep = stepsList.find(s => s.webComponent === 'Jsform' && s.name === 'moreDetails')
+      if (moreDetailsStep?.uischema) upsert({ uischema: moreDetailsStep.uischema })
+    }, [steps, upsert])
+  } catch (e) {
+    // if context not available, skip
+  }
   return (
     <div className={cx(classes.civilPursuit)}>
-      <QuestionBox className={classes.question} subject={subject} description={description} discussionId={_id} minParticipants={minParticipants} />
+      <InvisibleButton />
+      <QuestionBox className={classes.question} subject={subject} description={description}>
+        <div>
+          <ParticipantsBadge minParticipants={minParticipants} />
+        </div>
+        <DeliberationStats />
+      </QuestionBox>
       <Level>
         <StepSlider className={classes.stepPadding} children={children} discussionId={_id} user={user} />
       </Level>
@@ -92,6 +113,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginTop: '6rem',
   },
   civilPursuit: {
+    position: 'relative',
     width: '100%',
     maxWidth: theme.maxPanelWidth,
     marginLeft: 'auto',
