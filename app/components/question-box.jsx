@@ -2,20 +2,49 @@
 // https://github.com/EnCiv/civil-pursuit/issues/221
 // https://github.com/EnCiv/civil-pursuit/issues/224
 
-/* 
-  Each element in the children array is a row,
-  while each item in each subarray is a component. 
-
-  Defaults to flex display and even spacing.
-  Grouping items together will disable that and justify the row's content.
-
-  Ex. children: [row1, row2] 
-
-  row1 = [[item1, item2]] (nested array, items are all justified left or right)
-  row2 = [item1, item2] (flat array, items are spaced evenly in parent's width)
-
-  See stories in question-box.stories.jsx for examples.
-*/
+/**
+ * # QuestionBox
+ *
+ * A styled container for displaying questions with optional tagline, subject, description, and children.
+ *
+ * ## Props
+ *
+ * - `className` (string, default: '') - Additional CSS class names to apply to the outer container
+ * - `subject` (string, default: '') - Main subject/title text displayed prominently
+ * - `description` (string, default: '') - Description text that supports Markdown formatting
+ * - `contentAlign` (string, default: 'center') - Alignment for content ('center', 'left', or 'right')
+ * - `tagline` (string, default: '') - Optional tagline displayed above the subject
+ * - `children` (React.ReactNode|Array, optional) - Child components to render below the description
+ *
+ * ## Children Behavior
+ *
+ * - Each child element is rendered as a separate row in a flex column layout
+ * - Children are cloned and receive merged className props including alignment styles
+ * - **Children must accept className prop and spread it to their outer element**
+ * - The `contentAlign` prop controls horizontal alignment (justifyContent) of each child
+ * - Can pass children as an array prop or use JSX children syntax
+ *
+ * ## Examples
+ *
+ * Using JSX children syntax:
+ * ```jsx
+ * <QuestionBox subject="Question?" contentAlign="left">
+ *   <StatusBadge name="100 participants" />
+ *   <PrimaryButton>Continue</PrimaryButton>
+ * </QuestionBox>
+ * ```
+ *
+ * Using children as array prop:
+ * ```jsx
+ * <QuestionBox
+ *   subject="Question?"
+ *   contentAlign="center"
+ *   children={[<StatusBadge />, <PrimaryButton />]}
+ * />
+ * ```
+ *
+ * See stories in question-box.stories.jsx for more examples.
+ */
 
 import React from 'react'
 import { createUseStyles } from 'react-jss'
@@ -35,17 +64,15 @@ const QuestionBox = props => {
           <Markdown>{description}</Markdown>
         </div>
         <div className={classes.children}>
-          {children?.map((row, rowIndex) => (
-            <div key={rowIndex} className={classes.row}>
-              {row.length
-                ? row.map((item, itemIndex) => (
-                    <div key={itemIndex} className={classes.item}>
-                      {item}
-                    </div>
-                  ))
-                : row}
-            </div>
-          ))}
+          {React.Children.map(children, (child, index) =>
+            child
+              ? React.cloneElement(child, {
+                  key: index,
+                  ...child.props,
+                  className: cx(child.props?.className, classes.item, classes[`align${contentAlign.charAt(0).toUpperCase() + contentAlign.slice(1)}`]),
+                })
+              : null
+          )}
         </div>
       </div>
     </div>
@@ -111,16 +138,25 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: theme.colors.primaryButtonBlue,
     textAlign: 'left',
   },
-  children: {},
-  row: {
+  children: {
     display: 'flex',
-    gap: '1rem',
+    flexDirection: 'column',
+    gap: '2.5rem',
     padding: '1rem 0',
   },
   item: {
     display: 'flex',
     flex: 1,
     gap: '1rem',
+  },
+  alignCenter: {
+    justifyContent: 'center',
+  },
+  alignLeft: {
+    justifyContent: 'flex-start',
+  },
+  alignRight: {
+    justifyContent: 'flex-end',
   },
 }))
 

@@ -39,7 +39,7 @@ export const Mobile = Template.bind({})
 Mobile.args = {
   subject: 'What one issue should ‘We the People’ unite and solve first to make our country even better?',
   description: 'This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. **We’re asking about concerns, not solutions.**',
-  children: [[<StatusBadge status="Progress" name="1009 participants" />]],
+  children: [<StatusBadge status="Progress" name="1009 participants" />],
   tagline: 'Civil Pursuit',
 }
 Mobile.parameters = {
@@ -52,7 +52,11 @@ export const NoTagline = Template.bind({})
 NoTagline.args = {
   subject: 'What one issue should ‘We the People’ unite and solve first to make our country even better?',
   description: 'This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. We’re asking about concerns, not solutions.',
-  children: [[<StatusBadge status="Progress" name="1009 participants" />]],
+  children: [
+    <div>
+      <StatusBadge status="Progress" name="1009 participants" />
+    </div>,
+  ],
 }
 
 export const Left = Template.bind({})
@@ -60,26 +64,33 @@ Left.args = {
   subject: 'What one issue should ‘We the People’ unite and solve first to make our country even better?',
   description: 'This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. We’re asking about concerns, not solutions.',
   contentAlign: 'left',
-  children: [[<StatusBadge status="Progress" name="1009 participants" />]],
+  children: (
+    <div>
+      <StatusBadge status="Progress" name="1009 participants" />
+    </div>
+  ),
   tagline: 'Civil Pursuit',
 }
+
+const TwoStatusBadges = props => (
+  <div {...props}>
+    <StatusBadge name="509 participants" />
+    <StatusBadge status="Complete" name="Complete" />
+  </div>
+)
+const TwoButtons = props => (
+  <div {...props}>
+    <PrimaryButton title="View Summary">View Summary</PrimaryButton>
+    <SecondaryButton title="View My Activity">View My Activity</SecondaryButton>
+  </div>
+)
 
 export const WithChildren = Template.bind({})
 WithChildren.args = {
   subject: 'What one issue should ‘We the People’ unite and solve first to make our country even better?',
   description: 'This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. **We’re asking about concerns, not solutions.**',
   contentAlign: 'left',
-  children: [
-    [[<StatusBadge name="509 participants" />, <StatusBadge status="Complete" name="Complete" />]],
-    [
-      <PrimaryButton title="View Summary" style={{ width: 100 + '%' }}>
-        View Summary
-      </PrimaryButton>,
-      <SecondaryButton title="View My Activity" style={{ width: 100 + '%' }}>
-        View My Activity
-      </SecondaryButton>,
-    ],
-  ],
+  children: [<TwoStatusBadges />, <TwoButtons />],
 }
 
 export const WithChildren2 = Template.bind({})
@@ -88,11 +99,28 @@ WithChildren2.args = {
   description: 'This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. **We’re asking about concerns, not solutions.**',
   contentAlign: 'left',
   children: [
-    [[<StatusBadge name="509 participants" />, <StatusBadge status="Progress" name="Round 3" />]],
-    [
-      <ModifierButton title="View Summary" style={{ width: 100 + '%' }}>
-        View Summary
-      </ModifierButton>,
-    ],
+    <div>
+      <StatusBadge name="509 participants" />
+      <StatusBadge status="Progress" name="Round 3" />
+    </div>,
+    <ModifierButton title="View Summary" style={{ width: 100 + '%' }}>
+      View Summary
+    </ModifierButton>,
   ],
+}
+
+export const WithChildrenWithRender = {
+  args: {
+    subject: 'What one issue should ‘We the People’ unite and solve first to make our country even better?',
+    description: 'This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. **We’re asking about concerns, not solutions.**',
+    contentAlign: 'center',
+  },
+  render: props => {
+    return (
+      <QuestionBox {...props}>
+        <TwoStatusBadges />
+        <TwoButtons />
+      </QuestionBox>
+    )
+  },
 }
