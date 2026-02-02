@@ -116,6 +116,7 @@ export const UserEntersInitialData = {
       reducedPointList,
       preRankByParentId: preRankByParentId,
       myWhyByCategoryByParentId: {},
+      storageAvailable: false,
     },
     category: 'most',
     intro: "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it",
@@ -192,6 +193,7 @@ export const UserUpdatesExistingData = {
     defaultValue: {
       reducedPointList: reducedPointList,
       preRankByParentId: preRankByParentId,
+      storageAvailable: false,
     },
     myWhyByCategoryByParentId: myWhyByCategoryByParentId, // will be used by get-user-whys
     category: 'most',

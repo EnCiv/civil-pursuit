@@ -33,6 +33,15 @@ jest.mock('react-accessible-headings', () => {
   }
 })
 
+jest.mock('civil-client', () => {
+  return {
+    useAuth: jest.fn(() => ({
+      user: { id: 'test-user-id' },
+      loading: false,
+    })),
+  }
+})
+
 describe('test deriveMyAnswerAndMyWhy', () => {
   // for deriver tests we keep building on the same data object, rather than a new one every time
   // because an important part of testing is to make sure what's should change is changed, and what shouldn't change doesn't change between calls

@@ -100,8 +100,32 @@ export const Full = {
   },
   decorators: [...tournamentDecorators, ...jsFormDecorators],
 }
+export const FullClearStorage = {
+  render: args => {
+    // clear localStorage on mount
+    React.useState(() => localStorage?.clear())
+    return <CivilPursuit {...args} />
+  },
+  args: {
+    subject: 'What One Issue Should We The People Unite and Solve First?',
+    description:
+      'This is a large scale online discussion with the purpose of starting unbiased, and thoughtful conversations, that lead to amazing new solutions. **But here, we are asking about concerns**, we will get to the solutions later.',
+    steps: testSteps,
+    user: { email: 'success@email.com', id: '67bf9d6ae49200d1349ab34a' },
+    userId: '67bf9d6ae49200d1349ab34a',
+    participants: 1,
+    ...tournamentDefaultValue,
+    _id: '5d0137260dacd06732a1d814',
+  },
+  decorators: [...tournamentDecorators, ...jsFormDecorators],
+}
 
 export const WithoutTournament = {
+  render: args => {
+    // clear localStorage on mount
+    React.useState(() => localStorage?.clear())
+    return <CivilPursuit {...args} />
+  },
   args: {
     subject: 'What One Issue Should We The People Unite and Solve First?',
     description:

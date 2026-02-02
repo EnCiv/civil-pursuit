@@ -152,13 +152,13 @@ export const StepSlider = props => {
       ...children[currentStep].props,
       key: currentStep,
       onDone: ({ valid, value, onNext }) => {
+        if (valid && onNext) _this.onNexts[currentStep] = onNext // save onNext for later use
+        else delete _this.onNexts[currentStep] // delete onNext if not valid
         if (valid && value === 'skip') {
           dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: true } })
           dispatch({ type: 'increment' })
         } else if (valid && typeof stepNameToIndex[value] === 'number') dispatch({ type: 'moveTo', to: stepNameToIndex[value] })
         else dispatch({ type: 'updateStatuses', payload: { valid, index: currentStep, skip: value === 'skip' } })
-        if (valid && onNext) _this.onNexts[currentStep] = onNext // save onNext for later use
-        else delete _this.onNexts[currentStep] // delete onNext if not valid
       },
     })
   }
@@ -174,7 +174,14 @@ export const StepSlider = props => {
   }
   if (typeof window !== 'undefined')
     useLayoutEffect(() => {
-      if (state.nextStep != state.currentStep) dispatch({ type: 'transitionBegin' })
+      if (state.nextStep != state.currentStep) {
+        // Set data-transition-complete and data-height-stable for testing: allows Storybook tests to wait for CSS transitions to finish
+        if (stepChildRapper.current) {
+          stepChildRapper.current.setAttribute('data-transition-complete', 'false')
+          stepChildRapper.current.setAttribute('data-height-stable', 'false')
+        }
+        dispatch({ type: 'transitionBegin' })
+      }
     }, [state.nextStep])
 
   // ResizeObserver to update stepChildWrapper height when the current panel's height changes
@@ -186,6 +193,8 @@ export const StepSlider = props => {
     const wrapper = stepChildRapper.current
     const updateHeight = entries => {
       if (wrapper.style.height === panel.offsetHeight + 'px') return
+      // Height is changing - mark as unstable for testing
+      wrapper.setAttribute('data-height-stable', 'false')
       window.requestAnimationFrame(() => {
         wrapper.style.height = panel.offsetHeight + 'px'
       })
@@ -204,6 +213,11 @@ export const StepSlider = props => {
     if (!wrapper) return
     const handleTransitionEnd = e => {
       if (e.propertyName === 'left') {
+        // Set data-transition-complete for testing: signals when CSS transition finishes so tests can proceed reliably
+        wrapper.setAttribute('data-transition-complete', 'true')
+        // Set data-height-stable when CSS transition completes - height changes would have set it to false
+        // This signals all layout changes (CSS transition + height adjustments + scrollIntoView) are complete
+        wrapper.setAttribute('data-height-stable', 'true')
         dispatch({ type: 'transitionComplete' })
       }
     }
@@ -234,6 +248,8 @@ export const StepSlider = props => {
       <div className={classes.outerWrapper} ref={outerRef}>
         <div
           ref={stepChildRapper}
+          data-transitioning={state.transitions ? 'true' : 'false'}
+          data-current-step={state.currentStep}
           style={{
             left: -outerRect.width * state.currentStep + 'px',
             width: Math.max(outerRect.width, outerRect.clientWidth) * cachedChildren.length + 'px', // clientWidth is an integer and may get rounded up vs width in cases (desktop scaled monitor)

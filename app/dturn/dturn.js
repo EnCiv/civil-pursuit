@@ -130,7 +130,7 @@ async function insertStatementId(discussionId, userId, statementId) {
 
   // Only run updates if participants or round changes
   const participants = Object.keys(Discussions[discussionId].Uitems).length
-  const lastRound = Discussions[discussionId].lastRound ?? Object.keys(Discussions[discussionId].ShownStatements).length - 1
+  const lastRound = Discussions[discussionId].lastRound ?? Discussions[discussionId].ShownStatements.length - 1
 
   if (lastRound != Discussions[discussionId].lastRound || participants != Discussions[discussionId].participants) {
     Discussions[discussionId].participants = participants
@@ -225,14 +225,22 @@ async function getStatementIds(discussionId, round, userId) {
   if (round > Discussions[discussionId].finalRound) return undefined
 
   const dis = Discussions[discussionId]
+  if (round > 0 && !dis.Uitems[userId]?.[round - 1]?.finished) {
+    console.error(`User ${userId} called getStatementIds but has not finished round ${round - 1} in discussion ${discussionId}`)
+    return undefined
+  }
   const statementIds = []
   let authoredId // id of statement the user authored -- if the shownGroup is incomplete
   if (dis.Uitems?.[userId]?.[round]) {
     const sIds = Object.keys(dis.Uitems[userId][round].shownStatementIds)
-    if (round === 0 && sIds.length === 1 && dis.Uitems[userId][round].shownStatementIds[sIds[0]].author) {
+    if (round === 0 && sIds.length === 0) {
+      // late-signup user that hasn't inserted a statement yet
+    } else if (round === 0 && sIds.length === 1 && dis.Uitems[userId][round].shownStatementIds[sIds[0]].author) {
+      // user has inserted their statement, but hasn't been given a group yet
       statementIds.push(sIds[0])
       authoredId = sIds[0]
     } else if (sIds.length === dis.group_size) {
+      // user has already been given a group for this round
       return sIds
     } else {
       // this happened though it shouldn't. For the user, we need to do the best that we can. But we need to let the developers know that something is wrong.
@@ -240,13 +248,30 @@ async function getStatementIds(discussionId, round, userId) {
       return sIds
     }
   }
-  if (dis.ShownGroups[round]?.at(-1)?.shownCount < Math.pow(dis.group_size, round + 1)) {
-    if (authoredId && dis.ShownGroups[round].at(-1).statementIds.some(id => id === authoredId)) return // the user's statement is in the ShownGroup
-    for (const sId of dis.ShownGroups[round].at(-1).statementIds) statementIds.push(sId)
+  // user needs statements
+  const maxTimesToShowGroup = Math.pow(dis.group_size, round + 1) - (round === 0 ? 1 : 0) // how many times to show each group before moving to the next group
+  // get statementIds for the user, first try a shownGroup that hasn't been shown enough times yet
+  // because a user's inserted statementId could be in the shownGroup, we work with 2 possible shownGroups
+  // and we check to keep the shownGroup list sorted by shownCount
+  if (dis.ShownGroups[round]?.at(-1)?.shownCount < maxTimesToShowGroup && !(authoredId && dis.ShownGroups[round].at(-1).statementIds.some(id => id === authoredId))) {
+    // there is a group that hasn't been shown enough times yet
+    statementIds.push(...dis.ShownGroups[round].at(-1).statementIds)
     dis.ShownGroups[round].at(-1).shownCount++
+    if (dis.ShownGroups[round].at(-2)?.shownCount < dis.ShownGroups[round].at(-1).shownCount) {
+      // swap them to keep the list sorted
+      const temp = dis.ShownGroups[round].at(-2)
+      dis.ShownGroups[round][dis.ShownGroups[round].length - 2] = dis.ShownGroups[round][dis.ShownGroups[round].length - 1]
+      dis.ShownGroups[round][dis.ShownGroups[round].length - 1] = temp
+    }
+  } else if (dis.ShownGroups[round]?.at(-2)?.shownCount < maxTimesToShowGroup && !(authoredId && dis.ShownGroups[round].at(-2).statementIds.some(id => id === authoredId))) {
+    statementIds.push(...dis.ShownGroups[round].at(-2).statementIds)
+    dis.ShownGroups[round].at(-2).shownCount++
   } else if (round === 0) {
+    // we need to create a new group for round 0
     // find all the statements that need to be seen, and randomly pick GROUP_SIZE-1 -- because the user will add one of their own
-    const needToBeSeen = dis.ShownStatements[round].filter(sItem => sItem.statementId !== authoredId && sItem.shownCount < Math.pow(dis.group_size, round + 1)) //??? Should this GROUP_SIZE increase in situations where there are lots of similar ideas that get grouped - but not in round 0
+    const alreadyShownIds = new Set(dis.ShownGroups[round]?.flatMap(group => group.statementIds) || [])
+    alreadyShownIds.add(authoredId)
+    const needToBeSeen = dis.ShownStatements[round].filter(sItem => sItem.shownCount < maxTimesToShowGroup && !alreadyShownIds.has(sItem.statementId)) //??? Should this GROUP_SIZE increase in situations where there are lots of similar ideas that get grouped - but not in round 0
     const shownGroup = { statementIds: [], shownCount: 0 }
     if (needToBeSeen.length < dis.group_size - 1) return // don't create irregular size groups
     else if (needToBeSeen.length == dis.group_size - 1) {
@@ -265,6 +290,8 @@ async function getStatementIds(discussionId, round, userId) {
     dis.ShownGroups[round].push(shownGroup)
     shownGroup.shownCount++
   } else {
+    // we need to create a new group for this round > 0
+    const alreadyShownIds = new Set(dis.ShownGroups[round]?.flatMap(group => group.statementIds) || [])
     if (!dis.ShownStatements[round]) {
       // first time for this round, need to setup
       dis['lastRound'] = round
@@ -293,7 +320,10 @@ async function getStatementIds(discussionId, round, userId) {
     }
     if (dis.ShownStatements[round].length < dis.group_size) return
     const shownGroup = { statementIds: [], shownCount: 1 }
-    const needToBeSeen = dis.ShownStatements[round].filter(sItem => sItem.shownCount < dis.group_size) //??? Should TEN increase in situations where there are lots of similar ideas that get grouped - but not in round 0
+    // shownGroups differs from shownStatements by order and time. shownGroups is when it's shown to the user, shownStatements is after the users has seen it and ranked it
+    // wwe will need to consider that some users may never rank the statements from the shownGroups
+    // we need to consider when making new groups, that some statemeents are in a shownGroup that the user hasn't ranked yet but will before the expiration time
+    const needToBeSeen = dis.ShownStatements[round].filter(sItem => sItem.shownCount < dis.group_size && !alreadyShownIds.has(sItem.statementId)) //??? Should TEN increase in situations where there are lots of similar ideas that get grouped - but not in round 0
     let needToBeRemoved = []
     let shownItemsToRemove = []
     needToBeSeen.forEach(sItem => {
@@ -387,7 +417,7 @@ function deltaShownItemsRank(discussionId, round, statementId, delta) {
   const dis = Discussions[discussionId]
   const sitem = dis.ShownStatements[round].find(i => statementId === i.statementId)
   if (!sitem) {
-    console.error("incrementShownItemsRank couldn't find", statementId, 'for round', round)
+    console.error("deltaShownItemsRank couldn't find", statementId, 'for round', round)
     return
   }
   sitem.rank += delta
@@ -691,7 +721,7 @@ async function reconstructDiscussionFromUInfo(discussionId) {
   }
 
   // Set lastRound but don't send updates
-  Discussions[discussionId]['lastRound'] = Discussions[discussionId].ShownStatements.length
+  Discussions[discussionId]['lastRound'] = Discussions[discussionId].ShownStatements.length - 1
 }
 
 export async function getConclusionIds(discussionId) {

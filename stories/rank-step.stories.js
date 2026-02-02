@@ -168,7 +168,7 @@ export const onDoneIsCalledAfterUserChangesRank = {
 // and topWhyById and postRankByParentId which are for the simulated response to the get-user-post-ranks-and-top-ranked-whys socket api call
 function getRankArgsFrom(rankPoints) {
   const cn = rankPointsToContext(rankPoints)
-  const { preRankByParentId, ...defaultValue } = { ...cn, round, discussionId }
+  const { preRankByParentId, ...defaultValue } = { ...cn, round, discussionId, storageAvailable: false }
   return { preRankByParentId, defaultValue }
 }
 

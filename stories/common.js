@@ -30,6 +30,143 @@ export const buildApiDecorator = (handle, result) => {
   }
 }
 
+/**
+ * Decorator to intercept fetch calls to /api/batch-upsert-deliberation-data
+ * and track them in window.batchUpsertCalls for test assertions
+ *
+ * Usage: Add to decorators array after socketEmitDecorator
+ *
+ * This is needed because:
+ * - batch-upsert now uses HTTP fetch instead of socket.emit (to update cookies)
+ * - The Storybook middleware handles the server response
+ * - But tests need to verify what data was sent in the request body
+ */
+export const fetchInterceptorDecorator = Story => {
+  useState(() => {
+    // Initialize tracking array
+    if (!window.batchUpsertCalls) window.batchUpsertCalls = []
+
+    // Only intercept once
+    if (window._fetchIntercepted) return
+    window._fetchIntercepted = true
+
+    const originalFetch = window.fetch
+    window.fetch = async (url, options) => {
+      // Track batch-upsert calls
+      if (url === '/api/batch-upsert-deliberation-data' && options?.body) {
+        try {
+          const batchData = JSON.parse(options.body)
+          window.batchUpsertCalls.push(batchData)
+          console.log('🔍 Fetch interceptor captured batch-upsert call:', batchData)
+        } catch (e) {
+          console.error('fetchInterceptorDecorator: Failed to parse body', e)
+        }
+      }
+      // Call original fetch
+      return originalFetch(url, options)
+    }
+  })
+  return <Story />
+}
+
+/**
+ * Decorator to mock the /api/batch-upsert-deliberation-data HTTP endpoint
+ *
+ * Success conditions:
+ * - Email is blank/undefined (batch-upsert after email has been set)
+ * - Email is 'success@email.com' (test success case)
+ *
+ * Failure condition:
+ * - Any other email value (test error handling)
+ *
+ * Usage: Add to decorators array for stories that test batch-upsert flow
+ *
+ * This decorator properly chains with other fetch mocks by:
+ * - Storing handlers in window._fetchRouteHandlers map with { handler, calls } structure
+ * - Allowing multiple decorators to register route handlers
+ * - Only intercepting fetch once, then delegating to registered handlers
+ * - Calls are tracked in the route's calls array, also exposed as window.batchUpsertCalls for backward compatibility
+ */
+export const mockBatchUpsertDeliberationDataRoute = Story => {
+  useState(() => {
+    // Initialize handler registry if needed
+    if (!window._fetchRouteHandlers) {
+      window._fetchRouteHandlers = new Map()
+
+      // Install fetch interceptor once when registry is created
+      const originalFetch = window.fetch
+      window.fetch = async (url, options) => {
+        // Check if any registered handler wants to handle this route
+        const routeHandler = window._fetchRouteHandlers.get(url)
+        if (routeHandler) {
+          const response = await routeHandler.handler(url, options)
+          if (response) return response
+        }
+
+        // No handler or handler returned null - use original fetch
+        return originalFetch(url, options)
+      }
+    }
+
+    // Create calls array for this route
+    const calls = []
+
+    // Expose calls array as window.batchUpsertCalls for backward compatibility with existing tests
+    window.batchUpsertCalls = calls
+
+    // Register this route's handler with its calls array
+    window._fetchRouteHandlers.set('/api/batch-upsert-deliberation-data', {
+      calls,
+      handler: async (url, options) => {
+        if (options?.method === 'POST' && options?.body) {
+          try {
+            const batchData = JSON.parse(options.body)
+            const email = batchData.email
+
+            // Store the call for inspection
+            calls.push(batchData)
+            console.log('✅ batch-upsert-deliberation-data HTTP called with:', batchData)
+            console.log('📊 Summary:', {
+              discussionId: batchData.discussionId,
+              round: batchData.round,
+              email: email,
+              points: Object.keys(batchData.data?.myPointById || {}).length,
+              groupings: batchData.data?.groupIdsLists?.length,
+              idRanksLength: batchData.data?.idRanks?.length,
+              jsformKeys: Object.keys(batchData.data?.jsformData || {}),
+            })
+
+            // Determine success/failure based on email
+            const shouldSucceed = !email || email === 'success@email.com'
+
+            if (shouldSucceed) {
+              return {
+                ok: true,
+                json: () => Promise.resolve({ success: true }),
+              }
+            } else {
+              return {
+                ok: false,
+                status: 400,
+                json: () => Promise.resolve({ error: 'Email validation failed' }),
+              }
+            }
+          } catch (e) {
+            console.error('mockBatchUpsertDeliberationDataRoute: Failed to parse body', e)
+            return {
+              ok: false,
+              status: 500,
+              json: async () => Promise.resolve({ error: 'Invalid request body' }),
+            }
+          }
+        }
+        return null // Not handled, pass to next handler or original fetch
+      },
+    })
+  })
+  return <Story />
+}
+
 // use buildApiDecorator instead
 function setupSocketEmitHandlers() {
   // caution! every story that runs with this decorator will rewrite the socket variable
@@ -59,13 +196,36 @@ export const socketEmitDecorator = Story => {
 }
 
 export const DeliberationContextDecorator = (Story, context) => {
-  const { defaultValue, ...otherArgs } = context.args
+  const { defaultValue, preserveLocalStorage, ...otherArgs } = context.args
+  const [refreshKey, setRefreshKey] = useState(0)
+
+  useState(() => {
+    if (!preserveLocalStorage) {
+      window.localStorage.clear() // clear localStorage to start fresh for each story
+    }
+  })
+
+  const handleClearStorage = () => {
+    window.localStorage.clear()
+    setRefreshKey(prev => prev + 1) // Force re-render by changing key
+  }
+
   return (
-    <DeliberationContextProvider defaultValue={defaultValue}>
-      <DeliberationData>
-        <Story {...otherArgs} />
-      </DeliberationData>
-    </DeliberationContextProvider>
+    <>
+      {preserveLocalStorage && (
+        <div style={{ padding: '1rem', backgroundColor: '#fff3cd', border: '1px solid #ffc107', marginBottom: '1rem' }}>
+          <strong>localStorage Preserved Mode</strong> - Data persists across page reloads.{' '}
+          <button onClick={handleClearStorage} style={{ marginLeft: '1rem', padding: '0.25rem 0.5rem', cursor: 'pointer' }}>
+            Clear Storage
+          </button>
+        </div>
+      )}
+      <DeliberationContextProvider key={refreshKey} defaultValue={defaultValue}>
+        <DeliberationData>
+          <Story {...otherArgs} />
+        </DeliberationData>
+      </DeliberationContextProvider>
+    </>
   )
 }
 const DeliberationData = props => {

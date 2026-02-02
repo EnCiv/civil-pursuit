@@ -2,24 +2,27 @@
 // https://github.com/EnCiv/civil-pursuit/issues/200
 
 'use strict'
-import React, { useEffect, useState, useRef, useContext, useCallback } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import PairCompare from '../pair-compare'
 import { H, Level } from 'react-accessible-headings'
 import StepIntro from '../step-intro'
 
-import DeliberationContext from '../deliberation-context'
+import { useDeliberationContext, useLocalStorageIfAvailable } from '../deliberation-context'
 import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 
 export default function CompareWhysStep(props) {
   const { onDone, round, category } = props
-  const { data, upsert } = useContext(DeliberationContext)
+  const { data, upsert } = useDeliberationContext()
+  const storageAvailable = useLocalStorageIfAvailable()
   const fetchDemInfo = useFetchDemInfo()
   const args = { ...derivePointWithWhyRankListListByCategory(data, category) }
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
       upsert({ whyRankByParentId: { [delta.parentId]: delta } })
-      window.socket.emit('upsert-rank', delta)
+      if (!storageAvailable) {
+        window.socket.emit('upsert-rank', delta)
+      }
     }
     onDone({ valid, value })
   }
@@ -55,7 +58,7 @@ export default function CompareWhysStep(props) {
 
 // pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]
 export function CompareWhys(props) {
-  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round, subject, description } = props
+  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round, stepIntro } = props
   const classes = useStyles()
   // completedByPointId does not effect rendering, so no need to set state, just mutate.
   const [completedByPointId] = useState(
@@ -92,7 +95,7 @@ export function CompareWhys(props) {
   }
   return (
     <div className={classes.container}>
-      <StepIntro subject={subject} description={description} />
+      <StepIntro {...stepIntro} />
       {!pointWithWhyRankListList ? (
         <div className={classes.headlineTitle}>Nothing to do here, hit Next to continue</div>
       ) : (

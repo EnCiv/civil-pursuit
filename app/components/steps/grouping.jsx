@@ -5,8 +5,8 @@
 // groupedPoints and pointList are both a list of pointObj
 // pointList is the original list of points, we set groupedPoints to pointList if it is empty
 'use strict'
-import React, { useRef, useState, useContext, useEffect } from 'react'
-import DeliberationContext, { deriveReducedPointList } from '../deliberation-context'
+import React, { useRef, useState, useEffect } from 'react'
+import { useDeliberationContext, deriveReducedPointList } from '../deliberation-context'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import PointGroup from '../point-group'
@@ -19,7 +19,7 @@ const MIN_GROUPS = 0 // the minimum number of groups the user has to make
 
 export default function GroupingStep(props) {
   const { onDone, round, ...otherProps } = props
-  const { data, upsert } = useContext(DeliberationContext)
+  const { data, upsert } = useDeliberationContext()
   const fetchDemInfo = useFetchDemInfo()
 
   const { discussionId } = data

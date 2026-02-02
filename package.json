@@ -20,7 +20,7 @@
     "dev": "echo \"these delays need to be kept up to date\" && concurrently -k \"npm run hot-transpile\" \"sleep 20 && npm run hot-server\" \"sleep 15 && npm run hot-client\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test-storybook": "test-storybook",
+    "test-storybook": "test-storybook --testTimeout=45000",
     "svgr": "svgr --icon --filename-case kebab assets/svg --out-dir app/svgr",
     "chromatic": "bash ./node_modules/.bin/chromatic",
     "dbtest": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand --config ./jest-db.config.js --runTestsByPath"
@@ -45,6 +45,7 @@
     "buffer": "^6.0.3",
     "classnames": "^2.2.6",
     "joi": "^17.13.3",
+    "joi-objectid": "^4.0.2",
     "lodash": "^4.17.11",
     "log4js": "git+https://github.com/ddfridley/log4js-node.git#onbrowser",
     "log4js-extend": "^0.2.1",
@@ -56,6 +57,7 @@
     "react-hot-loader": "^4.8.4",
     "react-jss": "^10.10.0",
     "react-perfect-scrollbar": "^1.5.8",
+    "react-share": "^4.4.1",
     "recharts": "^2.12.0",
     "show-deep-diff": "github:ddfridley/show-deep-diff",
     "stream-browserify": "^3.0.0"

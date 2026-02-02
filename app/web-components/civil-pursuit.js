@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/152
 
-import React, { useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { Level } from 'react-accessible-headings'
@@ -50,7 +50,12 @@ function buildChildren(steps) {
   })
 }
 
-function CivilPursuitContent({ subject, description, steps, user, _id, minParticipants, children }) {
+// This content is static it does not change as the user interacts with the app
+// but we don't want to keep rerendering it every time the context changes
+// Note: this is for static props, but user will change if the user logs in. Ideally we would take out user, and signup would get user from context or from main.js
+function CivilPursuitStaticContent(props) {
+  const { subject, description, _id, minParticipants, user, children } = props
+  // tournaments steps should get user from deliberation context, but signup does not use context and expect user as a props.
   const classes = useStylesFromThemeFunction()
   const [DeliberationStats, InvisibleButton] = useDeliberationStats(_id)
 
@@ -65,7 +70,6 @@ function CivilPursuitContent({ subject, description, steps, user, _id, minPartic
   } catch (e) {
     // if context not available, skip
   }
-
   return (
     <div className={cx(classes.civilPursuit)}>
       <InvisibleButton />
@@ -76,7 +80,7 @@ function CivilPursuitContent({ subject, description, steps, user, _id, minPartic
         <DeliberationStats />
       </QuestionBox>
       <Level>
-        <StepSlider className={classes.stepPadding} children={children} user={user} discussionId={_id} />
+        <StepSlider className={classes.stepPadding} children={children} discussionId={_id} user={user} />
       </Level>
     </div>
   )
@@ -85,11 +89,18 @@ function CivilPursuitContent({ subject, description, steps, user, _id, minPartic
 function CivilPursuit(props) {
   const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, participants, minParticipants, ...otherProps } = props
   const [children] = useState(buildChildren(steps)) // just do this once so we don't get rerenders. steps don't change so there's no need for useMemo and dependencies
-
+  let moreDetailsStep = steps.find(s => s.webComponent === 'Jsform' && s.name === 'moreDetails')
+  if (!moreDetailsStep) {
+    const tournamentStep = steps.find(s => s.webComponent === 'Tournament')
+    if (tournamentStep) {
+      moreDetailsStep = tournamentStep.steps.find(s => s.webComponent === 'Jsform' && s.name === 'moreDetails')
+    }
+  }
+  const uiSchema = moreDetailsStep?.uischema
   return (
     <DeliberationContextProvider defaultValue={{ discussionId: _id, user, userId: user?.id, participants, subject, description, ...otherProps }}>
-      <DemInfoProvider>
-        <CivilPursuitContent subject={subject} description={description} steps={steps} user={user} _id={_id} minParticipants={minParticipants} children={children} />
+      <DemInfoProvider demInfoProviderDefault={{ uiSchema }}>
+        <CivilPursuitStaticContent subject={subject} description={description} _id={_id} minParticipants={minParticipants} user={user} children={children} />
       </DemInfoProvider>
     </DeliberationContextProvider>
   )
