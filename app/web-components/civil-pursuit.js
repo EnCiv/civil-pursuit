@@ -14,6 +14,8 @@ import SignUp from '../components/sign-up'
 import Jsform from '../components/jsform'
 import Tournament from '../components/tournament'
 import Conclusion from '../components/steps/conclusion'
+import ParticipantsBadge from '../components/participants-badge'
+import { useDeliberationStats } from '../components/use-deliberation-stats'
 
 const WebComponents = {
   SignUp: SubWrap(SignUp),
@@ -50,6 +52,8 @@ function buildChildren(steps) {
 
 function CivilPursuitContent({ subject, description, steps, user, _id, minParticipants, children }) {
   const classes = useStylesFromThemeFunction()
+  const [DeliberationStats, InvisibleButton] = useDeliberationStats(_id)
+
   // upsert uischema into DemInfoContext
   try {
     const { upsert } = useDemInfoContext()
@@ -64,7 +68,13 @@ function CivilPursuitContent({ subject, description, steps, user, _id, minPartic
 
   return (
     <div className={cx(classes.civilPursuit)}>
-      <QuestionBox className={classes.question} subject={subject} description={description} discussionId={_id} minParticipants={minParticipants} />
+      <InvisibleButton />
+      <QuestionBox className={classes.question} subject={subject} description={description}>
+        <div>
+          <ParticipantsBadge minParticipants={minParticipants} />
+        </div>
+        <DeliberationStats />
+      </QuestionBox>
       <Level>
         <StepSlider className={classes.stepPadding} children={children} user={user} discussionId={_id} />
       </Level>
@@ -92,6 +102,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginTop: '6rem',
   },
   civilPursuit: {
+    position: 'relative',
     width: '100%',
     maxWidth: theme.maxPanelWidth,
     marginLeft: 'auto',
