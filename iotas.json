@@ -856,6 +856,7 @@
               "stepVisibility": {
                 "rounds": [0]
               },
+              "stepName": "Some Details",
               "name": "moreDetails",
               "stepIntro": {
                 "subject": "Some details",
