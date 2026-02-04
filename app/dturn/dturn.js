@@ -3,13 +3,15 @@ const showDeepDiff = require('show-deep-diff')
 
 // clustering
 function getInitOptions(options) {
+  const group_size = options.group_size || 7
   return {
-    group_size: options.group_size || 7, // this is the group size
+    group_size: group_size, // this is the group size
     gmajority: options.gmajority || 0.5, // Group Majority - minimum percentage of group that votes for it to be part of the group
     max_rounds: options.max_rounds || 10, // maximum number of rounds to search down when clustering children
     min_shown_count: options.min_shown_count || Math.floor(7 / 2) + 1, // the minimum number of times an item pair is shown in order to decide if a majority have grouped it
     min_shown_percent: options.min_shown_percent || 0.8, // the minimum percentage of users that must have seen the last round for the conclusion to be valid
     min_rank: options.min_rank || 2, // when filtering statements for the next round, they must at least have this number of users voting for it
+    participantThreshold: options.participantThreshold !== undefined ? options.participantThreshold : 2 * group_size - 1, // minimum participants who must complete answer step before progression allowed
     updates: options.updates || (() => []), // not async. socket.io will quere updates and send, if overflow, better to send latest than to catchup
     updateUInfo: options.updateUInfo || (async () => {}),
     getAllUInfo: options.getAllUInfo || (async () => []),
@@ -218,7 +220,8 @@ async function getStatementIds(discussionId, round, userId) {
     console.error(`No ShownStatements found for discussion ${discussionId}`)
     return undefined
   }
-  if (Discussions[discussionId].ShownStatements?.[0].length < Discussions[discussionId].group_size * 2 - 1) {
+  const threshold = Discussions[discussionId].participantThreshold !== undefined ? Discussions[discussionId].participantThreshold : Discussions[discussionId].group_size * 2 - 1
+  if (Discussions[discussionId].ShownStatements?.[0].length < threshold) {
     console.error(`Insufficient ShownStatements length for discussion ${discussionId}`)
     return undefined
   }

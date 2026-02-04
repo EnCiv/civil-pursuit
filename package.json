@@ -1,6 +1,6 @@
 {
   "name": "civil-pursuit",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Civil Pursuit - so millions of people can deliberate productively online",
   "main": "dist/index.js",
   "scripts": {
