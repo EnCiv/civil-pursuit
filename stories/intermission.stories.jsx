@@ -3,7 +3,7 @@
 
 import React from 'react'
 import Intermission from '../app/components/intermission'
-import { DeliberationContextDecorator, onDoneDecorator, onDoneResult, buildApiDecorator, mockBatchUpsertDeliberationDataRoute } from './common'
+import { DeliberationContextDecorator, onDoneDecorator, onDoneResult, buildApiDecorator, mockBatchUpsertDeliberationDataRoute, clearGlobalStateDecorator } from './common'
 import { authFlowDecorator } from './mocks/auth-flow'
 import { within, userEvent, waitFor, expect } from '@storybook/test'
 
@@ -31,6 +31,7 @@ export default {
       // This is for socket-based batch-upsert (authenticated users in rerank)
       cb({ success: true, points: 1, whys: 1, ranks: 3 })
     }),
+    clearGlobalStateDecorator, // this needs to be executed first, somehow Storybook is applying decorators in reverse order
   ],
 }
 
@@ -302,6 +303,200 @@ export const TemporaryUserInvalidEmail = {
     await waitFor(() => {
       const errorMessage = canvas.getByText('email address not valid')
       expect(errorMessage).toBeInTheDocument()
+    })
+  },
+}
+
+// Participant Threshold Test Cases
+// https://github.com/EnCiv/civil-pursuit/blob/main/docs/participant-threshold.md
+
+export const ThresholdNotMet = {
+  args: {
+    defaultValue: {
+      discussionId: 'threshold-test-212', // Use unique discussionId to avoid localStorage collision
+      user: { id: 'user-123', email: 'user@test.com' },
+      userId: 'user-123',
+      lastRound: 0,
+      participants: 212, // Current participants
+      dturn: { group_size: 5, finalRound: 1, participantThreshold: 500 }, // Threshold configured
+      roundCompleteData: round0Incomplete,
+      subject: 'What is the right direction for our country?',
+      description: 'A national deliberation on our shared future',
+    },
+    round: 0,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // Verify enhanced threshold message is displayed
+    await waitFor(() => {
+      const headline = canvas.getByText(/Your voice is in. Now, help us unlock the path forward./i)
+      expect(headline).toBeInTheDocument()
+    })
+
+    // Verify progress display
+    await waitFor(() => {
+      const progress = canvas.getByText(/Current Progress:/i)
+      expect(progress).toBeInTheDocument()
+      expect(canvas.getByText(/212 \/ 500 Participants/i)).toBeInTheDocument()
+    })
+
+    // Verify remaining participants message (text may be split across elements)
+    await waitFor(() => {
+      // Use queryAllByText and check that at least one matches
+      const elements = canvas.queryAllByText((content, element) => {
+        return element.textContent.includes('288') && element.textContent.includes('participants away from the next phase')
+      })
+      expect(elements.length).toBeGreaterThan(0)
+    })
+
+    // Verify encouragement message
+    await waitFor(() => {
+      const encouragement = canvas.getByText(/Want to get there faster\?/i)
+      expect(encouragement).toBeInTheDocument()
+    })
+
+    // Verify share buttons are present
+    await waitFor(() => {
+      const shareButtons = canvas.getByRole('button', { name: /copy link/i })
+      expect(shareButtons).toBeInTheDocument()
+    })
+  },
+}
+
+export const ThresholdMet = {
+  args: {
+    defaultValue: {
+      discussionId: 'threshold-test-500', // Use unique discussionId
+      user: { id: 'user-123', email: 'user@test.com' },
+      userId: 'user-123',
+      lastRound: 1,
+      participants: 500, // Threshold reached
+      dturn: { group_size: 5, finalRound: 1, participantThreshold: 500 },
+      roundCompleteData: round0Complete,
+      subject: 'What is the right direction for our country?',
+      description: 'A national deliberation on our shared future',
+    },
+    round: 0,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // Reset global state for test isolation
+    if (window.socket?._socketEmitHandlerResults) {
+      Object.keys(window.socket._socketEmitHandlerResults).forEach(key => {
+        window.socket._socketEmitHandlerResults[key] = []
+      })
+    }
+    if (window._fetchRouteHandlers) {
+      window._fetchRouteHandlers.forEach((handler, key) => {
+        if (handler.calls) handler.calls = []
+      })
+    }
+    // Clear deliberation context from localStorage to prevent data from previous tests
+    localStorage.removeItem('deliberation-5d0137260dacd06732a1d814')
+    localStorage.removeItem('deliberation-threshold-test-500')
+
+    // Verify we see continuation options, not the threshold waiting message
+    await waitFor(() => {
+      const continueButton = canvas.queryByText('Yes, Continue')
+      // Should either show continue button OR already completed message
+      // depending on round state - just verify we don't see threshold message
+      const thresholdMessage = canvas.queryByText(/Your voice is in. Now, help us unlock/i)
+      expect(thresholdMessage).not.toBeInTheDocument()
+    })
+  },
+}
+
+export const DefaultThresholdBehavior = {
+  args: {
+    defaultValue: {
+      discussionId: '123456',
+      user: { id: 'user-123', email: 'user@test.com' },
+      userId: 'user-123',
+      lastRound: 0,
+      participants: 8, // Less than default threshold (2 * 5 - 1 = 9)
+      dturn: { group_size: 5, finalRound: 1 }, // No participantThreshold specified
+      roundCompleteData: round0Incomplete,
+      subject: 'Test Discussion',
+      description: 'Testing default threshold',
+    },
+    round: 0,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // Verify standard message is shown (not enhanced threshold message)
+    await waitFor(() => {
+      const standardMessage = canvas.getByText(/Great! You've answered the question/i)
+      expect(standardMessage).toBeInTheDocument()
+    })
+
+    // Verify we don't see the enhanced threshold message
+    await waitFor(() => {
+      const thresholdMessage = canvas.queryByText(/Your voice is in. Now, help us unlock/i)
+      expect(thresholdMessage).not.toBeInTheDocument()
+    })
+
+    // Verify default threshold calculation (should say 1 more person needed: 9 - 8 = 1)
+    await waitFor(() => {
+      const responseNeeded = canvas.getByText(/when we get responses from 1 more/i)
+      expect(responseNeeded).toBeInTheDocument()
+    })
+  },
+}
+
+export const ThresholdExactly = {
+  args: {
+    defaultValue: {
+      discussionId: 'threshold-test-exact', // Use unique discussionId
+      user: { id: 'user-123', email: 'user@test.com' },
+      userId: 'user-123',
+      lastRound: 0,
+      participants: 500, // Exactly at threshold
+      dturn: { group_size: 5, finalRound: 1, participantThreshold: 500 },
+      roundCompleteData: round0Incomplete, // Round not complete yet
+      subject: 'Test Discussion',
+      description: 'Testing exact threshold',
+    },
+    round: 0,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // Reset global state for test isolation
+    if (window.socket?._socketEmitHandlerResults) {
+      Object.keys(window.socket._socketEmitHandlerResults).forEach(key => {
+        window.socket._socketEmitHandlerResults[key] = []
+      })
+    }
+    if (window._fetchRouteHandlers) {
+      window._fetchRouteHandlers.forEach((handler, key) => {
+        if (handler.calls) handler.calls = []
+      })
+    }
+    // Clear deliberation context from localStorage to prevent data from previous tests
+    localStorage.removeItem('deliberation-5d0137260dacd06732a1d814')
+    localStorage.removeItem('deliberation-threshold-test-exact')
+
+    // When threshold is exactly met but round not complete,
+    // we still show the threshold message but with 0 remaining
+    await waitFor(() => {
+      const progress = canvas.queryAllByText((content, element) => {
+        return element.textContent.includes('Current Progress:')
+      })
+      expect(progress.length).toBeGreaterThan(0)
+      const participantCount = canvas.queryAllByText((content, element) => {
+        return element.textContent.includes('500 / 500 Participants')
+      })
+      expect(participantCount.length).toBeGreaterThan(0)
+    })
+
+    await waitFor(() => {
+      const elements = canvas.queryAllByText((content, element) => {
+        return element.textContent.includes('0') && element.textContent.includes('participants away')
+      })
+      expect(elements.length).toBeGreaterThan(0)
     })
   },
 }
