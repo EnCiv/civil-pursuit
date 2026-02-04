@@ -46,18 +46,18 @@ const WebComponents = {
  * The legacy filter logic will be removed in a future version. Please add stepVisibility to all steps.
  *
  * - `step` {object} - The step object from iota configuration
- * - `context` {object} - Object containing `{ round, participants, finalRound, roundsStatus, groupSize }`
+ * - `context` {object} - Object containing `{ round, participants, finalRound, roundsStatus, groupSize, participantThreshold }`
  *
  * Returns `true` if step should be shown, `false` otherwise
  */
 function stepFilter(step, context) {
-  const { round, participants, finalRound, roundsStatus, groupSize } = context
+  const { round, participants, finalRound, roundsStatus, groupSize, participantThreshold } = context
   const vis = step.stepVisibility
 
   // If no stepVisibility, use legacy filter logic for backward compatibility
   // @deprecated This fallback will be removed in a future version
   if (!vis) {
-    const threshold = 2 * (groupSize || 10)
+    const threshold = participantThreshold !== undefined ? participantThreshold : 2 * (groupSize || 10)
 
     // Not enough participants: show only Answer and Intermission
     if (participants < threshold) {
@@ -83,9 +83,9 @@ function stepFilter(step, context) {
   // Round filter
   if (vis.rounds && !vis.rounds.includes(round)) return false
 
-  // Minimum participants (2 * group_size for deliberation)
+  // Minimum participants (use participantThreshold if configured, else 2 * group_size for deliberation)
   if (vis.minParticipants === true) {
-    const threshold = 2 * (groupSize || 5)
+    const threshold = participantThreshold !== undefined ? participantThreshold : 2 * (groupSize || 5)
     if (participants < threshold) return false
   }
 
@@ -194,7 +194,14 @@ function Tournament(props) {
     } // if uInfo not set yet, don't do anything
   }, [uInfo, finalRound])
 
-  const stepContext = { round, participants: data.participants || 0, finalRound, roundsStatus, groupSize: dturn?.group_size }
+  const stepContext = {
+    round,
+    participants: data.participants || 0,
+    finalRound,
+    roundsStatus,
+    groupSize: dturn?.group_size,
+    participantThreshold: dturn?.participantThreshold,
+  }
   const filteredSteps = steps.filter(step => stepFilter(step, stepContext))
   const stepInfo = filteredSteps.map(step => {
     return {
