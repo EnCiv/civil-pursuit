@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
+import Markdown from 'markdown-to-jsx'
 import { PrimaryButton, SecondaryButton } from './button'
 import Intermission_Icon from '../svgr/intermission-icon'
 import StatusBox from '../components/status-box'
@@ -14,8 +15,18 @@ import { authenticateSocketIo } from 'civil-client/dist/components/use-auth'
 // needs to be static because it used as a dependency in useEffect
 const goToEnCiv = () => (location.href = 'https://enciv.org/')
 
+const defaultParticipantThresholdMessage = `**Your voice is in. Now, help us unlock the path forward.**
+
+Thank you for contributing. Your response is saved and currently private to ensure every participant provides a totally independent vision, free from outside influence.
+
+**Current Progress:** {{participants}} / {{threshold}} Participants
+
+We are **{{responsesNeeded}}** participants away from the next phase. Once we hit {{threshold}}, we will invite you back to review a diverse cross-section of visions from your fellow citizens and begin the work of finding a direction that truly unites us.
+
+**Want to get there faster?** The more perspectives we have, the more practical our results will be. If you know someone—especially someone who might see things differently than you do—please share this link with them.`
+
 const Intermission = props => {
-  const { className = '', onDone = () => {}, round } = props
+  const { className = '', onDone = () => {}, round, participantThresholdMessage } = props
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useDeliberationContext()
   const { lastRound, dturn, uInfo = {}, discussionId, user, userId } = data
@@ -306,11 +317,34 @@ const Intermission = props => {
     valid = true
     onNext = goToEnCiv
   } else if (!roundCompleted) {
-    let responsesNeeded = (data?.dturn?.group_size || 10) * 2 - 1 - (data.participants || 1)
-    // if above is negative, its because we don't have an available group yet, so calculate the number needed to fill the next group
+    const threshold = data?.dturn?.participantThreshold !== undefined ? data.dturn.participantThreshold : (data?.dturn?.group_size || 10) * 2 - 1
+    let responsesNeeded = threshold - (data.participants || 1)
+    // if above is negative with default threshold, it's because we don't have an available group yet, so calculate the number needed to fill the next group
     const groupSize = (data?.dturn?.group_size || 10) - (round == 0 ? 1 : 0)
-    if (responsesNeeded < 0) responsesNeeded = (responsesNeeded % groupSize) + groupSize
-    if (round === 0)
+    if (responsesNeeded < 0 && data?.dturn?.participantThreshold === undefined) {
+      responsesNeeded = (responsesNeeded % groupSize) + groupSize
+    }
+
+    // Use enhanced messaging when participantThreshold is explicitly configured
+    const hasExplicitThreshold = data?.dturn?.participantThreshold !== undefined
+
+    if (round === 0 && hasExplicitThreshold && responsesNeeded >= 0) {
+      // Default threshold message if none provided
+
+      // Replace variables in message
+      const messageToRender = participantThresholdMessage || defaultParticipantThresholdMessage
+      const processedMessage = messageToRender
+        .replace(/{{participants}}/g, data.participants || 1)
+        .replace(/{{threshold}}/g, threshold)
+        .replace(/{{responsesNeeded}}/g, responsesNeeded)
+
+      conditionalResponse = (
+        <div className={classes.thresholdMessage}>
+          <Markdown>{processedMessage}</Markdown>
+          <ShareButtons url={window.location.href} subject={data.subject} description={data.description} copied={copied} onCopyClick={handleCopyLink} className={classes.shareButtons} />
+        </div>
+      )
+    } else if (round === 0)
       conditionalResponse = (
         <div className={classes.headlineSmall}>
           Great! You've answered the question, when we get responses from {responsesNeeded} more people, we will invite you back to continue this round. Sharing this will help us reach that goal sooner.
@@ -405,6 +439,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     lineHeight: '1.875rem',
     color: theme.colors.disableTextBlack,
     textAlign: 'left !important',
+  },
+  thresholdMessage: {
+    fontFamily: 'Inter',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    textAlign: 'left',
   },
   input: {
     width: '100%',
