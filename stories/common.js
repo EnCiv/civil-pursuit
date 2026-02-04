@@ -408,6 +408,17 @@ export const levelDecorator = (Story, context) => {
     )
 }
 
+// in a decorators list, this should go last so it will be executed first. Storybook 8.6.14 seems to execute decorators in reverse order
+export const clearGlobalStateDecorator = Story => {
+  useState(() => {
+    // Reset global state for test isolation
+    console.log('Resetting global state for Intermission story test isolation')
+    delete window.socket
+    delete window._fetchRouteHandlers
+  })
+  return <Story />
+}
+
 export default {
   RenderStory: RenderStory,
   getAsyncSemaphore: getAsyncSemaphore,
@@ -417,4 +428,5 @@ export default {
   dummyEvent: dummyEvent,
   outerStyle: outerStyle,
   outerDiv: outerDiv,
+  clearGlobalStateDecorator: clearGlobalStateDecorator,
 }
