@@ -46,10 +46,12 @@
  * See stories in question-box.stories.jsx for more examples.
  */
 
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import Markdown from 'markdown-to-jsx'
+import SvgChevronUp from '../svgr/chevron-up'
+import SvgChevronDown from '../svgr/chevron-down'
 
 /**
  * Extract OG image URL from metaTags array
@@ -60,18 +62,32 @@ import Markdown from 'markdown-to-jsx'
  */
 function extractOgImage(metaTags) {
   if (!metaTags || !Array.isArray(metaTags)) return null
-  
+
   const ogImageTag = metaTags.find(tag => tag.includes('og:image'))
   if (!ogImageTag) return null
-  
+
   const contentMatch = ogImageTag.match(/content="([^"]+)"/)
   return contentMatch ? contentMatch[1] : null
 }
+
+const maxDescriptionHeight = 5 // rem
 
 const QuestionBox = props => {
   const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', metaTags = [], children = [], ...otherProps } = props
   const classes = useStylesFromThemeFunction({ ...props, contentAlign })
   const ogImage = extractOgImage(metaTags)
+  const [isExpanded, setIsExpanded] = useState(true)
+  const [showToggle, setShowToggle] = useState(false)
+  const descriptionRef = useRef(null)
+
+  useEffect(() => {
+    if (descriptionRef.current && description) {
+      const descriptionHeight = descriptionRef.current.scrollHeight
+      const remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize)
+      const collapsedHeightInPixels = maxDescriptionHeight * remInPixels
+      setShowToggle(descriptionHeight > collapsedHeightInPixels)
+    }
+  }, [description])
 
   return (
     <div className={cx(classes.questionBox, className)} {...otherProps}>
@@ -79,8 +95,15 @@ const QuestionBox = props => {
         {ogImage && <img src={ogImage} alt="" className={classes.ogImage} />}
         {tagline && <div className={classes.fixedText}>{tagline}</div>}
         <h1 className={classes.subject}>{subject}</h1>
-        <div className={classes.description}>
-          <Markdown>{description}</Markdown>
+        <div>
+          <div ref={descriptionRef} className={cx(classes.description, { [classes.collapsed]: !isExpanded })}>
+            <Markdown>{description}</Markdown>
+          </div>
+          {showToggle && (
+            <button className={classes.toggleButton} onClick={() => setIsExpanded(!isExpanded)} aria-label={isExpanded ? 'Collapse description' : 'Expand description'} title={isExpanded ? 'Collapse' : 'Expand'}>
+              {isExpanded ? <SvgChevronUp /> : <SvgChevronDown />}
+            </button>
+          )}
         </div>
         <div className={classes.children}>
           {React.Children.map(children, (child, index) =>
@@ -156,6 +179,42 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     lineHeight: '1.5rem',
     color: theme.colors.primaryButtonBlue,
     textAlign: 'left',
+    transition: 'max-height 0.3s ease-in-out, overflow 0.3s ease-in-out',
+  },
+  collapsed: {
+    maxHeight: `${maxDescriptionHeight}rem`,
+    overflow: 'hidden',
+    position: 'relative',
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: '2rem',
+      background: 'linear-gradient(to bottom, transparent, rgba(235, 235, 235, 0.9))',
+    },
+  },
+  toggleButton: {
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '0.5rem',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.5rem',
+    color: theme.colors.primaryButtonBlue,
+    transition: 'transform 0.2s ease',
+    width: 'fit-content',
+    '&:hover': {
+      transform: 'scale(1.1)',
+    },
+    '&:focus': {
+      outline: `2px solid ${theme.colors.primaryButtonBlue}`,
+      outlineOffset: '2px',
+      borderRadius: '0.25rem',
+    },
   },
   ogImage: {
     width: '100%',
