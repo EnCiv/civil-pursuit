@@ -54,7 +54,7 @@ function buildChildren(steps) {
 // but we don't want to keep rerendering it every time the context changes
 // Note: this is for static props, but user will change if the user logs in. Ideally we would take out user, and signup would get user from context or from main.js
 function CivilPursuitStaticContent(props) {
-  const { subject, description, _id, minParticipants, user, children } = props
+  const { subject, description, _id, minParticipants, metaTags, user, children } = props
   // tournaments steps should get user from deliberation context, but signup does not use context and expect user as a props.
   const classes = useStylesFromThemeFunction()
   const [DeliberationStats, InvisibleButton] = useDeliberationStats(_id)
@@ -73,7 +73,7 @@ function CivilPursuitStaticContent(props) {
   return (
     <div className={cx(classes.civilPursuit)}>
       <InvisibleButton />
-      <QuestionBox className={classes.question} subject={subject} description={description}>
+      <QuestionBox className={classes.question} subject={subject} description={description} metaTags={metaTags}>
         <div>
           <ParticipantsBadge minParticipants={minParticipants} />
         </div>
@@ -87,7 +87,7 @@ function CivilPursuitStaticContent(props) {
 }
 
 function CivilPursuit(props) {
-  const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, participants, minParticipants, ...otherProps } = props
+  const { className, subject = '', description = '', steps = [], user, _id, browserConfig, env, location, path, participants, minParticipants, metaTags, ...otherProps } = props
   const [children] = useState(buildChildren(steps)) // just do this once so we don't get rerenders. steps don't change so there's no need for useMemo and dependencies
   let moreDetailsStep = steps.find(s => s.webComponent === 'Jsform' && s.name === 'moreDetails')
   if (!moreDetailsStep) {
@@ -100,7 +100,7 @@ function CivilPursuit(props) {
   return (
     <DeliberationContextProvider defaultValue={{ discussionId: _id, user, userId: user?.id, participants, subject, description, ...otherProps }}>
       <DemInfoProvider demInfoProviderDefault={{ uiSchema }}>
-        <CivilPursuitStaticContent subject={subject} description={description} _id={_id} minParticipants={minParticipants} user={user} children={children} />
+        <CivilPursuitStaticContent subject={subject} description={description} _id={_id} minParticipants={minParticipants} metaTags={metaTags} user={user} children={children} />
       </DemInfoProvider>
     </DeliberationContextProvider>
   )

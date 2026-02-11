@@ -124,3 +124,16 @@ export const WithChildrenWithRender = {
     )
   },
 }
+export const WithOgImage = Template.bind({})
+WithOgImage.args = {
+  subject: 'What direction for our country?',
+  description: 'This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. **We\'re asking about concerns, not solutions.**',
+  tagline: 'Civil Pursuit',
+  metaTags: ['property="og:image" content="https://res.cloudinary.com/hf6mryjpf/image/upload/v1762403748/What-direction-for-our-country.png"'],
+  children: [
+    <div>
+      <StatusBadge name="509 participants" />
+      <StatusBadge status="Progress" name="Round 3" />
+    </div>,
+  ],
+}
