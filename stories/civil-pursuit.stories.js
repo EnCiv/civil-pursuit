@@ -91,6 +91,7 @@ export const Full = {
     subject: 'What One Issue Should We The People Unite and Solve First?',
     description:
       'This is a large scale online discussion with the purpose of starting unbiased, and thoughtful conversations, that lead to amazing new solutions. **But here, we are asking about concerns**, we will get to the solutions later.',
+    metaTags: ['property="og:image" content="https://res.cloudinary.com/hf6mryjpf/image/upload/v1762403748/What-direction-for-our-country.png"'],
     steps: testSteps,
     user: { email: 'success@email.com', id: '67bf9d6ae49200d1349ab34a' },
     userId: '67bf9d6ae49200d1349ab34a',

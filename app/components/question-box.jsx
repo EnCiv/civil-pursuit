@@ -51,13 +51,32 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import Markdown from 'markdown-to-jsx'
 
+/**
+ * Extract OG image URL from metaTags array
+ *
+ * - `metaTags` - Array of meta tag strings like: `property="og:image" content="https://..."`
+ *
+ * Returns the content URL from the og:image meta tag, or `null` if not found
+ */
+function extractOgImage(metaTags) {
+  if (!metaTags || !Array.isArray(metaTags)) return null
+  
+  const ogImageTag = metaTags.find(tag => tag.includes('og:image'))
+  if (!ogImageTag) return null
+  
+  const contentMatch = ogImageTag.match(/content="([^"]+)"/)
+  return contentMatch ? contentMatch[1] : null
+}
+
 const QuestionBox = props => {
-  const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', children = [], ...otherProps } = props
+  const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', metaTags = [], children = [], ...otherProps } = props
   const classes = useStylesFromThemeFunction({ ...props, contentAlign })
+  const ogImage = extractOgImage(metaTags)
 
   return (
     <div className={cx(classes.questionBox, className)} {...otherProps}>
       <div className={classes.topic}>
+        {ogImage && <img src={ogImage} alt="" className={classes.ogImage} />}
         {tagline && <div className={classes.fixedText}>{tagline}</div>}
         <h1 className={classes.subject}>{subject}</h1>
         <div className={classes.description}>
@@ -137,6 +156,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     lineHeight: '1.5rem',
     color: theme.colors.primaryButtonBlue,
     textAlign: 'left',
+  },
+  ogImage: {
+    width: '100%',
+    height: 'auto',
+    borderRadius: '0.5rem',
+    marginBottom: '1.5rem',
   },
   children: {
     display: 'flex',
