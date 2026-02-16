@@ -8,7 +8,7 @@ import HowYouRated from './how-you-rated'
 import StatusBadge from './status-badge'
 
 function MyActivity(props) {
-  const { className, data = {}, ...otherProps } = props
+  const { className, data = {}, onBackToDiscussions, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
 
   const { subject, userResponse, rankCounts, userRanks = [] } = data
@@ -46,7 +46,14 @@ function MyActivity(props) {
       <div className={classes.headerContainer}>
         <h1 className={classes.pageHeader}>My Activity</h1>
         <div className={classes.breadcrumbs}>
-          <a href="#" className={classes.breadcrumbLink}>
+          <a
+            href="#"
+            className={classes.breadcrumbLink}
+            onClick={e => {
+              e.preventDefault()
+              onBackToDiscussions && onBackToDiscussions()
+            }}
+          >
             Discussions
           </a>
           <span className={classes.breadcrumbSeparator}>&gt;</span>

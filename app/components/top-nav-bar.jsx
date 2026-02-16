@@ -12,46 +12,6 @@ import SvgEncivBlack from '../svgr/enciv-black'
 import SvgEncivWhite from '../svgr/enciv-white'
 import Donate from './donate'
 
-/*
- * # TopNavBar
- *
- * A responsive navigation bar component for the EnCiv application that adapts to different viewport sizes
- * and display modes. Features a logo, menu items with dropdown support, optional user/sign-up section,
- * and donation button.
- *
- * ## Props
- *
- * - `className` (string, optional) - Additional CSS classes to apply to the root element
- * - `menu` (Array, optional) - Array of menu items. Each item can be:
- *   - An object with `{ name: string, func: function }` for simple menu items
- *   - An array where first item is the parent (with dropdown arrow) and remaining items are dropdown children
- * - `mode` (string, optional) - Display mode controlling colors and positioning:
- *   - `'light'` - Light background with dark text
- *   - `'dark'` - Dark background with white text and white logo
- *   - `'transparent'` - Transparent background with white text and white logo (absolute positioning)
- *   - `'dark-transparent'` - Transparent background with white text and white logo (absolute positioning)
- *   - `'light-transparent'` - Transparent background with dark text and dark logo (absolute positioning)
- *   - `'vertical'` - Vertical menu layout (side navigation)
- * - `defaultSelectedItem` (string, optional) - Name of the menu item that should be selected by default
- * - `UserOrSignInUp` (React.Component, optional) - Component to render for user authentication/signup (appears top-right)
- * - `tabIndex` (number, optional, default: 0) - Tab index for keyboard navigation
- * - `...otherProps` - Additional props spread to the root element
- *
- * ## Responsive Behavior
- *
- * - **Desktop** (> condensedWidthBreakPoint): Shows horizontal menu with logo on left, menu centered
- * - **Mobile** (< condensedWidthBreakPoint): Shows mobile menu toggle, hides desktop menu
- * - **Menu wrapping**: Desktop menu can wrap to multiple lines if needed
- *
- * ## Features
- *
- * - Dropdown menus on hover (desktop) or click (mobile)
- * - Keyboard navigation support (Space key to open dropdowns)
- * - Integrated Donate button in menu
- * - Optional user authentication section
- * - Responsive logo sizing
- * - Theme-aware styling with color modes
- */
 const TopNavBar = props => {
   const { className, menu, mode, defaultSelectedItem, UserOrSignInUp, tabIndex = 0, ...otherProps } = props
   const [isExpanded, setIsExpanded] = useState(false)
@@ -540,17 +500,18 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   verticalMenuContainer: {
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: theme.colors.inputBorder,
-    padding: '0.5rem 0.5rem',
+    backgroundColor: '#f5f4f48d',
+    padding: '0.5rem 1.0rem',
     color: '#06335C',
     fontWeight: 600,
     borderRadius: '0.5rem',
+    gap: '0.4rem',
   },
   verticalMenuItem: {
-    padding: '1.0rem 1.0rem',
+    padding: '0.8rem 1.0rem',
     borderRadius: '0.5rem',
     '&:hover': {
-      background: theme.colors.focusRing,
+      background: 'rgba(235, 234, 234, 0.61)',
     },
   },
   logoContainer: {

@@ -2,50 +2,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/221
 // https://github.com/EnCiv/civil-pursuit/issues/224
 
-/**
- * # QuestionBox
- *
- * A styled container for displaying questions with optional tagline, subject, description, and children.
- *
- * ## Props
- *
- * - `className` (string, default: '') - Additional CSS class names to apply to the outer container
- * - `subject` (string, default: '') - Main subject/title text displayed prominently
- * - `description` (string, default: '') - Description text that supports Markdown formatting
- * - `contentAlign` (string, default: 'center') - Alignment for content ('center', 'left', or 'right')
- * - `tagline` (string, default: '') - Optional tagline displayed above the subject
- * - `children` (React.ReactNode|Array, optional) - Child components to render below the description
- *
- * ## Children Behavior
- *
- * - Each child element is rendered as a separate row in a flex column layout
- * - Children are cloned and receive merged className props including alignment styles
- * - **Children must accept className prop and spread it to their outer element**
- * - The `contentAlign` prop controls horizontal alignment (justifyContent) of each child
- * - Can pass children as an array prop or use JSX children syntax
- *
- * ## Examples
- *
- * Using JSX children syntax:
- * ```jsx
- * <QuestionBox subject="Question?" contentAlign="left">
- *   <StatusBadge name="100 participants" />
- *   <PrimaryButton>Continue</PrimaryButton>
- * </QuestionBox>
- * ```
- *
- * Using children as array prop:
- * ```jsx
- * <QuestionBox
- *   subject="Question?"
- *   contentAlign="center"
- *   children={[<StatusBadge />, <PrimaryButton />]}
- * />
- * ```
- *
- * See stories in question-box.stories.jsx for more examples.
- */
-
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -84,7 +40,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
     borderRadius: props => (props.compact ? '1rem' : '1.875rem'),
     border: `0.0625rem solid ${theme.colors.secondaryDivider}`,
-    backgroundColor: 'rgba(235, 235, 235, 0.4)',
+    backgroundColor: 'rgba(255, 255, 255, 0.66)',
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
