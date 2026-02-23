@@ -1,56 +1,7 @@
-// https://github.com/EnCiv/civil-pursuit/issues/XXX
-
 import React, { useState } from 'react'
 import { ThemeProvider } from 'react-jss'
 import theme from '../app/components/theme'
 import DiscussionTab from '../app/components/discussion-tab'
-
-const fakeDiscussions = [
-  {
-    _id: '67db9da4c6019fba8de3eafe',
-    subject: "What one issue should 'We the People' unite and solve first to make our country even better?",
-    description: "This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. We're asking about concerns, not solutions.",
-    created: '2024-01-15T10:30:00.000Z',
-    lastAccessed: '2024-02-08T14:22:00.000Z',
-    lastActive: '2024-02-07T16:45:00.000Z',
-    participants: 127,
-    currentRound: 2,
-    isComplete: true,
-  },
-  {
-    _id: '68687cdeb4e0c47144419fde',
-    subject: "What's the largest number",
-    description: "What's the largest random number between 0 and 100. This is a test of the Civil Server.",
-    created: '2024-01-10T09:15:00.000Z',
-    lastAccessed: '2024-02-05T11:30:00.000Z',
-    lastActive: '2024-01-25T13:20:00.000Z',
-    participants: 8,
-    currentRound: 3,
-    isComplete: true,
-  },
-  {
-    _id: '69abc123def456789012345',
-    subject: 'How can we improve public transportation in urban areas?',
-    description: 'A discussion about transportation infrastructure, accessibility, and sustainability in cities across the nation.',
-    created: '2024-01-20T08:45:00.000Z',
-    lastAccessed: '2024-02-09T10:15:00.000Z',
-    lastActive: '2024-02-08T19:30:00.000Z',
-    participants: 45,
-    currentRound: 1,
-    isComplete: true,
-  },
-  {
-    _id: '70def456abc789012345678',
-    subject: 'What role should technology play in modern education?',
-    description: 'Exploring how digital tools, AI, and online learning platforms can enhance education while addressing concerns about screen time and digital equity.',
-    created: '2024-01-25T12:00:00.000Z',
-    lastAccessed: '2024-02-10T16:45:00.000Z',
-    lastActive: '2024-02-09T14:30:00.000Z',
-    participants: 73,
-    currentRound: 2,
-    isComplete: true,
-  },
-]
 
 // Mock activity data for the stories
 const mockActivityData = {
@@ -206,12 +157,19 @@ const mockActivityData = {
 
 // Sets up socket API mocks and renders the component
 const DiscussionTabTemplate = args => {
-  const { discussions, ...otherArgs } = args
+  const { mockDiscussions, ...otherArgs } = args
   useState(() => {
-    // Execute this code once before the component initially renders
     if (!window.socket) window.socket = {}
     if (!window.socket._socketEmitHandlers) window.socket._socketEmitHandlers = {}
     if (!window.socket._socketEmitHandlerResults) window.socket._socketEmitHandlerResults = {}
+
+    // Mock the get-user-discussions API call
+    window.socket._socketEmitHandlers['get-user-discussions'] = cb => {
+      window.socket._socketEmitHandlerResults['get-user-discussions'] = true
+      setTimeout(() => {
+        cb(mockDiscussions)
+      }, 1000)
+    }
 
     // Mock the get-activity API call
     window.socket._socketEmitHandlers['get-activity'] = (discussionId, cb) => {
@@ -236,7 +194,7 @@ const DiscussionTabTemplate = args => {
 
   return (
     <ThemeProvider theme={theme}>
-      <DiscussionTab discussions={discussions} {...otherArgs} />
+      <DiscussionTab {...otherArgs} />
     </ThemeProvider>
   )
 }
@@ -246,24 +204,57 @@ export default {
   title: 'discussion-tab',
 }
 
-export const Default = () => {
-  return (
-    <ThemeProvider theme={theme}>
-      <DiscussionTab />
-    </ThemeProvider>
-  )
-}
-
 export const WithDiscussions = {
   render: DiscussionTabTemplate,
   args: {
-    discussions: fakeDiscussions,
+    mockDiscussions: [
+      {
+        _id: '67db9da4c6019fba8de3eafe',
+        subject: "What one issue should 'We the People' unite and solve first to make our country even better?",
+        description: "This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. We're asking about concerns, not solutions.",
+        participants: 127,
+        currentRound: 2,
+        isComplete: false,
+        userLastActivity: '2024-02-08T14:22:00.000Z',
+        discussionLastActivity: '2024-02-07T16:45:00.000Z',
+      },
+      {
+        _id: '68687cdeb4e0c47144419fde',
+        subject: "What's the largest number",
+        description: "What's the largest random number between 0 and 100. This is a test of the Civil Server.",
+        participants: 8,
+        currentRound: 3,
+        isComplete: true,
+        userLastActivity: '2024-02-09T11:30:00.000Z',
+        discussionLastActivity: '2024-02-08T09:20:00.000Z',
+      },
+      {
+        _id: '69abc123def456789012345',
+        subject: 'How can we improve public transportation in urban areas?',
+        description: 'A discussion about transportation infrastructure, accessibility, and sustainability in cities across the nation.',
+        participants: 45,
+        currentRound: 1,
+        isComplete: false,
+        userLastActivity: '2024-02-07T16:12:00.000Z',
+        discussionLastActivity: '2024-02-06T13:35:00.000Z',
+      },
+      {
+        _id: '70def456abc789012345678',
+        subject: 'What role should technology play in modern education?',
+        description: 'Exploring how digital tools, AI, and online learning platforms can enhance education while addressing concerns about screen time and digital equity.',
+        participants: 73,
+        currentRound: 2,
+        isComplete: false,
+        userLastActivity: '2024-02-08T12:45:00.000Z',
+        discussionLastActivity: '2024-02-07T18:10:00.000Z',
+      },
+    ],
   },
 }
 
-export const WithMyActivityInteraction = {
+export const EmptyState = {
   render: DiscussionTabTemplate,
   args: {
-    discussions: fakeDiscussions,
+    mockDiscussions: [],
   },
 }

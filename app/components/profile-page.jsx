@@ -1,5 +1,3 @@
-// https://github.com/EnCiv/civil-pursuit/issues/XXX
-
 'use strict'
 
 import React, { useState } from 'react'
@@ -9,8 +7,8 @@ import TopNavBar from './top-nav-bar'
 import DiscussionTab from './discussion-tab'
 
 function ProfilePage(props) {
-  const { className, discussions = [], ...otherProps } = props
-  const [activeTab, setActiveTab] = useState('Profile')
+  const { className, discussions = [], initialTab = 'Profile', ...otherProps } = props
+  const [activeTab, setActiveTab] = useState(initialTab)
   const classes = useStylesFromThemeFunction()
 
   const createMenuItem = name => {

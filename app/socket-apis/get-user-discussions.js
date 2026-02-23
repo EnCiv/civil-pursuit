@@ -2,95 +2,87 @@
 
 import { Iota } from 'civil-server'
 import { ObjectId } from 'mongodb'
+import Points from '../models/points'
 import Dturns from '../models/dturns'
+import { getConclusionIds } from '../dturn/dturn'
 
 export default async function getUserDiscussions(cb) {
   if (typeof cb !== 'function') return
 
+  // Check if user is logged in
+  if (!this.synuser || !this.synuser.id) {
+    console.error('getUserDiscussions called but no user logged in')
+    return cb(undefined)
+  }
+
   try {
-    // Mock data based on iotas.json structure for development/testing
-    const mockDiscussions = [
-      {
-        discussionId: '5d56e411e7179a084eefb365',
-        subject: 'Join',
-        description: 'Join the Civil Server',
-        numParticipants: 5,
-        roundNum: 1,
-      },
-      {
-        discussionId: '67db9da4c6019fba8de3eafe',
-        subject: "What one issue should 'We the People' unite and solve first to make our country even better?",
-        description: "This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. We're asking about concerns, not solutions.",
-        numParticipants: 12,
-        roundNum: 2,
-      },
-      {
-        discussionId: '68687cdeb4e0c47144419fde',
-        subject: "What's the largest number",
-        description: "What's the largest random number between 0 and 100. This is a test of the Civil Server.",
-        numParticipants: 8,
-        roundNum: 3,
-      },
-    ]
+    // Find all points made by this user
+    const userPoints = await Points.find({ userId: this.synuser.id }).toArray()
 
-    cb(mockDiscussions)
+    // Extract unique parentIds (discussionIds) from those points
+    const discussionIds = [...new Set(userPoints.map(point => point.parentId))]
 
-    // Original implementation commented out for development:
-    /*
-    // Validate authentication
-    if (!this.synuser) {
-      console.error('getUserDiscussions called but no user logged in')
-      return cb(undefined)
+    if (discussionIds.length === 0) {
+      return cb([])
     }
 
-    const userId = this.synuser.id
-
-    // Get all discussions where this user has participated
-    const userDturns = await Dturns.find({ userId: userId }).toArray()
-
-    if (!userDturns.length) {
-      return cb([]) // User hasn't participated in any discussions
-    }
-
-    // Get unique discussion IDs
-    const discussionIds = [...new Set(userDturns.map(dturn => dturn.discussionId))]
-
-    // Get discussion details from Iotas collection
-    const iotas = await Iota.find({
+    // Find all Iotas where discussionId is in that list
+    const discussions = await Iota.find({
       _id: { $in: discussionIds.map(id => new ObjectId(id)) },
     }).toArray()
 
-    // Get all Dturns data for these discussions to calculate participant counts
-    const allDiscussionDturns = await Dturns.find({
-      discussionId: { $in: discussionIds },
-    }).toArray()
+    // For each discussion, get round number from Dturns for this user
+    const result = await Promise.all(
+      discussions.map(async discussion => {
+        const discussionId = discussion._id.toString()
 
-    // Build result by combining Iota metadata with Dturns participation data
-    const discussions = iotas.map(iota => {
-      const discussionId = iota._id.toString()
+        // Query Dturns to get user's highest round for this discussion
+        const userDturn = await Dturns.findOne(
+          {
+            discussionId: discussionId,
+            userId: this.synuser.id,
+          },
+          { sort: { round: -1 } }
+        )
 
-      // Get participant count from unique userIds in Dturns for this discussion
-      const participantIds = [...new Set(allDiscussionDturns.filter(dturn => dturn.discussionId === discussionId).map(dturn => dturn.userId))]
+        // Get user's most recent activity in this discussion
+        const userLastDturn = await Dturns.findOne(
+          {
+            discussionId: discussionId,
+            userId: this.synuser.id,
+          },
+          { sort: { _id: -1 } }
+        )
 
-      // Get user's highest round for this discussion
-      const userRounds = userDturns
-        .filter(dturn => dturn.discussionId === discussionId)
-        .map(dturn => dturn.round)
-        .filter(round => typeof round === 'number')
+        const userLastActivity = userLastDturn ? userLastDturn._id.getTimestamp().toISOString() : null
 
-      const userMaxRound = userRounds.length > 0 ? Math.max(...userRounds) : 0
+        // Get most recent activity in this discussion (any user)
+        const discussionLastDturn = await Dturns.findOne(
+          {
+            discussionId: discussionId,
+          },
+          { sort: { _id: -1 } }
+        )
 
-      return {
-        discussionId,
-        subject: iota.subject || '',
-        description: iota.description || '',
-        numParticipants: participantIds.length,
-        roundNum: userMaxRound,
-      }
-    })
+        const discussionLastActivity = discussionLastDturn ? discussionLastDturn._id.getTimestamp().toISOString() : null
 
-    cb(discussions)
-    */
+        // Check if discussion is complete by getting conclusion data
+        const conclusionIds = await getConclusionIds(discussionId)
+
+        return {
+          _id: discussionId,
+          subject: discussion.subject,
+          description: discussion.description,
+          participants: discussion.webComponent?.participants || 0,
+          currentRound: userDturn?.round || 0,
+          isComplete: !!conclusionIds,
+          userLastActivity: userLastActivity,
+          discussionLastActivity: discussionLastActivity,
+        }
+      })
+    )
+
+    cb(result)
   } catch (error) {
     console.error('Error in getUserDiscussions:', error)
     cb(undefined)

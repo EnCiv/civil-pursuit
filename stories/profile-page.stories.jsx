@@ -1,5 +1,3 @@
-// https://github.com/EnCiv/civil-pursuit/issues/XXX
-
 import React from 'react'
 import { ThemeProvider } from 'react-jss'
 import theme from '../app/components/theme'
@@ -43,7 +41,7 @@ const fakeDiscussions = [
 
 export default {
   component: ProfilePage,
-  title: 'Profile Page',
+  title: 'profile-page',
   decorators: [
     Story => (
       <ThemeProvider theme={theme}>
@@ -60,30 +58,22 @@ export const Default = () => {
 }
 
 export const EmptyDiscussions = () => {
-  return <ProfilePage discussions={[]} />
+  return <ProfilePage discussions={[]} initialTab="Discussions" />
 }
 
 export const SingleDiscussion = () => {
   const singleDiscussion = [fakeDiscussions[0]]
-  return <ProfilePage discussions={singleDiscussion} />
+  return <ProfilePage discussions={singleDiscussion} initialTab="Discussions" />
 }
 
 export const ProfileTabActive = () => {
-  return <ProfilePage discussions={fakeDiscussions} />
+  return <ProfilePage discussions={fakeDiscussions} initialTab="Profile" />
 }
 
-export const DiscussionsTabActive = {
-  render: () => <ProfilePage discussions={fakeDiscussions} />,
-  play: async ({ canvasElement }) => {
-    // This would simulate clicking on the Discussions tab
-    // The actual interaction testing would depend on the testing framework setup
-  },
+export const DiscussionsTabActive = () => {
+  return <ProfilePage discussions={fakeDiscussions} initialTab="Discussions" />
 }
 
-export const SettingsTabActive = {
-  render: () => <ProfilePage discussions={fakeDiscussions} />,
-  play: async ({ canvasElement }) => {
-    // This would simulate clicking on the Settings tab
-    // The actual interaction testing would depend on the testing framework setup
-  },
+export const SettingsTabActive = () => {
+  return <ProfilePage discussions={fakeDiscussions} initialTab="Settings" />
 }

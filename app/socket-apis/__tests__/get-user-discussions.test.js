@@ -4,19 +4,24 @@ import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Iota } from 'civil-server'
 import { ObjectId } from 'mongodb'
+import Points from '../../models/points'
 import Dturns from '../../models/dturns'
 import getUserDiscussions from '../get-user-discussions'
+import { getConclusionIds } from '../../dturn/dturn'
+
+// Mock getConclusionIds function
+jest.mock('../../dturn/dturn', () => ({
+  getConclusionIds: jest.fn(),
+}))
 
 let MemoryServer
 
 const DISCUSSION_ID1 = '6667d5a33da5d19ddc304a6b'
 const DISCUSSION_ID2 = '6667d5a33da5d19ddc304a6c'
-const DISCUSSION_ID3 = '6667d5a33da5d19ddc304a6d'
 
 const userId1 = '6667d5a33da5d19ddc304a6b'
 const userId2 = '6667d5a33da5d19ddc304a6c'
 const synuser1 = { synuser: { id: userId1 } }
-const synuser2 = { synuser: { id: userId2 } }
 
 beforeEach(async () => {
   global.logger = {
@@ -25,12 +30,9 @@ beforeEach(async () => {
     error: jest.fn(),
   }
 
-  // Clear Discussions object
-  Object.keys(Discussions).forEach(key => delete Discussions[key])
-
-  // Setup default mock return values
-  ensureDeliberationLoaded.mockResolvedValue(true)
-  getConclusionIds.mockResolvedValue(undefined) // default to not complete
+  // Reset and set default behavior for getConclusionIds
+  jest.clearAllMocks()
+  getConclusionIds.mockResolvedValue(undefined) // Default: discussions are not complete
 })
 
 beforeAll(async () => {
@@ -41,6 +43,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await Iota.deleteMany({})
+  await Points.deleteMany({})
   await Dturns.deleteMany({})
   await Mongo.disconnect()
   await MemoryServer.stop()
@@ -48,6 +51,7 @@ afterAll(async () => {
 
 afterEach(async () => {
   await Iota.deleteMany({})
+  await Points.deleteMany({})
   await Dturns.deleteMany({})
 })
 
@@ -68,42 +72,28 @@ test('returns empty array when user has not participated in any discussions', as
 })
 
 test('returns discussions for user with single discussion participation', async () => {
-  // Create iota for discussion
   await Iota.insertOne({
     _id: new ObjectId(DISCUSSION_ID1),
     subject: 'Test Discussion 1',
     description: 'Description for discussion 1',
+    webComponent: {
+      participants: 127,
+    },
   })
 
-  // Create dturn records for multiple users to show participant count
-  const userId2 = new ObjectId()
-  const userId3 = new ObjectId()
-  await Dturns.insertMany([
-    {
-      discussionId: DISCUSSION_ID1,
-      userId: userId1,
-      round: 0,
-      shownStatementIds: { statement1: { rank: 1 } },
-      groupings: [['statement1', 'statement2']],
-      finished: true,
-    },
-    {
-      discussionId: DISCUSSION_ID1,
-      userId: userId2.toString(),
-      round: 0,
-      shownStatementIds: { statement1: { rank: 2 } },
-      groupings: [['statement1', 'statement2']],
-      finished: true,
-    },
-    {
-      discussionId: DISCUSSION_ID1,
-      userId: userId3.toString(),
-      round: 0,
-      shownStatementIds: { statement2: { rank: 1 } },
-      groupings: [['statement2', 'statement3']],
-      finished: false,
-    },
-  ])
+  await Points.insertOne({
+    _id: new ObjectId(),
+    userId: userId1,
+    parentId: DISCUSSION_ID1,
+    subject: 'Point 1',
+    description: 'User point in discussion 1',
+  })
+
+  await Dturns.insertOne({
+    discussionId: DISCUSSION_ID1,
+    userId: userId1,
+    round: 2,
+  })
 
   const cb = jest.fn()
 
@@ -111,56 +101,75 @@ test('returns discussions for user with single discussion participation', async 
 
   expect(cb).toHaveBeenCalledTimes(1)
   const result = cb.mock.calls[0][0]
-  console.log('Single discussion result:', JSON.stringify(result, null, 2))
   expect(result).toHaveLength(1)
   expect(result[0]).toEqual({
-    discussionId: DISCUSSION_ID1,
+    _id: DISCUSSION_ID1,
     subject: 'Test Discussion 1',
     description: 'Description for discussion 1',
-    numParticipants: 3, // 3 different users in the dturn records
-    roundNum: 0, // user1's highest round
+    participants: 127,
+    currentRound: 2,
+    isComplete: false,
+    userLastActivity: expect.any(String),
+    discussionLastActivity: expect.any(String),
   })
 })
 
 test('returns multiple discussions for user who participated in several', async () => {
-  // Setup multiple discussions - create iotas
+  // Mock getConclusionIds: DISCUSSION_ID2 is complete (has conclusion), DISCUSSION_ID1 is not
+  getConclusionIds.mockImplementation(discussionId => {
+    if (discussionId === DISCUSSION_ID2) {
+      return Promise.resolve(['conclusion1', 'conclusion2']) // Has conclusions - complete
+    }
+    return Promise.resolve(undefined) // No conclusions - not complete
+  })
+
   await Iota.insertMany([
     {
       _id: new ObjectId(DISCUSSION_ID1),
-      path: 'discussion-1',
       subject: 'Discussion One',
       description: 'First discussion',
       webComponent: {
-        component: 'Tournament',
-        participants: {},
+        participants: 50,
       },
     },
     {
       _id: new ObjectId(DISCUSSION_ID2),
-      path: 'discussion-2',
       subject: 'Discussion Two',
       description: 'Second discussion',
       webComponent: {
-        component: 'Tournament',
-        participants: {},
+        participants: 25,
       },
     },
   ])
 
-  // Mock additional user IDs
-  const userId2 = new ObjectId().toString()
-  const userId3 = new ObjectId().toString()
-  const userId4 = new ObjectId().toString()
+  await Points.insertMany([
+    {
+      _id: new ObjectId(),
+      userId: userId1,
+      parentId: DISCUSSION_ID1,
+      subject: 'Point in discussion 1',
+      description: 'User point in first discussion',
+    },
+    {
+      _id: new ObjectId(),
+      userId: userId1,
+      parentId: DISCUSSION_ID2,
+      subject: 'Point in discussion 2',
+      description: 'User point in second discussion',
+    },
+  ])
 
-  // Create dturn participation records for multiple users and discussions
   await Dturns.insertMany([
-    // Discussion 1 participants - user1 participated in 2 rounds, others in 1
-    { discussionId: DISCUSSION_ID1, userId: userId1, rounds: [{ roundNum: 1 }, { roundNum: 2 }] },
-    { discussionId: DISCUSSION_ID1, userId: userId2, rounds: [{ roundNum: 1 }] },
-    { discussionId: DISCUSSION_ID1, userId: userId3, rounds: [{ roundNum: 1 }] },
-    // Discussion 2 participants (userId1 participates in both)
-    { discussionId: DISCUSSION_ID2, userId: userId1, rounds: [{ roundNum: 1 }] },
-    { discussionId: DISCUSSION_ID2, userId: userId4, rounds: [{ roundNum: 1 }] },
+    {
+      discussionId: DISCUSSION_ID1,
+      userId: userId1,
+      round: 1,
+    },
+    {
+      discussionId: DISCUSSION_ID2,
+      userId: userId1,
+      round: 3,
+    },
   ])
 
   const cb = jest.fn()
@@ -171,32 +180,39 @@ test('returns multiple discussions for user who participated in several', async 
 
   expect(result).toHaveLength(2)
 
-  // Check that both discussions are returned
-  const discussionIds = result.map(d => d.discussionId)
-  expect(discussionIds).toContain(DISCUSSION_ID1)
-  expect(discussionIds).toContain(DISCUSSION_ID2)
-
-  // Check discussion metadata and participant counts
-  const discussion1 = result.find(d => d.discussionId === DISCUSSION_ID1)
-  expect(discussion1.subject).toBe('Discussion One')
-  expect(discussion1.description).toBe('First discussion')
-  expect(discussion1.path).toBe('discussion-1')
-  expect(discussion1.participants).toBe(3) // 3 unique participants
-  expect(discussion1.roundNum).toBe(2) // user1's highest round
-
-  const discussion2 = result.find(d => d.discussionId === DISCUSSION_ID2)
-  expect(discussion2.subject).toBe('Discussion Two')
-  expect(discussion2.path).toBe('discussion-2')
-  expect(discussion2.participants).toBe(2) // 2 unique participants
-  expect(discussion2.roundNum).toBe(1) // user1's highest round
+  expect(result).toEqual(
+    expect.arrayContaining([
+      {
+        _id: DISCUSSION_ID1,
+        subject: 'Discussion One',
+        description: 'First discussion',
+        participants: 50,
+        currentRound: 1,
+        isComplete: false,
+        userLastActivity: expect.any(String),
+        discussionLastActivity: expect.any(String),
+      },
+      {
+        _id: DISCUSSION_ID2,
+        subject: 'Discussion Two',
+        description: 'Second discussion',
+        participants: 25,
+        currentRound: 3,
+        isComplete: true,
+        userLastActivity: expect.any(String),
+        discussionLastActivity: expect.any(String),
+      },
+    ])
+  )
 })
 
 test('excludes discussions where iota is not found', async () => {
-  // Create dturn record but no corresponding iota
-  await Dturns.insertOne({
-    discussionId: DISCUSSION_ID1,
+  await Points.insertOne({
+    _id: new ObjectId(),
     userId: userId1,
-    rounds: [{ roundNum: 1 }],
+    parentId: DISCUSSION_ID1,
+    subject: 'Point for non-existent discussion',
+    description: 'This point references a discussion that has no iota',
   })
 
   const cb = jest.fn()
@@ -206,7 +222,6 @@ test('excludes discussions where iota is not found', async () => {
 })
 
 test('handles database query errors gracefully', async () => {
-  // Create valid data first
   await Iota.insertOne({
     _id: new ObjectId(DISCUSSION_ID1),
     path: 'test-discussion',
@@ -215,15 +230,15 @@ test('handles database query errors gracefully', async () => {
     webComponent: { component: 'Tournament' },
   })
 
-  await Dturns.insertOne({
-    discussionId: DISCUSSION_ID1,
+  await Points.insertOne({
+    _id: new ObjectId(),
     userId: userId1,
-    rounds: [{ roundNum: 1 }],
+    parentId: DISCUSSION_ID1,
+    subject: 'Test point',
+    description: 'Test point description',
   })
 
-  // Mock Iota.find to throw an error
-  const originalFind = Iota.find
-  Iota.find = jest.fn().mockImplementation(() => {
+  const iotaSpy = jest.spyOn(Iota, 'find').mockImplementation(() => {
     throw new Error('Database connection error')
   })
 
@@ -232,45 +247,61 @@ test('handles database query errors gracefully', async () => {
 
   expect(cb).toHaveBeenCalledWith(undefined)
 
-  // Restore original method
-  Iota.find = originalFind
+  iotaSpy.mockRestore()
 })
 
-test('returns correct round number for user participation', async () => {
-  // Create iota
-  await Iota.insertOne({
-    _id: new ObjectId(DISCUSSION_ID1),
-    path: 'test-discussion',
-    subject: 'Test Discussion',
-    description: 'Test description',
-    webComponent: { component: 'Tournament' },
+test('handles Points database errors gracefully', async () => {
+  const pointsSpy = jest.spyOn(Points, 'find').mockImplementation(() => {
+    throw new Error('Database connection error')
   })
 
-  // Create dturn records - user1 participated in multiple rounds
-  const userId2 = new ObjectId().toString()
-  const userId3 = new ObjectId().toString()
-  await Dturns.insertMany([
+  const cb = jest.fn()
+  await getUserDiscussions.call(synuser1, cb)
+
+  expect(cb).toHaveBeenCalledWith(undefined)
+
+  pointsSpy.mockRestore()
+})
+
+test('returns unique discussions even with duplicate parentIds in points', async () => {
+  await Iota.insertOne({
+    _id: new ObjectId(DISCUSSION_ID1),
+    subject: 'Test Discussion',
+    description: 'Test description',
+    webComponent: {
+      participants: 15,
+    },
+  })
+
+  await Points.insertMany([
     {
-      discussionId: DISCUSSION_ID1,
+      _id: new ObjectId(),
       userId: userId1,
-      round: 1, // user1 highest round
+      parentId: DISCUSSION_ID1,
+      subject: 'Point 1',
+      description: 'First point in discussion',
     },
     {
-      discussionId: DISCUSSION_ID1,
+      _id: new ObjectId(),
       userId: userId1,
-      round: 2, // user1 went to round 2
+      parentId: DISCUSSION_ID1,
+      subject: 'Point 2',
+      description: 'Second point in same discussion',
     },
     {
-      discussionId: DISCUSSION_ID1,
-      userId: userId2,
-      round: 1, // user2 only did round 1
-    },
-    {
-      discussionId: DISCUSSION_ID1,
-      userId: userId3,
-      round: 1, // user3 only did round 1
+      _id: new ObjectId(),
+      userId: userId1,
+      parentId: DISCUSSION_ID1,
+      subject: 'Point 3',
+      description: 'Third point in same discussion',
     },
   ])
+
+  await Dturns.insertOne({
+    discussionId: DISCUSSION_ID1,
+    userId: userId1,
+    round: 1,
+  })
 
   const cb = jest.fn()
   await getUserDiscussions.call(synuser1, cb)
@@ -278,22 +309,89 @@ test('returns correct round number for user participation', async () => {
   expect(cb).toHaveBeenCalledTimes(1)
   const result = cb.mock.calls[0][0]
   expect(result).toHaveLength(1)
-  expect(result[0].roundNum).toBe(2) // user1's highest round
-  expect(result[0].numParticipants).toBe(3) // 3 unique participants
+  expect(result[0]).toEqual({
+    _id: DISCUSSION_ID1,
+    subject: 'Test Discussion',
+    description: 'Test description',
+    participants: 15,
+    currentRound: 1,
+    isComplete: false,
+    userLastActivity: expect.any(String),
+    discussionLastActivity: expect.any(String),
+  })
 })
 
-test('handles database errors gracefully', async () => {
-  // Mock Dturns.find to throw an error
-  const originalFind = Dturns.find
-  Dturns.find = jest.fn().mockImplementation(() => {
-    throw new Error('Database connection error')
+test('handles missing webComponent participants gracefully', async () => {
+  await Iota.insertOne({
+    _id: new ObjectId(DISCUSSION_ID1),
+    subject: 'Test Discussion',
+    description: 'Test description',
+  })
+
+  await Points.insertOne({
+    _id: new ObjectId(),
+    userId: userId1,
+    parentId: DISCUSSION_ID1,
+    subject: 'Test point',
+    description: 'Test point description',
+  })
+
+  await Dturns.insertOne({
+    discussionId: DISCUSSION_ID1,
+    userId: userId1,
+    round: 1,
   })
 
   const cb = jest.fn()
   await getUserDiscussions.call(synuser1, cb)
 
-  expect(cb).toHaveBeenCalledWith(undefined)
+  expect(cb).toHaveBeenCalledTimes(1)
+  const result = cb.mock.calls[0][0]
+  expect(result).toHaveLength(1)
+  expect(result[0]).toEqual({
+    _id: DISCUSSION_ID1,
+    subject: 'Test Discussion',
+    description: 'Test description',
+    participants: 0,
+    currentRound: 1,
+    isComplete: false,
+    userLastActivity: expect.any(String),
+    discussionLastActivity: expect.any(String),
+  })
+})
 
-  // Restore original method
-  Dturns.find = originalFind
+test('handles missing Dturn record gracefully', async () => {
+  await Iota.insertOne({
+    _id: new ObjectId(DISCUSSION_ID1),
+    subject: 'Test Discussion',
+    description: 'Test description',
+    webComponent: {
+      participants: 10,
+    },
+  })
+
+  await Points.insertOne({
+    _id: new ObjectId(),
+    userId: userId1,
+    parentId: DISCUSSION_ID1,
+    subject: 'Test point',
+    description: 'Test point description',
+  })
+
+  const cb = jest.fn()
+  await getUserDiscussions.call(synuser1, cb)
+
+  expect(cb).toHaveBeenCalledTimes(1)
+  const result = cb.mock.calls[0][0]
+  expect(result).toHaveLength(1)
+  expect(result[0]).toEqual({
+    _id: DISCUSSION_ID1,
+    subject: 'Test Discussion',
+    description: 'Test description',
+    participants: 10,
+    currentRound: 0,
+    isComplete: false,
+    userLastActivity: null,
+    discussionLastActivity: null,
+  })
 })

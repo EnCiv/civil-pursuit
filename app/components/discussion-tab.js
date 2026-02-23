@@ -1,6 +1,4 @@
-// https://github.com/EnCiv/civil-pursuit/issues/XXX
-
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { SecondaryButton, PrimaryButton, ModifierButton } from './button'
@@ -10,11 +8,22 @@ import StatusBadge from './status-badge'
 import MyActivity from './my-activity'
 
 function DiscussionTab(props) {
-  const { className, discussions = [], ...otherProps } = props
+  const { className, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [currentView, setCurrentView] = useState('discussions')
   const [activityData, setActivityData] = useState({})
   const [selectedDiscussionId, setSelectedDiscussionId] = useState(null)
+  const [discussions, setDiscussions] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    window.socket.emit('get-user-discussions', data => {
+      if (data) {
+        setDiscussions(data)
+      }
+      setLoading(false)
+    })
+  }, [])
 
   const handleCreateClick = () => {
     console.log('Create new discussion')
@@ -62,48 +71,51 @@ function DiscussionTab(props) {
           </div>
 
           <div className={classes.discussionsList}>
-            {discussions.map(discussion => {
-              const metadataFields = [
-                { label: 'Created', value: formatDate(discussion.created) },
-                { label: 'Last Accessed', value: formatDate(discussion.lastAccessed) },
-                { label: 'Last Active', value: formatDate(discussion.lastActive) },
-              ]
+            {loading ? (
+              <div></div>
+            ) : (
+              discussions.map(discussion => {
+                const metadataFields = [
+                  { label: 'Your Last Activity', value: formatDate(discussion.userLastActivity) },
+                  { label: 'Discussion Last Activity', value: formatDate(discussion.discussionLastActivity) },
+                ]
 
-              const participantsBadge = <StatusBadge name={`${discussion.participants || 0} participant${discussion.participants !== 1 ? 's' : ''}`} />
+                const participantsBadge = <StatusBadge name={`${discussion.participants || 0} participant${discussion.participants !== 1 ? 's' : ''}`} />
 
-              const statusBadge = discussion.isComplete ? <StatusBadge name="Complete" status="Complete" /> : <StatusBadge name={`Round ${discussion.currentRound || 1}`} status="Progress" />
+                const statusBadge = discussion.isComplete ? <StatusBadge name="Complete" status="Complete" /> : <StatusBadge name={`Round ${discussion.currentRound || 1}`} status="Progress" />
 
-              const buttonsRow = discussion.isComplete ? (
-                <div className={classes.buttonsRow}>
-                  <PrimaryButton onDone={() => console.log('View Summary', discussion._id)}>View Summary</PrimaryButton>
-                  <SecondaryButton onDone={() => handleMyActivityClick(discussion._id)}>View My Activity</SecondaryButton>
-                </div>
-              ) : (
-                <div className={classes.buttonsRow}>
-                  <ModifierButton onDone={() => console.log('Continue', discussion._id)}>Continue</ModifierButton>
-                </div>
-              )
+                const buttonsRow = discussion.isComplete ? (
+                  <div className={classes.buttonsRow}>
+                    <PrimaryButton onDone={() => console.log('View Summary', discussion._id)}>View Summary</PrimaryButton>
+                    <SecondaryButton onDone={() => handleMyActivityClick(discussion._id)}>View My Activity</SecondaryButton>
+                  </div>
+                ) : (
+                  <div className={classes.buttonsRow}>
+                    <ModifierButton onDone={() => console.log('Continue', discussion._id)}>Continue</ModifierButton>
+                  </div>
+                )
 
-              return (
-                <div key={discussion._id} className={classes.discussionItem}>
-                  <Metadata
-                    title="View Dates"
-                    data={metadataFields}
-                    child={
-                      <div className={classes.compactQuestionBox}>
-                        <QuestionBox subject={discussion.subject} description={discussion.description} contentAlign="left" compact={true}>
-                          <div className={classes.badgesRow}>
-                            {participantsBadge}
-                            {statusBadge}
-                          </div>
-                          {buttonsRow}
-                        </QuestionBox>
-                      </div>
-                    }
-                  />
-                </div>
-              )
-            })}
+                return (
+                  <div key={discussion._id} className={classes.discussionItem}>
+                    <Metadata
+                      title="View Dates"
+                      data={metadataFields}
+                      child={
+                        <div className={classes.compactQuestionBox}>
+                          <QuestionBox subject={discussion.subject} description={discussion.description} contentAlign="left" compact={true}>
+                            <div className={classes.badgesRow}>
+                              {participantsBadge}
+                              {statusBadge}
+                            </div>
+                            {buttonsRow}
+                          </QuestionBox>
+                        </div>
+                      }
+                    />
+                  </div>
+                )
+              })
+            )}
           </div>
         </>
       ) : (
