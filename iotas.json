@@ -19,99 +19,17 @@
       "webComponent": "CivilPursuit",
       "dturn": { "group_size": 5, "finalRound": 3 },
       "participants": 12,
-
       "steps": [
-        { "webComponent": "SignUp", "startTab": "SignUp" },
-        {
-          "webComponent": "Jsform",
-          "name": "moreDetails",
-          "title": "Some Details",
-          "schema": {
-            "type": "object",
-            "properties": {
-              "stateOfResidence": {
-                "title": "State of Residence",
-                "type": "string",
-                "enum": [
-                  "Alabama",
-                  "Alaska",
-                  "Arizona",
-                  "Arkansas",
-                  "California",
-                  "Colorado",
-                  "Connecticut",
-                  "Delaware",
-                  "Florida",
-                  "Georgia",
-                  "Hawaii",
-                  "Idaho",
-                  "Illinois",
-                  "Indiana",
-                  "Iowa",
-                  "Kansas",
-                  "Kentucky",
-                  "Louisiana",
-                  "Maine",
-                  "Maryland",
-                  "Massachusetts",
-                  "Michigan",
-                  "Minnesota",
-                  "Mississippi",
-                  "Missouri",
-                  "Montana",
-                  "Nebraska",
-                  "Nevada",
-                  "New Hampshire",
-                  "New Jersey",
-                  "New Mexico",
-                  "New York",
-                  "North Carolina",
-                  "North Dakota",
-                  "Ohio",
-                  "Oklahoma",
-                  "Oregon",
-                  "Pennsylvania",
-                  "Rhode Island",
-                  "South Carolina",
-                  "South Dakota",
-                  "Tennessee",
-                  "Texas",
-                  "Utah",
-                  "Vermont",
-                  "Virginia",
-                  "Washington",
-                  "West Virginia",
-                  "Wisconsin",
-                  "Wyoming"
-                ]
-              },
-              "dateOfBirth": {
-                "title": "Date of Birth",
-                "type": "string",
-                "format": "date"
-              }
-            }
-          },
-          "uischema": {
-            "type": "VerticalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/stateOfResidence"
-              },
-              {
-                "type": "Control",
-                "scope": "#/properties/dateOfBirth"
-              }
-            ]
-          }
-        },
         {
           "webComponent": "Tournament",
           "steps": [
             {
               "webComponent": "Answer",
               "stepName": "Answer",
+              "stepVisibility": {
+                "rounds": [0],
+                "hideWhenAllComplete": true
+              },
               "stepIntro": {
                 "subject": "Answer",
                 "description": "Please provide a title and short description for your answer"
@@ -124,8 +42,103 @@
               "whyQuestion": "Why should everyone consider solving this issue?"
             },
             {
+              "webComponent": "Jsform",
+              "name": "moreDetails",
+              "title": "Some Details",
+              "stepName": "Details",
+              "stepVisibility": {
+                "rounds": [0]
+              },
+              "stepIntro": {
+                "subject": "Some details",
+                "description": "We ask these questions about participants to help us achieve broad ideological participation.  In order to find the best possible solutions, and the ones that unite the nation, all ideas need to be represented. Answering is optional, and this info is not shown along side your posts unless you give permission below."
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "stateOfResidence": {
+                    "title": "State of Residence",
+                    "type": "string",
+                    "enum": [
+                      "Alabama",
+                      "Alaska",
+                      "Arizona",
+                      "Arkansas",
+                      "California",
+                      "Colorado",
+                      "Connecticut",
+                      "Delaware",
+                      "Florida",
+                      "Georgia",
+                      "Hawaii",
+                      "Idaho",
+                      "Illinois",
+                      "Indiana",
+                      "Iowa",
+                      "Kansas",
+                      "Kentucky",
+                      "Louisiana",
+                      "Maine",
+                      "Maryland",
+                      "Massachusetts",
+                      "Michigan",
+                      "Minnesota",
+                      "Mississippi",
+                      "Missouri",
+                      "Montana",
+                      "Nebraska",
+                      "Nevada",
+                      "New Hampshire",
+                      "New Jersey",
+                      "New Mexico",
+                      "New York",
+                      "North Carolina",
+                      "North Dakota",
+                      "Ohio",
+                      "Oklahoma",
+                      "Oregon",
+                      "Pennsylvania",
+                      "Rhode Island",
+                      "South Carolina",
+                      "South Dakota",
+                      "Tennessee",
+                      "Texas",
+                      "Utah",
+                      "Vermont",
+                      "Virginia",
+                      "Washington",
+                      "West Virginia",
+                      "Wisconsin",
+                      "Wyoming"
+                    ]
+                  },
+                  "dateOfBirth": {
+                    "title": "Date of Birth",
+                    "type": "string",
+                    "format": "date"
+                  }
+                }
+              },
+              "uischema": {
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/stateOfResidence"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/dateOfBirth"
+                  }
+                ]
+              }
+            },
+            {
               "webComponent": "GroupingStep",
               "stepName": "Group",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Group Responses",
                 "description": "Of these issues, please group similar responses to facilitate your decision-making by avoiding duplicates. If no duplicates are found, you may continue to the next section below."
@@ -134,6 +147,9 @@
             {
               "webComponent": "RankStep",
               "stepName": "Rank",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Rank Responses",
                 "description": "Please rate the following responses as Most, Neutral, or Least important. You must rate two responses as Most Important, and one as Least Important."
@@ -143,6 +159,9 @@
               "webComponent": "WhyStep",
               "category": "most",
               "stepName": "Why Most",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Why it's Most Important",
                 "description": "Of the issues you thought were Most important, please give a brief explanation of why it's important for everyone to consider it."
@@ -153,6 +172,9 @@
               "webComponent": "WhyStep",
               "category": "least",
               "stepName": "Why Least",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Why it's Least Important",
                 "description": "Of the issues you thought were least important, please give a brief explanation of why it's important for everyone to consider it."
@@ -162,6 +184,9 @@
             {
               "webComponent": "CompareReasons",
               "stepName": "Compare Why Most",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Compare Reasons Why It's Most Important",
                 "description": "Compare two responses and select a response that is most important for the community to consider."
@@ -171,6 +196,9 @@
             {
               "webComponent": "CompareReasons",
               "stepName": "Compare Why Least",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Compare Reasons Why It's Least Important",
                 "description": "Compare two responses and select a response that is most important for the community to consider."
@@ -180,14 +208,83 @@
             {
               "webComponent": "ReviewPointList",
               "stepName": "Review",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Review",
                 "description": "These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again."
               }
             },
             {
+              "webComponent": "Jsform",
+              "name": "earlyFeedback",
+              "stepName": "Feedback",
+              "stepVisibility": {
+                "rounds": [0],
+                "minParticipants": true
+              },
+              "stepIntro": {
+                "subject": "Feedback",
+                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "experience": {
+                    "title": "Rating",
+                    "type": "string",
+                    "enum": ["Very Positive", "Somewhat Positive", "Neutral", "Somewhat Negative", "Very Negative"]
+                  },
+                  "comfort": {
+                    "title": "Rating",
+                    "type": "string",
+                    "enum": ["Very Comfortable", "Somewhat Comfortable", "Neutral", "Somewhat Uncomfortable", "Very Uncomfortable"]
+                  },
+                  "interest": {
+                    "title": "Rating",
+                    "type": "string",
+                    "enum": ["Very Interested", "Somewhat Interested", "Neutral", "Somewhat Uninterested", "Very Uninterested"]
+                  },
+                  "improvements": {
+                    "title": "Description",
+                    "type": "string"
+                  }
+                }
+              },
+              "uischema": {
+                "type": "VerticalLayout",
+                "elements": [
+                  { "type": "H", "text": "How has your experience been so far?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/experience"
+                  },
+                  { "type": "H", "text": "How comfortable would you feel inviting close friends or family to participate in this discussion too?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/comfort"
+                  },
+                  { "type": "H", "text": "How interested are you in getting to the next round of this discussion?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/interest"
+                  },
+                  { "type": "H", "text": "What can we do to make this tool better?" },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/improvements",
+                    "options": { "multi": true }
+                  }
+                ]
+              }
+            },
+            {
               "webComponent": "Intermission",
               "stepName": "Intermission",
+              "stepVisibility": {
+                "always": true
+              },
               "stepIntro": {
                 "subject": "Intermission",
                 "description": "When more people have gotten to this point we will invite you back to continue the deliberation."
@@ -198,7 +295,7 @@
         { "webComponent": "Conclusion" },
         {
           "webComponent": "Jsform",
-          "name": "moreDetails",
+          "name": "finalFeedback",
           "questions": [["How would you rate your overall experience with our product/service?", "What aspects of our product/service do you believe can be improved?"]],
           "schema": {
             "type": "object",
@@ -464,138 +561,19 @@
     "description": "There are lots of surveys that show that most Americans think our country is headed in the wrong direction. But what is the right direction, the one that unites us and motivates us to make that happen?\n\nThis is not a survey, it is a deliberation that will help us find our answer.\n\nAnd this is a new tool for large scale, productive, national discourse that we are developing and hope to get your feedback on.",
     "webComponent": {
       "webComponent": "CivilPursuit",
-      "dturn": { "group_size": 5, "finalRound": 1 },
-      "participants": 12,
+      "dturn": { "group_size": 5, "finalRound": 2 },
+      "participants": 21,
       "steps": [
-        { "webComponent": "SignUp", "startTab": "SignUp" },
-        {
-          "webComponent": "Jsform",
-          "name": "moreDetails",
-          "stepIntro": {
-            "subject": "Some details",
-            "description": "We ask these questions about participants to help us engage diverse participation.  In order to find the best possible solutions, and the ones that unite the nation, all views need to be represented if not participating directly.  This details are specific to this conversations. For other conversations, we will ask again."
-          },
-          "schema": {
-            "type": "object",
-            "properties": {
-              "politicalParty": {
-                "title": "Political Party or nearest ideology",
-                "type": "string",
-                "enum": ["Democrat", "Republican", "Independent", "Libertarian", "Green", "Other"]
-              },
-              "stateOfResidence": {
-                "title": "State of Residence",
-                "type": "string",
-                "enum": [
-                  "Alabama",
-                  "Alaska",
-                  "Arizona",
-                  "Arkansas",
-                  "California",
-                  "Colorado",
-                  "Connecticut",
-                  "Delaware",
-                  "Florida",
-                  "Georgia",
-                  "Hawaii",
-                  "Idaho",
-                  "Illinois",
-                  "Indiana",
-                  "Iowa",
-                  "Kansas",
-                  "Kentucky",
-                  "Louisiana",
-                  "Maine",
-                  "Maryland",
-                  "Massachusetts",
-                  "Michigan",
-                  "Minnesota",
-                  "Mississippi",
-                  "Missouri",
-                  "Montana",
-                  "Nebraska",
-                  "Nevada",
-                  "New Hampshire",
-                  "New Jersey",
-                  "New Mexico",
-                  "New York",
-                  "North Carolina",
-                  "North Dakota",
-                  "Ohio",
-                  "Oklahoma",
-                  "Oregon",
-                  "Pennsylvania",
-                  "Rhode Island",
-                  "South Carolina",
-                  "South Dakota",
-                  "Tennessee",
-                  "Texas",
-                  "Utah",
-                  "Vermont",
-                  "Virginia",
-                  "Washington",
-                  "West Virginia",
-                  "Wisconsin",
-                  "Wyoming",
-                  "American Samoa",
-                  "District of Columbia",
-                  "Guam",
-                  "Northern Mariana Islands",
-                  "Puerto Rico",
-                  "U.S. Virgin Islands"
-                ]
-              },
-              "yearOfBirth": {
-                "title": "Year of Birth",
-                "type": "integer",
-                "minimum": 1900,
-                "maximum": 2025
-              },
-              "Gender": {
-                "title": "Gender",
-                "type": "string",
-                "enum": ["Male", "Female", "Other"]
-              },
-              "shareInfo": {
-                "title": "Personally Identifiable Information is not shown, but may we share this information with your posts?",
-                "type": "string",
-                "enum": ["Yes", "No"]
-              }
-            },
-            "required": ["shareInfo"]
-          },
-          "uischema": {
-            "type": "VerticalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/politicalParty"
-              },
-              {
-                "type": "Control",
-                "scope": "#/properties/stateOfResidence"
-              },
-              {
-                "type": "Control",
-                "scope": "#/properties/yearOfBirth"
-              },
-              {
-                "type": "Control",
-                "scope": "#/properties/Gender"
-              },
-              {
-                "type": "Control",
-                "scope": "#/properties/shareInfo"
-              }
-            ]
-          }
-        },
         {
           "webComponent": "Tournament",
           "steps": [
             {
               "webComponent": "Answer",
               "stepName": "Answer",
+              "stepVisibility": {
+                "rounds": [0],
+                "hideWhenAllComplete": true
+              },
               "stepIntro": {
                 "subject": "Answer",
                 "description": "Please answer the question below, and provide a short headline for it. Then in the second section, please explain why it's important for everyone to consider this answer.\n\nIn the next steps you will get to see others' answers and explanations, but to maximize the opportunity for independent new ideas, we ask everyone to answer the question first before seeing others' answers."
@@ -610,8 +588,137 @@
               "maxCharCount": 80
             },
             {
+              "webComponent": "Jsform",
+              "name": "moreDetails",
+              "stepName": "Details",
+              "stepVisibility": {
+                "rounds": [0]
+              },
+              "stepIntro": {
+                "subject": "Some details",
+                "description": "We ask these questions about participants to help us engage diverse participation.  In order to find the best possible solutions, and the ones that unite the nation, all views need to be represented if not participating directly.  This details are specific to this conversations. For other conversations, we will ask again."
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "politicalParty": {
+                    "title": "Political Party or nearest ideology",
+                    "type": "string",
+                    "enum": ["Democrat", "Republican", "Independent", "Libertarian", "Green", "Other"]
+                  },
+                  "stateOfResidence": {
+                    "title": "State of Residence",
+                    "type": "string",
+                    "enum": [
+                      "Alabama",
+                      "Alaska",
+                      "Arizona",
+                      "Arkansas",
+                      "California",
+                      "Colorado",
+                      "Connecticut",
+                      "Delaware",
+                      "Florida",
+                      "Georgia",
+                      "Hawaii",
+                      "Idaho",
+                      "Illinois",
+                      "Indiana",
+                      "Iowa",
+                      "Kansas",
+                      "Kentucky",
+                      "Louisiana",
+                      "Maine",
+                      "Maryland",
+                      "Massachusetts",
+                      "Michigan",
+                      "Minnesota",
+                      "Mississippi",
+                      "Missouri",
+                      "Montana",
+                      "Nebraska",
+                      "Nevada",
+                      "New Hampshire",
+                      "New Jersey",
+                      "New Mexico",
+                      "New York",
+                      "North Carolina",
+                      "North Dakota",
+                      "Ohio",
+                      "Oklahoma",
+                      "Oregon",
+                      "Pennsylvania",
+                      "Rhode Island",
+                      "South Carolina",
+                      "South Dakota",
+                      "Tennessee",
+                      "Texas",
+                      "Utah",
+                      "Vermont",
+                      "Virginia",
+                      "Washington",
+                      "West Virginia",
+                      "Wisconsin",
+                      "Wyoming",
+                      "American Samoa",
+                      "District of Columbia",
+                      "Guam",
+                      "Northern Mariana Islands",
+                      "Puerto Rico",
+                      "U.S. Virgin Islands"
+                    ]
+                  },
+                  "yearOfBirth": {
+                    "title": "Year of Birth",
+                    "type": "integer",
+                    "minimum": 1900,
+                    "maximum": 2025
+                  },
+                  "Gender": {
+                    "title": "Gender",
+                    "type": "string",
+                    "enum": ["Male", "Female", "Other"]
+                  },
+                  "shareInfo": {
+                    "title": "Personally Identifiable Information is not shown, but may we share this information with your posts?",
+                    "type": "string",
+                    "enum": ["Yes", "No"]
+                  }
+                },
+                "required": ["shareInfo"]
+              },
+              "uischema": {
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/politicalParty"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/stateOfResidence"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/yearOfBirth"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/Gender"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/shareInfo"
+                  }
+                ]
+              }
+            },
+            {
               "webComponent": "GroupingStep",
               "stepName": "Group",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Group Responses",
                 "description": "Of these answers, please group similar responses, and choose the best stated one as the lead. If none are similar, please continue to the next section."
@@ -620,6 +727,9 @@
             {
               "webComponent": "RankStep",
               "stepName": "Rank",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Rank Responses",
                 "description": "Please rate the following responses as Most, Neutral, or Least important to discuss further. All need to be rated, and in future steps you will be asked to explain why you rated them that way. See below for how many must be rated Most and Least important."
@@ -629,6 +739,9 @@
               "webComponent": "WhyStep",
               "category": "most",
               "stepName": "Why Most",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Why it's Most Important",
                 "description": "Of the issues you thought were Most important to discuss further, please give a brief explanation of why it's important for everyone to consider it."
@@ -640,6 +753,9 @@
               "webComponent": "WhyStep",
               "category": "least",
               "stepName": "Why Least",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Why it's Least Important",
                 "description": "Of the issues you thought were least important to discuss further, please give a brief explanation of why it's least important for everyone to consider it."
@@ -650,6 +766,9 @@
             {
               "webComponent": "CompareReasons",
               "stepName": "Compare Why Most",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Compare Reasons Why It's Most Important",
                 "description": "Compare two responses and select a response that is most important for the community to consider."
@@ -659,6 +778,9 @@
             {
               "webComponent": "CompareReasons",
               "stepName": "Compare Why Least",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Compare Reasons Why It's Least Important",
                 "description": "Compare two responses and select a response that is most important for the community to consider."
@@ -668,6 +790,9 @@
             {
               "webComponent": "ReviewPointList",
               "stepName": "Review",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Review",
                 "description": "These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again."
@@ -676,8 +801,11 @@
             {
               "webComponent": "Jsform",
               "name": "earlyFeedback",
-              "allowedRounds": [0],
               "stepName": "Feedback",
+              "stepVisibility": {
+                "rounds": [0],
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Feedback",
                 "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
@@ -736,6 +864,9 @@
             {
               "webComponent": "Intermission",
               "stepName": "Intermission",
+              "stepVisibility": {
+                "always": true
+              },
               "stepIntro": {
                 "subject": "Intermission",
                 "description": "When more people have gotten to this point we will invite you back to continue the deliberation."
@@ -1223,135 +1354,16 @@
       "minParticipants": 100,
       "finalRound": 2,
       "steps": [
-        { "webComponent": "SignUp", "startTab": "SignUp" },
-        {
-          "webComponent": "Jsform",
-          "name": "moreDetails",
-          "stepIntro": {
-            "subject": "Some details",
-            "description": "We ask these questions about participants to help us achieve broad ideological participation.  In order to find the best possible solutions, and the ones that unite the nation, all ideas need to be represented."
-          },
-          "schema": {
-            "type": "object",
-            "properties": {
-              "politicalParty": {
-                "title": "Political Party or nearest ideology",
-                "type": "string",
-                "enum": ["Democrat", "Republican", "Independent", "Libertarian", "Green", "Other"]
-              },
-              "stateOfResidence": {
-                "title": "State of Residence",
-                "type": "string",
-                "enum": [
-                  "Alabama",
-                  "Alaska",
-                  "Arizona",
-                  "Arkansas",
-                  "California",
-                  "Colorado",
-                  "Connecticut",
-                  "Delaware",
-                  "Florida",
-                  "Georgia",
-                  "Hawaii",
-                  "Idaho",
-                  "Illinois",
-                  "Indiana",
-                  "Iowa",
-                  "Kansas",
-                  "Kentucky",
-                  "Louisiana",
-                  "Maine",
-                  "Maryland",
-                  "Massachusetts",
-                  "Michigan",
-                  "Minnesota",
-                  "Mississippi",
-                  "Missouri",
-                  "Montana",
-                  "Nebraska",
-                  "Nevada",
-                  "New Hampshire",
-                  "New Jersey",
-                  "New Mexico",
-                  "New York",
-                  "North Carolina",
-                  "North Dakota",
-                  "Ohio",
-                  "Oklahoma",
-                  "Oregon",
-                  "Pennsylvania",
-                  "Rhode Island",
-                  "South Carolina",
-                  "South Dakota",
-                  "Tennessee",
-                  "Texas",
-                  "Utah",
-                  "Vermont",
-                  "Virginia",
-                  "Washington",
-                  "West Virginia",
-                  "Wisconsin",
-                  "Wyoming",
-                  "American Samoa",
-                  "District of Columbia",
-                  "Guam",
-                  "Northern Mariana Islands",
-                  "Puerto Rico",
-                  "U.S. Virgin Islands"
-                ]
-              },
-              "yearOfBirth": {
-                "title": "Year of Birth",
-                "type": "integer",
-                "minimum": 1900,
-                "maximum": 2025
-              },
-              "Gender": {
-                "title": "Gender",
-                "type": "string",
-                "enum": ["Male", "Female", "Other"]
-              },
-              "shareInfo": {
-                "title": "Personally Identifiable Information is not shown, but may we share this information with your posts?",
-                "type": "string",
-                "enum": ["Yes", "No"]
-              }
-            },
-            "required": ["shareInfo"]
-          },
-          "uischema": {
-            "type": "VerticalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/politicalParty"
-              },
-              {
-                "type": "Control",
-                "scope": "#/properties/stateOfResidence"
-              },
-              {
-                "type": "Control",
-                "scope": "#/properties/yearOfBirth"
-              },
-              {
-                "type": "Control",
-                "scope": "#/properties/Gender"
-              },
-              {
-                "type": "Control",
-                "scope": "#/properties/shareInfo"
-              }
-            ]
-          }
-        },
         {
           "webComponent": "Tournament",
           "steps": [
             {
               "webComponent": "Answer",
               "stepName": "Answer",
+              "stepVisibility": {
+                "rounds": [0],
+                "hideWhenAllComplete": true
+              },
               "stepIntro": {
                 "subject": "Answer",
                 "description": "Please answer the question below, and provide a short headline for it. Then in the second section, please explain why it's important for everyone to consider this answer.\n\nIn steps that follow,you will get to see others' answers and explanations, but to maximize the opportunity for independent new ideas, we ask everyone to answer the question first before seeing others' answers."
@@ -1366,8 +1378,136 @@
               "maxCharCount": 80
             },
             {
+              "webComponent": "Jsform",
+              "name": "moreDetails",
+              "stepVisibility": {
+                "rounds": [0]
+              },
+              "stepIntro": {
+                "subject": "Some details",
+                "description": "We ask these questions about participants to help us achieve broad ideological participation.  In order to find the best possible solutions, and the ones that unite the nation, all ideas need to be represented."
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "politicalParty": {
+                    "title": "Political Party or nearest ideology",
+                    "type": "string",
+                    "enum": ["Democrat", "Republican", "Independent", "Libertarian", "Green", "Other"]
+                  },
+                  "stateOfResidence": {
+                    "title": "State of Residence",
+                    "type": "string",
+                    "enum": [
+                      "Alabama",
+                      "Alaska",
+                      "Arizona",
+                      "Arkansas",
+                      "California",
+                      "Colorado",
+                      "Connecticut",
+                      "Delaware",
+                      "Florida",
+                      "Georgia",
+                      "Hawaii",
+                      "Idaho",
+                      "Illinois",
+                      "Indiana",
+                      "Iowa",
+                      "Kansas",
+                      "Kentucky",
+                      "Louisiana",
+                      "Maine",
+                      "Maryland",
+                      "Massachusetts",
+                      "Michigan",
+                      "Minnesota",
+                      "Mississippi",
+                      "Missouri",
+                      "Montana",
+                      "Nebraska",
+                      "Nevada",
+                      "New Hampshire",
+                      "New Jersey",
+                      "New Mexico",
+                      "New York",
+                      "North Carolina",
+                      "North Dakota",
+                      "Ohio",
+                      "Oklahoma",
+                      "Oregon",
+                      "Pennsylvania",
+                      "Rhode Island",
+                      "South Carolina",
+                      "South Dakota",
+                      "Tennessee",
+                      "Texas",
+                      "Utah",
+                      "Vermont",
+                      "Virginia",
+                      "Washington",
+                      "West Virginia",
+                      "Wisconsin",
+                      "Wyoming",
+                      "American Samoa",
+                      "District of Columbia",
+                      "Guam",
+                      "Northern Mariana Islands",
+                      "Puerto Rico",
+                      "U.S. Virgin Islands"
+                    ]
+                  },
+                  "yearOfBirth": {
+                    "title": "Year of Birth",
+                    "type": "integer",
+                    "minimum": 1900,
+                    "maximum": 2025
+                  },
+                  "Gender": {
+                    "title": "Gender",
+                    "type": "string",
+                    "enum": ["Male", "Female", "Other"]
+                  },
+                  "shareInfo": {
+                    "title": "Personally Identifiable Information is not shown, but may we share this information with your posts?",
+                    "type": "string",
+                    "enum": ["Yes", "No"]
+                  }
+                },
+                "required": ["shareInfo"]
+              },
+              "uischema": {
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/politicalParty"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/stateOfResidence"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/yearOfBirth"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/Gender"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/shareInfo"
+                  }
+                ]
+              }
+            },
+            {
               "webComponent": "GroupingStep",
               "stepName": "Group",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Group Responses",
                 "description": "Of these responses, please group similar responses, and choose one to be the lead. If none are similar, please continue to the next section."
@@ -1376,6 +1516,9 @@
             {
               "webComponent": "RankStep",
               "stepName": "Rank",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Rank Responses",
                 "description": "Please rate the following responses as Most, Neutral, or Least important to discuss further. All need to be rated, and in future steps you will be asked to explain why you rated them that way. See below for how many must be rated Most and Least important."
@@ -1385,6 +1528,9 @@
               "webComponent": "WhyStep",
               "category": "most",
               "stepName": "Why Most",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Why it's Most Important",
                 "description": "Of the issues you thought were Most important to discuss further, please give a brief explanation of why it's valuable for everyone to consider it."
@@ -1396,6 +1542,9 @@
               "webComponent": "WhyStep",
               "category": "least",
               "stepName": "Why Least",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Why it's Least Important",
                 "description": "Of the issues you thought were least important to discuss further, please give a brief explanation of why it's least valuable for everyone to consider further."
@@ -1406,6 +1555,9 @@
             {
               "webComponent": "CompareReasons",
               "stepName": "Compare Why Most",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Compare Reasons Why It's Most Important",
                 "description": "Responses will be presented side by side. Select the one you think is the strongest explanation. If there is only one left, select Yes if its strong enough for everyone to consider, or No if not. At the end you can choose Start Over if you want to reconsider your choices."
@@ -1415,6 +1567,9 @@
             {
               "webComponent": "CompareReasons",
               "stepName": "Compare Why Least",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Compare Reasons Why It's Least Important",
                 "description": "Responses will be presented side by side. Select the one you think is the strongest explanation. If there is only one left, select Yes if its strong enough for everyone to consider, or No if not. At the end you can choose Start Over if you want to reconsider your choices."
@@ -1424,6 +1579,9 @@
             {
               "webComponent": "ReviewPointList",
               "stepName": "Review",
+              "stepVisibility": {
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Review",
                 "description": "These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again."
@@ -1432,8 +1590,11 @@
             {
               "webComponent": "Jsform",
               "name": "earlyFeedback",
-              "allowedRounds": [0],
               "stepName": "Feedback",
+              "stepVisibility": {
+                "rounds": [0],
+                "minParticipants": true
+              },
               "stepIntro": {
                 "subject": "Feedback",
                 "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
@@ -1492,6 +1653,9 @@
             {
               "webComponent": "Intermission",
               "stepName": "Intermission",
+              "stepVisibility": {
+                "always": true
+              },
               "stepIntro": {
                 "subject": "Intermission",
                 "description": "When more people have gotten to this point we will invite you back to continue the deliberation."
@@ -3325,7 +3489,13 @@
             }
           ]
         },
-        { "webComponent": "Conclusion" },
+        {
+          "webComponent": "Conclusion",
+          "stepIntro": {
+            "subject": "Conclusion",
+            "description": "This is the end of the deliberation. Thank you for your participation!"
+          }
+        },
         {
           "webComponent": "Jsform",
           "name": "finalFeedback",
