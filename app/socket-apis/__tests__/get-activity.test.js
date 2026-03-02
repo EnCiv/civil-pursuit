@@ -51,6 +51,11 @@ afterAll(async () => {
   await MemoryServer.stop()
 })
 
+afterEach(async () => {
+  await Iota.deleteMany({})
+  await Points.deleteMany({})
+  await Ranks.deleteMany({})
+})
 test('Fail if discussionId not provided', async () => {
   await Iota.insertOne({
     _id: new ObjectId(DISCUSSION_ID),
