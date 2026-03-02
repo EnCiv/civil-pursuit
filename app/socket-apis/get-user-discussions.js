@@ -1,4 +1,4 @@
-// https://github.com/EnCiv/civil-pursuit/issues/XXX
+// https://github.com/EnCiv/civil-pursuit/issues/385
 
 import { Iota } from 'civil-server'
 import { ObjectId } from 'mongodb'
@@ -11,7 +11,7 @@ export default async function getUserDiscussions(cb) {
 
   // Check if user is logged in
   if (!this.synuser || !this.synuser.id) {
-    console.error('getUserDiscussions called but no user logged in')
+    logger.error('getUserDiscussions called but no user logged in')
     return cb(undefined)
   }
 
@@ -84,7 +84,7 @@ export default async function getUserDiscussions(cb) {
 
     cb(result)
   } catch (error) {
-    console.error('Error in getUserDiscussions:', error)
+    logger.error('Error in getUserDiscussions:', error)
     cb(undefined)
   }
 }

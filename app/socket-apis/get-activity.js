@@ -1,4 +1,4 @@
-// https://github.com/EnCiv/civil-pursuit/issues/XXX
+// https://github.com/EnCiv/civil-pursuit/issues/385
 
 import { Iota } from 'civil-server'
 import { ObjectId } from 'mongodb'
@@ -11,7 +11,7 @@ export default async function getActivity(discussionId, cb) {
   try {
     // Validate authentication
     if (!this.synuser) {
-      console.error('getActivity called but no user logged in')
+      logger.error('getActivity called but no user logged in')
       return cb(undefined)
     }
 
@@ -25,7 +25,7 @@ export default async function getActivity(discussionId, cb) {
     const iota = await Iota.findOne({ _id: new ObjectId(discussionId) })
 
     if (!iota) {
-      console.error('Iota not found for discussionId:', discussionId)
+      logger.error('Iota not found for discussionId:', discussionId)
       return cb(undefined)
     }
 
@@ -42,8 +42,15 @@ export default async function getActivity(discussionId, cb) {
         { $match: { parentId: userResponse._id.toString() } },
         {
           $group: {
-            _id: '$category',
+            _id: '$category', // _id is the MongoDB grouping key, not the object ID
             count: { $sum: 1 },
+          },
+        },
+        {
+          $project: {
+            _id: 0, // rename _id field to avoid confusion
+            category: '$_id',
+            count: 1,
           },
         },
       ]).toArray()
@@ -51,9 +58,9 @@ export default async function getActivity(discussionId, cb) {
       // Initialize counts and populate from aggregation results
       rankCounts = { mosts: 0, leasts: 0, neutrals: 0 }
       rankAggregation.forEach(item => {
-        if (item._id === 'most') rankCounts.mosts = item.count
-        else if (item._id === 'least') rankCounts.leasts = item.count
-        else if (item._id === 'neutral') rankCounts.neutrals = item.count
+        if (item.category === 'most') rankCounts.mosts = item.count
+        else if (item.category === 'least') rankCounts.leasts = item.count
+        else if (item.category === 'neutral') rankCounts.neutrals = item.count
       })
     }
 
@@ -135,7 +142,7 @@ export default async function getActivity(discussionId, cb) {
 
     cb(result)
   } catch (error) {
-    console.error('Error in getActivity:', error)
+    logger.error('Error in getActivity:', error)
     cb(undefined)
   }
 }

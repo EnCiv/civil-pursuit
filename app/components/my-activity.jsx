@@ -1,4 +1,4 @@
-// https://github.com/EnCiv/civil-pursuit/issues/XXX
+// https://github.com/EnCiv/civil-pursuit/issues/385
 
 import React from 'react'
 import { createUseStyles } from 'react-jss'

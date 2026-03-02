@@ -7,6 +7,50 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import Markdown from 'markdown-to-jsx'
 
+/**
+ * # QuestionBox
+ *
+ * A styled container for displaying questions with optional tagline, subject, description, and children.
+ *
+ * ## Props
+ *
+ * - `className` (string, default: '') - Additional CSS class names to apply to the outer container
+ * - `subject` (string, default: '') - Main subject/title text displayed prominently
+ * - `description` (string, default: '') - Description text that supports Markdown formatting
+ * - `contentAlign` (string, default: 'center') - Alignment for content ('center', 'left', or 'right')
+ * - `tagline` (string, default: '') - Optional tagline displayed above the subject
+ * - `children` (React.ReactNode|Array, optional) - Child components to render below the description
+ *
+ * ## Children Behavior
+ *
+ * - Each child element is rendered as a separate row in a flex column layout
+ * - Children are cloned and receive merged className props including alignment styles
+ * - **Children must accept className prop and spread it to their outer element**
+ * - The `contentAlign` prop controls horizontal alignment (justifyContent) of each child
+ * - Can pass children as an array prop or use JSX children syntax
+ *
+ * ## Examples
+ *
+ * Using JSX children syntax:
+ * ```jsx
+ * <QuestionBox subject="Question?" contentAlign="left">
+ *   <StatusBadge name="100 participants" />
+ *   <PrimaryButton>Continue</PrimaryButton>
+ * </QuestionBox>
+ * ```
+ *
+ * Using children as array prop:
+ * ```jsx
+ * <QuestionBox
+ *   subject="Question?"
+ *   contentAlign="center"
+ *   children={[<StatusBadge />, <PrimaryButton />]}
+ * />
+ * ```
+ *
+ * See stories in question-box.stories.jsx for more examples.
+ */
+
 const QuestionBox = props => {
   const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', children = [], compact = false, ...otherProps } = props
   const classes = useStylesFromThemeFunction({ ...props, contentAlign, compact })

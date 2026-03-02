@@ -1,4 +1,3 @@
-// https://github.com/EnCiv/civil-pursuit/issues/XXX
 /**
  * @jest-environment node
  */
