@@ -160,7 +160,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   compactQuestionBox: {
-    backgroundColor: theme.colors?.white || '#FFF',
+    backgroundColor: theme.colors.white,
   },
 
   badgesRow: {

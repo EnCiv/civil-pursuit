@@ -78,9 +78,9 @@ function PointMatrix(props) {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   wrapper: {
     borderRadius: '1.25rem',
-    border: '1px solid rgba(235, 235, 235, 0.8)',
+    border: `${theme.border.width.thin} solid rgba(235, 235, 235, 0.8)`,
     overflow: 'hidden',
-    background: '#FFFFFF',
+    background: theme.colors.white,
   },
   contentContainer: {
     position: 'relative',
@@ -92,7 +92,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'grid',
     gridTemplateColumns: '2fr 1fr 1fr',
     gridColumnGap: '0.2rem',
-    borderBottom: '1px solid #fff',
+    borderBottom: `${theme.border.width.thin} solid ${theme.colors.white}`,
   },
   headerCell: {
     padding: '1.25rem 1rem',
@@ -122,8 +122,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     height: '5.125rem',
-    backgroundColor: '#06335C',
-    color: '#FFFFFF',
+    backgroundColor: theme.colors.primaryButtonBlue,
+    color: theme.colors.white,
     fontSize: '1.5rem',
     fontWeight: 400,
     lineHeight: '2rem',
@@ -131,7 +131,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     overflow: 'hidden',
     borderTopLeftRadius: '1.25rem',
     '& h1, & h2, & h3, & h4, & h5, & h6': {
-      color: '#FFFFFF',
+      color: theme.colors.white,
       margin: 0,
       fontSize: 'inherit',
       fontWeight: 'inherit',
@@ -148,8 +148,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
     height: '5.125rem',
-    backgroundColor: '#E7EDF2',
-    color: '#06335C',
+    backgroundColor: theme.colors.lightBlueBackground,
+    color: theme.colors.primaryButtonBlue,
     fontSize: '1.14rem',
     fontWeight: 300,
     lineHeight: '1.81rem',
@@ -166,8 +166,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'center',
     height: '5.125rem',
-    backgroundColor: '#E7EDF2',
-    color: '#06335C',
+    backgroundColor: theme.colors.lightBlueBackground,
+    color: theme.colors.primaryButtonBlue,
     fontSize: '1.14rem',
     fontWeight: 300,
     lineHeight: '1.81rem',
@@ -181,7 +181,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   dataRow: {
     display: 'grid',
     gridTemplateColumns: '2fr 1fr 1fr',
-    gridColumnGap: '1px',
+    gridColumnGap: theme.border.width.thin,
     gridRowGap: 0,
   },
   cell: {
@@ -197,7 +197,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
   cellFirst: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: theme.colors.white,
   },
   cellRating: {
     padding: '0 2.5rem',
@@ -213,10 +213,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   rowEven: {
     '& $cellFirst': {
-      backgroundColor: '#F9F9F9',
+      backgroundColor: theme.colors.lightGrayBackground,
     },
     '& $cellRating': {
-      backgroundColor: '#F9F9F9',
+      backgroundColor: theme.colors.lightGrayBackground,
     },
   },
   rowAlt: {
@@ -240,9 +240,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: theme.colors.textSecondary,
     padding: '2rem',
     textAlign: 'center',
-    backgroundColor: '#fafafa',
+    backgroundColor: theme.colors.veryLightGrayBackground,
     borderRadius: '0.5rem',
-    border: `1px solid ${theme.colors.borderGray}`,
+    border: `${theme.border.width.thin} solid ${theme.colors.borderGray}`,
   },
 }))
 

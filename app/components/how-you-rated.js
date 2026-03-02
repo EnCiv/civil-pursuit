@@ -58,7 +58,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1.5rem',
     fontWeight: '600',
     lineHeight: '2rem',
-    color: '#1A1A1A',
+    color: theme.colors.title,
     margin: 0,
   },
   controlRow: {
@@ -71,18 +71,18 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     ...theme.font,
     fontSize: '1rem',
     lineHeight: '1.5rem',
-    color: '#5D5D5C',
+    color: theme.colors.encivGray,
   },
   roundDropdown: {
     ...theme.font,
     fontSize: '1rem',
     lineHeight: '1.5rem',
-    color: '#343433',
+    color: theme.colors.disableTextBlack,
     padding: '0.3125rem 0.625rem 0.3125rem 0.9375rem',
     width: '7.5rem',
     height: '2.5rem',
-    backgroundColor: '#FFFFFF',
-    border: '2px solid #EBEBEB',
+    backgroundColor: theme.colors.white,
+    border: `${theme.border.width.thick} solid ${theme.colors.borderGray}`,
     borderRadius: '0.5rem',
     cursor: 'pointer',
     '&:hover': {
@@ -99,9 +99,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     color: theme.colors.textSecondary,
     padding: '2rem',
     textAlign: 'center',
-    backgroundColor: '#fafafa',
+    backgroundColor: theme.colors.veryLightGrayBackground,
     borderRadius: '0.5rem',
-    border: `1px solid ${theme.colors.borderGray}`,
+    border: `${theme.border.width.thin} solid ${theme.colors.borderGray}`,
   },
 }))
 
