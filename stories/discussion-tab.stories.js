@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { ThemeProvider } from 'react-jss'
 import theme from '../app/components/theme'
-import DiscussionTab from '../app/components/discussion-tab'
+import DiscussionTab from '../app/web-components/discussion-tab'
 
 // Mock activity data for the stories
 const mockActivityData = {
@@ -256,5 +256,12 @@ export const EmptyState = {
   render: DiscussionTabTemplate,
   args: {
     mockDiscussions: [],
+  },
+}
+
+export const NoDiscussions = {
+  render: DiscussionTabTemplate,
+  args: {
+    mockDiscussions: null,
   },
 }

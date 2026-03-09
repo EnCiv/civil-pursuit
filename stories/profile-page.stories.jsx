@@ -1,7 +1,7 @@
 import React from 'react'
 import { ThemeProvider } from 'react-jss'
 import theme from '../app/components/theme'
-import ProfilePage from '../app/components/profile-page'
+import ProfilePage from '../app/web-components/profile-page'
 
 const fakeDiscussions = [
   {

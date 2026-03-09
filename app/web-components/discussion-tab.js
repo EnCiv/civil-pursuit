@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import { SecondaryButton, PrimaryButton, ModifierButton } from './button'
-import QuestionBox from './question-box'
-import Metadata from './metadata'
-import StatusBadge from './status-badge'
-import MyActivity from './my-activity'
+import { SecondaryButton, PrimaryButton, ModifierButton } from '../components/button'
+import QuestionBox from '../components/question-box'
+import Metadata from '../components/metadata'
+import StatusBadge from '../components/status-badge'
+import StatusBox from '../components/status-box'
+import MyActivity from '../components/my-activity'
 
 function DiscussionTab(props) {
   const { className, ...otherProps } = props
@@ -73,6 +74,8 @@ function DiscussionTab(props) {
           <div className={classes.discussionsList}>
             {loading ? (
               <div></div>
+            ) : !discussions || discussions.length === 0 ? (
+              <StatusBox status="notice" subject="No discussions yet" description="You haven't participated in any discussions yet. Click 'Create' to start a new discussion or join an existing one." />
             ) : (
               discussions.map(discussion => {
                 const metadataFields = [

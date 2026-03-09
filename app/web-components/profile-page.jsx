@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import TopNavBar from './top-nav-bar'
+import TopNavBar from '../components/top-nav-bar'
 import DiscussionTab from './discussion-tab'
 
 function ProfilePage(props) {
