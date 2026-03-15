@@ -7,6 +7,7 @@ import Metadata from '../components/metadata'
 import StatusBadge from '../components/status-badge'
 import StatusBox from '../components/status-box'
 import MyActivity from '../components/my-activity'
+import { H } from 'react-accessible-headings'
 
 function DiscussionTab(props) {
   const { className, ...otherProps } = props
@@ -67,7 +68,7 @@ function DiscussionTab(props) {
       {currentView === 'discussions' ? (
         <>
           <div className={classes.header}>
-            <h1 className={classes.title}>Discussions</h1>
+            <H className={classes.title}>Discussions</H>
             <SecondaryButton onDone={handleCreateClick}>+ Create</SecondaryButton>
           </div>
 
@@ -130,9 +131,9 @@ function DiscussionTab(props) {
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   container: {
-    padding: '2rem',
     margin: '0 auto',
-    maxWidth: '75rem',
+    width: '100%',
+    boxSizing: 'border-box',
     fontFamily: theme.font?.fontFamily || 'Inter',
   },
 
@@ -140,7 +141,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '2rem',
+    paddingBottom: '2rem',
   },
 
   title: {

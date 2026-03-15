@@ -5,6 +5,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import TopNavBar from '../components/top-nav-bar'
 import DiscussionTab from './discussion-tab'
+import { H } from 'react-accessible-headings'
 
 function ProfilePage(props) {
   const { className, discussions = [], initialTab = 'Profile', ...otherProps } = props
@@ -23,30 +24,36 @@ function ProfilePage(props) {
   const menuArray = [createMenuItem('Profile'), createMenuItem('Discussions'), createMenuItem('Settings')]
 
   const ProfilePlaceholder = () => (
-    <div>
-      <h1>Profile</h1>
+    <>
+      <H>Profile</H>
       <p>Profile content coming soon...</p>
-    </div>
+    </>
   )
 
   const SettingsPlaceholder = () => (
-    <div>
-      <h1>Settings</h1>
+    <>
+      <H>Settings</H>
       <p>Settings content coming soon...</p>
-    </div>
+    </>
   )
 
   const renderContent = () => {
-    switch (activeTab) {
-      case 'Profile':
-        return <ProfilePlaceholder />
-      case 'Discussions':
-        return <DiscussionTab discussions={discussions} />
-      case 'Settings':
-        return <SettingsPlaceholder />
-      default:
-        return <ProfilePlaceholder />
-    }
+    return (
+      <div className={classes.tabContent}>
+        {(() => {
+          switch (activeTab) {
+            case 'Profile':
+              return <ProfilePlaceholder />
+            case 'Discussions':
+              return <DiscussionTab discussions={discussions} />
+            case 'Settings':
+              return <SettingsPlaceholder />
+            default:
+              return <ProfilePlaceholder />
+          }
+        })()}
+      </div>
+    )
   }
 
   return (
@@ -62,6 +69,7 @@ function ProfilePage(props) {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   container: {
     display: 'flex',
+    padding: '2rem',
   },
   sidebar: {
     width: '17rem',
@@ -69,7 +77,19 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   navigation: {},
   content: {
     flex: 1,
-    padding: '0rem 2rem',
+  },
+  tabContent: {
+    padding: '2rem 4rem',
+    margin: '0 auto',
+    width: '100%',
+    boxSizing: 'border-box',
+
+    '& h1, & .react-accessible-headings__heading': {
+      fontSize: '2.5rem',
+      fontWeight: 300,
+      margin: 0,
+      marginBottom: '2rem',
+    },
   },
 }))
 
