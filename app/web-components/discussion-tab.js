@@ -94,7 +94,7 @@ function DiscussionTab(props) {
                   </div>
                 ) : (
                   <div className={classes.buttonsRow}>
-                    <ModifierButton onDone={() => console.log('Continue', discussion._id)}>Continue</ModifierButton>
+                    <ModifierButton onDone={() => (window.location.href = discussion.path)}>Continue</ModifierButton>
                   </div>
                 )
 
@@ -164,6 +164,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   compactQuestionBox: {
     backgroundColor: theme.colors.white,
+    borderRadius: '1rem',
+    overflow: 'hidden',
   },
 
   badgesRow: {

@@ -73,6 +73,7 @@ export default async function getUserDiscussions(cb) {
           _id: discussionId,
           subject: discussion.subject,
           description: discussion.description,
+          path: discussion.path,
           participants: discussion.webComponent?.participants || 0,
           currentRound: userDturn?.round || 0,
           isComplete: !!conclusionIds,

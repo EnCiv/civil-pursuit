@@ -85,9 +85,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     borderRadius: props => (props.compact ? '1rem' : '1.875rem'),
     border: `0.0625rem solid ${theme.colors.secondaryDivider}`,
     backgroundColor: 'rgba(255, 255, 255, 0.66)',
-    boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
+    overflow: 'hidden',
     alignItems: props => (props.contentAlign === 'center' ? 'center' : props.contentAlign === 'left' ? 'flex-start' : 'flex-end'),
     padding: props => (props.compact ? '2rem 3rem' : '3.625rem 9.875rem'),
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
