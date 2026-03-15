@@ -1,4 +1,4 @@
-// https://github.com/EnCiv/civil-pursuit/issues/305
+// https://github.com/EnCiv/civil-pursuit/issues/385
 
 import getActivity from '../get-activity'
 import { Mongo } from '@enciv/mongo-collections'

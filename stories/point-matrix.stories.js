@@ -1,4 +1,4 @@
-// https://github.com/EnCiv/civil-pursuit/issues/[ISSUE_NUMBER]
+// https://github.com/EnCiv/civil-pursuit/issues/385
 
 import React from 'react'
 import PointMatrix from '../app/components/point-matrix'

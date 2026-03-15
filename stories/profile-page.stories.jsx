@@ -1,3 +1,5 @@
+// https://github.com/EnCiv/civil-pursuit/issues/385
+
 import React from 'react'
 import { ThemeProvider } from 'react-jss'
 import theme from '../app/components/theme'
