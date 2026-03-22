@@ -23,7 +23,7 @@ function ProfilePage(props) {
     }
   }
 
-  const menuArray = [createMenuItem('Profile'), createMenuItem('Discussions'), createMenuItem('Settings')]
+  const menuArray = [, /*createMenuItem('Profile')*/ createMenuItem('Discussions') /*createMenuItem('Settings')*/]
 
   const ProfilePlaceholder = () => (
     <>

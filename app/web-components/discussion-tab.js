@@ -71,7 +71,7 @@ function DiscussionTab(props) {
         <>
           <div className={classes.header}>
             <H className={classes.title}>Discussions</H>
-            <SecondaryButton onDone={handleCreateClick}>+ Create</SecondaryButton>
+            {/* <SecondaryButton onDone={handleCreateClick}>+ Create</SecondaryButton> */}
           </div>
 
           <div className={classes.discussionsList}>
