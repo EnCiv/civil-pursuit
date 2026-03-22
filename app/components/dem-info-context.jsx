@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useRef, useState } from 'react'
+import React, { createContext, useCallback, useEffect, useRef, useState } from 'react'
 import setOrDeleteByMutatePath from '../lib/set-or-delete-by-mutate-path'
 
 export const DemInfoContext = createContext({})
@@ -24,6 +24,22 @@ export function DemInfoProvider(props) {
     },
     [setData]
   )
+  // if default props change, upsert changed props into context
+  const prev = useRef(demInfoProviderDefault)
+  useEffect(() => {
+    let changed = false
+    const changedProps = Object.entries(demInfoProviderDefault).reduce((ps, [k, v]) => {
+      if (prev.current[k] !== v) {
+        ps[k] = v
+        changed = true
+      }
+      return ps
+    }, {})
+    if (changed) {
+      upsert(changedProps)
+    }
+    prev.current = { ...demInfoProviderDefault }
+  }, [...Object.values(demInfoProviderDefault)])
 
   return <DemInfoContext.Provider value={{ data, upsert, requestedById }}>{props.children}</DemInfoContext.Provider>
 }

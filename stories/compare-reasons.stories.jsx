@@ -168,7 +168,7 @@ function getStepArgsFrom(pointWithWhyRankListList) {
         }
         return cn
       },
-      { defaultValue: { reducedPointList: [], preRankByParentId, round, discussionId }, apiResult: { whys: [], ranks: [] } }
+      { defaultValue: { reducedPointList: [], preRankByParentId, round, discussionId, storageAvailable: false }, apiResult: { whys: [], ranks: [] } }
     ),
   }
   return cn

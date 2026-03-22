@@ -87,7 +87,7 @@ export const renderTest = {
 }
 
 export const playTest = {
-  args: { discussionId: 111, stepIntro: { subject: 'Conclusion', description: 'The third group decided this was the most important issue:' } },
+  args: { discussionId: 111, stepIntro: { subject: 'Conclusion', description: 'The third group decided this was the most important issue:' }, defaultValue: { storageAvailable: false } },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByText('Awesome!'))

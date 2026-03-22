@@ -55,17 +55,19 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
 
   // Verify argument
   if (!deliberationId) {
-    return console.error('DeliberationId was not provided to subscribeDeliberation(deliberationId).')
+    console.error('DeliberationId was not provided to subscribeDeliberation(deliberationId).')
+    return requestHandler?.()
   }
 
-  if (!this.synuser?.id) {
+  /*if (!this.synuser?.id) {
     // use not logged in, let them know the number of participants
-    // TBD load the deliberation and figure out the number of participantsbut will have to set the updates function in the future because this has no server.to
-    const response = {}
-    if (Discussions[deliberationId]) response.participants = Discussions[deliberationId]?.participants ?? 0
+    // TBD load the deliberation and figure out the number of participants but will have to set the updates function in the future because this has no server.to
+    const response = { lastRound: 0, uInfo: [{ shownStatementIds: {} }] } // with late-sign-up uInfo needs to be there to indicate round 0
+    if (Discussions[deliberationId]) response.participants = Discussions[deliberationId]?.participants ?? 0 // **TBD** it would be nice to get participants out of the iota if there.
+    if (Discussions[deliberationId]) response.lastRound = Discussions[deliberationId]?.lastRound ?? 0
     requestHandler?.(response)
     return
-  }
+  }*/
 
   // Check if discussion is loaded in memory
   if (!Discussions[deliberationId]) {
@@ -76,13 +78,13 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
     } // else deliberation is now loaded
   }
 
-  socket.join(deliberationId) // subscribe this user to the room for this deliberation
+  if (this.synuser?.id) socket.join(deliberationId) // subscribe this user to the room for this deliberation
   /* if we need to do anything when the user disconnects
   socket.on('disconnecting',()=>{
     // remove the user 
   })*/
 
-  const uInfo = initUitems(deliberationId, this.synuser.id) // adds user if they are not yet there
+  const uInfo = this.synuser?.id ? initUitems(deliberationId, this.synuser.id) : [{ shownStatementIds: {} }] // adds user if they are not yet there
 
   requestHandler?.({
     participants: Discussions[deliberationId].participants,

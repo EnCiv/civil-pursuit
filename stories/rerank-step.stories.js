@@ -247,7 +247,16 @@ const rerankStepTemplate = args => {
 }
 
 export const rerankStepWithPartialDataAndUserUpdate = {
-  args: { defaultValue: { discussionId, reducedPointList }, topWhysByCategoryByParentId, postRankByParentId: { 1: postRankByParentId[1] }, round },
+  args: {
+    defaultValue: {
+      storageAvailable: false, // Force localStorage to appear disabled so socket.emit is used
+      discussionId,
+      reducedPointList,
+    },
+    topWhysByCategoryByParentId,
+    postRankByParentId: { 1: postRankByParentId[1] },
+    round,
+  },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: rerankStepTemplate,
   play: async ({ canvasElement, args }) => {

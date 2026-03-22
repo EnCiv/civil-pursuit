@@ -1,24 +1,28 @@
 // https://github.com/EnCiv/civil-pursuit/issues/61
 // https://github.com/EnCiv/civil-pursuit/issues/215
+// https://github.com/EnCiv/civil-pursuit/blob/main/docs/late-sign-up-spec.md
 
 'use strict'
-import React, { useState, useEffect, useRef, useContext, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { createUseStyles } from 'react-jss'
 import ReviewPoint from '../review-point'
-import DeliberationContext from '../deliberation-context'
+import { useDeliberationContext, useLocalStorageIfAvailable } from '../deliberation-context'
 import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 import StepIntro from '../step-intro'
 import { useRankByParentId } from './rank'
 
 export default function RerankStep(props) {
   const { onDone, round } = props
-  const { data, upsert } = useContext(DeliberationContext)
+  const { data, upsert } = useDeliberationContext()
+  const storageAvailable = useLocalStorageIfAvailable()
   const fetchDemInfo = useFetchDemInfo()
-  let onNext
   const handleOnDone = ({ valid, value, delta }) => {
+    let onNext
     if (delta) {
-      upsert({ postRankByParentId: { [delta.parentId]: delta } })
-      window.socket.emit('upsert-rank', delta)
+      upsert({ postRankByParentId: { [delta.parentId]: delta }, roundCompleteData: { [round]: undefined } }) // clear any previous roundCompleteData for this round
+      if (!storageAvailable) {
+        window.socket.emit('upsert-rank', delta)
+      }
     }
     if (valid) {
       const shownStatementIds = {} // only change objects in shownStatementIds if they have changed
@@ -31,10 +35,53 @@ export default function RerankStep(props) {
         } // else only need to change what's different
         return { [pointId]: rank }
       })
+      // Store onNext data in context state instead of calling finish-round here
+      // The intermission step will handle finish-round via batch-upsert API
       onNext = () => {
+        console.info('onNext upsert ...')
         const groupings = data.groupIdsLists || []
-        upsert({ uInfo: { [round]: { shownStatementIds, groupings, finished: true } } })
-        window.socket.emit('finish-round', data.discussionId, round, idRanks, groupings, () => {})
+        // Save final round state to context (and localStorage via context)
+        // Store idRanks for intermission to use in batch-upsert
+        upsert({
+          uInfo: { [round]: { shownStatementIds, groupings } }, // only one upsert but it can have all the data
+          roundCompleteData: { [round]: { idRanks, groupings } },
+        }) // two separate upserts will cause a timing error
+
+        // If user already has email, call batch-upsert immediately
+        // Otherwise, intermission will prompt for email and call batch-upsert then
+        if (data.user?.email) {
+          // Filter pointById to only include user's own points (matching userId or 'unknown')
+          const myPointById = Object.fromEntries(Object.entries(data.pointById || {}).filter(([id, point]) => point.userId === data.userId || point.userId === 'unknown'))
+
+          const batchData = {
+            discussionId: data.discussionId,
+            round,
+            email: data.user.email,
+            data: {
+              myPointById, // Only user's points (filtered from pointById)
+              myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
+              preRankByParentId: data.preRankByParentId || {},
+              postRankByParentId: data.postRankByParentId || {},
+              whyRankByParentId: data.whyRankByParentId || {},
+              groupIdsLists: groupings,
+              jsformData: data.jsformData || {},
+              idRanks,
+            },
+          }
+          //at the moment that onNext is instantiated, the upsert({ postRankByParentId: { [delta.parentId]: delta } }) above is not present in data
+          if (delta) batchData.data.postRankByParentId = { ...batchData.data.postRankByParentId, [delta.parentId]: delta } // ensure latest delta is included
+          window.socket.emit('batch-upsert-deliberation-data', batchData, response => {
+            if (response?.error) {
+              console.error('batch-upsert failed:', response.error)
+            } else {
+              // only after the data has been sent to the server and succeeded, mark the round as finished locally
+              upsert({
+                uInfo: { [round]: { finished: true } },
+              })
+              console.log('batch-upsert succeeded:', response)
+            }
+          })
+        }
       }
     }
     onDone({ valid, value, onNext })

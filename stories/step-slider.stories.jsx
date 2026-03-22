@@ -5,12 +5,60 @@ import React, { useState } from 'react'
 import StepSlider from '../app/components/step-slider'
 import TopNavBar from '../app/components/top-nav-bar'
 import Footer from '../app/components/footer'
+import { userEvent, within, waitFor, expect } from '@storybook/test'
+
+/**
+ * Helper to wait for step slider transitions to complete.
+ * Call this after clicking a Next/Back button to ensure the step slider
+ * has finished its CSS transition and height adjustment.
+ *
+ * - `canvasElement` - The root element from the story's play function
+ */
+export async function waitForStepSlider(canvasElement) {
+  const startTime = Date.now()
+  const stepSliderWrapper = canvasElement.querySelector('[data-transitioning]')
+  if (!stepSliderWrapper) {
+    throw new Error('Could not find step slider wrapper with [data-transitioning] attribute')
+  }
+  // First wait for the CSS transition (left property animation)
+  await waitFor(
+    () => {
+      const isComplete = stepSliderWrapper.getAttribute('data-transition-complete')
+      expect(isComplete).toBe('true')
+    },
+    { timeout: 2000, interval: 50 }
+  )
+
+  // Then wait for height adjustment and scrollIntoView to settle
+  await waitFor(
+    () => {
+      const isStable = stepSliderWrapper.getAttribute('data-height-stable')
+      expect(isStable).toBe('true')
+    },
+    { timeout: 1000, interval: 50 }
+  )
+
+  // make sure everything in the process queue has been handled before proceeding
+  await new Promise(resolve => setTimeout(resolve, 1))
+
+  // Wait again to ensure height is still stable after any final adjustments
+  await waitFor(
+    () => {
+      const isStable = stepSliderWrapper.getAttribute('data-height-stable')
+      expect(isStable).toBe('true')
+    },
+    { timeout: 1000, interval: 50 }
+  )
+  const endTime = Date.now()
+  console.log(`waitForStepSlider took ${endTime - startTime} ms`)
+}
 
 export default {
   component: StepSlider,
   parameters: {
     layout: 'fullscreen',
   },
+  excludeStories: ['waitForStepSlider'],
 }
 
 const storybookPadding = '2rem' // it padds the iframe with 1rem all around
@@ -100,4 +148,57 @@ childrenWithNestedSlider[2] = <StepSlider steps={createPrimarySteps(3)} children
 export const NestedSliders = {
   args: { children: childrenWithNestedSlider },
   render: Template,
+}
+
+// Test for waitForStepSlider helper
+export const WaitForStepSliderTest = {
+  args: { steps: createPrimarySteps(4), children: createPanels(4) },
+  render: Template,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // Wait for the step slider to be ready
+    await waitFor(() => {
+      const stepSlider = canvasElement.querySelector('[data-transitioning]')
+      expect(stepSlider).toBeInTheDocument()
+    })
+    console.log('Step slider found')
+
+    // Click Done button to mark step as complete
+    const doneButton = canvas.getAllByRole('button', { name: /Done/i })[0]
+    await userEvent.click(doneButton)
+    console.log('Clicked Done button')
+
+    // Click Next button to trigger transition to next step
+    const nextButton = await waitFor(() => {
+      const btn = canvas.getByRole('button', { name: /Next/i })
+      expect(btn).toBeInTheDocument()
+      return btn
+    })
+    await userEvent.click(nextButton)
+    console.log('Clicked Next button')
+
+    // Use waitForStepSlider to wait for transition
+    await waitForStepSlider(canvasElement)
+    console.log('waitForStepSlider completed successfully')
+
+    // Verify we're on step 2 - click Done again to go to step 3
+    const doneButton2 = canvas.getAllByRole('button', { name: /Done/i })[0]
+    await userEvent.click(doneButton2)
+    console.log('Clicked Done button (2nd time)')
+
+    // Click Next to trigger second transition
+    const nextButton2 = await waitFor(() => {
+      const btn = canvas.getByRole('button', { name: /Next/i })
+      expect(btn).toBeInTheDocument()
+      return btn
+    })
+    await userEvent.click(nextButton2)
+    console.log('Clicked Next button (2nd time)')
+
+    await waitForStepSlider(canvasElement)
+    console.log('waitForStepSlider completed successfully (2nd time)')
+
+    console.log('✅ WaitForStepSliderTest passed!')
+  },
 }

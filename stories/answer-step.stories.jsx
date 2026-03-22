@@ -1,13 +1,13 @@
 // https://github.com/EnCiv/civil-pursuit/issues/102
 
-import { userEvent, within, waitFor } from '@storybook/test'
+import { userEvent, within, waitFor, expect } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import React, { useState, useEffect } from 'react'
 import AnswerStep, { Answer } from '../app/components/steps/answer'
-import expect from 'expect'
 import { DeliberationContextDecorator, deliberationContextData, onDoneDecorator, onDoneResult, socketEmitDecorator } from './common'
 import ObjectId from 'bson-objectid'
-import DeliberationContext from '../app/components/deliberation-context'
+import { withAuthTestState, authFlowDecorators } from './mocks/auth-flow'
+import LocalStorageManager from '../app/lib/local-storage-manager'
 
 export default {
   component: Answer,
@@ -62,6 +62,8 @@ export const onDoneTestDefault = {
     whyQuestion: whyQuestion,
     myAnswer: undefined,
     myWhy: undefined,
+    round: 0,
+    user: { id: 'a', email: 'test@example.com' },
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
@@ -89,11 +91,73 @@ export const onDoneTestDefault = {
   },
 }
 
+// Test that verifies 'unknown' userId is used when user has no id (new user before skip())
+export const onDoneTestUnknownUserId = {
+  args: {
+    discussionId,
+    question: startingQuestion,
+    whyQuestion: whyQuestion,
+    myAnswer: undefined,
+    myWhy: undefined,
+    round: 0,
+    user: undefined, // No user - simulates new user before skip() is called
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const { onDone } = args
+    const subjectEle = canvas.getAllByPlaceholderText(/type some thing here/i)
+    const descriptionEle = canvas.getAllByPlaceholderText(/description/i)
+
+    // fill in the first point subject and description
+    await userEvent.type(subjectEle[0], 'My new user issue')
+    await userEvent.tab()
+    await userEvent.type(descriptionEle[0], 'Description of my new user issue')
+    await userEvent.tab()
+
+    // fill in the second point subject and description
+    await userEvent.type(subjectEle[1], 'Why this matters')
+    await userEvent.tab()
+    await userEvent.type(descriptionEle[1], 'Because it affects everyone')
+    await userEvent.tab()
+
+    // Verify myAnswer has userId: 'unknown'
+    expect(onDone.mock.calls[0][0]).toMatchObject({
+      delta: {
+        myAnswer: {
+          description: 'Description of my new user issue',
+          parentId: '5d0137260dacd06732a1d814',
+          subject: 'My new user issue',
+          userId: 'unknown', // Key assertion: new user gets 'unknown' userId
+        },
+      },
+      valid: false,
+      value: 0.5,
+    })
+    expect(ObjectId.isValid(onDone.mock.calls[0][0].delta.myAnswer._id)).toBe(true)
+
+    // Verify myWhy also has userId: 'unknown'
+    expect(onDone.mock.calls[1][0]).toMatchObject({
+      delta: {
+        myWhy: {
+          description: 'Because it affects everyone',
+          subject: 'Why this matters',
+          userId: 'unknown', // Key assertion: new user gets 'unknown' userId
+        },
+      },
+      valid: false, // Still not valid because Terms checkbox not checked
+    })
+    expect(onDone.mock.calls[1][0].delta.myWhy.parentId).toEqual(onDone.mock.calls[0][0].delta.myAnswer._id)
+    expect(ObjectId.isValid(onDone.mock.calls[1][0].delta.myWhy._id)).toBe(true)
+  },
+}
+
 export const onDoneTestSwap = {
   args: {
     discussionId,
     question: startingQuestion,
     whyQuestion: whyQuestion,
+    user: { id: 'a', email: 'test@example.com' },
+    round: 0,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -150,10 +214,14 @@ export const asyncUpdate = {
     whyQuestion: whyQuestion,
     myAnswer: startingPoint,
     myWhy: whyPoint1,
+    round: 0,
+    user: { id: 'a', email: 'test@example.com' }, // Authenticated user, no Terms needed
   },
   play: async ({ canvasElement, args }) => {
     const { onDone } = args
-    await waitFor(() => expect(onDone.mock.calls[0][0]).toMatchObject({ delta: { myAnswer: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point' } }, valid: true, value: 1 }))
+    await waitFor(() =>
+      expect(onDone.mock.calls[0][0]).toMatchObject({ delta: { myAnswer: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point' } }, valid: false, value: 1 })
+    )
     await waitFor(() => expect(onDone.mock.calls[1][0]).toMatchObject({ delta: { myWhy: { _id: '2', description: 'Congress is too slow', parentId: '1', subject: 'Congress' } }, valid: true, value: 1 }))
     await waitFor(() => expect(onDone.mock.calls[2][0]).toMatchObject({ delta: { myWhy: { _id: '2', description: 'This is the first description!', parentId: '1', subject: 'This is the first subject!' } }, valid: true, value: 1 }))
   },
@@ -165,11 +233,12 @@ export const AnswerStepEmpty = {
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
 }
 
-function answerStepTemplate(args) {
-  const { myAnswer, myWhy, defaultValue, ...otherProps } = args
+function AnswerStepTemplate(args) {
+  const { myAnswer, myWhy, defaultValue, testState, ...otherProps } = args
+
   useState(() => {
     window.socket._socketEmitHandlers['get-points-of-ids'] = (ids, cb) => {
-      cb({ points: [myAnswer], myWhys: [myWhy] })
+      cb({ points: (myAnswer && [myAnswer]) || [], myWhys: (myWhy && [myWhy]) || [] })
     }
     window.socket._socketEmitHandlers['insert-dturn-statement'] = (discussionId, point, cb) => {
       window.socket._socketEmitHandlerResults['insert-dturn-statement'].push([discussionId, point])
@@ -188,14 +257,21 @@ function answerStepTemplate(args) {
 
 export const AnswerStepUserEntersData = {
   args: {
-    defaultValue: { userId: 'a', round: '0', discussionId: startingQuestion._id }, // to deliberation context
+    defaultValue: {
+      userId: 'a',
+      round: 0,
+      discussionId: startingQuestion._id,
+      user: { id: 'a', email: 'test@example.com' }, // User already has an ID from skip, so no Terms needed
+      storageAvailable: false, // Force localStorage to appear disabled so socket.emit is used
+    }, // to deliberation context
     question: startingQuestion,
     whyQuestion: whyQuestion,
     myAnswer: undefined,
     myWhy: undefined,
     onDone: undefined,
+    round: 0,
   },
-  render: answerStepTemplate,
+  render: AnswerStepTemplate,
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
@@ -210,8 +286,10 @@ export const AnswerStepUserEntersData = {
     await userEvent.tab()
 
     // fill in the first point subject and description
+    await userEvent.clear(subjectEle[0]) // because there is already text there
     await userEvent.type(subjectEle[0], 'This is the first subject!')
     await userEvent.tab()
+    await userEvent.clear(descriptionEle[0])
     await userEvent.type(descriptionEle[0], 'This is the first description!')
     await userEvent.tab()
 
@@ -243,31 +321,192 @@ export const AnswerStepUserEntersData = {
 
 export const AnswerStepPreviousDataComesFromServer = {
   args: {
-    defaultValue: { userId: 'a', discussionId: startingQuestion._id, uInfo: [{ shownStatementIds: { [startingPoint._id]: { authored: true, rank: 0 } } }] }, // to deliberation context
+    defaultValue: {
+      userId: 'a',
+      discussionId: startingQuestion._id,
+      uInfo: [{ shownStatementIds: { [startingPoint._id]: { authored: true, rank: 0 } } }],
+      user: { id: 'a', email: 'test@example.com' }, // User already has an ID from previous session, so no Terms needed
+    }, // to deliberation context
     question: startingQuestion,
     whyQuestion: whyQuestion,
     myAnswer: startingPoint,
     myWhy: whyPoint1,
-    round: '0',
+    round: 0,
   },
-  render: answerStepTemplate,
+  render: AnswerStepTemplate,
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const { onDone } = args
     await waitFor(() => {
       expect(onDone.mock.calls[0][0]).toMatchObject({
+        valid: false,
+        value: 1,
+      })
+    })
+    await waitFor(() => {
+      expect(onDone.mock.calls[1][0]).toMatchObject({
         valid: true,
         value: 1,
       })
     })
-
     const pointId = '1'
     const whyId = '2'
-    expect(deliberationContextData(canvas)).toMatchObject({
-      myWhyByCategoryByParentId: { most: { [pointId]: { _id: whyId, description: 'Congress is too slow', parentId: pointId, subject: 'Congress', userId: 'a' } } },
-      pointById: { [pointId]: { _id: pointId, description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } },
-      reducedPointList: [{ point: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } }],
+    await waitFor(() => {
+      expect(deliberationContextData(canvas)).toMatchObject({
+        myWhyByCategoryByParentId: { most: { [pointId]: { _id: whyId, description: 'Congress is too slow', parentId: pointId, subject: 'Congress', userId: 'a' } } },
+        pointById: { [pointId]: { _id: pointId, description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } },
+        reducedPointList: [{ point: { _id: '1', description: 'Starting Point Description', parentId: '5d0137260dacd06732a1d814', subject: 'Starting Point', userId: 'a' } }],
+      })
     })
+  },
+}
+
+export const AnswerStepWithTermsAgreement = {
+  args: {
+    defaultValue: {
+      userId: 'a',
+      round: 0,
+      discussionId: startingQuestion._id,
+      pointById: { [startingPoint._id]: startingPoint },
+      myWhyByCategoryByParentId: { most: { [startingPoint._id]: whyPoint1 } },
+    }, // to deliberation context
+    question: startingQuestion,
+    whyQuestion: whyQuestion,
+    myAnswer: startingPoint, // Pre-filled answer data
+    myWhy: whyPoint1, // Pre-filled why data
+    round: 0,
+    user: undefined, // No user, so Terms should be shown
+  },
+  render: AnswerStepTemplate,
+  decorators: [DeliberationContextDecorator, socketEmitDecorator],
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const { onDone } = args
+
+    // Initially, answers are valid but Terms not checked, so overall should be invalid
+    await waitFor(() => {
+      expect(onDone.mock.calls[0][0]).toMatchObject({
+        valid: false, // Not valid because Terms not checked
+        value: 1, // But answers are complete (100%)
+      })
+    })
+
+    // Find and check the Terms checkbox
+    const termsCheckbox = canvas.getByRole('checkbox')
+    expect(termsCheckbox.checked).toBe(false)
+
+    await userEvent.click(termsCheckbox)
+
+    // After checking Terms, should become valid
+    await waitFor(() => {
+      // Find the most recent call where valid is true
+      const validCall = onDone.mock.calls.find(call => call[0].valid === true)
+      expect(validCall).toBeDefined()
+      expect(validCall[0]).toMatchObject({
+        valid: true, // Now valid because Terms are checked
+        value: 1,
+      })
+    })
+  },
+}
+
+// Test the full authentication flow with superagent interception
+// This story tests that methods.skip() properly calls /tempid via superagent
+// Simulates a new user with no pre-filled data
+export const AnswerStepWithAuthFlow = {
+  args: {
+    defaultValue: {
+      userId: undefined, // New user has no userId yet
+      round: 0,
+      discussionId: startingQuestion._id,
+      user: undefined, // Start with no user
+    },
+    question: startingQuestion,
+    whyQuestion: whyQuestion,
+    myAnswer: undefined, // No pre-filled answer
+    myWhy: undefined, // No pre-filled why
+    round: 0,
+    user: undefined, // No user, so Terms should be shown
+    // testState will be initialized by authFlowDecorator
+  },
+  render: withAuthTestState(AnswerStepTemplate),
+  decorators: [socketEmitDecorator, DeliberationContextDecorator, ...authFlowDecorators],
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const { onDone, testState } = args
+
+    console.log('🎬 Starting AnswerStepWithAuthFlow test')
+
+    // Step 1: Fill in the answer fields first
+    const subjectInputs = canvas.getAllByPlaceholderText(/type some thing here/i)
+    const descriptionInputs = canvas.getAllByPlaceholderText(/description/i)
+
+    console.log('📝 Filling in answer subject')
+    await userEvent.type(subjectInputs[0], 'Healthcare Reform')
+    await userEvent.tab()
+
+    console.log('📝 Filling in answer description')
+    await userEvent.type(descriptionInputs[0], 'We need better healthcare for everyone')
+    await userEvent.tab()
+
+    console.log('📝 Filling in why subject')
+    await userEvent.type(subjectInputs[1], 'Universal Coverage')
+    await userEvent.tab()
+
+    console.log('📝 Filling in why description')
+    await userEvent.type(descriptionInputs[1], 'Everyone deserves access to quality healthcare')
+    await userEvent.tab()
+
+    // Wait for inputs to be fully processed
+    await new Promise(resolve => setTimeout(resolve, 500))
+
+    // Step 2: Find and check the Terms checkbox
+    const termsCheckbox = await waitFor(
+      () => {
+        const checkbox = canvas.queryByRole('checkbox')
+        expect(checkbox).toBeInTheDocument()
+        return checkbox
+      },
+      { timeout: 5000 }
+    )
+
+    console.log('✅ Found Terms checkbox')
+
+    await userEvent.click(termsCheckbox)
+    console.log('✅ Checked Terms checkbox')
+
+    // Step 3: Verify onNext callback was provided and form is valid
+    await waitFor(
+      () => {
+        const validCall = onDone.mock.calls.find(call => call[0].valid === true && call[0].onNext)
+        expect(validCall).toBeDefined()
+        console.log('validCall:', validCall)
+        expect(typeof validCall[0].onNext).toBe('function')
+      },
+      { timeout: 2000 }
+    )
+
+    console.log('✅ onNext callback was provided in onDone')
+
+    // Step 4: Call the onNext callback to trigger skip
+    const validCall = onDone.mock.calls.find(call => call[0].valid === true && call[0].onNext)
+    const onNextCallback = validCall[0].onNext
+
+    console.log('🚀 Calling onNext callback (should trigger methods.skip())')
+    onNextCallback()
+
+    // Step 5: Wait for tempid to be called
+    await waitFor(
+      () => {
+        console.log('⏳ Waiting for tempid call... testState.tempidCalled:', testState.tempidCalled)
+        expect(testState.tempidCalled).toBe(true)
+      },
+      { timeout: 5000 }
+    )
+
+    console.log('✅ /tempid was called successfully!')
+    console.log('📝 Request data:', testState.tempidRequestData)
+    console.log('📝 Response:', testState.tempidResponse)
   },
 }

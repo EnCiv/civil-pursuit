@@ -2,12 +2,13 @@
 
 import React from 'react'
 import ParticipantsBadge from '../app/components/participants-badge'
-import { DeliberationContextDecorator } from './common'
+import { DeliberationContextDecorator, socketEmitDecorator } from './common'
 
 export default {
   component: ParticipantsBadge,
   decorators: [
     DeliberationContextDecorator,
+    socketEmitDecorator,
     Story => (
       <div style={{ padding: '2rem' }}>
         <Story />
