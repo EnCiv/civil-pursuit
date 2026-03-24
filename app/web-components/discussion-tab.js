@@ -65,6 +65,7 @@ function DiscussionTab(props) {
     })
   }
 
+  console.log('Rendering DiscussionTab with discussions:', discussions)
   return (
     <div className={cx(classes.container, className)} {...otherProps}>
       {currentView === 'discussions' ? (

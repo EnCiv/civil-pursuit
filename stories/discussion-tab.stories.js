@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { ThemeProvider } from 'react-jss'
 import theme from '../app/components/theme'
 import DiscussionTab from '../app/web-components/discussion-tab'
+import { buildApiDecorator } from './common'
 
 // Mock activity data for the stories
 const mockActivityData = {
@@ -157,42 +158,57 @@ const mockActivityData = {
   },
 }
 
+// Mock discussions data for the stories
+const mockDiscussions = [
+  {
+    _id: '67db9da4c6019fba8de3eafe',
+    subject: "What one issue should 'We the People' unite and solve first to make our country even better?",
+    description: "This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. We're asking about concerns, not solutions.",
+    path: '/what-long-term-usa-1',
+    participants: 127,
+    currentRound: 2,
+    isComplete: false,
+    userLastActivity: '2024-02-08T14:22:00.000Z',
+    discussionLastActivity: '2024-02-07T16:45:00.000Z',
+  },
+  {
+    _id: '68687cdeb4e0c47144419fde',
+    subject: "What's the largest number",
+    description: "What's the largest random number between 0 and 100. This is a test of the Civil Server.",
+    path: '/largest-number-test-1',
+    participants: 8,
+    currentRound: 3,
+    isComplete: true,
+    userLastActivity: '2024-02-09T11:30:00.000Z',
+    discussionLastActivity: '2024-02-08T09:20:00.000Z',
+  },
+  {
+    _id: '69abc123def456789012345',
+    subject: 'How can we improve public transportation in urban areas?',
+    description: 'A discussion about transportation infrastructure, accessibility, and sustainability in cities across the nation.',
+    path: '/public-transportation-1',
+    participants: 45,
+    currentRound: 1,
+    isComplete: false,
+    userLastActivity: '2024-02-07T16:12:00.000Z',
+    discussionLastActivity: '2024-02-06T13:35:00.000Z',
+  },
+  {
+    _id: '70def456abc789012345678',
+    subject: 'What role should technology play in modern education?',
+    description: 'Exploring how digital tools, AI, and online learning platforms can enhance education while addressing concerns about screen time and digital equity.',
+    path: '/technology-education-1',
+    participants: 73,
+    currentRound: 2,
+    isComplete: false,
+    userLastActivity: '2024-02-08T12:45:00.000Z',
+    discussionLastActivity: '2024-02-07T18:10:00.000Z',
+  },
+]
+
 // Sets up socket API mocks and renders the component
 const DiscussionTabTemplate = args => {
   const { mockDiscussions, ...otherArgs } = args
-  useState(() => {
-    if (!window.socket) window.socket = {}
-    if (!window.socket._socketEmitHandlers) window.socket._socketEmitHandlers = {}
-    if (!window.socket._socketEmitHandlerResults) window.socket._socketEmitHandlerResults = {}
-
-    // Mock the get-user-discussions API call
-    window.socket._socketEmitHandlers['get-user-discussions'] = cb => {
-      window.socket._socketEmitHandlerResults['get-user-discussions'] = true
-      setTimeout(() => {
-        cb(mockDiscussions)
-      }, 1000)
-    }
-
-    // Mock the get-activity API call
-    window.socket._socketEmitHandlers['get-activity'] = (discussionId, cb) => {
-      window.socket._socketEmitHandlerResults['get-activity'] = discussionId
-      setTimeout(() => {
-        const activityData = mockActivityData[discussionId]
-        cb(activityData)
-      }, 500)
-    }
-
-    // Setup socket.emit if not already present
-    if (!window.socket.emit) {
-      window.socket.emit = (handle, ...args) => {
-        if (window.socket._socketEmitHandlers[handle]) {
-          window.socket._socketEmitHandlers[handle](...args)
-        } else {
-          console.error('Socket emit handler not found:', handle)
-        }
-      }
-    }
-  })
 
   return (
     <ThemeProvider theme={theme}>
@@ -204,57 +220,19 @@ const DiscussionTabTemplate = args => {
 export default {
   component: DiscussionTab,
   title: 'discussion-tab',
+  decorators: [
+    buildApiDecorator('get-user-discussions', cb =>
+      setTimeout(() => {
+        cb(mockDiscussions)
+      }, 1000)
+    ),
+  ],
 }
 
 export const WithDiscussions = {
   render: DiscussionTabTemplate,
   args: {
-    mockDiscussions: [
-      {
-        _id: '67db9da4c6019fba8de3eafe',
-        subject: "What one issue should 'We the People' unite and solve first to make our country even better?",
-        description: "This is a large-scale online discussion with the purpose of starting unbiased, and thoughtful conversations. We're asking about concerns, not solutions.",
-        path: '/what-long-term-usa-1',
-        participants: 127,
-        currentRound: 2,
-        isComplete: false,
-        userLastActivity: '2024-02-08T14:22:00.000Z',
-        discussionLastActivity: '2024-02-07T16:45:00.000Z',
-      },
-      {
-        _id: '68687cdeb4e0c47144419fde',
-        subject: "What's the largest number",
-        description: "What's the largest random number between 0 and 100. This is a test of the Civil Server.",
-        path: '/largest-number-test-1',
-        participants: 8,
-        currentRound: 3,
-        isComplete: true,
-        userLastActivity: '2024-02-09T11:30:00.000Z',
-        discussionLastActivity: '2024-02-08T09:20:00.000Z',
-      },
-      {
-        _id: '69abc123def456789012345',
-        subject: 'How can we improve public transportation in urban areas?',
-        description: 'A discussion about transportation infrastructure, accessibility, and sustainability in cities across the nation.',
-        path: '/public-transportation-1',
-        participants: 45,
-        currentRound: 1,
-        isComplete: false,
-        userLastActivity: '2024-02-07T16:12:00.000Z',
-        discussionLastActivity: '2024-02-06T13:35:00.000Z',
-      },
-      {
-        _id: '70def456abc789012345678',
-        subject: 'What role should technology play in modern education?',
-        description: 'Exploring how digital tools, AI, and online learning platforms can enhance education while addressing concerns about screen time and digital equity.',
-        path: '/technology-education-1',
-        participants: 73,
-        currentRound: 2,
-        isComplete: false,
-        userLastActivity: '2024-02-08T12:45:00.000Z',
-        discussionLastActivity: '2024-02-07T18:10:00.000Z',
-      },
-    ],
+    mockDiscussions,
   },
 }
 
