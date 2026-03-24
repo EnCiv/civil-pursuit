@@ -226,6 +226,11 @@ export default {
         cb(mockDiscussions)
       }, 1000)
     ),
+    buildApiDecorator('get-activity', (discussionId, cb) =>
+      setTimeout(() => {
+        cb(mockActivityData[discussionId])
+      }, 500)
+    ),
   ],
 }
 

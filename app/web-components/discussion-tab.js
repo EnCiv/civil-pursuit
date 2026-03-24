@@ -47,6 +47,8 @@ function DiscussionTab(props) {
         setActivityData(prev => ({ ...prev, [discussionId]: data }))
         setSelectedDiscussionId(discussionId)
         setCurrentView('activity')
+      } else {
+        console.error('Failed to load activity data for discussion', discussionId)
       }
     })
   }
@@ -65,7 +67,6 @@ function DiscussionTab(props) {
     })
   }
 
-  console.log('Rendering DiscussionTab with discussions:', discussions)
   return (
     <div className={cx(classes.container, className)} {...otherProps}>
       {currentView === 'discussions' ? (
@@ -93,7 +94,7 @@ function DiscussionTab(props) {
 
                 const buttonsRow = discussion.isComplete ? (
                   <div className={classes.buttonsRow}>
-                    <PrimaryButton onDone={() => console.log('View Summary', discussion._id)}>View Summary</PrimaryButton>
+                    <PrimaryButton onDone={() => (window.location.href = discussion.path)}>View Summary</PrimaryButton>
                     <SecondaryButton onDone={() => handleMyActivityClick(discussion._id)}>View My Activity</SecondaryButton>
                   </div>
                 ) : (
