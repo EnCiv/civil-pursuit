@@ -158,7 +158,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   discussionsList: {
     display: 'grid',
     gap: '2rem',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(25rem, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(max(30rem, calc(50% - 1rem)), 1fr))',
   },
 
   discussionItem: {
@@ -170,6 +170,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     backgroundColor: theme.colors.white,
     borderRadius: '1rem',
     overflow: 'hidden',
+    width: '100%',
   },
 
   badgesRow: {
