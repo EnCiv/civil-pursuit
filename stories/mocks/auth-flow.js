@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/102
 // Storybook decorators and utilities for testing authentication flows
 
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import DeliberationContext from '../../app/components/deliberation-context'
 import { buildApiDecorator } from '../common'
 
@@ -69,29 +69,55 @@ export const authFlowDecorator = (Story, context) => {
   // Get test state from args (shared between decorator and play function)
   const testState = context.args.testState
 
-  if (!window.socket) window.socket = {} // was really expecting this to be setup by socketEmitDecorator
-  
-  // Always re-register these handlers to ensure the current context is used
-  // This fixes test isolation issues when switching between stories without reload
-  window.socket.close = () => {
-    if (window.socket._onHandlers?.connect) setTimeout(window.socket._onHandlers.connect, 1000)
-    else console.error('No connect handler registered')
-  }
-  window.socket.removeListener = (handle, func) => {
-    // useAuth closes and reconnects the socket to authenticate the user after /tempid
-    // then it calls removeListener and that's our queue to set the new user.id in args and the DeliberationContext
-    if (handle === 'connect')
-      setTimeout(() => {
-        context.args.user = { id: 'temp-user-123' }
-        console.log('✅ args updated with new user after tempid:', context.args.user)
-        if (context.args.testState.upsert) {
-          context.args.testState.upsert({ user: { ...context.args.user }, userId: context.args.user.id })
-          console.log('✅ User set in DeliberationContext via upsert:', context.args.user)
-          // Set flag for tests to wait on
-          context.args.testState.authFlowUserSet = true
-        } else console.error('testState.upsert not yet available to set user in context')
-      }, 100)
-  }
+  const [_this] = useState(() => {
+    const _this = {}
+    // only set up socket mocks once
+    if (!window.socket) window.socket = {} // was really expecting this to be setup by socketEmitDecorator
+
+    // Always re-register these handlers to ensure the current context is used
+    // This fixes test isolation issues when switching between stories without reload
+    window.socket.close = () => {
+      // Cancel any previously pending connect timer before scheduling a new one.
+      // Without this, a timer queued by the PREVIOUS story (e.g. from Intermission's
+      // second authenticateSocketIo call during batch-upsert) can fire after Storybook
+      // switches stories and hit the new story's removeListener mock, injecting a user
+      // into the wrong context before that story's play function even starts.
+      if (_this.connectTimeout) {
+        console.log('🔄 socket.close: cancelling pending connect timer from previous close()')
+        clearTimeout(_this.connectTimeout)
+      }
+      if (window.socket._onHandlers?.connect) {
+        console.log('🔄 socket.close: scheduling connect handler in 1000ms')
+        // Use an indirect call (() => _onHandlers.connect()) so the handler that is
+        // current at fire-time is called, not the one captured when close() was called.
+        _this.connectTimeout = setTimeout(() => {
+          _this.connectTimeout = null
+          console.log('🔄 socket.close timer fired: calling connect handler')
+          window.socket._onHandlers.connect?.()
+        }, 1000)
+      } else console.error('No connect handler registered')
+    }
+    window.socket.removeListener = (handle, func) => {
+      // useAuth closes and reconnects the socket to authenticate the user after /tempid
+      // then it calls removeListener and that's our queue to set the new user.id in args and the DeliberationContext
+      if (handle === 'connect' && !context.args.testState.authFlowUserSet) {
+        console.log('🔄 Socket removeListener called for connect - simulating auth flow user update')
+        _this.userAuthTimeout = setTimeout(() => {
+          _this.userAuthTimeout = null
+          context.args.user = { id: 'temp-user-123' }
+          console.log('✅ args updated with new user after tempid:', context.args.user)
+          if (context.args.testState.upsert) {
+            context.args.testState.upsert({ user: { ...context.args.user }, userId: context.args.user.id })
+            console.log('✅ User set in DeliberationContext via upsert:', context.args.user)
+            // Set flag for tests to wait on
+            setTimeout(() => (context.args.testState.authFlowUserSet = true), 0) // allow rerender after upsert before setting flag
+          } else console.error('testState.upsert not yet available to set user in context')
+          window.socket.removeListener = () => {} // restore removeListener to no-op after simulating the user update
+        }, 100)
+      }
+    }
+    return _this
+  })
 
   // Import superagent and wrap its post method
   React.useEffect(() => {
@@ -164,6 +190,22 @@ export const authFlowDecorator = (Story, context) => {
       }
     }
     setupSuperagentMock()
+    return () => {
+      if (typeof _this.userAuthTimeout === 'number') {
+        clearTimeout(_this.userAuthTimeout)
+        _this.userAuthTimeout = null
+      }
+      // Cancel any pending connect timer so it doesn't fire into the next story's removeListener.
+      // This is the key guard against cross-story contamination: if the current story scheduled
+      // a 1-second connect timer (via socket.close) and the story ends before that timer fires,
+      // this cleanup prevents it from running after the next story has mounted.
+      if (_this.connectTimeout) {
+        console.log('🧹 authFlowDecorator cleanup: cancelling pending connect timer')
+        clearTimeout(_this.connectTimeout)
+        _this.connectTimeout = null
+      }
+      window.socket.removeListener = () => {} // clean up socket mock to prevent affecting other tests
+    }
   }, [])
   return <Story />
 }
