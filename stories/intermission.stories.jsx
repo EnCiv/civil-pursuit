@@ -500,3 +500,50 @@ export const ThresholdExactly = {
     })
   },
 }
+
+// Shows the LinkedIn sign-in button option for a temporary user who has not yet completed round 1
+export const TemporaryUserWithLinkedInOption = {
+  args: {
+    defaultValue: {
+      discussionId: 'linkedin-test-1',
+      user: { id: 'temp-user-1' },
+      userId: 'temp-user-1',
+      lastRound: 0,
+      participants: 3,
+      dturn: { group_size: 5, finalRound: 1 },
+    },
+    round: 0,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await waitFor(() => {
+      expect(canvas.getByText('Sign in with LinkedIn')).toBeInTheDocument()
+      expect(canvas.getByPlaceholderText('Please provide your email')).toBeInTheDocument()
+    })
+  },
+}
+
+// Simulates a user who has returned after authenticating via LinkedIn OAuth.
+// The user is now authenticated (has email), so the LinkedIn sign-in button should not appear.
+export const LinkedInReturnAutoUpsert = {
+  args: {
+    defaultValue: {
+      discussionId: 'linkedin-return-test',
+      user: { id: 'real-user-1', email: 'alice@example.com' },
+      userId: 'real-user-1',
+      lastRound: 0,
+      participants: 3,
+      dturn: { group_size: 5, finalRound: 1 },
+    },
+    round: 0,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    // With n=1 and authenticated user, auto-upsert fires immediately
+    // The batch-upsert mock returns success for blank/success email
+    await waitFor(() => {
+      // Component should not be showing the sign-in buttons (user is already signed in)
+      expect(canvas.queryByText('Sign in with LinkedIn')).not.toBeInTheDocument()
+    })
+  },
+}
