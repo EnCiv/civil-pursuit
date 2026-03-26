@@ -11,6 +11,7 @@ import ShareButtons from './share-buttons'
 import { useDeliberationContext, useLocalStorageIfAvailable } from './deliberation-context'
 import * as LocalStorageManager from '../lib/local-storage-manager'
 import { authenticateSocketIo } from 'civil-client/dist/components/use-auth'
+import LinkedInSignInButton from './linkedin-sign-in-button'
 
 // needs to be static because it used as a dependency in useEffect
 const goToEnCiv = () => (location.href = 'https://enciv.org/')
@@ -110,7 +111,7 @@ const Intermission = props => {
   }
 
   // Handle batch upsert for temporary users at Round 1 completion (full round data)
-  const handleBatchUpsert = async emailAddress => {
+  const handleBatchUpsert = async (emailAddress, successMsg) => {
     // Filter pointById to only include user's own points (matching userId or 'unknown')
     const myPointById = Object.fromEntries(Object.entries(data.pointById || {}).filter(([id, point]) => point.userId === userId || point.userId === 'unknown'))
     if (Object.keys(myPointById).length === 0) {
@@ -130,12 +131,12 @@ const Intermission = props => {
       idRanks: data.roundCompleteData?.[round]?.idRanks, // Pre-calculated from rerank step
     }
 
-    await doBatchUpsert(emailAddress, dataToSave, `Success! Your data has been saved and we've sent a password reset email to ${emailAddress}.`)
+    await doBatchUpsert(emailAddress, dataToSave, successMsg ?? `Success! Your data has been saved and we've sent a password reset email to ${emailAddress}.`)
   }
 
   // Handle batch upsert for temporary users who only completed the Answer step
   // (not enough participants to continue, so round is not complete)
-  const handleBatchUpsertAnswer = async emailAddress => {
+  const handleBatchUpsertAnswer = async (emailAddress, successMsg) => {
     // Filter pointById to only include user's own points (matching userId or 'unknown')
     const myPointById = Object.fromEntries(Object.entries(data.pointById || {}).filter(([id, point]) => point.userId === userId || point.userId === 'unknown'))
     if (Object.keys(myPointById).length === 0) {
@@ -149,7 +150,7 @@ const Intermission = props => {
       myWhyByCategoryByParentId: data.myWhyByCategoryByParentId || {},
     }
 
-    await doBatchUpsert(emailAddress, dataToSave, `Success! Your answer has been saved and we've sent a password reset email to ${emailAddress}. We'll invite you back when more participants join.`)
+    await doBatchUpsert(emailAddress, dataToSave, successMsg ?? `Success! Your answer has been saved and we've sent a password reset email to ${emailAddress}. We'll invite you back when more participants join.`)
   }
 
   const handleEmail = () => {
@@ -240,6 +241,61 @@ const Intermission = props => {
     }
   }, [myPoint, data.myWhyByCategoryByParentId]) // only do this on mount or the data changes - if userIsRegistered changes (from not registered to registered) the batch upsert was done when they assigned their email
 
+  // After returning from LinkedIn OAuth (?n=1), auto-run batch upsert for the newly authenticated user.
+  // The user's data was saved to localStorage under their old temp userId before they navigated away.
+  // We recover it via the prevUserId query param that the LinkedIn button baked into the return URL.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('n') !== '1') return
+    if (!user?.email) return
+    if (uInfo?.[round]?.finished) return
+
+    // Clean ?n=1 and ?prevUserId from the URL immediately to avoid re-running on subsequent renders
+    const cleanSearch = [...params.entries()]
+      .filter(([k]) => k !== 'n' && k !== 'prevUserId')
+      .reduce((acc, [k, v]) => {
+        acc.append(k, v)
+        return acc
+      }, new URLSearchParams())
+      .toString()
+    window.history.replaceState({}, '', window.location.pathname + (cleanSearch ? '?' + cleanSearch : ''))
+
+    const prevUserId = params.get('prevUserId')
+    if (prevUserId && prevUserId !== userId && storageAvailable && discussionId) {
+      // Load round data that was saved under the old temp userId before LinkedIn redirect
+      const storedData = LocalStorageManager.load(discussionId, prevUserId)
+      if (storedData) {
+        const myPointById = Object.fromEntries(Object.entries(storedData.pointById || {}).filter(([, p]) => p.userId === prevUserId || p.userId === 'unknown'))
+        if (Object.keys(myPointById).length > 0) {
+          const storedIsRound1Complete = storedData.roundCompleteData?.[round]?.idRanks !== undefined
+          const dataToSave = storedIsRound1Complete
+            ? {
+                myPointById,
+                myWhyByCategoryByParentId: storedData.myWhyByCategoryByParentId || {},
+                preRankByParentId: storedData.preRankByParentId || {},
+                postRankByParentId: storedData.postRankByParentId || {},
+                whyRankByParentId: storedData.whyRankByParentId || {},
+                groupIdsLists: storedData.groupIdsLists,
+                jsformData: storedData.jsformData || {},
+                idRanks: storedData.roundCompleteData?.[round]?.idRanks,
+              }
+            : {
+                myPointById,
+                myWhyByCategoryByParentId: storedData.myWhyByCategoryByParentId || {},
+              }
+          const successMsg = storedIsRound1Complete ? `Success! Your data has been saved.` : `Success! Your answer has been saved. We'll invite you back when more participants join.`
+          LocalStorageManager.clear(discussionId, prevUserId)
+          doBatchUpsert(user.email, dataToSave, successMsg)
+          return
+        }
+        LocalStorageManager.clear(discussionId, prevUserId)
+      }
+    }
+    // Fallback: use data already in the deliberation context (e.g. same device, userId unchanged)
+    if (isRound1Complete) handleBatchUpsert(user.email, `Success! Your data has been saved.`)
+    else handleBatchUpsertAnswer(user.email, `Success! Your answer has been saved. We'll invite you back when more participants join.`)
+  }, [user?.email])
+
   const handleCopyLink = async () => {
     const href = window.location.href
     try {
@@ -270,6 +326,7 @@ const Intermission = props => {
     valid = true
     onNext = null
   } else if (isTemporaryUser && isRound1Complete) {
+    const linkedinReturnPath = `${window.location.pathname}${window.location.search ? window.location.search + '&' : '?'}prevUserId=${encodeURIComponent(userId)}`
     conditionalResponse = (
       <>
         <div className={classes.headlineSmall}>Great! You've completed Round 1. Please provide your email to save your progress and continue to the next round.</div>
@@ -277,6 +334,10 @@ const Intermission = props => {
           <StatusBox className={classes.infoMessage} status="notice" subject="Processing your responses..." />
         ) : (
           <>
+            <LinkedInSignInButton returnPath={linkedinReturnPath} className={classes.linkedInButton} disabled={isProcessing} />
+            <div className={classes.divider}>
+              <span>or</span>
+            </div>
             <input type="text" className={classes.input} value={email} onChange={e => setEmail(e.target.value)} placeholder="Please provide your email" disabled={isProcessing} />
             <div className={classes.buttonContainer}>
               <PrimaryButton onClick={handleEmail} title="Save and Continue" disabled={isProcessing} disableOnClick={false}>
@@ -289,6 +350,7 @@ const Intermission = props => {
     )
     valid = false
   } else if (isTemporaryUser && !isRound1Complete) {
+    const linkedinReturnPath = `${window.location.pathname}${window.location.search ? window.location.search + '&' : '?'}prevUserId=${encodeURIComponent(userId)}`
     conditionalResponse = (
       <>
         <div className={classes.headlineSmall}>Great! You've answered the question. To continue we need to be able to invite you back. So now is the last change to associate your email with this discussion.</div>
@@ -296,6 +358,10 @@ const Intermission = props => {
           <StatusBox className={classes.infoMessage} status="notice" subject="Processing your responses..." />
         ) : (
           <>
+            <LinkedInSignInButton returnPath={linkedinReturnPath} className={classes.linkedInButton} disabled={isProcessing} />
+            <div className={classes.divider}>
+              <span>or</span>
+            </div>
             <input type="text" className={classes.input} value={email} onChange={e => setEmail(e.target.value)} placeholder="Please provide your email" disabled={isProcessing} />
             <div className={classes.buttonContainer}>
               <PrimaryButton onClick={handleEmail} title="Invite me back" disabled={isProcessing} disableOnClick={false}>
@@ -479,6 +545,22 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   errorMessage: {
     marginTop: '1rem',
+  },
+  linkedInButton: {
+    width: '100%',
+    maxWidth: '20rem',
+    justifyContent: 'center',
+  },
+  divider: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: '20rem',
+    gap: '0.5rem',
+    color: theme.colors.disableTextBlack,
+    fontSize: '0.875rem',
+    '&::before': { content: '""', flex: 1, height: '0.0625rem', background: '#ccc' },
+    '&::after': { content: '""', flex: 1, height: '0.0625rem', background: '#ccc' },
   },
 }))
 
