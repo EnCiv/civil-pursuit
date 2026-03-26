@@ -21,6 +21,7 @@ function Button(props) {
     disabled = false,
     tabIndex = 0,
     disableOnClick = false, // if true, the button gets disabled after click and stays disabled - prevents resubmission
+    noPendingClick = false, // if true, clicking while disabled is silently dropped (not queued for later)
     value,
     type = 'button', // by default this is a button
     children,
@@ -30,7 +31,7 @@ function Button(props) {
   const [isDisabled, setIsDisabled] = useState(disabled)
   const [isPortalOpen, setIsPortalOpen] = useState(false)
   const [downTimeStamp, setDownTimeStamp] = useState(0)
-  const [pendingClick, setPendingClick] = useState(false)
+  const [pendingClick, setPendingClick] = useState(false) // Tracks if a click occurred while disabled that should be executed when enabled. this was done for the Next button at the bottom of a step so that if the user fills out the input fields and then clicks Next after the next button is undisabled the click will still go through even if the button was disabled at the time of clicking
   const timeRef = useRef(null)
   const prevDisabledRef = useRef(disabled)
 
@@ -65,7 +66,7 @@ function Button(props) {
       // short click
       if (isDisabled) {
         // Button is disabled now but might become enabled after state updates
-        setPendingClick(true)
+        if (!noPendingClick) setPendingClick(true)
       } else {
         onDone({ valid: true, value })
         if (disableOnClick) setIsDisabled(true)
@@ -94,7 +95,7 @@ function Button(props) {
       timeRef.current = null
       if (disabled) {
         // Button is disabled now but might become enabled after state updates
-        setPendingClick(true)
+        if (!noPendingClick) setPendingClick(true)
       } else {
         onDone({ valid: true, value })
         if (disableOnClick) setIsDisabled(true)
