@@ -578,6 +578,42 @@ export const LocalStoragePreserved = {
   decorators: [...tournamentDecoratorsWithPointData],
 }
 
+// Simulates a user returning to the tournament after authenticating via LinkedIn OAuth.
+// In production this is triggered by ?n=1 in the URL (set by the OAuth callback redirect).
+// Here we pass defaultStepName directly so the story is URL-independent.
+// defaultStepName flows through Tournament's otherProps spread to StepSlider where it
+// overrides the returnFromLinkedIn-derived value (because the spread comes last in JSX).
+export const LinkedInReturnToIntermission = {
+  args: {
+    defaultValue: {
+      ...tournamentDefaultValue,
+      user: { id: 'real-user-1', email: 'alice@example.com' },
+      userId: 'real-user-1',
+    },
+    defaultStepName: 'Intermission',
+  },
+  decorators: [...tournamentDecorators],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // Wait for StepSlider to render. Intermission is the last of the 10 filtered steps
+    // (index 9, 0-based) when participants >= threshold. Verify it starts there.
+    await waitFor(
+      () => {
+        const wrapper = canvasElement.querySelector('[data-current-step]')
+        expect(wrapper).not.toBeNull()
+        expect(wrapper.getAttribute('data-current-step')).toBe('9')
+      },
+      { timeout: 5000 }
+    )
+
+    // The authenticated user should not see the LinkedIn sign-in button
+    await waitFor(() => {
+      expect(canvas.queryByText('Sign in with LinkedIn')).not.toBeInTheDocument()
+    })
+  },
+}
+
 // Test story for batch-upsert-deliberation-data API using play function
 // Simulates user interaction at intermission to trigger batch-upsert
 //
