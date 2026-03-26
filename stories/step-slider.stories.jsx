@@ -150,6 +150,42 @@ export const NestedSliders = {
   render: Template,
 }
 
+// Test for defaultStepName prop — verifies StepSlider starts at the named step rather than step 0
+export const DefaultStepNameTest = {
+  args: { steps: createPrimarySteps(4), children: createPanels(4), defaultStepName: 'Rank' },
+  render: Template,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // 'Rank' is the 3rd step (index 2). Verify the slider initialises there, not at index 0.
+    await waitFor(() => {
+      const wrapper = canvasElement.querySelector('[data-current-step]')
+      expect(wrapper).not.toBeNull()
+      expect(wrapper.getAttribute('data-current-step')).toBe('2')
+    })
+
+    // Click Done to mark the Rank step complete and enable Next
+    const doneButton = canvas.getAllByRole('button', { name: /Done/i })[2] // get the Done button for the Rank step
+    await userEvent.click(doneButton)
+
+    // Click Next to advance from Rank (index 2) → Why Most (index 3)
+    const nextButton = await waitFor(() => {
+      const btn = canvas.getByRole('button', { name: /Next/i })
+      expect(btn).not.toBeDisabled()
+      return btn
+    })
+    await userEvent.click(nextButton)
+
+    await waitForStepSlider(canvasElement)
+
+    // Verify we moved to step index 3 ('Why Most')
+    await waitFor(() => {
+      const wrapper = canvasElement.querySelector('[data-current-step]')
+      expect(wrapper.getAttribute('data-current-step')).toBe('3')
+    })
+  },
+}
+
 // Test for waitForStepSlider helper
 export const WaitForStepSliderTest = {
   args: { steps: createPrimarySteps(4), children: createPanels(4) },
