@@ -100,6 +100,7 @@ function DiscussionTab(props) {
                 ) : (
                   <div className={classes.buttonsRow}>
                     <ModifierButton onDone={() => (window.location.href = discussion.path)}>Continue</ModifierButton>
+                    <SecondaryButton onDone={() => handleMyActivityClick(discussion._id)}>View My Activity</SecondaryButton>
                   </div>
                 )
 
