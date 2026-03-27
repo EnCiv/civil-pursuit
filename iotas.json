@@ -3558,5 +3558,26 @@
       ],
       "metaTags": ["property=\"og:image\" content=\"https://res.cloudinary.com/hf6mryjpf/image/upload/v1762403748/What-direction-for-our-country.png\""]
     }
+  },
+  {
+    "_id": {
+      "$oid": "69f2c8a1b4d3e7f9a2c5b8d1"
+    },
+    "path": "/discussion-tab",
+    "subject": "Discussions",
+    "description": "View your discussions",
+    "webComponent": "DiscussionTab"
+  },
+  {
+    "_id": {
+      "$oid": "69f2d9b2c5e4f8a3b6c9d2e5"
+    },
+    "path": "/profile",
+    "subject": "Profile",
+    "description": "Your profile page",
+    "webComponent": {
+      "webComponent": "ProfilePage",
+      "initialTab": "Discussions"
+    }
   }
 ]

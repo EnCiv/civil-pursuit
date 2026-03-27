@@ -1,0 +1,195 @@
+// https://github.com/EnCiv/civil-pursuit/issues/385
+
+import React, { useState, useEffect } from 'react'
+import { createUseStyles } from 'react-jss'
+import cx from 'classnames'
+import { SecondaryButton, PrimaryButton, ModifierButton } from '../components/button'
+import QuestionBox from '../components/question-box'
+import Metadata from '../components/metadata'
+import StatusBadge from '../components/status-badge'
+import StatusBox from '../components/status-box'
+import MyActivity from '../components/my-activity'
+import { H } from 'react-accessible-headings'
+
+function DiscussionTab(props) {
+  const { className, ...otherProps } = props
+  const classes = useStylesFromThemeFunction()
+  const [currentView, setCurrentView] = useState('discussions')
+  const [activityData, setActivityData] = useState({})
+  const [selectedDiscussionId, setSelectedDiscussionId] = useState(null)
+  const [discussions, setDiscussions] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    window.socket.emit('get-user-discussions', data => {
+      if (data) {
+        setDiscussions(data)
+      }
+      setLoading(false)
+    })
+  }, [])
+
+  const handleCreateClick = () => {
+    console.log('Create new discussion')
+  }
+
+  const handleMyActivityClick = discussionId => {
+    // Check if we already have cached data for this discussion
+    if (activityData[discussionId]) {
+      setSelectedDiscussionId(discussionId)
+      setCurrentView('activity')
+      return
+    }
+
+    // Call the API to get activity data
+    window.socket.emit('get-activity', discussionId, data => {
+      if (data) {
+        setActivityData(prev => ({ ...prev, [discussionId]: data }))
+        setSelectedDiscussionId(discussionId)
+        setCurrentView('activity')
+      } else {
+        console.error('Failed to load activity data for discussion', discussionId)
+      }
+    })
+  }
+
+  const handleBackToDiscussions = () => {
+    setCurrentView('discussions')
+    setSelectedDiscussionId(null)
+  }
+
+  const formatDate = dateString => {
+    if (!dateString) return 'N/A'
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  }
+
+  return (
+    <div className={cx(classes.container, className)} {...otherProps}>
+      {currentView === 'discussions' ? (
+        <>
+          <div className={classes.header}>
+            <H className={classes.title}>Discussions</H>
+            {/* <SecondaryButton onDone={handleCreateClick}>+ Create</SecondaryButton> */}
+          </div>
+
+          <div className={classes.discussionsList}>
+            {loading ? (
+              <div></div>
+            ) : !discussions || discussions.length === 0 ? (
+              <StatusBox status="notice" subject="No discussions yet" description="You haven't participated in any discussions yet. Click 'Create' to start a new discussion or join an existing one." />
+            ) : (
+              discussions.map(discussion => {
+                const metadataFields = [
+                  { label: 'Your Last Activity', value: formatDate(discussion.userLastActivity) },
+                  { label: 'Discussion Last Activity', value: formatDate(discussion.discussionLastActivity) },
+                ]
+
+                const participantsBadge = <StatusBadge name={`${discussion.participants || 0} participant${discussion.participants !== 1 ? 's' : ''}`} />
+
+                const statusBadge = discussion.isComplete ? <StatusBadge name="Complete" status="Complete" /> : <StatusBadge name={`Round ${discussion.currentRound || 1}`} status="Progress" />
+
+                const buttonsRow = discussion.isComplete ? (
+                  <div className={classes.buttonsRow}>
+                    <PrimaryButton onDone={() => (window.location.href = discussion.path)}>View Summary</PrimaryButton>
+                    <SecondaryButton onDone={() => handleMyActivityClick(discussion._id)}>View My Activity</SecondaryButton>
+                  </div>
+                ) : (
+                  <div className={classes.buttonsRow}>
+                    <ModifierButton onDone={() => (window.location.href = discussion.path)}>Continue</ModifierButton>
+                    <SecondaryButton onDone={() => handleMyActivityClick(discussion._id)}>View My Activity</SecondaryButton>
+                  </div>
+                )
+
+                return (
+                  <div key={discussion._id} className={classes.discussionItem}>
+                    <Metadata
+                      title="View Dates"
+                      data={metadataFields}
+                      child={
+                        <div className={classes.compactQuestionBox}>
+                          <QuestionBox subject={discussion.subject} description={discussion.description} contentAlign="left" compact={true}>
+                            <div className={classes.badgesRow}>
+                              {participantsBadge}
+                              {statusBadge}
+                            </div>
+                            {buttonsRow}
+                          </QuestionBox>
+                        </div>
+                      }
+                    />
+                  </div>
+                )
+              })
+            )}
+          </div>
+        </>
+      ) : (
+        <MyActivity data={activityData[selectedDiscussionId]} onBackToDiscussions={handleBackToDiscussions} />
+      )}
+    </div>
+  )
+}
+
+const useStylesFromThemeFunction = createUseStyles(theme => ({
+  container: {
+    margin: '0 auto',
+    width: '100%',
+    boxSizing: 'border-box',
+    fontFamily: theme.font?.fontFamily || 'Inter',
+  },
+
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: '2rem',
+  },
+
+  title: {
+    fontSize: '2.5rem',
+    fontWeight: 300,
+    color: theme.colors.title,
+    margin: 0,
+    fontFamily: theme.font?.fontFamily || 'Inter',
+  },
+
+  discussionsList: {
+    display: 'grid',
+    gap: '2rem',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(max(30rem, calc(50% - 1rem)), 1fr))',
+  },
+
+  discussionItem: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
+  compactQuestionBox: {
+    backgroundColor: theme.colors.white,
+    borderRadius: '1rem',
+    overflow: 'hidden',
+    width: '100%',
+  },
+
+  badgesRow: {
+    display: 'flex',
+    gap: '0.75rem',
+    alignItems: 'center',
+  },
+
+  buttonsRow: {
+    display: 'flex',
+    gap: '1rem',
+    alignItems: 'center',
+    width: '100%',
+    '& > *': {
+      flex: 1,
+    },
+  },
+}))
+
+export default DiscussionTab

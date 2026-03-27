@@ -52,6 +52,7 @@ import Donate from './donate'
  * - Responsive logo sizing
  * - Theme-aware styling with color modes
  */
+
 const TopNavBar = props => {
   const { className, menu, mode, defaultSelectedItem, UserOrSignInUp, tabIndex = 0, ...otherProps } = props
   const [isExpanded, setIsExpanded] = useState(false)
@@ -540,17 +541,18 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   verticalMenuContainer: {
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: theme.colors.inputBorder,
-    padding: '0.5rem 0.5rem',
+    backgroundColor: '#f5f4f48d',
+    padding: '0.5rem 1.0rem',
     color: '#06335C',
     fontWeight: 600,
     borderRadius: '0.5rem',
+    gap: '0.4rem',
   },
   verticalMenuItem: {
-    padding: '1.0rem 1.0rem',
+    padding: '0.8rem 1.0rem',
     borderRadius: '0.5rem',
     '&:hover': {
-      background: theme.colors.focusRing,
+      background: 'rgba(235, 234, 234, 0.61)',
     },
   },
   logoContainer: {

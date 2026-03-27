@@ -102,7 +102,16 @@ function TopNavWrap(props) {
       },
     },
   ]
-  if (props?.user?.id) menu.push({ name: 'Logout', func: () => (window.location.href = '/sign/out') })
+
+  if (props?.user?.id)
+    menu.push([
+      {
+        name: 'My Account',
+        func: () => {},
+      },
+      { name: 'Profile', func: () => (window.location.href = '/profile') },
+      { name: 'Logout', func: () => (window.location.href = '/sign/out') },
+    ])
   return <TopNavBar mode={'dark'} menu={menu} />
 }
 

@@ -1,5 +1,3 @@
-// https://github.com/EnCiv/civil-pursuit/issues/XXX
-
 import React from 'react'
 import DemInfo from '../app/components/dem-info'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
