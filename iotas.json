@@ -3575,6 +3575,9 @@
     "path": "/profile",
     "subject": "Profile",
     "description": "Your profile page",
-    "webComponent": "ProfilePage"
+    "webComponent": {
+      "webComponent": "ProfilePage",
+      "initialTab": "Discussions"
+    }
   }
 ]
