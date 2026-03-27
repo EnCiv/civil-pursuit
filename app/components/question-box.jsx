@@ -73,8 +73,8 @@ function extractOgImage(metaTags) {
 const maxDescriptionHeight = 5 // rem
 
 const QuestionBox = props => {
-  const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', metaTags = [], children = [], ...otherProps } = props
-  const classes = useStylesFromThemeFunction({ ...props, contentAlign })
+  const { className = '', subject = '', description = '', contentAlign = 'center', tagline = '', metaTags = [], children = [], compact = false, ...otherProps } = props
+  const classes = useStylesFromThemeFunction({ ...props, contentAlign, compact })
   const ogImage = extractOgImage(metaTags)
   const [isExpanded, setIsExpanded] = useState(true)
   const [showToggle, setShowToggle] = useState(false)
@@ -124,16 +124,16 @@ const QuestionBox = props => {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   questionBox: {
     position: 'relative',
-    borderRadius: '1.875rem',
+    borderRadius: props => (props.compact ? '1rem' : '1.875rem'),
     border: `0.0625rem solid ${theme.colors.secondaryDivider}`,
-    backgroundColor: 'rgba(235, 235, 235, 0.4)',
-    boxSizing: 'border-box',
+    backgroundColor: 'rgba(255, 255, 255, 0.66)',
     display: 'flex',
     flexDirection: 'column',
+    overflow: 'hidden',
     alignItems: props => (props.contentAlign === 'center' ? 'center' : props.contentAlign === 'left' ? 'flex-start' : 'flex-end'),
-    padding: '3.625rem 9.875rem',
+    padding: props => (props.compact ? '2rem 3rem' : '3.625rem 9.875rem'),
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      padding: '3.1875rem 1.5625rem',
+      padding: props => (props.compact ? '1rem 0.75rem' : '3.1875rem 1.5625rem'),
       borderRadius: '0',
     },
   },
@@ -142,7 +142,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     textAlign: props => props.contentAlign,
     display: 'flex',
     flexDirection: 'column',
-    gap: '1.5rem',
+    gap: props => (props.compact ? '1rem' : '1.5rem'),
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      gap: props => (props.compact ? '0.75rem' : '1.5rem'),
+    },
   },
 
   fixedText: {
@@ -161,14 +164,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginBlockEnd: '0',
     fontFamily: 'Inter',
     fontWeight: 700,
-    fontSize: '3.75rem',
-    lineHeight: '4.125rem',
+    fontSize: props => (props.compact ? '2rem' : '3.75rem'),
+    lineHeight: props => (props.compact ? '2.5rem' : '4.125rem'),
     letterSpacing: '-0.03em',
     color: theme.colors.primaryButtonBlue,
     textAlign: props => props.contentAlign,
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      fontSize: '3rem',
-      lineHeight: '3.3rem',
+      fontSize: props => (props.compact ? '1.25rem' : '1.5rem'),
+      lineHeight: props => (props.compact ? '1.75rem' : '2rem'),
     },
   },
 
@@ -225,8 +228,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   children: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '2.5rem',
-    padding: '1rem 0',
+    gap: props => (props.compact ? '1.5rem' : '2.5rem'),
+    padding: props => (props.compact ? '0.75rem 0' : '1rem 0'),
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      gap: props => (props.compact ? '1rem' : '2.5rem'),
+      padding: props => (props.compact ? '0.5rem 0' : '1rem 0'),
+    },
   },
   item: {
     display: 'flex',

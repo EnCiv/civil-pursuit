@@ -67,6 +67,9 @@ const Theme = {
     radioButtonSelected: '#08447B',
     radioButtonUnselected: '#5D5D5C',
     wordCount: '#999999',
+    lightBlueBackground: '#E7EDF2',
+    lightGrayBackground: '#F9F9F9',
+    veryLightGrayBackground: '#fafafa',
   },
   font: {
     fontFamily: 'Inter',
