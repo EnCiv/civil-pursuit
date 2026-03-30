@@ -8,6 +8,7 @@ import { createUseStyles } from 'react-jss'
 import { useAuth } from 'civil-client'
 import { Button } from './button'
 import StatusBox from '../components/status-box'
+import LinkedInSignInButton from './linkedin-sign-in-button'
 
 function SignUp(props, ref) {
   const { className, style, onDone = () => {}, startTab = 'login', submitted = false } = props
@@ -108,6 +109,27 @@ function SignUp(props, ref) {
           </Button>
         </div>
       </div>
+      <div className={cx(classes.agreeTermContainer, isLogIn && classes.disabled)}>
+        <div className={classes.checkTerm}>
+          <input className={classes.checkTermBox} type="checkbox" name="agreed" onClick={e => methods.onChangeAgree(e.target.checked)} tabIndex={tabIndex} />
+          <label className={classes.agreeTermLabel}>
+            Yes, I agree to the
+            <a href="https://enciv.org/terms" target="_blank" className={classes.aLinkTerm} tabIndex={tabIndex}>
+              Terms of Service
+            </a>
+            and
+            <a href="https://enciv.org/privacy" target="_blank" className={classes.aLinkTerm} tabIndex={tabIndex}>
+              Privacy Policy.
+            </a>
+          </label>
+        </div>
+      </div>
+      <div className={classes.oauthSection}>
+        <LinkedInSignInButton returnPath={destination || window.location.pathname} disabled={!isLogIn && !state.agree} />
+      </div>
+      <div className={classes.divider}>
+        <span>or continue with email</span>
+      </div>
       {/** this is a form to make it easier on password managers see https://goo.gl/9p2vKq */}
       <form className={cx(classes.inputContainer, isLogIn ? classes.tabRightSelected : classes.tabLeftSelected)}>
         <div className={cx(classes.inputBoxes, !firstName && (clickedOnFirst || isSubmitted) && classes.invalid, isLogIn && classes.disabled)}>
@@ -167,21 +189,7 @@ function SignUp(props, ref) {
             autoComplete="new-password"
           />
         </div>
-        <div className={cx(classes.agreeTermContainer, isLogIn && classes.disabled)}>
-          <div className={classes.checkTerm}>
-            <input className={classes.checkTermBox} type="checkbox" name="agreed" onClick={e => methods.onChangeAgree(e.target.checked)} tabIndex={tabIndex} />
-            <label className={classes.agreeTermLabel}>
-              Yes, I agree to the
-              <a href="https://enciv.org/terms" target="_blank" className={classes.aLinkTerm} tabIndex={tabIndex}>
-                Terms of Service
-              </a>
-              and
-              <a href="https://enciv.org/privacy" target="_blank" className={classes.aLinkTerm} tabIndex={tabIndex}>
-                Privacy Policy.
-              </a>
-            </label>
-          </div>
-        </div>
+
         <StatusBox className={cx(classes.error, !state.error && classes.disabled)} status="error" subject={state.error} />
         <StatusBox className={cx(classes.info, !state.info && classes.disabled)} status="notice" subject={state.info} />
         <StatusBox className={cx(classes.success, !state.success && classes.disabled)} status="done" subject={state.success} />
@@ -368,7 +376,8 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
-    paddingBottom: '2rem',
+    paddingTop: '1.5rem',
+    paddingBottom: '1rem',
     margin: '0 auto',
   },
   checkTerm: {
@@ -422,5 +431,22 @@ const useStyles = createUseStyles(theme => ({
   },
   disabled: {
     display: 'none',
+  },
+  oauthSection: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    padding: '0.5rem 0 1.5rem',
+  },
+  divider: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '80%',
+    margin: '0.5rem auto',
+    gap: '0.5rem',
+    color: theme.colors.disableTextBlack,
+    fontSize: '0.875rem',
+    '&::before': { content: '""', flex: 1, height: '0.0625rem', background: '#ccc' },
+    '&::after': { content: '""', flex: 1, height: '0.0625rem', background: '#ccc' },
   },
 }))

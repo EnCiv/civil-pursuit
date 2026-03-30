@@ -103,35 +103,39 @@ export async function batchUpsertHandler(req, res, next) {
     let emailUpdated = false
     if (email && typeof email === 'string') {
       try {
+        const existingUser = await User.findOne({ _id: new User.ObjectId(userId) })
         await User.updateOne({ _id: new User.ObjectId(userId) }, { $set: { email } })
         emailUpdated = true
 
         // Set req.user so setUserCookie middleware will update the cookie with email
         req.user = { _id: userId, email }
 
-        // Send password reset email after successfully associating email
-        // Create a mock socket context for the send-password API
-        const mockSocket = {
-          handshake: {
-            headers: {
-              host: req.headers.host,
+        // Send password reset email only for non-LinkedIn users — LinkedIn users sign back
+        // in via LinkedIn and don't have (or need) a password
+        if (!existingUser?.linkedinId) {
+          // Create a mock socket context for the send-password API
+          const mockSocket = {
+            handshake: {
+              headers: {
+                host: req.headers.host,
+              },
             },
-          },
-        }
+          }
 
-        // Call send-password with mock socket context
-        await new Promise((resolve, reject) => {
-          sendPassword.call(mockSocket, email, req.originalUrl || '/', error => {
-            if (error) {
-              logger.error('batch-upsert-deliberation-data route: Error sending password email:', { userId, email }, error)
-              // Don't fail the entire request if email send fails
-              resolve()
-            } else {
-              console.log('batch-upsert-deliberation-data route: Password reset email sent to', email)
-              resolve()
-            }
+          // Call send-password with mock socket context
+          await new Promise((resolve, reject) => {
+            sendPassword.call(mockSocket, email, req.originalUrl || '/', error => {
+              if (error) {
+                logger.error('batch-upsert-deliberation-data route: Error sending password email:', { userId, email }, error)
+                // Don't fail the entire request if email send fails
+                resolve()
+              } else {
+                console.log('batch-upsert-deliberation-data route: Password reset email sent to', email)
+                resolve()
+              }
+            })
           })
-        })
+        }
       } catch (error) {
         console.error('batch-upsert-deliberation-data route: Error updating user email:', error.message || error)
         return sendError(500, 'Failed to associate email with user')

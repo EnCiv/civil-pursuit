@@ -12,7 +12,7 @@ import StepBar from './step-bar'
 import StepFooter from './step-footer'
 
 export const StepSlider = props => {
-  const { children, onDone, steps, className, stepName, stepIntro, ...otherProps } = props // stepName and stepIntro are not used but are passed to children
+  const { children, onDone, steps, className, stepName, stepIntro, defaultStepName, ...otherProps } = props // stepName and stepIntro are not used but are passed to children
   const classes = useStyles(props)
   const stepBarRef = useRef()
   const stepFooterRef = useRef()
@@ -142,9 +142,10 @@ export const StepSlider = props => {
   }
   // Keep track of each step's seen/completion status
   // Populate statuses with initial values
-  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i === 0, complete: false, skip: false })) : undefined
+  const defaultStepIndex = defaultStepName && typeof stepNameToIndex[defaultStepName] === 'number' ? stepNameToIndex[defaultStepName] : 0
+  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i <= defaultStepIndex, complete: false, skip: false })) : undefined
 
-  const [state, dispatch] = useReducer(reducer, { currentStep: 0, nextStep: 0, transitions: false, stepStatuses: initialStepStatuses })
+  const [state, dispatch] = useReducer(reducer, { currentStep: defaultStepIndex, nextStep: defaultStepIndex, transitions: false, stepStatuses: initialStepStatuses })
 
   function cloneChild(currentStep) {
     return React.cloneElement(children[currentStep], {

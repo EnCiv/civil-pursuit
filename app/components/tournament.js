@@ -175,6 +175,7 @@ function reducer(state, action) {
 
 function Tournament(props) {
   const { className, steps = [], onDone, ...otherProps } = props
+  const returnFromLinkedIn = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('n') === '1'
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useDeliberationContext()
   const { uInfo, dturn } = data
@@ -223,6 +224,7 @@ function Tournament(props) {
           round={round}
           className={classes.stepClass}
           children={state.stepComponents}
+          defaultStepName={returnFromLinkedIn ? 'Intermission' : undefined}
           onDone={({ valid, value }) => {
             if (valid && round + 1 > finalRound) onDone({ valid, value: 'done' })
             else if (valid) dispatch({ type: 'increment', data, upsert })
