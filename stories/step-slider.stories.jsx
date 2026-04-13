@@ -5,7 +5,9 @@ import React, { useState } from 'react'
 import StepSlider from '../app/components/step-slider'
 import TopNavBar from '../app/components/top-nav-bar'
 import Footer from '../app/components/footer'
+import JSForm from '../app/components/jsform'
 import { userEvent, within, waitFor, expect } from '@storybook/test'
+import { onDoneDecorator, socketEmitDecorator, buildApiDecorator } from './common'
 
 /**
  * Helper to wait for step slider transitions to complete.
@@ -236,5 +238,97 @@ export const WaitForStepSliderTest = {
     console.log('waitForStepSlider completed successfully (2nd time)')
 
     console.log('✅ WaitForStepSliderTest passed!')
+  },
+}
+
+// Test the new options prop functionality
+export const OptionsWithSubmitOnNext = {
+  args: {
+    steps: [
+      {
+        name: 'Form Step',
+        complete: false,
+        title: 'User Info',
+        options: { submitOnNext: true }, // This should hide the submit button in JSForm
+      },
+      {
+        name: 'Second Step',
+        complete: false,
+        title: 'Confirmation',
+      },
+    ],
+    children: [
+      <JSForm
+        key="form"
+        stepName="Form Step"
+        discussionId="test-discussion"
+        name="testForm"
+        schema={{
+          type: 'object',
+          properties: {
+            name: { title: 'Name', type: 'string' },
+            email: { title: 'Email', type: 'string' },
+          },
+          required: ['name'],
+        }}
+        uischema={{
+          type: 'VerticalLayout',
+          elements: [
+            { type: 'Control', scope: '#/properties/name' },
+            { type: 'Control', scope: '#/properties/email' },
+          ],
+        }}
+      />,
+      <Panel key="second" backGroundColor="lightblue" stepName="Second Step" />,
+    ],
+    // onDone will be automatically added by onDoneDecorator
+  },
+  decorators: [onDoneDecorator, socketEmitDecorator, buildApiDecorator('get-jsform', (discussionId, cb) => () => cb({})), buildApiDecorator('upsert-jsform', (discussionId, name, data, cb) => () => cb())],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    // Wait for form to load
+    await waitFor(() => {
+      expect(canvas.getByLabelText(/Name/i)).toBeInTheDocument()
+    })
+
+    // Verify that Submit button is hidden (submitOnNext option should be passed down)
+    const submitButtons = canvas.queryAllByRole('button', { name: /Submit/i })
+    expect(submitButtons).toHaveLength(0)
+    console.log('✓ Submit button is hidden due to submitOnNext option')
+
+    // Fill out required field to make form valid
+    const nameInput = canvas.getByLabelText(/Name/i)
+    await userEvent.type(nameInput, 'Test User')
+
+    // Wait for Next button to become active
+    await waitFor(() => {
+      const nextButton = canvas.getByRole('button', { name: /Next/i })
+      expect(nextButton).not.toBeDisabled()
+    })
+
+    // Clear any previous submissions
+    window.socket._socketEmitHandlerResults['upsert-jsform'] = []
+
+    // Click Next button to trigger form submission
+    const nextButton = canvas.getByRole('button', { name: /Next/i })
+    await userEvent.click(nextButton)
+
+    // Verify form data was submitted
+    await waitFor(() => {
+      expect(window.socket._socketEmitHandlerResults['upsert-jsform']).toHaveLength(1)
+    })
+
+    // Verify the submitted data structure
+    const [discussionId, formName, submittedData] = window.socket._socketEmitHandlerResults['upsert-jsform'][0]
+    expect(discussionId).toBe('test-discussion')
+    expect(formName).toBe('testForm')
+    expect(submittedData).toMatchObject({
+      name: 'Test User',
+    })
+
+    console.log('✓ Form data submitted successfully via Next button:')
+    console.log('  Form submission data:', JSON.stringify(submittedData, null, 2))
+    console.log('✅ OptionsWithSubmitOnNext test passed!')
   },
 }

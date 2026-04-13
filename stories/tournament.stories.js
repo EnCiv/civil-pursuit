@@ -250,6 +250,9 @@ export const tournamentSteps = [
     name: 'earlyFeedback',
     stepName: 'Feedback',
     allowedRounds: [0], // only show this step in round 0
+    options: {
+      submitOnNext: true, // Hide submit button - use next button instead
+    },
     stepIntro: {
       subject: 'Feedback',
       description: "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters.",

@@ -148,8 +148,10 @@ export const StepSlider = props => {
   const [state, dispatch] = useReducer(reducer, { currentStep: defaultStepIndex, nextStep: defaultStepIndex, transitions: false, stepStatuses: initialStepStatuses })
 
   function cloneChild(currentStep) {
+    const stepOptions = steps && steps[currentStep] && steps[currentStep].options ? steps[currentStep].options : {}
     return React.cloneElement(children[currentStep], {
       ...otherProps,
+      ...stepOptions,
       ...children[currentStep].props,
       key: currentStep,
       onDone: ({ valid, value, onNext }) => {
