@@ -310,15 +310,15 @@ const setupJsFormsApisWithData = Story => {
       }, 0)
     }
     window.socket._socketEmitHandlerResults['get-jsform'] = []
-    window.socket._socketEmitHandlers['upsert-jsform'] = (discussionId, name, data, cb) => {
+    window.socket._socketEmitHandlers['upsert-jsform'] = (discussionId, name, data) => {
       window.socket._socketEmitHandlerResults['upsert-jsform'].push([[discussionId, name, data]])
-      setTimeout(() => cb?.())
+      // No callback since JSForm doesn't send one
     }
     window.socket._socketEmitHandlerResults['upsert-jsform'] = []
   })
   return <Story />
 }
-export const jsFormDecorators = [buildApiDecorator('get-jsform', (discussionId, cb) => () => {}), buildApiDecorator('upsert-jsform', (discussionId, name, data, cb) => () => {})]
+export const jsFormDecorators = [buildApiDecorator('get-jsform', (discussionId, cb) => () => {}), buildApiDecorator('upsert-jsform', (discussionId, name, data) => {})]
 
 export const UserInputAndOnDoneCall = {
   args: {
@@ -579,8 +579,8 @@ export const SkipOnUndefinedData = {
     buildApiDecorator('get-jsform', (discussionId, cb) => () => {
       cb({})
     }),
-    buildApiDecorator('upsert-jsform', (discussionId, name, data, cb) => () => {
-      cb?.()
+    buildApiDecorator('upsert-jsform', (discussionId, name, data) => {
+      // JSForm emits without callback
     }),
     onDoneDecorator,
   ],

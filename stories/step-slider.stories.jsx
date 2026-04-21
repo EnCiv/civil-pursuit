@@ -283,7 +283,14 @@ export const OptionsWithSubmitOnNext = {
     ],
     // onDone will be automatically added by onDoneDecorator
   },
-  decorators: [onDoneDecorator, socketEmitDecorator, buildApiDecorator('get-jsform', (discussionId, cb) => () => cb({})), buildApiDecorator('upsert-jsform', (discussionId, name, data, cb) => () => cb())],
+  decorators: [
+    onDoneDecorator,
+    socketEmitDecorator,
+    buildApiDecorator('get-jsform', (discussionId, cb) => () => cb({})),
+    buildApiDecorator('upsert-jsform', (discussionId, name, data) => {
+      // JSForm emits without callback, so no acknowledgment needed
+    }),
+  ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 

@@ -1065,7 +1065,7 @@ export const BatchUpsertInteractionTest = {
       compareMost: { type: 'text', pattern: /Please choose the most convincing explanation for.../i },
       compareLeast: { type: 'text', pattern: /Please choose the least convincing explanation for.../i },
       review: { type: 'text', pattern: /These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again./i },
-      jsform: { type: 'text', pattern: /Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters./i },
+      jsform: { type: 'text', pattern: /Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters./i },
       intermission: { type: 'text', pattern: /Great you've completed Round.*/i },
     }
 

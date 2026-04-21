@@ -17,7 +17,7 @@ const decorators = [
   onDoneDecorator,
   socketEmitDecorator,
   DeliberationContextDecorator,
-  buildApiDecorator('upsert-jsform', (discussionId, name, data, cb) => () => {}),
+  buildApiDecorator('upsert-jsform', (discussionId, name, data) => {}),
   buildApiDecorator('get-conclusion', (discussionId, cb) => {
     cb([
       {
