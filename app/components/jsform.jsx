@@ -106,11 +106,12 @@ const HRenderer = ({ uischema, path }) => {
 /* customRenderers:*/
 const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }, { tester: rankWith(2, uischema => !!(uischema && uischema.type === 'H')), renderer: HRenderer }]
 
-const JsForm = props => {
-  const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, title, stepIntro, discussionId, submitOnNext } = props
+const JsForm = allProps => {
+  const { options = {}, ...props } = allProps
+  const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, title, stepIntro, discussionId, submitOnNext } = { ...props, ...options }
   const [data, setData] = useState({})
   const [errors, setErrors] = useState([])
-  const classes = useStyles(props)
+  const classes = useStyles(allProps)
   const lastValidityRef = useRef(null)
 
   useEffect(() => {
