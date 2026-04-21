@@ -113,6 +113,12 @@ const JsForm = allProps => {
   const [errors, setErrors] = useState([])
   const classes = useStyles(allProps)
   const lastValidityRef = useRef(null)
+  const latestDataRef = useRef({})
+
+  // Keep ref updated with latest form data
+  useEffect(() => {
+    latestDataRef.current = data
+  }, [data])
 
   useEffect(() => {
     window.socket.emit('get-jsform', discussionId, data => {
@@ -136,7 +142,8 @@ const JsForm = allProps => {
 
         const onNext = isValid
           ? () => {
-              window.socket.emit('upsert-jsform', discussionId, name, data)
+              // Read from ref to always get latest data, not stale closure
+              window.socket.emit('upsert-jsform', discussionId, name, latestDataRef.current)
             }
           : undefined
 
@@ -146,8 +153,9 @@ const JsForm = allProps => {
   }, [data, errors, submitOnNext, discussionId, name])
 
   const handleSubmit = () => {
-    window.socket.emit('upsert-jsform', discussionId, name, data)
-    onDone({ valid: handleIsValid(data, schema, errors), value: data })
+    const currentData = latestDataRef.current
+    window.socket.emit('upsert-jsform', discussionId, name, currentData)
+    onDone({ valid: handleIsValid(currentData, schema, errors), value: currentData })
   }
 
   // useMemo renders (React components) so they don't get rebuilt every time the user types a character

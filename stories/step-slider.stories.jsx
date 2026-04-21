@@ -339,3 +339,103 @@ export const OptionsWithSubmitOnNext = {
     console.log('✅ OptionsWithSubmitOnNext test passed!')
   },
 }
+
+// Test that submitOnNext always submits latest data, not stale closure data
+export const SubmitOnNextHasLatestData = {
+  args: {
+    steps: [
+      {
+        name: 'Form Step',
+        complete: false,
+        title: 'User Info',
+        options: { submitOnNext: true },
+      },
+      {
+        name: 'Second Step',
+        complete: false,
+        title: 'Confirmation',
+      },
+    ],
+    children: [
+      <JSForm
+        key="form"
+        stepName="Form Step"
+        discussionId="test-discussion"
+        name="testForm"
+        schema={{
+          type: 'object',
+          properties: {
+            name: { title: 'Name', type: 'string' },
+          },
+          required: ['name'],
+        }}
+        uischema={{
+          type: 'VerticalLayout',
+          elements: [{ type: 'Control', scope: '#/properties/name' }],
+        }}
+      />,
+      <Panel key="second" backGroundColor="lightgreen" stepName="Second Step" />,
+    ],
+  },
+  decorators: [
+    onDoneDecorator,
+    socketEmitDecorator,
+    buildApiDecorator('get-jsform', (discussionId, cb) => () => cb({})),
+    buildApiDecorator('upsert-jsform', (discussionId, name, data) => {
+      // JSForm emits without callback, so no acknowledgment needed
+    }),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    console.log('[SubmitOnNextLatestData] Testing that latest form data is submitted, not stale closure')
+
+    // Clear any previous submissions
+    window.socket._socketEmitHandlerResults['upsert-jsform'] = []
+
+    const nameInput = canvas.getByLabelText(/Name/i)
+
+    // Step 1: Enter initial valid data
+    await userEvent.type(nameInput, 'Alice')
+    console.log('✓ Typed initial data: "Alice"')
+
+    // Wait for Next button to become active (form is now valid)
+    await waitFor(() => {
+      const nextButton = canvas.getByRole('button', { name: /Next/i })
+      expect(nextButton).not.toBeDisabled()
+    })
+    console.log('✓ Next button became active after initial valid data')
+
+    // Step 2: Edit the form while it stays valid (this tests stale closure bug)
+    await userEvent.clear(nameInput)
+    await userEvent.type(nameInput, 'Bob')
+    console.log('✓ Changed form data to "Bob" while staying valid')
+
+    // Next button should still be active since form is still valid
+    const nextButton = canvas.getByRole('button', { name: /Next/i })
+    expect(nextButton).not.toBeDisabled()
+    console.log('✓ Next button remains active after edit')
+
+    // Step 3: Click Next to trigger submission
+    await userEvent.click(nextButton)
+    console.log('✓ Clicked Next button to submit')
+
+    // Step 4: Verify the submitted data is the LATEST data ("Bob"), not stale ("Alice")
+    await waitFor(() => {
+      expect(window.socket._socketEmitHandlerResults['upsert-jsform']).toHaveLength(1)
+    })
+
+    const [discussionId, formName, submittedData] = window.socket._socketEmitHandlerResults['upsert-jsform'][0]
+    expect(discussionId).toBe('test-discussion')
+    expect(formName).toBe('testForm')
+
+    // This is the key assertion - should be "Bob" (latest), not "Alice" (stale)
+    expect(submittedData).toMatchObject({
+      name: 'Bob',
+    })
+
+    console.log('✓ Verified submitted data contains latest value:')
+    console.log('  Expected: { name: "Bob" }')
+    console.log('  Actual:', JSON.stringify(submittedData, null, 2))
+    console.log('✅ SubmitOnNextLatestData test passed! No stale closure bug.')
+  },
+}
