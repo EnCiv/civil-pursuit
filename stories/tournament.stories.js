@@ -252,7 +252,7 @@ export const tournamentSteps = [
     allowedRounds: [0], // only show this step in round 0
     stepIntro: {
       subject: 'Feedback',
-      description: "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters.",
+      description: "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters.",
     },
     schema: {
       type: 'object',
@@ -569,7 +569,7 @@ export const tournamentNoSubmitButton = {
         },
         stepIntro: {
           subject: 'Feedback',
-          description: "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters.",
+          description: "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters.",
         },
         schema: {
           type: 'object',

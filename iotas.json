@@ -226,7 +226,7 @@
               },
               "stepIntro": {
                 "subject": "Feedback",
-                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+                "description": "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters."
               },
               "schema": {
                 "type": "object",
@@ -426,7 +426,7 @@
               "stepName": "Feedback",
               "stepIntro": {
                 "subject": "Feedback",
-                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+                "description": "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters."
               },
               "schema": {
                 "type": "object",
@@ -808,7 +808,7 @@
               },
               "stepIntro": {
                 "subject": "Feedback",
-                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+                "description": "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters."
               },
               "schema": {
                 "type": "object",
@@ -1204,7 +1204,7 @@
               "stepName": "Feedback",
               "stepIntro": {
                 "subject": "Feedback",
-                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+                "description": "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters."
               },
               "schema": {
                 "type": "object",
@@ -1597,7 +1597,7 @@
               },
               "stepIntro": {
                 "subject": "Feedback",
-                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+                "description": "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters."
               },
               "schema": {
                 "type": "object",
@@ -1950,7 +1950,7 @@
               "stepName": "Feedback",
               "stepIntro": {
                 "subject": "Feedback",
-                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+                "description": "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters."
               },
               "schema": {
                 "type": "object",
@@ -2299,7 +2299,7 @@
               "stepName": "Feedback",
               "stepIntro": {
                 "subject": "Feedback",
-                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+                "description": "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters."
               },
               "schema": {
                 "type": "object",
@@ -2648,7 +2648,7 @@
               "stepName": "Feedback",
               "stepIntro": {
                 "subject": "Feedback",
-                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+                "description": "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters."
               },
               "schema": {
                 "type": "object",
@@ -3033,7 +3033,7 @@
               },
               "stepIntro": {
                 "subject": "Feedback",
-                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+                "description": "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters."
               },
               "schema": {
                 "type": "object",
@@ -3423,7 +3423,7 @@
               },
               "stepIntro": {
                 "subject": "Feedback",
-                "description": "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters."
+                "description": "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters."
               },
               "schema": {
                 "type": "object",
