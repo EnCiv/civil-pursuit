@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { userEvent, within } from '@storybook/test'
+import { userEvent, within, waitFor } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { expect } from '@storybook/jest'
 import Jsform from '../app/components/jsform'
@@ -596,5 +596,48 @@ export const SkipOnUndefinedData = {
     console.log('[SkipOnUndefinedData] onDoneResult:', result)
 
     expect(result).toMatchObject({ count: 0 })
+  },
+}
+
+// When submitOnNext is true, the Submit button is hidden and onDone is called with onNext set when the form is valid
+export const SubmitOnNext = {
+  args: {
+    schema: {
+      type: 'object',
+      properties: {
+        shareInfo: {
+          title: 'Personally Identifiable Information is not shown, but may we share this information with your posts?',
+          type: 'string',
+          enum: ['Yes', 'No'],
+        },
+      },
+      required: ['shareInfo'],
+    },
+    uischema: {
+      type: 'VerticalLayout',
+      elements: [{ type: 'Control', scope: '#/properties/shareInfo' }],
+    },
+    name: 'moreDetails',
+    discussionId: '123456789012345678901234567890abcd',
+    options: { submitOnNext: true },
+  },
+  decorators: jsFormDecorators,
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const { onDone } = args
+
+    // No Submit button should appear when submitOnNext is true
+    expect(canvas.queryByRole('button', { name: /Submit/i })).toBeNull()
+
+    // Fill in the required field to make the form valid
+    await userEvent.selectOptions(canvas.getByLabelText(/may we share this information/i), 'Yes')
+
+    // onDone should be called with onNext set to a function when the form becomes valid
+    await waitFor(() => {
+      const lastCall = onDone.mock.calls.at(-1)?.[0]
+      expect(lastCall).toBeDefined()
+      expect(lastCall.valid).toBe(true)
+      expect(typeof lastCall.onNext).toBe('function')
+    })
   },
 }
