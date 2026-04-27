@@ -252,7 +252,7 @@ export const tournamentSteps = [
     allowedRounds: [0], // only show this step in round 0
     stepIntro: {
       subject: 'Feedback',
-      description: "Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters.",
+      description: "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters.",
     },
     schema: {
       type: 'object',
@@ -551,6 +551,98 @@ export const tournamentDecoratorsWithPointData = [demInfoDecorator, ...commonTou
 export const Normal = {
   args: {
     testSteps: tournamentSteps,
+    defaultValue: tournamentDefaultValue,
+  },
+  decorators: [...tournamentDecorators],
+}
+
+export const tournamentNoSubmitButton = {
+  args: {
+    steps: [
+      {
+        webComponent: 'Jsform',
+        name: 'earlyFeedback',
+        stepName: 'Feedback',
+        allowedRounds: [0], // only show this step in round 0
+        options: {
+          submitOnNext: true, // Hide submit button - use next button instead
+        },
+        stepIntro: {
+          subject: 'Feedback',
+          description: "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters.",
+        },
+        schema: {
+          type: 'object',
+          properties: {
+            experience: {
+              title: 'Rating',
+              type: 'string',
+              enum: ['Very Positive', 'Somewhat Positive', 'Neutral', 'Somewhat Negative', 'Very Negative'],
+            },
+            comfort: {
+              title: 'Rating',
+              type: 'string',
+              enum: ['Very Comfortable', 'Somewhat Comfortable', 'Neutral', 'Somewhat Uncomfortable', 'Very Uncomfortable'],
+            },
+            interest: {
+              title: 'Rating',
+              type: 'string',
+              enum: ['Very Interested', 'Somewhat Interested', 'Neutral', 'Somewhat Uninterested', 'Very Uninterested'],
+            },
+            improvements: {
+              title: 'Description',
+              type: 'string',
+            },
+          },
+          //don't require anyting to make sure the step doesn't auto next // required: //['experience', 'comfort', 'interest'], /
+        },
+        uischema: {
+          type: 'VerticalLayout',
+          elements: [
+            { type: 'H', text: 'How has your experience been so far?' },
+            {
+              type: 'Control',
+              scope: '#/properties/experience',
+            },
+            { type: 'H', text: 'How comfortable would you feel inviting close friends or family to participate in this discussion too?' },
+            {
+              type: 'Control',
+              scope: '#/properties/comfort',
+            },
+            { type: 'H', text: 'How interested are you in getting to the next round of this discussion?' },
+            {
+              type: 'Control',
+              scope: '#/properties/interest',
+            },
+            { type: 'H', text: 'What can we do to make this tool better?' },
+            {
+              type: 'Control',
+              scope: '#/properties/improvements',
+              options: { multi: true, rows: 5 },
+            },
+          ],
+        },
+      },
+      {
+        webComponent: 'Answer',
+        stepName: 'Answer',
+        stepIntro: {
+          subject: 'Answer',
+          description: 'Please provide a title and short description for your answer',
+        },
+        question: startingQuestionAnswerStep,
+        whyQuestion: whyQuestionAnswerStep,
+      },
+      {
+        webComponent: 'Intermission',
+        stepName: 'Intermission',
+        stepIntro: {
+          subject: 'Intermission',
+          description: 'When more people have gotten to this point we will invite you back to continue the deliberation.',
+        },
+        user: { email: 'example@gmail.com', tempid: '123456' },
+      },
+    ],
     defaultValue: tournamentDefaultValue,
   },
   decorators: [...tournamentDecorators],
@@ -984,7 +1076,7 @@ export const BatchUpsertInteractionTest = {
       compareMost: { type: 'text', pattern: /Please choose the most convincing explanation for.../i },
       compareLeast: { type: 'text', pattern: /Please choose the least convincing explanation for.../i },
       review: { type: 'text', pattern: /These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again./i },
-      jsform: { type: 'text', pattern: /Now that you've completed this round, please tells us what you think so far. This is a work in progress and your feedback matters./i },
+      jsform: { type: 'text', pattern: /Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters./i },
       intermission: { type: 'text', pattern: /Great you've completed Round.*/i },
     }
 

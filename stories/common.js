@@ -16,13 +16,18 @@ export const buildApiDecorator = (handle, result) => {
       setupSocketEmitHandlers()
       window.socket._socketEmitHandlerResults[handle] = []
       window.socket._socketEmitHandlers[handle] = (...args) => {
-        const cb = args.pop() // call back is the last argument
+        // Only treat last argument as callback if it's actually a function
+        const lastArg = args[args.length - 1]
+        const hasCallback = typeof lastArg === 'function'
+        const cb = hasCallback ? args.pop() : null
         window.socket._socketEmitHandlerResults[handle].push(args)
         setTimeout(() => {
           if (typeof result === 'function') {
-            args.push(cb)
+            if (hasCallback) args.push(cb)
             result(...args)
-          } else cb(result)
+          } else if (hasCallback) {
+            cb(result)
+          }
         })
       }
     })

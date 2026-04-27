@@ -107,10 +107,18 @@ const HRenderer = ({ uischema, path }) => {
 const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), renderer: CustomInputRenderer }, { tester: rankWith(2, uischema => !!(uischema && uischema.type === 'H')), renderer: HRenderer }]
 
 const JsForm = props => {
-  const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, title, stepIntro, discussionId } = props
+  const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, title, stepIntro, discussionId, options = {} } = props
+  const { submitOnNext = false } = options
   const [data, setData] = useState({})
   const [errors, setErrors] = useState([])
   const classes = useStyles(props)
+  const lastValidityRef = useRef(null)
+  const latestDataRef = useRef({})
+
+  // Keep ref updated with latest form data
+  useEffect(() => {
+    latestDataRef.current = data
+  }, [data])
 
   useEffect(() => {
     window.socket.emit('get-jsform', discussionId, data => {
@@ -124,9 +132,30 @@ const JsForm = props => {
     })
   }, [])
 
+  useEffect(() => {
+    if (submitOnNext) {
+      const isValid = handleIsValid(data, schema, errors)
+
+      // Only call onDone when validity changes to prevent infinite loops
+      if (lastValidityRef.current !== isValid) {
+        lastValidityRef.current = isValid
+
+        const onNext = isValid
+          ? () => {
+              // Read from ref to always get latest data, not stale closure
+              window.socket.emit('upsert-jsform', discussionId, name, latestDataRef.current)
+            }
+          : undefined
+
+        onDone({ valid: isValid, value: data, onNext })
+      }
+    }
+  }, [data, errors, submitOnNext, discussionId, name])
+
   const handleSubmit = () => {
-    window.socket.emit('upsert-jsform', discussionId, name, data)
-    onDone({ valid: handleIsValid(data, schema, errors), value: data })
+    const currentData = latestDataRef.current
+    window.socket.emit('upsert-jsform', discussionId, name, currentData)
+    onDone({ valid: handleIsValid(currentData, schema, errors), value: currentData })
   }
 
   // useMemo renders (React components) so they don't get rebuilt every time the user types a character
@@ -175,9 +204,11 @@ const JsForm = props => {
               setErrors(errors)
             }}
           />
-          <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
-            Submit
-          </PrimaryButton>
+          {!submitOnNext && (
+            <PrimaryButton title={'Submit'} className={classes.actionButton} onDone={handleSubmit} disabled={!isValid}>
+              Submit
+            </PrimaryButton>
+          )}
         </div>
       </Level>
     </div>
