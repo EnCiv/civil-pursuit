@@ -594,7 +594,7 @@ export const tournamentNoSubmitButton = {
               type: 'string',
             },
           },
-          required: ['experience', 'comfort', 'interest'],
+          //don't require anyting to make sure the step doesn't auto next // required: //['experience', 'comfort', 'interest'], /
         },
         uischema: {
           type: 'VerticalLayout',
@@ -633,8 +633,19 @@ export const tournamentNoSubmitButton = {
         question: startingQuestionAnswerStep,
         whyQuestion: whyQuestionAnswerStep,
       },
+      {
+        webComponent: 'Intermission',
+        stepName: 'Intermission',
+        stepIntro: {
+          subject: 'Intermission',
+          description: 'When more people have gotten to this point we will invite you back to continue the deliberation.',
+        },
+        user: { email: 'example@gmail.com', tempid: '123456' },
+      },
     ],
+    defaultValue: tournamentDefaultValue,
   },
+  decorators: [...tournamentDecorators],
 }
 
 export const NotEnoughParticipantsYet = {
