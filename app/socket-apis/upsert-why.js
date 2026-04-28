@@ -13,10 +13,11 @@ export default async function upsertWhy(pointObj, cb) {
     console.error('upsertWhy called but no user logged in')
     return cb?.(undefined) // No user logged in
   }
+
   const userId = this.synuser.id
   pointObj.userId = userId // Add userId to the document
 
-  const correctedPointObj = { ...pointObj, _id: new Points.ObjectId(pointObj._id) }
+  const correctedPointObj = { ...pointObj, _id: pointObj._id ?? new Points.ObjectId() }
 
   // Joi validation for the category
   const { error } = schema.validate({ category: pointObj.category })
@@ -25,7 +26,7 @@ export default async function upsertWhy(pointObj, cb) {
     return cb?.(undefined) // Return validation error
   }
 
-  const validation = Points.validate(correctedPointObj)
+  const validation = Points.validate(correctedPointObj, ['_id', 'category', 'subject'])
   if (validation.error) {
     console.error(validation.error)
     return cb?.(undefined) // Return validation error

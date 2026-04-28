@@ -22,7 +22,7 @@ afterAll(async () => {
 })
 
 test('Upsert a new document', async () => {
-  const pointObj = { _id: POINT1, subject: 'Point 1', description: 'Description 1' }
+  const pointObj = { _id: POINT1, subject: 'Point 1', description: 'Description 1', userId: USER1 }
   const user = { id: USER1 }
 
   const cb = jest.fn()
@@ -61,9 +61,6 @@ test('User not logged in, not allowed to upsert a document', async () => {
 test('Validation error when upserting a document', async () => {
   const invalidPointObj = { _id: POINT2, subject: '', description: 'Description 2' } // Assuming subject is a required field
   const user = { id: USER1 }
-
-  // Mock the validate method to return an error
-  Points.validate = jest.fn().mockReturnValue({ error: 'Validation error' })
 
   const cb = jest.fn()
 

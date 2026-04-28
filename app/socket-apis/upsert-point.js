@@ -10,8 +10,8 @@ export default async function upsertPoint(pointObj, cb) {
 
   const userId = this.synuser.id
   pointObj.userId = userId // Add userId to the document
+  const validation = Points.validate(pointObj, ['subject', 'description', '_id', 'userId'])
 
-  const validation = Points.validate(pointObj)
   if (validation.error) {
     console.error(validation.error)
     return cb && cb() // Return validation error
