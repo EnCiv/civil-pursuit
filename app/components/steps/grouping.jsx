@@ -230,7 +230,7 @@ export function GroupPoints(props) {
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
             <PrimaryButton disabled={gs.selectedIds.length < 2} className={`${classes.primaryButton} ${gs.selectedIds.length < 2 ? classes.createGroupDisabled : ''}`} onClick={handleCreateGroupClick}>
-              Create Group
+              Create Group From Selected Points
             </PrimaryButton>
           </div>
           {/* ui works without this but need design feedback

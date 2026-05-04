@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/35
 // https://github.com/EnCiv/civil-pursuit/issues/80
+// https://github.com/EnCiv/civil-pursuit/issues/390
 
 'use strict'
 
@@ -10,6 +11,7 @@ import Point from './point'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
 import SvgClose from '../svgr/close'
+import SvgCheckedCircle from '../svgr/checked-circle'
 import { ModifierButton, TextButton, SecondaryButton } from './button'
 import DemInfo from './dem-info'
 import { H, Level } from 'react-accessible-headings'
@@ -167,6 +169,20 @@ const PointGroup = props => {
             vState === 'disabled' && classes.disabledBorder
           )}
         >
+          {/* Selection indicator checkbox for clickable points */}
+          {(vState === 'view' || vState === 'editable') && (
+            <div className={classes.selectionIndicator}>
+              {select ? (
+                <div className={classes.checkedIndicator} title="Selected for grouping">
+                  <SvgCheckedCircle />
+                </div>
+              ) : (
+                <div className={classes.uncheckedIndicator} title="Click to select for grouping">
+                  <div className={classes.emptyCircle}></div>
+                </div>
+              )}
+            </div>
+          )}
           {!singlePoint && (
             <div className={classes.SvgContainer}>
               {expanded ? (
@@ -342,13 +358,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   borderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: theme.boxShadow,
+    cursor: 'pointer',
     '&:hover': {
       outline: `0.1875rem solid ${theme.colors.success}`,
     },
-    '&:hover $defaultSubject': {
+    '&:hover $subjectStyle': {
       color: theme.colors.success,
     },
-    '&:hover $defaultDescription': {
+    '&:hover $descriptionStyle': {
       color: theme.colors.success,
     },
   },
@@ -470,7 +487,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   SvgContainer: {
     position: 'absolute',
     top: '1rem',
-    right: '1rem',
+    right: '3.5rem', // Moved left to make room for selection indicator
     fontSize: '1.5rem',
   },
 
@@ -571,6 +588,44 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     '&:hover ': {
       outline: 'none',
     },
+  },
+
+  // Selection indicator styles
+  selectionIndicator: {
+    position: 'absolute',
+    top: '1rem',
+    right: '1rem',
+    fontSize: '1.5rem',
+    zIndex: 2,
+    pointerEvents: 'none', // Let clicks pass through to the parent
+  },
+
+  checkedIndicator: {
+    color: theme.colors.success,
+    pointerEvents: 'none',
+    '& svg': {
+      width: '1.5rem',
+      height: '1.5rem',
+      filter: 'drop-shadow(0 2px 4px rgba(0, 86, 33, 0.3))',
+      pointerEvents: 'none',
+    },
+  },
+
+  uncheckedIndicator: {
+    color: theme.colors.encivGray,
+    opacity: 0.7,
+    transition: 'opacity 0.2s ease',
+    pointerEvents: 'none',
+  },
+
+  emptyCircle: {
+    width: '1.5rem',
+    height: '1.5rem',
+    borderRadius: '50%',
+    border: `0.125rem solid ${theme.colors.encivGray}`,
+    backgroundColor: 'white',
+    position: 'relative',
+    pointerEvents: 'none',
   },
 }))
 
