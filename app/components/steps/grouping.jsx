@@ -230,7 +230,8 @@ export function GroupPoints(props) {
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
             <PrimaryButton disabled={gs.selectedIds.length < 2} className={`${classes.primaryButton} ${gs.selectedIds.length < 2 ? classes.createGroupDisabled : ''}`} onClick={handleCreateGroupClick}>
-              Create Group From Selected Points
+              <span>Group Selected Responses</span>
+              <span className={classes.countBadge}>{gs.selectedIds.length}</span>
             </PrimaryButton>
           </div>
           {/* ui works without this but need design feedback
@@ -376,5 +377,20 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   yourGroupsPoint: {
     backgroundColor: 'white',
+  },
+
+  countBadge: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: '1.5rem',
+    height: '1.5rem',
+    padding: '0 0.5rem',
+    marginLeft: '0.5rem',
+    fontSize: '0.875rem',
+    fontWeight: '600',
+    borderRadius: '0.75rem',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    color: 'inherit',
   },
 }))

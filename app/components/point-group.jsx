@@ -585,6 +585,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     opacity: 0.5,
     outline: `1px solid ${theme.colors.borderGray}`,
     background: theme.colors.white,
+    cursor: 'not-allowed',
     '&:hover ': {
       outline: 'none',
     },
