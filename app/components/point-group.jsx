@@ -18,7 +18,7 @@ import { H, Level } from 'react-accessible-headings'
 
 // vState for Point: default, selected, disabled, collapsed
 const PointGroup = props => {
-  const { pointGroup, vState, select, children = [], className = '', onDone = () => {}, ...otherProps } = props
+  const { pointGroup, vState, select, children = [], className = '', onDone = () => {}, onClick, ...otherProps } = props
   // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
   const [vs, setVState] = useState(vState === 'editable' ? 'edit' : vState)
   const [pG, setPg] = useState(pointGroup)
@@ -175,6 +175,7 @@ const PointGroup = props => {
             tabIndex: 0,
             'aria-label': `${select ? 'Deselect' : 'Select'} point group${subject ? `: ${subject}` : ''}`,
             title: select ? 'Selected for grouping' : 'Click to select for grouping',
+            onClick,
             onKeyDown: e => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault()
