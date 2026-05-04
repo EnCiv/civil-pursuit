@@ -165,19 +165,33 @@ const PointGroup = props => {
             classes.informationGrid,
             {
               [classes.selectedBorder]: select,
+              [classes.clickable]: (vState === 'view' || vState === 'editable') && vState !== 'disabled',
             },
             vState === 'disabled' && classes.disabledBorder
           )}
+          {...((vState === 'view' || vState === 'editable') && {
+            role: 'checkbox',
+            'aria-checked': select,
+            tabIndex: 0,
+            'aria-label': `${select ? 'Deselect' : 'Select'} point group${subject ? `: ${subject}` : ''}`,
+            title: select ? 'Selected for grouping' : 'Click to select for grouping',
+            onKeyDown: e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                e.currentTarget.click()
+              }
+            },
+          })}
         >
           {/* Selection indicator checkbox for clickable points */}
           {(vState === 'view' || vState === 'editable') && (
             <div className={classes.selectionIndicator}>
               {select ? (
-                <div className={classes.checkedIndicator} title="Selected for grouping">
+                <div className={classes.checkedIndicator}>
                   <SvgCheckedCircle />
                 </div>
               ) : (
-                <div className={classes.uncheckedIndicator} title="Click to select for grouping">
+                <div className={classes.uncheckedIndicator}>
                   <div className={classes.emptyCircle}></div>
                 </div>
               )}
@@ -358,7 +372,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   borderStyle: {
     borderRadius: '0.9375rem',
     boxShadow: theme.boxShadow,
-    cursor: 'pointer',
     '&:hover': {
       outline: `0.1875rem solid ${theme.colors.success}`,
     },
@@ -368,6 +381,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     '&:hover $descriptionStyle': {
       color: theme.colors.success,
     },
+  },
+
+  clickable: {
+    cursor: 'pointer',
   },
 
   collapsedBorder: {
@@ -487,7 +504,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   SvgContainer: {
     position: 'absolute',
     top: '1rem',
-    right: '3.5rem', // Moved left to make room for selection indicator
+    right: '3.5rem',
     fontSize: '1.5rem',
   },
 

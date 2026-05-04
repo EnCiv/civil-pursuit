@@ -1,6 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/49
 // https://github.com/EnCiv/civil-pursuit/issues/198
 // https://github.com/EnCiv/civil-pursuit/issues/249
+// https://github.com/EnCiv/civil-pursuit/issues/390
 
 // groupedPoints and pointList are both a list of pointObj
 // pointList is the original list of points, we set groupedPoints to pointList if it is empty
