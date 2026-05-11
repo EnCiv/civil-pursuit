@@ -11,7 +11,6 @@ import Point from './point'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
 import SvgClose from '../svgr/close'
-import SvgCheckedCircle from '../svgr/checked-circle'
 import { ModifierButton, TextButton, SecondaryButton } from './button'
 import DemInfo from './dem-info'
 import { H, Level } from 'react-accessible-headings'
@@ -175,10 +174,18 @@ const PointGroup = props => {
             tabIndex: 0,
             'aria-label': `${select ? 'Deselect' : 'Select'} point group${subject ? `: ${subject}` : ''}`,
             title: select ? 'Selected for grouping' : 'Click to select for grouping',
+            onClick: e => {
+              const interactive = e.target.closest('button, a, input, select, textarea, [role="button"], [role="link"], [role="radio"], [role="checkbox"], [role="switch"]')
+              if (interactive && interactive !== e.currentTarget) return
+              e.stopPropagation()
+              otherProps.onClick?.(e)
+            },
             onKeyDown: e => {
-              if (e.key === 'Enter' || e.key === ' ') {
+              if (e.target !== e.currentTarget) return
+              if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
                 e.preventDefault()
-                e.currentTarget.click()
+                e.stopPropagation()
+                otherProps.onClick?.(e)
               }
             },
           })}
@@ -186,15 +193,7 @@ const PointGroup = props => {
           {/* Selection indicator checkbox for clickable points */}
           {(vState === 'view' || vState === 'editable') && (
             <div className={classes.selectionIndicator}>
-              {select ? (
-                <div className={classes.checkedIndicator}>
-                  <SvgCheckedCircle />
-                </div>
-              ) : (
-                <div className={classes.uncheckedIndicator}>
-                  <div className={classes.emptyCircle}></div>
-                </div>
-              )}
+              <div className={cx(classes.radioIndicator, select && classes.checkedIndicator)} />
             </div>
           )}
           {!singlePoint && (
@@ -385,6 +384,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   clickable: {
     cursor: 'pointer',
+    '&:focus-visible': {
+      outline: `${theme.focusOutline}`,
+    },
+    '&:focus-visible $selectionIndicator::before': {
+      opacity: 1,
+    },
   },
 
   collapsedBorder: {
@@ -613,37 +618,54 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'absolute',
     top: '1rem',
     right: '1rem',
-    fontSize: '1.5rem',
     zIndex: 2,
     pointerEvents: 'none', // Let clicks pass through to the parent
-  },
-
-  checkedIndicator: {
-    color: theme.colors.success,
-    pointerEvents: 'none',
-    '& svg': {
-      width: '1.5rem',
-      height: '1.5rem',
-      filter: 'drop-shadow(0 2px 4px rgba(0, 86, 33, 0.3))',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      width: '2.25rem',
+      height: '2.25rem',
+      borderRadius: '50%',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: theme.colors.focusRing,
+      opacity: 0,
+      transition: 'opacity 0.2s ease',
       pointerEvents: 'none',
+      zIndex: 0,
     },
   },
 
-  uncheckedIndicator: {
-    color: theme.colors.encivGray,
-    opacity: 0.7,
-    transition: 'opacity 0.2s ease',
-    pointerEvents: 'none',
-  },
-
-  emptyCircle: {
+  radioIndicator: {
     width: '1.5rem',
     height: '1.5rem',
     borderRadius: '50%',
-    border: `0.125rem solid ${theme.colors.encivGray}`,
+    border: `0.125rem solid ${theme.colors.radioButtonUnselected}`,
     backgroundColor: 'white',
     position: 'relative',
     pointerEvents: 'none',
+    zIndex: 1,
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      width: '0.75rem',
+      height: '0.75rem',
+      borderRadius: '50%',
+      backgroundColor: theme.colors.radioButtonSelected,
+      transform: 'translate(-50%, -50%)',
+      opacity: 0,
+      transition: 'opacity 0.15s ease',
+    },
+  },
+
+  checkedIndicator: {
+    borderColor: theme.colors.radioButtonSelected,
+    '&::after': {
+      opacity: 1,
+    },
   },
 }))
 

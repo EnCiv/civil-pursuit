@@ -230,7 +230,7 @@ export function GroupPoints(props) {
         </div>
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
-            <PrimaryButton disabled={gs.selectedIds.length < 2} className={`${classes.primaryButton} ${gs.selectedIds.length < 2 ? classes.createGroupDisabled : ''}`} onClick={handleCreateGroupClick}>
+            <PrimaryButton disabled={gs.selectedIds.length < 2} className={`${classes.primaryButton} ${gs.selectedIds.length < 2 ? classes.createGroupDisabled : ''}`} onDone={handleCreateGroupClick}>
               <span>Group Selected Responses</span>
               <span className={classes.countBadge}>{gs.selectedIds.length}</span>
             </PrimaryButton>
