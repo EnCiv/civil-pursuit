@@ -251,7 +251,7 @@ export function GroupPoints(props) {
         </div>
       )}
       {
-        /*!gs.selectLead&& */ <div className={classes.groupsContainer}>
+        /*!gs.selectLead&& */ <div className={classes.groupsContainer} role="group" aria-label="Available responses to group">
           {gs.pGsToGroup.map(pGD => (
             <PointGroup key={pGD.point._id} pointGroup={pGD} vState={gs.selectLead ? 'disabled' : 'view'} select={gs.selectedIds.some(id => id === pGD.point._id)} onClick={() => togglePointSelection(pGD.point._id)} />
           ))}
@@ -261,7 +261,7 @@ export function GroupPoints(props) {
         /*!gs.selectLead && **/ !!gs.yourGroups.length && (
           <div className={classes.yourGroupsWrapper}>
             <div className={classes.yourGroupsTitle}>{'Your Groups'}</div>
-            <div className={classes.groupsContainer}>
+            <div className={classes.groupsContainer} role="group" aria-label="Your grouped responses">
               {gs.yourGroups.map(pointGroup => {
                 return (
                   pointGroup && (

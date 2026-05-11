@@ -18,6 +18,8 @@ import { H, Level } from 'react-accessible-headings'
 // vState for Point: default, selected, disabled, collapsed
 const PointGroup = props => {
   const { pointGroup, vState, select, children = [], className = '', onDone = () => {}, ...otherProps } = props
+  const onClick = otherProps.onClick
+  delete otherProps.onClick
   // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
   const [vs, setVState] = useState(vState === 'editable' ? 'edit' : vState)
   const [pG, setPg] = useState(pointGroup)
@@ -75,7 +77,7 @@ const PointGroup = props => {
         <div className={cx(classes.borderStyle, classes.contentContainer)}>
           <H className={classes.titleGroup}>Please select the response you want to lead with</H>
           <div className={classes.SvgContainer}>
-            <TextButton title="Ungroup and close" onClick={ungroupAndClose}>
+            <TextButton title="Ungroup and close" aria-label="Ungroup and close" onClick={ungroupAndClose}>
               <span className={classes.chevronButton}>
                 <SvgClose />
               </span>
@@ -168,32 +170,31 @@ const PointGroup = props => {
             },
             vState === 'disabled' && classes.disabledBorder
           )}
-          {...((vState === 'view' || vState === 'editable') && {
-            role: 'checkbox',
-            'aria-checked': select,
-            tabIndex: 0,
-            'aria-label': `${select ? 'Deselect' : 'Select'} point group${subject ? `: ${subject}` : ''}`,
-            title: select ? 'Selected for grouping' : 'Click to select for grouping',
-            onClick: e => {
-              const interactive = e.target.closest('button, a, input, select, textarea, [role="button"], [role="link"], [role="radio"], [role="checkbox"], [role="switch"]')
-              if (interactive && interactive !== e.currentTarget) return
-              e.stopPropagation()
-              otherProps.onClick?.(e)
-            },
-            onKeyDown: e => {
-              if (e.target !== e.currentTarget) return
-              if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-                e.preventDefault()
-                e.stopPropagation()
-                otherProps.onClick?.(e)
-              }
-            },
-          })}
+          {...((vState === 'view' || vState === 'editable') &&
+            vState !== 'disabled' && {
+              role: 'checkbox',
+              'aria-checked': !!select,
+              tabIndex: 0,
+              'aria-label': `${select ? 'Deselect' : 'Select'} point group${subject ? `: ${subject}` : ''}`,
+              title: select ? 'Selected for grouping' : 'Select for grouping',
+              onClick: e => {
+                const interactive = e.target.closest('button, a, input, label, select, textarea, [role="button"], [role="link"], [role="radio"], [role="checkbox"], [role="switch"]')
+                if (interactive && interactive !== e.currentTarget) return
+                onClick?.(e)
+              },
+              onKeyDown: e => {
+                if (e.target !== e.currentTarget) return
+                if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+                  e.preventDefault()
+                  onClick?.(e)
+                }
+              },
+            })}
         >
           {/* Selection indicator checkbox for clickable points */}
           {(vState === 'view' || vState === 'editable') && (
             <div className={classes.selectionIndicator}>
-              <div className={cx(classes.radioIndicator, select && classes.checkedIndicator)} />
+              <div className={cx(classes.radioIndicator, select && classes.checkedIndicator)} aria-hidden="true" />
             </div>
           )}
           {!singlePoint && (
@@ -205,6 +206,7 @@ const PointGroup = props => {
                     setExpanded(false)
                   }}
                   title="collapse"
+                  aria-label="Collapse group"
                   tabIndex={0}
                 >
                   <span className={classes.chevronButton}>
@@ -218,6 +220,7 @@ const PointGroup = props => {
                     setExpanded(true)
                   }}
                   title="expand"
+                  aria-label="Expand group"
                   tabIndex={0}
                 >
                   <span className={classes.chevronButton}>
@@ -619,7 +622,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     top: '1rem',
     right: '1rem',
     zIndex: 2,
-    pointerEvents: 'none', // Let clicks pass through to the parent
+    pointerEvents: 'none',
     '&::before': {
       content: '""',
       position: 'absolute',
@@ -646,6 +649,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     position: 'relative',
     pointerEvents: 'none',
     zIndex: 1,
+    display: 'inline-block',
     '&::after': {
       content: '""',
       position: 'absolute',
