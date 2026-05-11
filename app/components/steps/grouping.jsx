@@ -1,6 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/49
 // https://github.com/EnCiv/civil-pursuit/issues/198
 // https://github.com/EnCiv/civil-pursuit/issues/249
+// https://github.com/EnCiv/civil-pursuit/issues/390
 
 // groupedPoints and pointList are both a list of pointObj
 // pointList is the original list of points, we set groupedPoints to pointList if it is empty
@@ -229,8 +230,9 @@ export function GroupPoints(props) {
         </div>
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
-            <PrimaryButton disabled={gs.selectedIds.length < 2} className={`${classes.primaryButton} ${gs.selectedIds.length < 2 ? classes.createGroupDisabled : ''}`} onClick={handleCreateGroupClick}>
-              Create Group
+            <PrimaryButton disabled={gs.selectedIds.length < 2} className={`${classes.primaryButton} ${gs.selectedIds.length < 2 ? classes.createGroupDisabled : ''}`} onDone={handleCreateGroupClick}>
+              <span>Group Selected Responses</span>
+              <span className={classes.countBadge}>{gs.selectedIds.length}</span>
             </PrimaryButton>
           </div>
           {/* ui works without this but need design feedback
@@ -249,7 +251,7 @@ export function GroupPoints(props) {
         </div>
       )}
       {
-        /*!gs.selectLead&& */ <div className={classes.groupsContainer}>
+        /*!gs.selectLead&& */ <div className={classes.groupsContainer} role="group" aria-label="Available responses to group">
           {gs.pGsToGroup.map(pGD => (
             <PointGroup key={pGD.point._id} pointGroup={pGD} vState={gs.selectLead ? 'disabled' : 'view'} select={gs.selectedIds.some(id => id === pGD.point._id)} onClick={() => togglePointSelection(pGD.point._id)} />
           ))}
@@ -259,7 +261,7 @@ export function GroupPoints(props) {
         /*!gs.selectLead && **/ !!gs.yourGroups.length && (
           <div className={classes.yourGroupsWrapper}>
             <div className={classes.yourGroupsTitle}>{'Your Groups'}</div>
-            <div className={classes.groupsContainer}>
+            <div className={classes.groupsContainer} role="group" aria-label="Your grouped responses">
               {gs.yourGroups.map(pointGroup => {
                 return (
                   pointGroup && (
@@ -376,5 +378,20 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   yourGroupsPoint: {
     backgroundColor: 'white',
+  },
+
+  countBadge: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: '1.5rem',
+    height: '1.5rem',
+    padding: '0 0.5rem',
+    marginLeft: '0.5rem',
+    fontSize: '0.875rem',
+    fontWeight: '600',
+    borderRadius: '0.75rem',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    color: 'inherit',
   },
 }))

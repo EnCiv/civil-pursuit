@@ -88,8 +88,9 @@ function Button(props) {
   }
 
   const handleKeyDown = e => {
-    if (e.keyCode === 32 || e.key === ' ') {
-      e.preventDefault() // Prevent page scroll on space
+    if (e.keyCode === 32 || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') {
+      // Prevent page scroll on space and normalize keyboard activation behavior.
+      e.preventDefault()
       e.stopPropagation()
       if (timeRef.current) clearTimeout(timeRef.current)
       timeRef.current = null

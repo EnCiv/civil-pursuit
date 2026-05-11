@@ -1,5 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/35
 // https://github.com/EnCiv/civil-pursuit/issues/80
+// https://github.com/EnCiv/civil-pursuit/issues/390
 
 'use strict'
 
@@ -17,6 +18,8 @@ import { H, Level } from 'react-accessible-headings'
 // vState for Point: default, selected, disabled, collapsed
 const PointGroup = props => {
   const { pointGroup, vState, select, children = [], className = '', onDone = () => {}, ...otherProps } = props
+  const onClick = otherProps.onClick
+  delete otherProps.onClick
   // vState for pointGroup: ['default', 'edit', 'view', 'selectLead', 'collapsed']
   const [vs, setVState] = useState(vState === 'editable' ? 'edit' : vState)
   const [pG, setPg] = useState(pointGroup)
@@ -74,7 +77,7 @@ const PointGroup = props => {
         <div className={cx(classes.borderStyle, classes.contentContainer)}>
           <H className={classes.titleGroup}>Please select the response you want to lead with</H>
           <div className={classes.SvgContainer}>
-            <TextButton title="Ungroup and close" onClick={ungroupAndClose}>
+            <TextButton title="Ungroup and close" aria-label="Ungroup and close" onClick={ungroupAndClose}>
               <span className={classes.chevronButton}>
                 <SvgClose />
               </span>
@@ -163,10 +166,37 @@ const PointGroup = props => {
             classes.informationGrid,
             {
               [classes.selectedBorder]: select,
+              [classes.clickable]: (vState === 'view' || vState === 'editable') && vState !== 'disabled',
             },
             vState === 'disabled' && classes.disabledBorder
           )}
+          {...((vState === 'view' || vState === 'editable') &&
+            vState !== 'disabled' && {
+              role: 'checkbox',
+              'aria-checked': !!select,
+              tabIndex: 0,
+              'aria-label': `${select ? 'Deselect' : 'Select'} point group${subject ? `: ${subject}` : ''}`,
+              title: select ? 'Selected for grouping' : 'Select for grouping',
+              onClick: e => {
+                const interactive = e.target.closest('button, a, input, label, select, textarea, [role="button"], [role="link"], [role="radio"], [role="checkbox"], [role="switch"]')
+                if (interactive && interactive !== e.currentTarget) return
+                onClick?.(e)
+              },
+              onKeyDown: e => {
+                if (e.target !== e.currentTarget) return
+                if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+                  e.preventDefault()
+                  onClick?.(e)
+                }
+              },
+            })}
         >
+          {/* Selection indicator checkbox for clickable points */}
+          {(vState === 'view' || vState === 'editable') && (
+            <div className={classes.selectionIndicator}>
+              <div className={cx(classes.radioIndicator, select && classes.checkedIndicator)} aria-hidden="true" />
+            </div>
+          )}
           {!singlePoint && (
             <div className={classes.SvgContainer}>
               {expanded ? (
@@ -176,6 +206,7 @@ const PointGroup = props => {
                     setExpanded(false)
                   }}
                   title="collapse"
+                  aria-label="Collapse group"
                   tabIndex={0}
                 >
                   <span className={classes.chevronButton}>
@@ -189,6 +220,7 @@ const PointGroup = props => {
                     setExpanded(true)
                   }}
                   title="expand"
+                  aria-label="Expand group"
                   tabIndex={0}
                 >
                   <span className={classes.chevronButton}>
@@ -345,11 +377,21 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     '&:hover': {
       outline: `0.1875rem solid ${theme.colors.success}`,
     },
-    '&:hover $defaultSubject': {
+    '&:hover $subjectStyle': {
       color: theme.colors.success,
     },
-    '&:hover $defaultDescription': {
+    '&:hover $descriptionStyle': {
       color: theme.colors.success,
+    },
+  },
+
+  clickable: {
+    cursor: 'pointer',
+    '&:focus-visible': {
+      outline: `${theme.focusOutline}`,
+    },
+    '&:focus-visible $selectionIndicator::before': {
+      opacity: 1,
     },
   },
 
@@ -470,7 +512,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   SvgContainer: {
     position: 'absolute',
     top: '1rem',
-    right: '1rem',
+    right: '3.5rem',
     fontSize: '1.5rem',
   },
 
@@ -568,8 +610,65 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     opacity: 0.5,
     outline: `1px solid ${theme.colors.borderGray}`,
     background: theme.colors.white,
+    cursor: 'not-allowed',
     '&:hover ': {
       outline: 'none',
+    },
+  },
+
+  // Selection indicator styles
+  selectionIndicator: {
+    position: 'absolute',
+    top: '1rem',
+    right: '1rem',
+    zIndex: 2,
+    pointerEvents: 'none',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      width: '2.25rem',
+      height: '2.25rem',
+      borderRadius: '50%',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: theme.colors.focusRing,
+      opacity: 0,
+      transition: 'opacity 0.2s ease',
+      pointerEvents: 'none',
+      zIndex: 0,
+    },
+  },
+
+  radioIndicator: {
+    width: '1.5rem',
+    height: '1.5rem',
+    borderRadius: '50%',
+    border: `0.125rem solid ${theme.colors.radioButtonUnselected}`,
+    backgroundColor: 'white',
+    position: 'relative',
+    pointerEvents: 'none',
+    zIndex: 1,
+    display: 'inline-block',
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      width: '0.75rem',
+      height: '0.75rem',
+      borderRadius: '50%',
+      backgroundColor: theme.colors.radioButtonSelected,
+      transform: 'translate(-50%, -50%)',
+      opacity: 0,
+      transition: 'opacity 0.15s ease',
+    },
+  },
+
+  checkedIndicator: {
+    borderColor: theme.colors.radioButtonSelected,
+    '&::after': {
+      opacity: 1,
     },
   },
 }))
