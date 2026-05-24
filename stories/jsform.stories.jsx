@@ -3,7 +3,7 @@ import { userEvent, within, waitFor } from '@storybook/test'
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { expect } from '@storybook/jest'
 import Jsform from '../app/components/jsform'
-import { onDoneDecorator, onDoneResult, buildApiDecorator, socketEmitDecorator } from './common'
+import { onDoneDecorator, buildApiDecorator, socketEmitDecorator } from './common'
 
 export default {
   component: Jsform,
@@ -330,22 +330,19 @@ export const UserInputAndOnDoneCall = {
     discussionId: '123456789012345678901234567890abcd',
   },
   decorators: jsFormDecorators,
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await userEvent.selectOptions(canvas.getByLabelText(/Household Income/i), '10000-20000')
     await userEvent.selectOptions(canvas.getByLabelText(/Housing/i), 'House')
     await userEvent.selectOptions(canvas.getByLabelText(/Number of Siblings/i), '1')
     await userEvent.click(canvas.getByRole('button', { name: /Submit/i }))
     expect(window.socket._socketEmitHandlerResults['upsert-jsform'][0]).toMatchObject(['123456789012345678901234567890abcd', 'moreDetails', { householdIncome: '10000-20000', housing: 'House', numberOfSiblings: '1' }])
-    expect(onDoneResult(canvas)).toMatchObject({
-      count: 1,
-      onDoneResult: {
-        valid: true,
-        value: {
-          householdIncome: '10000-20000',
-          housing: 'House',
-          numberOfSiblings: '1',
-        },
+    expect(args.onDone.mock.calls[0][0]).toMatchObject({
+      valid: true,
+      value: {
+        householdIncome: '10000-20000',
+        housing: 'House',
+        numberOfSiblings: '1',
       },
     })
   },
@@ -584,7 +581,7 @@ export const SkipOnUndefinedData = {
     }),
     onDoneDecorator,
   ],
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     console.log('[SkipOnUndefinedData] play started')
 
@@ -592,10 +589,7 @@ export const SkipOnUndefinedData = {
     expect(canvas.getByLabelText(/Housing/i)).toBeInTheDocument()
     expect(canvas.getByLabelText(/Number of Siblings/i)).toBeInTheDocument()
 
-    const result = onDoneResult(canvas)
-    console.log('[SkipOnUndefinedData] onDoneResult:', result)
-
-    expect(result).toMatchObject({ count: 0 })
+    expect(args.onDone.mock.calls).toHaveLength(0)
   },
 }
 

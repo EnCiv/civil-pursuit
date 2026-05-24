@@ -2,7 +2,7 @@
 
 import { RankPoints } from '../app/components/steps/rank'
 import React from 'react'
-import { onDoneDecorator, onDoneResult } from './common'
+import { onDoneDecorator } from './common'
 import { userEvent, within, expect } from '@storybook/test'
 import { reduce } from 'lodash'
 
@@ -167,8 +167,7 @@ export const tenRanksTooManyMost = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const { onDone } = args
-    expect(onDone.mock.calls[0][0]).toMatchObject({
+    expect(args.onDone.mock.calls[0][0]).toMatchObject({
       valid: false,
       value: 1,
     })
@@ -176,19 +175,16 @@ export const tenRanksTooManyMost = {
     const point10Div = point10Heading.closest('div')
     await userEvent.click(within(point10Div).getByText('Neutral'))
 
-    expect(onDoneResult(canvas)).toMatchObject({
-      count: 2,
-      onDoneResult: {
-        valid: true,
-        value: 1,
-        delta: {
-          _id: '100',
-          stage: 'pre',
-          category: 'neutral',
-          parentId: '10',
-          discussionId: '1101',
-          round: 0,
-        },
+    expect(args.onDone.mock.calls[1][0]).toMatchObject({
+      valid: true,
+      value: 1,
+      delta: {
+        _id: '100',
+        stage: 'pre',
+        category: 'neutral',
+        parentId: '10',
+        discussionId: '1101',
+        round: 0,
       },
     })
   },
@@ -210,25 +206,22 @@ export const tenRanksTooManyLeast = {
       [point10.point._id]: createRank('Neutral', point10.point._id),
     },
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const points = await canvas.findAllByTestId('point')
 
     await clickSelections(points, ['Most', 'Most', 'Least', 'Least', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral', 'Neutral'])
 
-    expect(onDoneResult(canvas)).toMatchObject({
-      count: 2,
-      onDoneResult: {
-        valid: false,
-        value: 1,
-        delta: {
-          _id: '100',
-          stage: 'pre',
-          category: 'least',
-          parentId: '4',
-          discussionId: '1101',
-          round: 0,
-        },
+    expect(args.onDone.mock.calls[1][0]).toMatchObject({
+      valid: false,
+      value: 1,
+      delta: {
+        _id: '100',
+        stage: 'pre',
+        category: 'least',
+        parentId: '4',
+        discussionId: '1101',
+        round: 0,
       },
     })
   },
@@ -250,25 +243,22 @@ export const tenRanksTooManyMostAndLeast = {
       [point10.point._id]: createRank('Neutral', point10.point._id),
     },
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const points = await canvas.findAllByTestId('point')
 
     await clickSelections(points, ['Most', 'Least', 'Least', 'Most', 'Neutral', 'Neutral', 'Most', 'Least', 'Neutral', 'Neutral'])
 
-    expect(onDoneResult(canvas)).toMatchObject({
-      count: 5,
-      onDoneResult: {
-        valid: false,
-        value: 1,
-        delta: {
-          _id: '100',
-          stage: 'pre',
-          category: 'least',
-          parentId: '8',
-          discussionId: '1101',
-          round: 0,
-        },
+    expect(args.onDone.mock.calls[4][0]).toMatchObject({
+      valid: false,
+      value: 1,
+      delta: {
+        _id: '100',
+        stage: 'pre',
+        category: 'least',
+        parentId: '8',
+        discussionId: '1101',
+        round: 0,
       },
     })
   },

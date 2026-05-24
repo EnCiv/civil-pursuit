@@ -6,7 +6,7 @@ import DeliberationContext from '../app/components/deliberation-context'
 import RerankStep, { Rerank } from '../app/components/steps/rerank'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 
-import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, asyncSleep } from './common'
+import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, asyncSleep } from './common'
 import { within, userEvent, expect, waitFor } from '@storybook/test'
 
 export default {
@@ -180,15 +180,12 @@ export const onDoneIsCalledIfInitialData = {
     discussionId,
     round,
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
-        onDoneResult: {
-          valid: false,
-          value: 0.3333333333333333,
-        },
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({
+        valid: false,
+        value: 0.3333333333333333,
       })
     })
   },

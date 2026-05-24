@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { Button, ModifierButton, SecondaryButton, PrimaryButton, TextButton } from '../app/components/button'
 import expect from 'expect'
 import { userEvent, within } from '@storybook/test'
-import { onDoneDecorator, onDoneResult } from './common'
+import { onDoneDecorator } from './common'
 import SvgPlusSign from '../app/svgr/plus-sign'
 
 export default {
@@ -102,11 +102,10 @@ export const OnDoneClicked = {
     disableOnClick: false,
     children: 'Click Here',
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByRole('button', { name: /Click Here/i }))
-    let result = onDoneResult(canvas)
-    expect(result.count).toEqual(1)
+    expect(args.onDone.mock.calls).toHaveLength(1)
   },
 }
 

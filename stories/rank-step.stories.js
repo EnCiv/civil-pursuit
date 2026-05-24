@@ -4,7 +4,7 @@ import React, { useContext, useState } from 'react'
 import DeliberationContext from '../app/components/deliberation-context'
 import RankStep, { RankPoints } from '../app/components/steps/rank'
 
-import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator } from './common'
+import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator } from './common'
 import { within, userEvent, expect, waitFor } from '@storybook/test'
 import { cloneDeep, reduce } from 'lodash'
 
@@ -127,14 +127,12 @@ export const onDoneIsCalledIfInitialData = {
     discussionId,
     round,
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        onDoneResult: {
-          valid: false,
-          value: 0.3333333333333333,
-        },
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({
+        valid: false,
+        value: 0.3333333333333333,
       })
     })
   },
@@ -147,18 +145,16 @@ export const onDoneIsCalledAfterUserChangesRank = {
     discussionId,
     round,
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const categories = canvas.getAllByText('Neutral')
     await userEvent.click(categories[0])
 
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        onDoneResult: {
-          valid: false,
-          value: 0.3333333333333333,
-          delta: { ...rank1preMost, category: 'neutral' },
-        },
+      expect(args.onDone.mock.calls[1][0]).toMatchObject({
+        valid: false,
+        value: 0.3333333333333333,
+        delta: { ...rank1preMost, category: 'neutral' },
       })
     })
   },
@@ -198,14 +194,12 @@ export const rankStepWithPartialDataAndUserUpdate = {
   args: { ...getRankArgsFrom(mergeRanksIntoReviewPoints(rankPoints, [rank1preMost])), round: 1 },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: rankStepTemplate,
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        onDoneResult: {
-          valid: false,
-          value: 0.3333333333333333,
-        },
+      expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
+        valid: false,
+        value: 0.3333333333333333,
       })
       expect(window.socket._socketEmitHandlerResults['get-user-ranks']).toEqual([discussionId, round, 'pre'])
     })
