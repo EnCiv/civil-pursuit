@@ -1,4 +1,5 @@
 import { merge } from 'webpack-merge'
+import path from 'path'
 import webpackDevConfig from '../webpack-dev.config'
 
 const config = {
@@ -15,6 +16,14 @@ const config = {
     const storyDevConfig = { ...webpackDevConfig, entry: undefined, output: undefined } // to be set by storybook
     storyDevConfig.module.rules = storyDevConfig.module.rules.filter(rule => rule.use !== 'css-loader') // there is already a css loader rule in storybook and the on in dev cause a problem here
     const newConfig = merge(config, storyDevConfig)
+    // Ensure civil-client (and other peer-dep packages) resolve react/react-dom
+    // from civil-pursuit's own node_modules, not their own missing copies.
+    newConfig.resolve = newConfig.resolve || {}
+    newConfig.resolve.alias = {
+      ...newConfig.resolve.alias,
+      react: path.resolve('node_modules/react'),
+      'react-dom': path.resolve('node_modules/react-dom'),
+    }
     return newConfig
   },
 }

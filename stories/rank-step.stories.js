@@ -341,7 +341,7 @@ export const rankStepWithClearRanks = {
     await userEvent.click(clearButton[0])
 
     await waitFor(() => {
-      expect(onDone.mock.calls[6][0]).toMatchObject({
+      expect(onDone.mock.calls[5][0]).toMatchObject({
         valid: false,
         value: 0,
       })

@@ -31,7 +31,7 @@
   },
   "license": "SEE LICENSE IN LICENSE.txt",
   "engines": {
-    "node": "18.13.0"
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "@codastic/react-positioning-portal": "^0.7.0",
@@ -44,6 +44,7 @@
     "bson-objectid": "^1.2.4",
     "buffer": "^6.0.3",
     "classnames": "^2.2.6",
+    "color": "^3.2.1",
     "joi": "^17.13.3",
     "joi-objectid": "^4.0.2",
     "lodash": "^4.17.11",
@@ -51,10 +52,10 @@
     "log4js-extend": "^0.2.1",
     "markdown-to-jsx": "7.7.6",
     "mongodb": "^5.9.2",
-    "react": "^16.14.0",
+    "react": "^19",
     "react-accessible-headings": "^4.2.0",
-    "react-dom": "^16.14.0",
-    "react-hot-loader": "^4.8.4",
+    "react-dom": "^19",
+    "react-helmet-async": "^3",
     "react-jss": "^10.10.0",
     "react-perfect-scrollbar": "^1.5.8",
     "react-share": "^4.4.1",
@@ -98,18 +99,16 @@
     "axe-playwright": "^2.1.0",
     "chromatic": "^11.3.0",
     "concurrently": "3.6.1",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.7",
+    "@testing-library/dom": "^10",
+    "@testing-library/jest-dom": "^6",
+    "@testing-library/react": "^16",
     "expect": "^23.6.0",
     "jest": "^29.7.0",
-    "jest-enzyme": "^7.1.2",
     "mongodb-memory-server": "^10.1.2",
     "nodemon": "^2.0.15",
     "storybook": "^8.6.14",
-    "webpack-dev-server": "^4.15.1"
-  },
-  "peerDependencies": {
-    "civil-client": "github:EnCiv/civil-client",
-    "civil-server": "github:EnCiv/civil-server"
+    "webpack-dev-server": "^4.15.1",
+    "civil-client": "github:EnCiv/civil-client#update2026",
+    "civil-server": "github:EnCiv/civil-server#update2026"
   }
 }

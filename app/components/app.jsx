@@ -1,10 +1,9 @@
 import React from 'react'
-import { hot } from 'react-hot-loader'
 import WebComponents from '../web-components'
 import Footer from './footer'
 import { ErrorBoundary } from 'civil-client'
 import { ThemeProvider, createUseStyles } from 'react-jss'
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet-async'
 import theme from './theme'
 import TopNavBar from './top-nav-bar'
 import GlobalStyles from './global-styles'
@@ -115,4 +114,4 @@ function TopNavWrap(props) {
   return <TopNavBar mode={'dark'} menu={menu} />
 }
 
-export default hot(module)(App)
+export default App
