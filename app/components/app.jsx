@@ -55,10 +55,12 @@ class App extends React.Component {
     } else
       return (
         <ErrorBoundary>
-          <div style={{ position: 'relative' }}>
-            <div>Nothing Here</div>
-            <Footer />
-          </div>
+          <ThemeProvider theme={theme}>
+            <div style={{ position: 'relative' }}>
+              <div>Nothing Here</div>
+              <Footer />
+            </div>
+          </ThemeProvider>
         </ErrorBoundary>
       )
   }

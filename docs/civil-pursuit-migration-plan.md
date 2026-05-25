@@ -6,6 +6,157 @@
 
 ---
 
+## Work Completed (React 19 / update2026 phase — 2025–2026)
+
+The following items have been fully implemented and committed on the `update2026` branch.
+
+### C1 — Storybook assertion pattern migration
+
+All Storybook story files migrated from the React 19–incompatible DOM-based `onDoneResult(canvas)` assertion helper to the stable `args.onDone.mock.calls` pattern.
+
+**Files changed (15):**
+`answer-step`, `button`, `grouping-step`, `intermission`, `jsform`, `point-group`,
+`point-input`, `rank-points`, `rank-step`, `ranking`, `rerank-step`, `review-point`,
+`step-footer`, `why-input`, `why-step`
+
+**Pattern used:**
+```js
+// Before (DOM-based, brittle under React 19)
+const result = onDoneResult(canvas)
+expect(result.valid).toBe(true)
+
+// After (stable mock-call inspection)
+expect(args.onDone.mock.calls[0][0]).toMatchObject({ valid: true, value: ... })
+// For timing-uncertain cases:
+await waitFor(() => {
+  expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({ ... })
+})
+```
+
+**Key edge case:** `rank-step › rankStepWithPartialDataAndUserUpdate` — when `round: 1` the component fires an initial `onDone({valid:false, value:0})` before ranks load, then a later call with the correct value.  `.at(-1)?.[0]` inside `waitFor` is used to assert the final call.
+
+**Committed:** `ca1af030e` — "migrate story onDone assertions from DOM-based to args.onDone.mock.calls pattern"
+
+**Status:** All 420 Storybook tests passing ✅
+
+---
+
+### C2 — Webpack react alias fix
+
+`civil-server`'s webpack config aliased `react` → `civil-server/node_modules/react`, which is a directory that doesn't exist (React is hoisted to the project root). This caused a browser error: `Can't resolve 'react' in '@codastic/react-positioning-portal'`.
+
+**Fix — `webpack-dev.config.js` and `webpack-prod.config.js`:**
+```js
+// Override broken alias from civil-server
+module.exports.resolve.alias['react'] = path.resolve(__dirname, 'node_modules/react')
+module.exports.resolve.alias['react-dom'] = path.resolve(__dirname, 'node_modules/react-dom')
+```
+
+---
+
+### C3 — Footer SSR ThemeProvider fix
+
+`app/components/app.jsx` — in the no-`iota` else-branch, `<Footer />` was rendered outside `<ThemeProvider>`, causing an SSR crash:
+```
+Cannot read properties of undefined (reading 'white')
+```
+
+**Fix:** Wrap the else-branch content in `<ThemeProvider theme={theme}>`.
+
+---
+
+### C4 — Replace `@codastic/react-positioning-portal` with custom `TooltipPortal`
+
+`@codastic/react-positioning-portal` (v0.8.0) is unmaintained and has an open React 19 support issue. Its `main` field resolves incorrectly under the project's module resolution. Replaced with a bespoke `TooltipPortal` component.
+
+**New file:** `app/components/tooltip-portal.jsx`
+
+- Uses `React.createPortal` to mount tooltip into `document.body`
+- Calculates anchor position via `getBoundingClientRect()` with `useLayoutEffect`
+- Chooses above/below and left/right alignment based on available viewport space
+- Renders tooltip with `role="tooltip"`, `position: fixed`, and JSS styling
+- No wrapper element added around the anchor child (layout-transparent, matching the old library's behaviour)
+
+**Updated files:**
+- `app/components/button.jsx` — replaced `PositioningPortal` import and JSX with `TooltipPortal`
+- `app/components/step.jsx` — same replacement
+
+**New story file:** `stories/button-tooltip.stories.jsx`
+
+Covers 14 corner-case stories:
+- Tooltip appears on long-press (≥500 ms)
+- Tooltip does NOT appear on short click (<500 ms)
+- Tooltip renders in `document.body` portal (not inside canvas)
+- Auto-dismiss wiring verified
+- Short title auto-dismiss content check
+- Mouse-leave before long-press cancels tooltip
+- Long title stays within viewport width
+- Positional: top-left, top-right, bottom-left, bottom-right, centre
+- Disabled button — tooltip still works
+- PrimaryButton variant
+- SecondaryButton variant
+- Empty `title` prop — no tooltip (or empty tooltip)
+
+---
+
+### C5 — `recharts` v2 → v3.8.1
+
+recharts v2 used `ReactDOM.findDOMNode` which was removed in React 19, causing `ranking-results` to silently render nothing.
+
+**Changes:**
+- `package.json`: `"recharts": "^2.12.0"` → `"^3.8.1"`
+- `app/components/ranking-results.jsx`: fixed `{...props}` spread on `<div>` and `<ResponsiveContainer>` to `{...otherProps}` so `resultList` is not forwarded to DOM elements. `ResponsiveContainer` now uses `height` prop driven by the parent (no hardcoded pixels).
+
+---
+
+### C6 — Storybook HMR loop fix
+
+After multiple hot-reloads Storybook could enter an infinite `[HMR] Reloading page` loop because a stale Service Worker served a cached bundle with an old hash. A Control+Shift+R hard reload was insufficient; only a Storybook process restart cleared it.
+
+**Fix:** `.storybook/manager-head.html` and `.storybook/preview-head.html` now each run a script on every page load that unregisters all Service Workers for the origin before the HMR client initialises:
+```html
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(r => r.unregister())
+    })
+  }
+</script>
+```
+
+---
+
+### C7 — `tiny-invariant` ESM `process/browser` alias
+
+`tiny-invariant`'s ESM build imports `process/browser` without the `.js` extension. webpack 5 fully-specified ESM resolution requires the extension and aborted the build with:
+```
+Module not found: Error: Can't resolve 'process/browser'
+BREAKING CHANGE: The request 'process/browser' failed to resolve only because it was resolved as fully specified
+```
+
+**Fix — `webpack-dev.config.js` and `webpack-prod.config.js`:**
+```js
+module.exports.resolve.alias['process/browser'] = require.resolve('process/browser')
+```
+
+---
+
+## Remaining Work
+
+The following items are planned but not yet implemented:
+
+| # | Item | Notes |
+|---|------|-------|
+| R1 | ~~Remove `@codastic/react-positioning-portal` from `package.json`~~ | ✅ Done |
+| R2 | ~~Commit webpack + app.jsx fixes (C2, C3)~~ | ✅ Done |
+| R3 | `react-share` → v5.3.0 | React 19 support; icon size props changed in `share-buttons.jsx` |
+| R4 | ~~`recharts` → v3.x~~ | ✅ Done (C5) |
+| R5 | Remove `react-perfect-scrollbar` | Unused package; zero-risk removal |
+| R6 | `@jsonforms/*` → 3.7.0 | Optional; React 19 compatible in latest |
+| R7 | Items 1–9 from original plan below | Node upgrade, peer deps, Enzyme removal, etc. |
+
+---
+
 ## Background
 
 The `update2026` branches of `civil-server` and `civil-client` completed a 12-phase dependency modernisation. civil-pursuit consumes both as peer dependencies and must be updated to stay compatible.

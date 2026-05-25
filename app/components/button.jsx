@@ -2,7 +2,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/246
 import React, { useState, useRef, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
-import { PositioningPortal } from '@codastic/react-positioning-portal/lib/legacy/index.js'
+import { TooltipPortal } from './tooltip-portal'
 import cx from 'classnames'
 
 /**
@@ -52,9 +52,11 @@ function Button(props) {
 
   const handleMouseDown = e => {
     e.stopPropagation()
-    timeRef.current = setTimeout(() => {
-      setIsPortalOpen(true)
-    }, 500)
+    if (title) {
+      timeRef.current = setTimeout(() => {
+        setIsPortalOpen(true)
+      }, 500)
+    }
     setDownTimeStamp(e.timeStamp)
   }
 
@@ -112,9 +114,9 @@ function Button(props) {
     }
   }, [isPortalOpen, title.length])
 
-  // PositioningPortal doesn't put a tag around the button, so className and other props can be applied to the Button
+  // TooltipPortal doesn't put a tag around the button, so className and other props can be applied to the Button
   return (
-    <PositioningPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
+    <TooltipPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
       <button
         className={cx(classes.buttonBase, className)}
         tabIndex={tabIndex}
@@ -131,7 +133,7 @@ function Button(props) {
       >
         {children}
       </button>
-    </PositioningPortal>
+    </TooltipPortal>
   )
 }
 
