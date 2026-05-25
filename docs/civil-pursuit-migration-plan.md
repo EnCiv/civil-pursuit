@@ -141,6 +141,20 @@ module.exports.resolve.alias['process/browser'] = require.resolve('process/brows
 
 ---
 
+### C8 — `react-share` v4 → v5.3.0; remove `react-perfect-scrollbar`; `@jsonforms` 3.3 → 3.7.0
+
+**`react-share` v4 → v5.3.0** — v5 dropped React 16 support and removed the `quote` prop from `FacebookShareButton` (Meta no longer supports it). The `title` prop on share buttons no longer sets the native button tooltip (use `htmlTitle` instead). React 19 peer-dep support added in v5.1.2.
+
+Changes in `app/components/share-buttons.jsx`:
+- `<FacebookShareButton quote={shareTitle} title="...">` → `<FacebookShareButton htmlTitle="...">`  (removed `quote`, renamed `title` → `htmlTitle`)
+- `<EmailShareButton title="...">` → `<EmailShareButton htmlTitle="...">`
+
+**`react-perfect-scrollbar` removed** — package was not imported anywhere in `app/`. Zero-risk removal.
+
+**`@jsonforms/core`, `@jsonforms/react`, `@jsonforms/vanilla-renderers` 3.3 → 3.7.0** — API-compatible upgrade; React 19 compatible.
+
+---
+
 ## Remaining Work
 
 The following items are planned but not yet implemented:
@@ -149,10 +163,10 @@ The following items are planned but not yet implemented:
 |---|------|-------|
 | R1 | ~~Remove `@codastic/react-positioning-portal` from `package.json`~~ | ✅ Done |
 | R2 | ~~Commit webpack + app.jsx fixes (C2, C3)~~ | ✅ Done |
-| R3 | `react-share` → v5.3.0 | React 19 support; icon size props changed in `share-buttons.jsx` |
+| R3 | ~~`react-share` → v5.3.0~~ | ✅ Done (C8) |
 | R4 | ~~`recharts` → v3.x~~ | ✅ Done (C5) |
-| R5 | Remove `react-perfect-scrollbar` | Unused package; zero-risk removal |
-| R6 | `@jsonforms/*` → 3.7.0 | Optional; React 19 compatible in latest |
+| R5 | ~~Remove `react-perfect-scrollbar`~~ | ✅ Done (C8) |
+| R6 | ~~`@jsonforms/*` → 3.7.0~~ | ✅ Done (C8) |
 | R7 | Items 1–9 from original plan below | Node upgrade, peer deps, Enzyme removal, etc. |
 
 ---
