@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/362
 import InviteLog from '../models/invite-log'
 import { getUsersToInviteBack } from '../dturn/dturn'
-import { SibGetTemplateId, SibSendTransacEmail, Iota, User } from 'civil-server'
+import { SibGetTemplateId, SibSendTransacEmail, brevoDefaultFromEmail, Iota, User } from 'civil-server'
 import { ObjectId } from 'mongodb'
 import path from 'path'
 
@@ -43,7 +43,7 @@ async function sendInviteEmail(userId, discussion, round) {
       to: [{ email: user.email }],
       sender: {
         name: 'EnCiv.org',
-        email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
+        email: brevoDefaultFromEmail,
       },
       templateId,
       tags: ['invite-next-round', discussion._id.toString()],

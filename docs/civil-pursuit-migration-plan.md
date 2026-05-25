@@ -155,6 +155,20 @@ Changes in `app/components/share-buttons.jsx`:
 
 ---
 
+### C9 — Babel plugin renames; remove `log4js`; `brevoDefaultFromEmail`; migrate `jest-socket-api-setup`
+
+**Babel plugin renames** — `@babel/plugin-proposal-*` packages are deprecated; renamed to `@babel/plugin-transform-*`:
+- `package.json`: `plugin-proposal-class-properties` → `plugin-transform-class-properties`; `plugin-proposal-object-rest-spread` → `plugin-transform-object-rest-spread`
+- `babel.config.json`: updated plugin reference to `@babel/plugin-transform-class-properties`
+
+**Remove `log4js`** — `log4js` (ddfridley git fork) and `log4js-extend` removed from `package.json` `dependencies`. `global.logger` is now configured entirely by civil-server.
+
+**`brevoDefaultFromEmail`** — `invite-users-back.js` now imports `brevoDefaultFromEmail` from `civil-server` instead of reading `process.env.SENDINBLUE_DEFAULT_FROM_EMAIL` directly. civil-server resolves `BREVO_DEFAULT_FROM_EMAIL` (preferred) or `SENDINBLUE_DEFAULT_FROM_EMAIL` (legacy fallback).
+
+**`jest-socket-api-setup` migration** — `app/socket-apis/__tests__/subscribe-deliberation.js` updated to import from `civil-server/dist/server/util/jest-socket-api-setup` instead of the local `../../jest-socket-api-setup`. The local file is retained for reference but no longer used by any test.
+
+---
+
 ## Remaining Work
 
 The following items are planned but not yet implemented:
@@ -167,7 +181,7 @@ The following items are planned but not yet implemented:
 | R4 | ~~`recharts` → v3.x~~ | ✅ Done (C5) |
 | R5 | ~~Remove `react-perfect-scrollbar`~~ | ✅ Done (C8) |
 | R6 | ~~`@jsonforms/*` → 3.7.0~~ | ✅ Done (C8) |
-| R7 | Items 1–9 from original plan below | Node upgrade, peer deps, Enzyme removal, etc. |
+| R7 | ~~Items 1–9 from original plan below~~ | ✅ Done (C9) — Node 20, log4js removed, Babel plugins renamed, brevoDefaultFromEmail, jest-socket-api-setup migrated |
 
 ---
 
