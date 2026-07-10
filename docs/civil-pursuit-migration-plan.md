@@ -177,6 +177,36 @@ Changes in `app/components/share-buttons.jsx`:
 
 ---
 
+### C10 — Storybook v10 migration, component fixes, and story patterns
+
+**Storybook v8 → v10** — civil-client moved to Storybook v10; civil-pursuit must match.
+
+Key breaking changes and fixes:
+- `.storybook/main.js`: converted from ESM (`import`/`export default`) to CommonJS (`require`/`module.exports`) — Node reparses ESM and mangles relative paths on Windows
+- Merged addons removed (`addon-essentials`, `addon-actions`, `addon-interactions`, `addon-viewport`, `addon-blocks`, `addon-cli`, `@storybook/react`) — now built into `@storybook/react-webpack5` framework
+- `@storybook/addon-webpack5-compiler-babel` → v4; `@storybook/test-runner` → v0.24; `@storybook/test` stayed at v8 versioning
+- `INITIAL_VIEWPORTS` import path: `@storybook/addon-viewport` → `storybook/viewport`; removed entirely from 13 story default exports since `preview.js` already sets it globally
+- Storybook's webpack `DefinePlugin` replaces `process.env` globally including on the left-hand side of assignments — deleted from merged config in `webpackFinal`
+- `mode` and `devtool` stripped from civil-server's webpack config before merging so Storybook owns those fields
+- `@storybook/test-runner` v0.24 ships an ESM-only `transform.js`; created a CJS wrapper (`.storybook/test-runner-transform.js`) and `test-runner-jest.config.js` override
+
+**`Button` click propagation fix** — `Button.handleClick` now always calls `e.stopPropagation()`. Button fires its action via `onMouseDown`/`onMouseUp`; the orphaned native `click` event was bubbling to parent `onClick` handlers, causing double-actions when buttons were nested inside clickable containers (e.g. `<Point onClick={...}>`). This manifested as a duplicate-group bug in `GroupPoints` edit mode that was visible only in automated tests (real browser flush between mouseup and click naturally unmounted the button before it bubbled).
+
+**`react-accessible-headings` fork** — upstream package fires `setTimeout(querySelectorAll(...))` DOM scan on every `<H>` render. In Storybook's isolated story canvas this produced spurious WCAG console errors. Forked to `github:EnCiv/react-accessible-headings`; automatic scan removed, `checkHeadingLevels()` kept as explicit-call utility.
+
+**SSR hydration fixes** — Two React 19 hydration mismatches resolved:
+- `app/client/main-app.js`: wrapped `App` in `JssProvider` with counter-based `generateId` matching civil-server's SSR `createStableGenerateId`, fixing class-name mismatch (`topNavBar-1` vs `topNavBar-0-2-2`)
+- `app/components/participants-badge.jsx` / `status-badge.jsx`: added `suppressHydrationWarning` — server renders the snapshot value from `iotas.json`, client gets live value from `DeliberationContext`
+
+**Storybook story pattern fixes** — Several patterns that worked in Storybook v8/jsdom fail in Storybook v10 with real Playwright browser:
+- `userEvent.click` on `aria-disabled="true"` buttons skips `mousedown`/`mouseup` → use `fireEvent.mouseDown` / `fireEvent.mouseUp` directly
+- `fireEvent.blur(input)` does not trigger React's `onBlur` (React 19 uses bubbling `focusout` for delegation) → use `fireEvent.focusOut(input)`
+- `asyncSleep(N)` races with component animation timers → replaced with `waitFor(() => canvas.getByTitle('Choose as more important: ...'))` which waits for the button to exist in the clickable position
+- `click` event from a child button bubbles to parent `<Point onClick>` in `GroupPoints` edit mode → fixed by stopPropagation in Button (C10a) plus `onClick={e => e.stopPropagation()}` on `<div className="pointBottomButtons">` as belt-and-suspenders
+
+
+---
+
 ## Remaining Work
 
 The following items are planned but not yet implemented:
