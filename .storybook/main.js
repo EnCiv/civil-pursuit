@@ -1,12 +1,14 @@
-import { merge } from 'webpack-merge'
-import path from 'path'
-import webpackDevConfig from '../webpack-dev.config'
+const { merge } = require('webpack-merge')
+const path = require('path')
+const webpackDevConfig = require('../webpack-dev.config')
 
 const config = {
   stories: [
     '../stories/**/*.stories.@(js|jsx|ts|tsx)', // Correct path to the stories folder
   ],
-  addons: ['@storybook/addon-links', '@storybook/addon-essentials', '@storybook/addon-interactions', '@storybook/addon-a11y', '@storybook/addon-viewport', '@storybook/addon-webpack5-compiler-babel'],
+  // In Storybook 10, actions/interactions/viewport/essentials are built into the framework.
+  // Only truly separate addons need to be listed here.
+  addons: ['@storybook/addon-links', '@storybook/addon-a11y', '@storybook/addon-webpack5-compiler-babel'],
   framework: {
     name: '@storybook/react-webpack5',
     options: {},
@@ -24,7 +26,16 @@ const config = {
       react: path.resolve('node_modules/react'),
       'react-dom': path.resolve('node_modules/react-dom'),
     }
+    // Storybook's DefinePlugin replaces `process.env` with a literal object everywhere,
+    // including on the LEFT-HAND SIDE of assignments like `if (!process.env) process.env = {}`.
+    // That produces `({"NODE_ENV":...}) = {}` which is a SyntaxError.
+    // Remove the process.env definition so process.env stays as-is and the guard works correctly.
+    for (const plugin of newConfig.plugins) {
+      if (plugin.definitions && plugin.definitions['process.env']) {
+        delete plugin.definitions['process.env']
+      }
+    }
     return newConfig
   },
 }
-export default config
+module.exports = config
