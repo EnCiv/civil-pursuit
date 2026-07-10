@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { Button, ModifierButton, SecondaryButton, PrimaryButton, TextButton } from '../app/components/button'
 import expect from 'expect'
-import { userEvent, within } from '@storybook/test'
+import { userEvent, within, waitFor, fireEvent } from '@storybook/test'
 import { onDoneDecorator } from './common'
 import SvgPlusSign from '../app/svgr/plus-sign'
 
@@ -264,16 +264,11 @@ export const DeferredClickAfterBlurInteractive = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    // Wait a moment for component to fully render with initial state
-    await new Promise(resolve => setTimeout(resolve, 50))
-
     const input = canvas.getByPlaceholderText('Type something...')
     const button = canvas.getByRole('button', { name: /Submit/i })
 
     // Initial state - button should be disabled
     expect(button.getAttribute('aria-disabled')).toEqual('true')
-
-    // Verify click count starts at 0 by checking the full text pattern
     expect(canvasElement.textContent).toMatch(/Click Count:\s*0/)
 
     // Type in input
@@ -282,19 +277,30 @@ export const DeferredClickAfterBlurInteractive = {
     // Verify button is still disabled after typing
     expect(button.getAttribute('aria-disabled')).toEqual('true')
 
-    // Click button while input still has focus
-    // This simulates clicking the button which triggers blur on the input
-    await userEvent.click(button)
+    // Can't use userEvent.click(button) here: userEvent v14 treats aria-disabled="true"
+    // as a disabled element and skips mousedown/mouseup entirely, so the button's
+    // handleMouseDown/handleMouseUp never fire and the deferred-click mechanism
+    // never has a chance to run.
+    //
+    // Instead we replicate the real browser event order with fireEvent:
+    //   1. mousedown on button  (real browser fires this first)
+    //   2. focusout on input    (browser's focus management fires this as focus moves)
+    //   3. mouseup  on button   (fires after focus has settled)
+    //
+    // fireEvent.focusOut (not fireEvent.blur) is required because React 19 uses the
+    // bubbling 'focusout' event for its onBlur delegation. The non-bubbling 'blur'
+    // event never reaches React's root listener and onBlur is never called.
+    //
+    // Because fireEvent calls are synchronous, React batches all three state updates
+    // (timestamp ref, setButtonDisabled, setPendingClick) before flushing. The flush
+    // sees disabled=false + pendingClick=true → useEffect → onDone → count++.
+    fireEvent.mouseDown(button)
+    fireEvent.focusOut(input)
+    fireEvent.mouseUp(button)
 
-    // After blur, button should become enabled and onClick should fire
-    // Wait for React state updates and deferred click execution
-    await new Promise(resolve => setTimeout(resolve, 200))
-
-    // Button should now be enabled
-    expect(button.getAttribute('aria-disabled')).toEqual('false')
-
-    // Click count should have incremented from the deferred click
-    expect(canvasElement.textContent).toMatch(/Click Count:\s*1/)
+    // Wait for button to become enabled and deferred click to fire
+    await waitFor(() => expect(button.getAttribute('aria-disabled')).toEqual('false'))
+    await waitFor(() => expect(canvasElement.textContent).toMatch(/Click Count:\s*1/))
   },
 }
 
