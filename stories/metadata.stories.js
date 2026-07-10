@@ -1,7 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/241
 
 import React from 'react'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator, onDoneResult } from './common'
 import Metadata from './../app/components/metadata'
 import Point from '../app/components/point'
@@ -10,11 +9,6 @@ export default {
   component: Metadata,
   args: {},
   decorators: [onDoneDecorator],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 const pointDoc = {

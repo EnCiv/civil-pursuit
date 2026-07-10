@@ -2,18 +2,12 @@
 
 import React from 'react'
 import ReviewPoint from '../app/components/review-point'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator } from './common'
 import { within, userEvent, expect } from '@storybook/test'
 
 export default {
   component: ReviewPoint,
   decorators: [onDoneDecorator],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 const point0 = {

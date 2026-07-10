@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { userEvent, within, waitFor } from '@storybook/test'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import { expect } from '@storybook/jest'
+import { expect } from '@storybook/test'
 import Jsform from '../app/components/jsform'
 import { onDoneDecorator, buildApiDecorator, socketEmitDecorator } from './common'
 
@@ -9,11 +8,6 @@ export default {
   component: Jsform,
   args: {},
   decorators: [onDoneDecorator, socketEmitDecorator],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
   excludeStories: ['jsFormDecorators'],
 }
 
@@ -468,7 +462,8 @@ export const SubmitAllValid = {
     // required field
     await userEvent.selectOptions(canvas.getByLabelText(/may we share this information/i), 'Yes')
 
-    expect(submitButton.getAttribute('aria-disabled')).toEqual('false')
+    // React's onChange from JsonForms is async; wait for the re-render before asserting
+    await waitFor(() => expect(submitButton.getAttribute('aria-disabled')).toEqual('false'))
     await userEvent.click(submitButton)
   },
 }

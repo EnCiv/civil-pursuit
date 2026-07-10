@@ -1,7 +1,6 @@
 import React from 'react'
 import TopNavBar from '../app/components/top-nav-bar'
 import Donate from '../app/components/donate'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import Common from './common'
 import { userEvent, within, expect } from '@storybook/test'
 
@@ -34,9 +33,6 @@ const menuArray = [
 export default {
   component: TopNavBar,
   parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
     backgrounds: {
       default: 'gray',
       values: [{ name: 'gray', value: '#808080' }],

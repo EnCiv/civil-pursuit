@@ -3,18 +3,12 @@
 
 import React, { useState, useEffect, useContext } from 'react'
 import { userEvent, within, waitFor, expect } from '@storybook/test'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import WhyStep from '../app/components/steps/why'
 import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, asyncSleep } from './common'
 
 export default {
   component: WhyStep,
   decorators: [onDoneDecorator, socketEmitDecorator],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 const reducedPointList = [

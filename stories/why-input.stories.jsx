@@ -1,5 +1,4 @@
 import { userEvent, within } from '@storybook/test'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import React from 'react'
 import WhyInput from '../app/components/why-input'
 import expect from 'expect'
@@ -10,11 +9,6 @@ export default {
   component: WhyInput,
   args: {},
   decorators: [onDoneDecorator],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 const point = {

@@ -1,6 +1,5 @@
 import React from 'react'
 import PointGroup from '../app/components/point-group'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import { onDoneDecorator } from './common'
 import { within, userEvent, expect } from '@storybook/test'
 import DemInfo from '../app/components/dem-info'
@@ -8,11 +7,6 @@ import DemInfo from '../app/components/dem-info'
 export default {
   component: PointGroup,
   decorators: [onDoneDecorator],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 const createPointDoc = (
