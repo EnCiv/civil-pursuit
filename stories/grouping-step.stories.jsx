@@ -139,7 +139,7 @@ export const canUnGroup = {
     await userEvent.click(canvas.getByTitle('Select as Lead: Point 1'))
     await userEvent.click(canvas.getByTitle('Done'))
     await userEvent.click(canvas.getByTitle('Ungroup'))
-    expect(args.onDone.mock.calls.at(7)?.[0]).toMatchObject({
+    expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
       valid: true,
       delta: [
         {
@@ -295,7 +295,7 @@ export const canCreateGroupWithAGroup = {
     await userEvent.click(canvas.getByText('Create Group'))
     await userEvent.click(canvas.getByTitle('Select as Lead: Point 1'))
     await userEvent.click(canvas.getByTitle('Done'))
-    expect(args.onDone.mock.calls.at(12)?.[0]).toMatchObject({
+    expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
       valid: true,
       delta: [
         {
