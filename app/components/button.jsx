@@ -30,7 +30,7 @@ function Button(props) {
   const displayTime = Math.max(8, 0.1 * title.length) * 1000
   const [isDisabled, setIsDisabled] = useState(disabled)
   const [isPortalOpen, setIsPortalOpen] = useState(false)
-  const [downTimeStamp, setDownTimeStamp] = useState(0)
+  const downTimeStampRef = useRef(0) // useRef not useState: must be readable synchronously in handleMouseUp immediately after handleMouseDown sets it
   const [pendingClick, setPendingClick] = useState(false) // Tracks if a click occurred while disabled that should be executed when enabled. this was done for the Next button at the bottom of a step so that if the user fills out the input fields and then clicks Next after the next button is undisabled the click will still go through even if the button was disabled at the time of clicking
   const timeRef = useRef(null)
   const prevDisabledRef = useRef(disabled)
@@ -57,14 +57,14 @@ function Button(props) {
         setIsPortalOpen(true)
       }, 500)
     }
-    setDownTimeStamp(e.timeStamp)
+    downTimeStampRef.current = e.timeStamp
   }
 
   const handleMouseUp = e => {
     e.stopPropagation()
     if (timeRef.current) clearTimeout(timeRef.current)
     timeRef.current = null
-    if (e.timeStamp - downTimeStamp < 500) {
+    if (e.timeStamp - downTimeStampRef.current < 500) {
       // short click
       if (isDisabled) {
         // Button is disabled now but might become enabled after state updates
@@ -77,10 +77,12 @@ function Button(props) {
   }
 
   const handleClick = e => {
-    // Prevent default click behavior when disabled
+    // Always stop click propagation. Button fires its action via onMouseDown/onMouseUp
+    // (not onClick), so the native click event has no purpose once onDone has already
+    // fired. Letting it bubble causes any parent onClick handler to fire unintentionally.
+    e.stopPropagation()
     if (isDisabled) {
       e.preventDefault()
-      e.stopPropagation()
     }
   }
 
