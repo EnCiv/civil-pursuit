@@ -191,10 +191,12 @@ export const onDoneTest = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const Point1 = canvas.getByText('Point 1')
+    const Point1 = await waitFor(() => canvas.getByText('Point 1'))
     await userEvent.click(Point1)
     await waitFor(() => {
-      expect(args.onDone.mock.calls[0][0]).toMatchObject({
+      const calls = args.onDone.mock.calls
+      if (!calls[0]) throw new Error(`[after click Point1] onDone.calls[0] undefined — total calls: ${calls.length}`)
+      expect(calls[0][0]).toMatchObject({
         valid: false,
         value: {
           // _id will be auto generated
@@ -204,11 +206,16 @@ export const onDoneTest = {
         },
       })
     })
-    await asyncSleep(500)
-    const Point3 = canvas.getByText('Point 3')
+    // Wait for Point 3 to be in the visible clickable button (not the disabled hidden
+    // transition container). asyncSleep(500) races with the component's own 500ms
+    // transition timer; getByTitle only matches the <button title="Choose as more
+    // important: Point 3"> which only renders when idxRight=2 is committed.
+    const Point3 = await waitFor(() => canvas.getByTitle('Choose as more important: Point 3'))
     await userEvent.click(Point3)
     await waitFor(() => {
-      expect(args.onDone.mock.calls[1][0]).toMatchObject({
+      const calls = args.onDone.mock.calls
+      if (!calls[1]) throw new Error(`[after click Point3] onDone.calls[1] undefined — total calls: ${calls.length}, calls[0]: ${JSON.stringify(calls[0])}`)
+      expect(calls[1][0]).toMatchObject({
         valid: false,
         value: {
           // _id will be auto generated
@@ -218,12 +225,14 @@ export const onDoneTest = {
         },
       })
     })
-    await asyncSleep(500)
-    const Point4 = canvas.getByText('Point 4')
+    // Same: wait for Point 4 to be in the clickable button position
+    const Point4 = await waitFor(() => canvas.getByTitle('Choose as more important: Point 4'))
     /* don't await - there are two onDone updates in succession and if we await the user event we miss the first one */
     userEvent.click(Point4)
     await waitFor(() => {
-      expect(args.onDone.mock.calls[2][0]).toMatchObject({
+      const calls = args.onDone.mock.calls
+      if (!calls[2]) throw new Error(`[after click Point4] onDone.calls[2] undefined — total calls: ${calls.length}`)
+      expect(calls[2][0]).toMatchObject({
         valid: false,
         value: {
           // _id will be auto generated
@@ -234,7 +243,9 @@ export const onDoneTest = {
       })
     })
     await waitFor(() => {
-      expect(args.onDone.mock.calls[3][0]).toMatchObject({
+      const calls = args.onDone.mock.calls
+      if (!calls[3]) throw new Error(`[after click Point4, waiting for call 3] onDone.calls[3] undefined — total calls: ${calls.length}`)
+      expect(calls[3][0]).toMatchObject({
         valid: true,
         value: {
           // _id will be auto generated
