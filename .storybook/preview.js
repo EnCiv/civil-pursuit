@@ -3,7 +3,7 @@
 import { ThemeProvider } from 'react-jss'
 import React from 'react'
 import Theme from '../app/components/theme'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
+import { INITIAL_VIEWPORTS } from 'storybook/viewport'
 import { levelDecorator } from '../stories/common'
 import GlobalStyles from '../app/components/global-styles'
 const theme = Theme
