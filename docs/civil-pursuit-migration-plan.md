@@ -4,6 +4,14 @@
 **Tracking:** civil-server and civil-client `update2026` branches
 **Reference:** [`../civil-server-update/doc/migration-plan.md`](../../civil-server-update/doc/migration-plan.md) — full details on every change made in those repos; this document covers only what civil-pursuit itself must change.
 
+> **See also:** [`update2026-migration.md`](./update2026-migration.md) — a **general how-to guide for any consuming repo** going through the same update2026 migration. It covers more than just civil-server/civil-client integration; it also includes:
+> - Upgrading React-19-incompatible packages (recharts, react-share, @jsonforms, react-perfect-scrollbar)
+> - Migrating Storybook from v8 to v10 (restructured addons, main.js CJS, transform wrapper, process.env DefinePlugin, and more)
+> - Component fixes discovered during migration (Button click propagation, react-accessible-headings fork)
+> - Updated Storybook story patterns required by React 19 (fireEvent vs userEvent on aria-disabled, focusOut vs blur, waitFor vs asyncSleep)
+>
+> This document (`civil-pursuit-migration-plan.md`) is civil-pursuit-specific: it tracks what was done, why, and what was learned while working through the migration — including dead ends and root-cause investigations. Once that work was complete, the confirmed lessons were distilled into `update2026-migration.md` so other repos can follow a clean step-by-step path without repeating the same debugging.
+
 ---
 
 ## Work Completed (React 19 / update2026 phase — 2025–2026)
