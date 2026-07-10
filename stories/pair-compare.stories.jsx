@@ -1,5 +1,5 @@
 import PairCompare from '../app/components/pair-compare'
-import { onDoneDecorator, asyncSleep } from './common'
+import { onDoneDecorator } from './common'
 import { within, userEvent, waitFor } from '@storybook/test'
 import expect from 'expect'
 import React, { useState } from 'react'
