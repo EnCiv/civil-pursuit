@@ -2,7 +2,7 @@ import React from 'react'
 import TopNavBar from '../app/components/top-nav-bar'
 import Donate from '../app/components/donate'
 import Common from './common'
-import { userEvent, within, expect } from '@storybook/test'
+import { userEvent, within, expect } from 'storybook/test'
 
 // Placeholder for the user-or-signup component
 const UserOrSignInUp = () => {

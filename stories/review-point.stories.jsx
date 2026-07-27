@@ -3,7 +3,7 @@
 import React from 'react'
 import ReviewPoint from '../app/components/review-point'
 import { onDoneDecorator } from './common'
-import { within, userEvent, expect } from '@storybook/test'
+import { within, userEvent, expect } from 'storybook/test'
 
 export default {
   component: ReviewPoint,

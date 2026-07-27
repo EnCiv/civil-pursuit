@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/43
 
 import React from 'react'
-import { userEvent, within, expect, waitFor, fireEvent } from '@storybook/test'
+import { userEvent, within, expect, waitFor, fireEvent } from 'storybook/test'
 import { Button, SecondaryButton, PrimaryButton } from '../app/components/button'
 
 /**

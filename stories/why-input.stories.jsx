@@ -1,4 +1,4 @@
-import { userEvent, within } from '@storybook/test'
+import { userEvent, within } from 'storybook/test'
 import React from 'react'
 import WhyInput from '../app/components/why-input'
 import expect from 'expect'

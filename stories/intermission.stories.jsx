@@ -5,7 +5,7 @@ import React from 'react'
 import Intermission from '../app/components/intermission'
 import { DeliberationContextDecorator, onDoneDecorator, buildApiDecorator, mockBatchUpsertDeliberationDataRoute, clearGlobalStateDecorator } from './common'
 import { authFlowDecorator } from './mocks/auth-flow'
-import { within, userEvent, waitFor, expect } from '@storybook/test'
+import { within, userEvent, waitFor, expect } from 'storybook/test'
 
 const round0Incomplete = { 0: undefined }
 const round0Complete = { 0: { idRanks: [] } }

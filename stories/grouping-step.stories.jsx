@@ -3,7 +3,7 @@
 import React, { useContext, useState } from 'react'
 import GroupingStep, { GroupPoints } from '../app/components/steps/grouping'
 import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, buildApiDecorator } from './common'
-import { within, userEvent, expect, waitFor } from '@storybook/test'
+import { within, userEvent, expect, waitFor } from 'storybook/test'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 
 const discussionId = '1101'

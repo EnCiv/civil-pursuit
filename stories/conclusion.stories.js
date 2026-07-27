@@ -3,7 +3,7 @@
 import React from 'react'
 import { onDoneDecorator, socketEmitDecorator, buildApiDecorator, DeliberationContextDecorator } from './common'
 import { useState } from 'react'
-import { userEvent, within } from '@storybook/test'
+import { userEvent, within } from 'storybook/test'
 import expect from 'expect'
 
 import Conclusion from '../app/components/steps/conclusion'

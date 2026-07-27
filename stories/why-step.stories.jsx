@@ -2,7 +2,7 @@
 //https://github.com/EnCiv/civil-pursuit/issues/214
 
 import React, { useState, useEffect, useContext } from 'react'
-import { userEvent, within, waitFor, expect } from '@storybook/test'
+import { userEvent, within, waitFor, expect } from 'storybook/test'
 import WhyStep from '../app/components/steps/why'
 import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, asyncSleep } from './common'
 

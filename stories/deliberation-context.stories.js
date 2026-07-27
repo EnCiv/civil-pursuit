@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import { DeliberationContext, DeliberationContextProvider, useLocalStorageIfAvailable, flushRoundToServer } from '../app/components/deliberation-context'
 import { DeliberationContextDecorator, buildApiDecorator } from './common'
-import { within, userEvent, expect, waitFor } from '@storybook/test'
+import { within, userEvent, expect, waitFor } from 'storybook/test'
 import LocalStorageManager from '../app/lib/local-storage-manager'
 
 // Setup socket mock for all stories

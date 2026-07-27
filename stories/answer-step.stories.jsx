@@ -1,6 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/102
 
-import { userEvent, within, waitFor, expect } from '@storybook/test'
+import { userEvent, within, waitFor, expect } from 'storybook/test'
 import React, { useState, useEffect } from 'react'
 import AnswerStep, { Answer } from '../app/components/steps/answer'
 import { DeliberationContextDecorator, deliberationContextData, onDoneDecorator, socketEmitDecorator } from './common'

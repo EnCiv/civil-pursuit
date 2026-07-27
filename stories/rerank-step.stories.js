@@ -7,7 +7,7 @@ import RerankStep, { Rerank } from '../app/components/steps/rerank'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 
 import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, asyncSleep } from './common'
-import { within, userEvent, expect, waitFor } from '@storybook/test'
+import { within, userEvent, expect, waitFor } from 'storybook/test'
 
 export default {
   component: Rerank,

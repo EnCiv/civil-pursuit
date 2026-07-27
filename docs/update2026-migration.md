@@ -588,7 +588,7 @@ React 19's concurrent rendering and async event handling require updated pattern
 `userEvent` v14 treats `aria-disabled="true"` as disabled and skips `mousedown`/`mouseup` entirely. If your component depends on mousedown/mouseup events on a button that starts disabled, use `fireEvent` instead:
 
 ```js
-import { fireEvent } from '@storybook/test'
+import { fireEvent } from 'storybook/test'
 
 // Instead of: await userEvent.click(button)
 fireEvent.mouseDown(button)

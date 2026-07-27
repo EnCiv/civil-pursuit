@@ -4,7 +4,7 @@ import React from 'react'
 import expect from 'expect'
 
 import { onDoneDecorator, onBackDecorator, onBackResult } from './common'
-import { userEvent, within } from '@storybook/test'
+import { userEvent, within } from 'storybook/test'
 
 export default {
   component: StepFooter,

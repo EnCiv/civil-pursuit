@@ -1,7 +1,7 @@
 import React from 'react'
 import PointGroup from '../app/components/point-group'
 import { onDoneDecorator } from './common'
-import { within, userEvent, expect } from '@storybook/test'
+import { within, userEvent, expect } from 'storybook/test'
 import DemInfo from '../app/components/dem-info'
 
 export default {

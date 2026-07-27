@@ -5,7 +5,7 @@ import DeliberationContext from '../app/components/deliberation-context'
 import RankStep, { RankPoints } from '../app/components/steps/rank'
 
 import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator } from './common'
-import { within, userEvent, expect, waitFor } from '@storybook/test'
+import { within, userEvent, expect, waitFor } from 'storybook/test'
 import { cloneDeep, reduce } from 'lodash'
 
 export default {

@@ -3,7 +3,7 @@
 import { RankPoints } from '../app/components/steps/rank'
 import React from 'react'
 import { onDoneDecorator } from './common'
-import { userEvent, within, expect } from '@storybook/test'
+import { userEvent, within, expect } from 'storybook/test'
 import { reduce } from 'lodash'
 
 const discussionId = '1101'

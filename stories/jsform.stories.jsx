@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { userEvent, within, waitFor } from '@storybook/test'
-import { expect } from '@storybook/test'
+import { userEvent, within, waitFor } from 'storybook/test'
+import { expect } from 'storybook/test'
 import Jsform from '../app/components/jsform'
 import { onDoneDecorator, buildApiDecorator, socketEmitDecorator } from './common'
 
