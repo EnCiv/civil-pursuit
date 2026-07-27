@@ -33,6 +33,10 @@
   "engines": {
     "node": ">=20.0.0"
   },
+  "peerDependencies": {
+    "civil-client": "github:EnCiv/civil-client#update2026",
+    "civil-server": "github:EnCiv/civil-server#update2026"
+  },
   "dependencies": {
     "@enciv/mongo-collections": "^0.0.3",
     "@jsonforms/core": "^3.7.0",
@@ -42,8 +46,6 @@
     "autosize": "^3.0.15",
     "bson-objectid": "^1.2.4",
     "buffer": "^6.0.3",
-    "civil-client": "github:EnCiv/civil-client#update2026",
-    "civil-server": "github:EnCiv/civil-server#update2026",
     "classnames": "^2.2.6",
     "color": "^3.2.1",
     "joi": "^17.13.3",
