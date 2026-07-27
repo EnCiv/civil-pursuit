@@ -86,6 +86,9 @@ export function GroupPoints(props) {
 
   const [prev] = useState({ reducedPointList })
   if (prev.reducedPointList !== reducedPointList) {
+    // Bidirectional data pattern (Variant B — render-time mutation): mutate gs
+    // fields directly since the component is already re-rendering due to the
+    // prop change. Calling setGs here would cause an extra re-render. See docs/bidirectional-data-pattern.md.
     // if changes from above, clear selected points and groups.  Maybe there is a way not to reset the users state, but this doesn't seem to be a common use case
     gs.selectedIds = []
     gs.pGsToGroup = reducedPointList?.filter(pG => !pG.group?.length) || []

@@ -38,6 +38,9 @@ function PointInput(props) {
     // if no change, don't do anything.  This happens on first render
     if (!prev.value || !(subject === inputState.subject && description === inputState.description)) {
       // if there was not previous value, then we need to call onDone to update the parent about the validity
+      // Bidirectional data pattern (Variant B — render-time mutation): mutate
+      // inputState directly instead of calling setInputState, since the component
+      // is already re-rendering due to the prop change. See docs/bidirectional-data-pattern.md.
       // mutate directly as we are about to render it and don't need to rerender
       inputState.subject = subject
       inputState.description = description

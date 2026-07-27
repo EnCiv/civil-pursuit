@@ -98,6 +98,8 @@ export function Why(props) {
   })
 
   // not useEffect because we need to do this when the pointWhyList changes and before the children are rendered and possibly make onDone calls
+  // Bidirectional data pattern (Variant B — render-time mutation): completedByPointId
+  // is mutated directly during render to avoid an extra re-render cycle. See docs/bidirectional-data-pattern.md.
   const [prev] = useState({ pointWhyList })
   if (prev.pointWhyList !== pointWhyList) {
     prev.pointWhyList = pointWhyList

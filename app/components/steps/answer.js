@@ -144,7 +144,10 @@ export function Answer(props) {
           setTimeout(() => {
             onDone({ valid: overallValid, value: percentDone(validByType), delta, onNext: onNextRef.current })
           })
-        return validByType // abort the rerender
+        return validByType // abort the rerender — bidirectional data pattern:
+        // validByType is mutated in place and same reference returned to prevent
+        // a re-render loop (user input → onDone → parent re-renders → child re-renders → repeat).
+        // See docs/bidirectional-data-pattern.md.
       })
     }
 
