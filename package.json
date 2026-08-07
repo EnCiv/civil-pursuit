@@ -47,7 +47,7 @@
     "buffer": "^6.0.3",
     "classnames": "^2.2.6",
     "color": "^3.2.1",
-    "joi": "^17.13.3",
+    "joi": "^18.2.3",
     "joi-objectid": "^4.0.2",
     "lodash": "^4.17.11",
     "markdown-to-jsx": "7.7.6",

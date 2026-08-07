@@ -191,31 +191,13 @@ npm install --save-dev \
 
 ---
 
-### Phase 6 — joi 17 → 18
+### Phase 6 — joi 17 → 18 ✅ DONE
 
-**Why:** civil-server uses `joi@^18`. If civil-pursuit's validation schemas pass joi objects across the module boundary, version mismatch causes silent failures. Even if they don't, staying in sync avoids future surprises.
+**Files changed:**
 
-**Changes in `package.json` `dependencies`:**
+- `package.json` dependencies: `joi` `^17.13.3` → `^18.2.3`
 
-```diff
--  "joi": "^17.13.3",
-+  "joi": "^18.2.3",
-```
-
-**`joi-objectid` compatibility:** `joi-objectid@^4.0.2` was written for joi 17. Check whether it works with joi 18 by running the tests. If it fails, the fix is to replace it with a custom Joi extension:
-
-```js
-// replaces joi-objectid
-const objectId = joi => joi.string().regex(/^[0-9a-fA-F]{24}$/, 'ObjectId')
-```
-
-**Commands:**
-
-```bash
-npm install joi@^18
-```
-
-**Verify:** `npm test` — all tests that use joi schemas pass; joi-objectid compatibility confirmed.
+`joi-objectid@^4.0.2` is compatible with joi 18 — all tests pass without modification.
 
 ---
 
@@ -426,7 +408,7 @@ See `civil-server-update/link-civil-client.js` for the junction implementation p
 | `@jest/globals` | ~~29.7.0~~ **30.x** | ^30.4.1 | **5 ✅** |
 | `@testing-library/jest-dom` | ~~6.9.1~~ **7.x** | ^7.0.0 | **5 ✅** |
 | `expect` (standalone) | 23.6.0 | **removed** | **5 ✅** |
-| `joi` | 17.13.3 | ^18.2.3 | 6 |
+| `joi` | ~~17.13.3~~ **18.x** | ^18.2.3 | **6 ✅** |
 | `react` | 19.2.6 | 19.2.8 | 7 |
 | `react-dom` | 19.2.6 | 19.2.8 | 7 |
 | `recharts` | 3.8.1 | ^3.10.1 | 7 |
@@ -457,7 +439,7 @@ update2026  (current state)
  └── phase/3-webpack-toolchain   ✅ DONE: webpack-cli ^7, webpack-dev-server ^6, webpack-merge ^6, process/browser.js alias
  └── phase/4-mongodb7            ✅ DONE: mongo-collections ^0.0.5, mongodb ^7, jest-mongodb ^6, useUnifiedTopology/useNewUrlParser removed, SWC+JSX transform
  └── phase/5-jest30              ✅ DONE: jest ^30, @jest/globals ^30, @testing-library/jest-dom ^7, removed standalone expect, fixed story imports to storybook/test
- └── phase/6-joi18               joi ^18, verify joi-objectid
+ └── phase/6-joi18               ✅ DONE: joi ^18, joi-objectid@4 compatible
  └── phase/7-minor-updates       npm update on semver-compatible ranges
  └── phase/8-breaking-deps       color ^5, bson-objectid ^2, autosize ^6, markdown-to-jsx ^9
  └── phase/9-cleanup             Brevo* rename, peerDep refs, allowScripts
