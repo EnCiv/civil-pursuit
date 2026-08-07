@@ -11,7 +11,7 @@ import inviteUsersBackJob from '../invite-users-back'
 
 let MemoryServer
 const group_size = 2
-// No mocking - use real civil-server functions including SibGetTemplateId and SibSendTransacEmail
+// No mocking - use real civil-server functions including BrevoGetTemplateId and BrevoSendTransacEmail
 
 // Mock global logger following guidelines: info silent, warn/error console for debugging
 global.logger = {

@@ -254,51 +254,17 @@ CLI API unchanged. No code changes needed.
 
 ### Phase 9 — Code Cleanup
 
-These are non-breaking cleanup items that should be done at convenient times, not blockers.
+#### 9a — Rename Sib* imports to Brevo* ✅ DONE
 
-#### 9a — Rename Sib* imports to Brevo*
+`app/jobs/invite-users-back.js` and its two test files updated: `SibGetTemplateId` → `BrevoGetTemplateId`, `SibSendTransacEmail` → `BrevoSendTransacEmail` throughout. The deprecated aliases still exist in civil-server for backwards compatibility but are no longer used here.
 
-`app/jobs/invite-users-back.js` and its tests import `SibGetTemplateId` and `SibSendTransacEmail` from civil-server. These aliases still work (they are kept for backwards compatibility) but are deprecated. Rename to `BrevoGetTemplateId` and `BrevoSendTransacEmail`:
+#### 9b — peerDependencies branch references _(deferred)_
 
-```diff
--import { SibGetTemplateId, SibSendTransacEmail, brevoDefaultFromEmail, Iota, User } from 'civil-server'
-+import { BrevoGetTemplateId, BrevoSendTransacEmail, brevoDefaultFromEmail, Iota, User } from 'civil-server'
-```
+Update once civil-server/civil-client `update2026` branches are merged or tagged.
 
-Update all call sites and test mocks accordingly. Also update the error log message:
+#### 9c — `allowScripts` in package.json _(deferred / not needed)_
 
-```diff
--  logger.error('Failed to send invite email via SibSendTransacEmail:', error)
-+  logger.error('Failed to send invite email via BrevoSendTransacEmail:', error)
-```
-
-#### 9b — peerDependencies branch references
-
-Once civil-server and civil-client publish tagged releases from the `update2026` branch (or the branch is merged to main), update `package.json` `peerDependencies` from branch refs to version ranges:
-
-```diff
-  "peerDependencies": {
--   "civil-client": "github:EnCiv/civil-client#update2026",
--   "civil-server": "github:EnCiv/civil-server#update2026"
-+   "civil-client": "github:EnCiv/civil-client#main",
-+   "civil-server": "github:EnCiv/civil-server#main"
-  },
-```
-
-#### 9c — `allowScripts` in package.json
-
-civil-server and civil-client use an `allowScripts` map to permit postinstall scripts for packages that need native compilation (bcrypt, core-js, @swc/core). Add this to civil-pursuit's `package.json` so that `npm ci` in a strict environment does not silently skip build scripts:
-
-```json
-"allowScripts": {
-  "mongodb-memory-server@11.x.x": true,
-  "bcrypt@6.0.0": true,
-  "core-js@3.x.x": true,
-  "esbuild@0.x.x": true
-}
-```
-
-Confirm exact versions after install and update accordingly.
+Already handled during Phase 2/3 via `npm approve-scripts`.
 
 ---
 
@@ -385,7 +351,7 @@ update2026  (current state)
  └── phase/6-joi18               ✅ DONE: joi ^18, joi-objectid@4 compatible
  └── phase/7-minor-updates       ✅ DONE: npm update + concurrently ^10
  └── phase/8-breaking-deps       ✅ DONE: color ^5, bson-objectid ^2 (added new keyword), autosize ^6, markdown-to-jsx ^9, chromatic ^16
- └── phase/9-cleanup             Brevo* rename, peerDep refs, allowScripts
+ └── phase/9-cleanup             ✅ DONE: Brevo* rename (9a); 9b/9c deferred
  └── phase/10-windows-linking    link-civil-server.js
 ```
 
