@@ -457,14 +457,14 @@ See `civil-server-update/link-civil-client.js` for the junction implementation p
 
 | Package | Current | Target | Phase |
 | ------- | ------- | ------ | ----- |
-| `@babel/cli` | 7.24.8 | ^8.0.4 | 2 |
-| `@babel/core` | (transitive) | ^8.0.1 | 2 |
-| `@babel/plugin-transform-react-inline-elements` | 7.24.7 | ^8.0.1 | 2 |
-| `@babel/plugin-transform-regenerator` | 7.29.7 | ^8.0.2 | 2 |
-| `@babel/plugin-transform-runtime` | (transitive) | ^8.0.1 | 2 |
-| `@babel/preset-env` | (transitive) | ^8.0.2 | 2 |
-| `@babel/preset-react` | (transitive) | ^8.0.1 | 2 |
-| `babel-loader` | 8.3.0 | ^10.1.1 | 2 |
+| `@babel/cli` | ~~7.24.8~~ **8.x** | ^8.0.4 | **2 ✅** |
+| `@babel/core` | (transitive) **8.x** | ^8.0.1 | **2 ✅** |
+| `@babel/plugin-transform-react-inline-elements` | ~~7.24.7~~ **8.x** | ^8.0.1 | **2 ✅** |
+| `@babel/plugin-transform-regenerator` | 7.29.7 | **removed** | **2 ✅** |
+| `@babel/plugin-transform-runtime` | (transitive) | **removed** | **2 ✅** |
+| `@babel/preset-env` | (transitive) **8.x** | ^8.0.2 | **2 ✅** |
+| `@babel/preset-react` | (transitive) **8.x** | ^8.0.1 | **2 ✅** |
+| `babel-loader` | ~~8.3.0~~ **10.x** | ^10.1.1 | **2 ✅** |
 | `webpack-cli` | 5.1.4 | ^7.2.2 | 3 |
 | `webpack-dev-server` | 5.2.5 | ^6.0.0 | 3 |
 | `webpack-merge` | 5.10.0 | ^6.0.1 | 3 |
@@ -503,7 +503,7 @@ Phases are ordered by dependency — each phase's install must succeed before th
 ```
 update2026  (current state)
  └── phase/1-node24              ✅ DONE: .nvmrc, engines, start.js; ESM color transforms; ObjectId bsontype fix; window SSR guard
- └── phase/2-babel8              @babel/core ^8, babel-loader ^10
+ └── phase/2-babel8              ✅ DONE: @babel/core ^8, babel-loader ^10, babel.config.js, removed regenerator plugin, allowScripts
  └── phase/3-webpack-toolchain   webpack-cli ^7, webpack-dev-server ^6, webpack-merge ^6
  └── phase/4-mongodb7            ✅ DONE: mongo-collections ^0.0.5, mongodb ^7, jest-mongodb ^6, useUnifiedTopology/useNewUrlParser removed, SWC+JSX transform
  └── phase/5-jest30              jest ^30, @jest/globals ^30, @testing-library/jest-dom ^7
