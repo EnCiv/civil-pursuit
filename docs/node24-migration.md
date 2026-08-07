@@ -201,39 +201,23 @@ npm install --save-dev \
 
 ---
 
-### Phase 7 — Minor Semver-Compatible Updates
+### Phase 7 — Minor Semver-Compatible Updates ✅ DONE
 
-These can be applied in a single `npm update` pass. They are within the declared semver range or are straightforward minor/patch bumps with no breaking changes:
+`npm update` + `npm install concurrently@^10` applied. `concurrently` bumped to `^10.0.4` to match civil-server. All package.json ranges bumped to reflect installed versions.
 
-| Package                               | Current | Wanted / Latest | Notes                                    |
-| ------------------------------------- | ------- | --------------- | ---------------------------------------- |
-| `react`                               | 19.2.6  | 19.2.8          | patch                                    |
-| `react-dom`                           | 19.2.6  | 19.2.8          | patch                                    |
-| `recharts`                            | 3.8.1   | 3.10.1          | minor                                    |
-| `@jsonforms/core`                     | 3.7.0   | 3.8.0           | minor                                    |
-| `@jsonforms/react`                    | 3.7.0   | 3.8.0           | minor                                    |
-| `@jsonforms/vanilla-renderers`        | 3.7.0   | 3.8.0           | minor                                    |
-| `concurrently`                        | 9.2.1   | 9.2.4 (wanted)  | patch; bump to ^10 to match civil-server |
-| `@babel/plugin-transform-regenerator` | 7.29.7  | 7.29.8          | patch (already done as part of Phase 2)  |
-| `@storybook/addon-a11y`               | 10.4.6  | 10.5.7          | minor                                    |
-| `@storybook/addon-links`              | 10.4.6  | 10.5.7          | minor                                    |
-| `@storybook/react-webpack5`           | 10.4.6  | 10.5.7          | minor                                    |
-| `storybook`                           | 10.4.6  | 10.5.7          | minor                                    |
-| `nodemon`                             | 3.1.14  | latest 3.x      | patch                                    |
-
-Also bump `concurrently` to match civil-server:
-
-```diff
-// optionalDependencies
--  "concurrently": "^9.2.1",
-+  "concurrently": "^10.0.4",
-```
-
-**Command:**
-
-```bash
-npm update
-```
+| Package | Before | After |
+| ------- | ------ | ----- |
+| `react` | ^19 | ^19.2.8 |
+| `react-dom` | ^19 | ^19.2.8 |
+| `recharts` | ^3.8.1 | ^3.10.1 |
+| `@jsonforms/core` | ^3.7.0 | ^3.8.0 |
+| `@jsonforms/react` | ^3.7.0 | ^3.8.0 |
+| `@jsonforms/vanilla-renderers` | ^3.7.0 | ^3.8.0 |
+| `concurrently` | ^9.2.1 | ^10.0.4 |
+| `@storybook/addon-a11y` | ^10.4.6 | ^10.5.7 |
+| `@storybook/addon-links` | ^10.4.6 | ^10.5.7 |
+| `@storybook/react-webpack5` | ^10.4.6 | ^10.5.7 |
+| `storybook` | ^10.4.6 | ^10.5.7 |
 
 ---
 
@@ -409,17 +393,17 @@ See `civil-server-update/link-civil-client.js` for the junction implementation p
 | `@testing-library/jest-dom` | ~~6.9.1~~ **7.x** | ^7.0.0 | **5 ✅** |
 | `expect` (standalone) | 23.6.0 | **removed** | **5 ✅** |
 | `joi` | ~~17.13.3~~ **18.x** | ^18.2.3 | **6 ✅** |
-| `react` | 19.2.6 | 19.2.8 | 7 |
-| `react-dom` | 19.2.6 | 19.2.8 | 7 |
-| `recharts` | 3.8.1 | ^3.10.1 | 7 |
-| `@jsonforms/core` | 3.7.0 | ^3.8.0 | 7 |
-| `@jsonforms/react` | 3.7.0 | ^3.8.0 | 7 |
-| `@jsonforms/vanilla-renderers` | 3.7.0 | ^3.8.0 | 7 |
-| `concurrently` | 9.2.1 | ^10.0.4 | 7 |
-| `@storybook/addon-a11y` | 10.4.6 | ^10.5.7 | 7 |
-| `@storybook/addon-links` | 10.4.6 | ^10.5.7 | 7 |
-| `@storybook/react-webpack5` | 10.4.6 | ^10.5.7 | 7 |
-| `storybook` | 10.4.6 | ^10.5.7 | 7 |
+| `react` | ~~19.2.6~~ **19.2.8** | 19.2.8 | **7 ✅** |
+| `react-dom` | ~~19.2.6~~ **19.2.8** | 19.2.8 | **7 ✅** |
+| `recharts` | ~~3.8.1~~ **3.10.1** | ^3.10.1 | **7 ✅** |
+| `@jsonforms/core` | ~~3.7.0~~ **3.8.0** | ^3.8.0 | **7 ✅** |
+| `@jsonforms/react` | ~~3.7.0~~ **3.8.0** | ^3.8.0 | **7 ✅** |
+| `@jsonforms/vanilla-renderers` | ~~3.7.0~~ **3.8.0** | ^3.8.0 | **7 ✅** |
+| `concurrently` | ~~9.2.1~~ **10.0.4** | ^10.0.4 | **7 ✅** |
+| `@storybook/addon-a11y` | ~~10.4.6~~ **10.5.7** | ^10.5.7 | **7 ✅** |
+| `@storybook/addon-links` | ~~10.4.6~~ **10.5.7** | ^10.5.7 | **7 ✅** |
+| `@storybook/react-webpack5` | ~~10.4.6~~ **10.5.7** | ^10.5.7 | **7 ✅** |
+| `storybook` | ~~10.4.6~~ **10.5.7** | ^10.5.7 | **7 ✅** |
 | `color` | 3.2.1 | ^5.0.3 | 8a |
 | `bson-objectid` | 1.3.1 | ^2.0.4 | 8b |
 | `autosize` | 3.0.21 | ^6.0.1 | 8c |
@@ -440,7 +424,7 @@ update2026  (current state)
  └── phase/4-mongodb7            ✅ DONE: mongo-collections ^0.0.5, mongodb ^7, jest-mongodb ^6, useUnifiedTopology/useNewUrlParser removed, SWC+JSX transform
  └── phase/5-jest30              ✅ DONE: jest ^30, @jest/globals ^30, @testing-library/jest-dom ^7, removed standalone expect, fixed story imports to storybook/test
  └── phase/6-joi18               ✅ DONE: joi ^18, joi-objectid@4 compatible
- └── phase/7-minor-updates       npm update on semver-compatible ranges
+ └── phase/7-minor-updates       ✅ DONE: npm update + concurrently ^10
  └── phase/8-breaking-deps       color ^5, bson-objectid ^2, autosize ^6, markdown-to-jsx ^9
  └── phase/9-cleanup             Brevo* rename, peerDep refs, allowScripts
  └── phase/10-windows-linking    link-civil-server.js
