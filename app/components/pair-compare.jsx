@@ -82,7 +82,7 @@ function PairCompare(props) {
       const value = ranksByParentId[whyRankList[idx].why._id]
         ? { ...ranksByParentId[whyRankList[idx].why._id], category }
         : {
-            _id: ObjectId().toString(),
+            _id: new ObjectId().toString(),
             category,
             parentId: whyRankList[idx].why._id,
             stage: 'why',

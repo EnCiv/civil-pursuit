@@ -221,75 +221,34 @@ npm install --save-dev \
 
 ---
 
-### Phase 8 — Breaking Dependency Assessments
+### Phase 8 — Breaking Dependency Assessments ✅ DONE
 
-These packages have major-version latests that require code changes. Each must be assessed and migrated individually.
+#### 8a — `color` ^3 → ^5 ✅
 
-#### 8a — `color` ^3 → ^5
+Civil-pursuit-new has `color` in `package.json` but **no file in `app/` directly imports it**. The package was pulled in as a transitive dependency. Upgrading from `^3` to `^5` eliminates the nested `civil-client/node_modules/color@5` by hoisting a single shared ESM-compatible copy. No code changes needed.
 
-civil-client already uses `color@^5`. Civil-pursuit uses `color@^3` directly in `app/components/theme.js` (likely). The v5 API is mostly backwards-compatible for the common `.lighten()`, `.darken()`, `.hex()` patterns. However, v4 changed the ES module export style.
+#### 8b — `bson-objectid` ^1 → ^2 ✅
 
-**Check:** Grep for all `color` usage, confirm the API calls still work, then update:
+Version 2.x requires explicit `new ObjectId()` — calling without `new` throws. Found 5 bare `ObjectId().toString()` calls in source:
 
-```diff
--  "color": "^3.2.1",
-+  "color": "^5.0.3",
-```
+- `app/components/pair-compare.jsx`
+- `app/components/point-input.jsx`
+- `app/components/steps/answer.js` (2 occurrences)
+- `app/components/steps/rank.js`
 
-#### 8b — `bson-objectid` ^1 → ^2
+All fixed by adding `new` keyword.
 
-`bson-objectid` is used in `pair-compare.jsx`, `point-input.jsx`, `steps/answer.js`, `steps/rank.js`, `dturn/test.js`, and `socket-apis/__tests__/get-conclusion.js`. Version 2.x changed the constructor to require explicit `new`:
+#### 8c — `autosize` ^3 → ^6 ✅
 
-- v1: `ObjectId()` (with or without `new`)
-- v2: requires `new ObjectId()`; calling without `new` throws
+`autosize(ref)` and `autosize.destroy(ref)` API unchanged. No code changes needed.
 
-All existing `new ObjectId()` usage is already correct. Calls like `ObjectId.createFromHexString()` or `ObjectId.isValid()` are the same in v2.
+#### 8d — `markdown-to-jsx` 7.7.6 → 9.x ✅
 
-**Grep for bare `ObjectId(` without `new`:**
+No breaking API changes for `<Markdown>{content}</Markdown>` usage. Pinned version removed to allow minor updates.
 
-```bash
-grep -rn "ObjectId(" app/ | grep -v "new ObjectId"
-```
+#### 8e — `chromatic` ^11 → ^16 ✅
 
-Once confirmed safe:
-
-```diff
--  "bson-objectid": "^1.2.4",
-+  "bson-objectid": "^2.0.4",
-```
-
-#### 8c — `autosize` ^3 → ^6
-
-`autosize` is used in `jsform.jsx` and `point-input.jsx` via `autosize(ref)` and `autosize.destroy(ref)`. The v4/v5/v6 API is unchanged for these two calls. The main difference is that v6 requires an explicit ResizeObserver in the environment, which Node 24 / jsdom 24 provide.
-
-**Test:** Confirm storybook stories for these components render without errors after upgrade.
-
-```diff
--  "autosize": "^3.0.15",
-+  "autosize": "^6.0.1",
-```
-
-#### 8d — `markdown-to-jsx` 7.7.6 → 9.x
-
-`markdown-to-jsx` is used in `intermission.jsx` and `question-box.jsx` with the default `<Markdown>` component. Version 9.x requires React 18+ (already satisfied) and has no breaking API changes for basic usage of `<Markdown>{content}</Markdown>`. Custom overrides via the `options` prop continue to work.
-
-**Check:** Run the storybook stories for both components and confirm rendering is correct.
-
-```diff
--  "markdown-to-jsx": "7.7.6",
-+  "markdown-to-jsx": "^9.10.2",
-```
-
-Remove the pinned version and allow minor updates:
-
-#### 8e — `chromatic` ^11 → ^16
-
-Chromatic's CLI API is stable across major versions. The large version jump (11 → 16) is primarily cloud-service compatibility. No code changes are expected.
-
-```diff
--  "chromatic": "^11.3.0",
-+  "chromatic": "^16.10.1",
-```
+CLI API unchanged. No code changes needed.
 
 ---
 
@@ -404,11 +363,11 @@ See `civil-server-update/link-civil-client.js` for the junction implementation p
 | `@storybook/addon-links` | ~~10.4.6~~ **10.5.7** | ^10.5.7 | **7 ✅** |
 | `@storybook/react-webpack5` | ~~10.4.6~~ **10.5.7** | ^10.5.7 | **7 ✅** |
 | `storybook` | ~~10.4.6~~ **10.5.7** | ^10.5.7 | **7 ✅** |
-| `color` | 3.2.1 | ^5.0.3 | 8a |
-| `bson-objectid` | 1.3.1 | ^2.0.4 | 8b |
-| `autosize` | 3.0.21 | ^6.0.1 | 8c |
-| `markdown-to-jsx` | 7.7.6 | ^9.10.2 | 8d |
-| `chromatic` | 11.7.0 | ^16.10.1 | 8e |
+| `color` | ~~3.2.1~~ **5.x** | ^5.0.3 | **8a ✅** |
+| `bson-objectid` | ~~1.3.1~~ **2.x** | ^2.0.4 | **8b ✅** |
+| `autosize` | ~~3.0.21~~ **6.x** | ^6.0.1 | **8c ✅** |
+| `markdown-to-jsx` | ~~7.7.6~~ **9.x** | ^9.10.2 | **8d ✅** |
+| `chromatic` | ~~11.7.0~~ **16.x** | ^16.10.1 | **8e ✅** |
 
 ---
 
@@ -425,7 +384,7 @@ update2026  (current state)
  └── phase/5-jest30              ✅ DONE: jest ^30, @jest/globals ^30, @testing-library/jest-dom ^7, removed standalone expect, fixed story imports to storybook/test
  └── phase/6-joi18               ✅ DONE: joi ^18, joi-objectid@4 compatible
  └── phase/7-minor-updates       ✅ DONE: npm update + concurrently ^10
- └── phase/8-breaking-deps       color ^5, bson-objectid ^2, autosize ^6, markdown-to-jsx ^9
+ └── phase/8-breaking-deps       ✅ DONE: color ^5, bson-objectid ^2 (added new keyword), autosize ^6, markdown-to-jsx ^9, chromatic ^16
  └── phase/9-cleanup             Brevo* rename, peerDep refs, allowScripts
  └── phase/10-windows-linking    link-civil-server.js
 ```

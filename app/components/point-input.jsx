@@ -93,7 +93,7 @@ function PointInput(props) {
 
   const handleOnBlur = e => {
     const newValue = { ...value, ...inputState }
-    if (!newValue._id) newValue._id = ObjectId().toString()
+    if (!newValue._id) newValue._id = new ObjectId().toString()
     onDone({
       valid: isSubjValid(inputState.subject) && isDescValid(inputState.description),
       value: newValue,
