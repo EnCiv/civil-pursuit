@@ -5,7 +5,7 @@ import dns from 'dns'
 import path from 'path'
 import { theCivilServer, Iota } from 'civil-server'
 
-// Node 20 updated c-ares; on Windows it may use a loopback DNS (127.0.0.1 or ::1) from
+// Node 20+ updated c-ares; on Windows it may use a loopback DNS (127.0.0.1 or ::1) from
 // a VPN/Docker DNS proxy that doesn't handle SRV queries the way Node 20's c-ares expects,
 // causing ECONNREFUSED when the MongoDB driver resolves mongodb+srv:// hostnames.
 // Replace loopback DNS addresses with public DNS servers before connecting.

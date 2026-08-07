@@ -14,7 +14,7 @@ const synuser = { synuser: { id: userId } }
 beforeAll(async () => {
   memoryServer = await MongoMemoryServer.create()
   const uri = memoryServer.getUri()
-  connection = await MongoClient.connect(uri, { useNewUrlParser: true })
+  connection = await MongoClient.connect(uri)
   db = connection.db()
   Points.find = db.collection('points').find.bind(db.collection('points'))
 })
@@ -98,6 +98,6 @@ test('Should trigger catch when database connection is closed.', async () => {
   expect(console.error).toHaveBeenCalledWith(expect.stringContaining('Failed to retrieve points - Points.find failed'))
 
   // Reconnect for other tests
-  connection = await MongoClient.connect(memoryServer.getUri(), { useNewUrlParser: true })
+  connection = await MongoClient.connect(memoryServer.getUri())
   Points.find = db.collection('points').find.bind(db.collection('points'))
 })
