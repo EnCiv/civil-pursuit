@@ -140,43 +140,17 @@ npm install --save-dev \
 
 ---
 
-### Phase 3 — webpack-cli 5 → 7, webpack-dev-server 5 → 6, webpack-merge 5 → 6
+### Phase 3 — webpack-cli 5 → 7, webpack-dev-server 5 → 6, webpack-merge 5 → 6 ✅ DONE
 
-**Why:** civil-server's `webpack-dev.config.js` (which civil-pursuit clones) now uses webpack-dev-server 6 syntax. Using webpack-dev-server 5 to run a v6-format config causes silent failures.
+**Files changed:**
 
-**Changes in `package.json`:**
+- `package.json` devDependencies: `webpack-cli` `^5.1.4` → `^7.2.2`; `webpack-merge` `^5.10.0` → `^6.0.1`
+- `package.json` optionalDependencies: `webpack-dev-server` `^5.2.5` → `^6.0.0`
+- `webpack-dev.config.js`: `process/browser` alias updated to `require.resolve('process/browser.js')` (explicit `.js` extension required by webpack-dev-server 6 ESM resolution)
 
-```diff
-// devDependencies
--  "webpack-cli": "^5.1.4",
--  "webpack-merge": "^5.10.0",
-+  "webpack-cli": "^7.2.2",
-+  "webpack-merge": "^6.0.1",
-```
+**Note on `allowScripts`:** After adding `civil-client`, `civil-server`, and `use-methods` version-pinned entries, npm showed 3 remaining warnings. These were resolved by npm approve — no code change needed. All packages execute their prepare/postinstall scripts.
 
-```diff
-// optionalDependencies
--  "webpack-dev-server": "^5.2.5",
-+  "webpack-dev-server": "^6.0.0",
-```
-
-**`webpack-dev.config.js` change:** Update the `process/browser` alias to use the explicit `.js` extension, matching civil-server's config. Without this, webpack-dev-server 6's ESM resolution rejects the import from `tiny-invariant`:
-
-```diff
--module.exports.resolve.alias['process/browser'] = require.resolve('process/browser')
-+module.exports.resolve.alias['process/browser'] = require.resolve('process/browser.js')
-```
-
-> **Note:** No proxy config change is needed in civil-pursuit's own `webpack-dev.config.js` because it clones civil-server's base config, which already uses the array-format proxy required by webpack-dev-server 5+/6. Do not re-add an object-format `proxy` property.
-
-**Commands:**
-
-```bash
-npm install --save-dev webpack-cli@^7 webpack-merge@^6
-npm install --save-optional webpack-dev-server@^6
-```
-
-**Verify:** `npm run hot-client` starts webpack-dev-server; browser loads the app; no "proxy" config errors in the terminal.
+**Verified:** 49/49 jest suites pass; 33/33 storybook story suites pass; `/join` returns HTTP 200; no allowScripts warnings from `npm install`.
 
 ---
 
@@ -465,9 +439,9 @@ See `civil-server-update/link-civil-client.js` for the junction implementation p
 | `@babel/preset-env` | (transitive) **8.x** | ^8.0.2 | **2 ✅** |
 | `@babel/preset-react` | (transitive) **8.x** | ^8.0.1 | **2 ✅** |
 | `babel-loader` | ~~8.3.0~~ **10.x** | ^10.1.1 | **2 ✅** |
-| `webpack-cli` | 5.1.4 | ^7.2.2 | 3 |
-| `webpack-dev-server` | 5.2.5 | ^6.0.0 | 3 |
-| `webpack-merge` | 5.10.0 | ^6.0.1 | 3 |
+| `webpack-cli` | ~~5.1.4~~ **7.x** | ^7.2.2 | **3 ✅** |
+| `webpack-dev-server` | ~~5.2.5~~ **6.x** | ^6.0.0 | **3 ✅** |
+| `webpack-merge` | ~~5.10.0~~ **6.x** | ^6.0.1 | **3 ✅** |
 | `@enciv/mongo-collections` | ~~0.0.3~~ **0.0.5** | ^0.0.5 | **4 ✅** |
 | `mongodb` | ~~5.9.2~~ **7.x** | ^7.5.0 | **4 ✅** |
 | `mongodb-memory-server` | ~~10.1.2~~ **11.x** | ^11.2.0 | **4 ✅** |
@@ -504,7 +478,7 @@ Phases are ordered by dependency — each phase's install must succeed before th
 update2026  (current state)
  └── phase/1-node24              ✅ DONE: .nvmrc, engines, start.js; ESM color transforms; ObjectId bsontype fix; window SSR guard
  └── phase/2-babel8              ✅ DONE: @babel/core ^8, babel-loader ^10, babel.config.js, removed regenerator plugin, allowScripts
- └── phase/3-webpack-toolchain   webpack-cli ^7, webpack-dev-server ^6, webpack-merge ^6
+ └── phase/3-webpack-toolchain   ✅ DONE: webpack-cli ^7, webpack-dev-server ^6, webpack-merge ^6, process/browser.js alias
  └── phase/4-mongodb7            ✅ DONE: mongo-collections ^0.0.5, mongodb ^7, jest-mongodb ^6, useUnifiedTopology/useNewUrlParser removed, SWC+JSX transform
  └── phase/5-jest30              jest ^30, @jest/globals ^30, @testing-library/jest-dom ^7
  └── phase/6-joi18               joi ^18, verify joi-objectid

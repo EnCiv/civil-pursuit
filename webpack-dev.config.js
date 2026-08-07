@@ -11,7 +11,7 @@ module.exports.resolve.alias['react'] = path.resolve(__dirname, 'node_modules/re
 module.exports.resolve.alias['react-dom'] = path.resolve(__dirname, 'node_modules/react-dom')
 // tiny-invariant's ESM build imports 'process/browser' without the .js extension;
 // webpack 5 fully-specified ESM resolution requires the extension, so alias it explicitly.
-module.exports.resolve.alias['process/browser'] = require.resolve('process/browser')
+module.exports.resolve.alias['process/browser'] = require.resolve('process/browser.js')
 module.exports.module.rules.push({
   test: /\.css$/i,
   use: 'css-loader',
