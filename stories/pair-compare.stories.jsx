@@ -1,7 +1,6 @@
 import PairCompare from '../app/components/pair-compare'
 import { onDoneDecorator } from './common'
-import { within, userEvent, waitFor } from 'storybook/test'
-import expect from 'expect'
+import { expect, within, userEvent, waitFor } from 'storybook/test'
 import React, { useState } from 'react'
 
 export default {

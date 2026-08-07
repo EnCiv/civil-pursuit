@@ -1,10 +1,9 @@
 //https://github.com/EnCiv/civil-pursuit/issues/51
 import StepFooter from '../app/components/step-footer'
 import React from 'react'
-import expect from 'expect'
+import { expect, userEvent, within } from 'storybook/test'
 
 import { onDoneDecorator, onBackDecorator, onBackResult } from './common'
-import { userEvent, within } from 'storybook/test'
 
 export default {
   component: StepFooter,

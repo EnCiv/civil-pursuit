@@ -177,41 +177,17 @@ npm install --save-dev \
 
 ---
 
-### Phase 5 — Jest 29 → 30
+### Phase 5 — Jest 29 → 30 ✅ DONE
 
-**Why:** civil-server uses jest@^30. Test infrastructure packages like `@shelf/jest-mongodb` v6 and `mongodb-memory-server` v11 are validated against jest 30. Running jest 29 against those packages may work but is untested combination.
+**Files changed:**
 
-**Changes in `package.json` `optionalDependencies`:**
-
-```diff
--  "@jest/globals": "^29.7.0",
--  "jest": "^29.7.0",
--  "expect": "^23.6.0",
-+  "@jest/globals": "^30.4.1",
-+  "jest": "^30.4.2",
-```
-
-Remove the standalone `expect` package entirely — it is a very old version (23.6.0) pinned independently of jest, provides no value when jest ships its own `expect`, and can cause version conflicts with jest 30:
-
-```diff
--  "expect": "^23.6.0",
-```
-
-Upgrade `@testing-library/jest-dom` to match civil-server:
-
-```diff
--  "@testing-library/jest-dom": "^6.9.1",
-+  "@testing-library/jest-dom": "^7.0.0",
-```
-
-**Commands:**
-
-```bash
-npm install --save-optional jest@^30 @jest/globals@^30 @testing-library/jest-dom@^7
-npm uninstall expect
-```
-
-**Verify:** `npm test` — all suites pass. If any test imports `expect` from the standalone package, change the import to `import { expect } from '@jest/globals'` or use jest's built-in global.
+- `package.json` optionalDependencies:
+  - `jest`: `^29.7.0` → `^30.4.2`
+  - `@jest/globals`: `^29.7.0` → `^30.4.1`
+  - `@testing-library/jest-dom`: `^6.9.1` → `^7.0.0`
+  - `expect` (standalone `^23.6.0`): **removed**
+  - `@shelf/jest-mongodb` re-added to optionalDependencies (was in a wrong location)
+- `stories/*.stories.jsx` (10 files): `import expect from 'expect'` → `import { expect } from 'storybook/test'` — jest 30's `expect` package internally imports `node:url` which webpack cannot bundle; Storybook's own bundled `expect` (from `storybook/test`) is browser-compatible.
 
 ---
 
@@ -446,10 +422,10 @@ See `civil-server-update/link-civil-client.js` for the junction implementation p
 | `mongodb` | ~~5.9.2~~ **7.x** | ^7.5.0 | **4 ✅** |
 | `mongodb-memory-server` | ~~10.1.2~~ **11.x** | ^11.2.0 | **4 ✅** |
 | `@shelf/jest-mongodb` | ~~4.3.2~~ **6.x** | ^6.0.2 | **4 ✅** |
-| `jest` | 29.7.0 | ^30.4.2 | 5 |
-| `@jest/globals` | 29.7.0 | ^30.4.1 | 5 |
-| `@testing-library/jest-dom` | 6.9.1 | ^7.0.0 | 5 |
-| `expect` (standalone) | 23.6.0 | **remove** | 5 |
+| `jest` | ~~29.7.0~~ **30.x** | ^30.4.2 | **5 ✅** |
+| `@jest/globals` | ~~29.7.0~~ **30.x** | ^30.4.1 | **5 ✅** |
+| `@testing-library/jest-dom` | ~~6.9.1~~ **7.x** | ^7.0.0 | **5 ✅** |
+| `expect` (standalone) | 23.6.0 | **removed** | **5 ✅** |
 | `joi` | 17.13.3 | ^18.2.3 | 6 |
 | `react` | 19.2.6 | 19.2.8 | 7 |
 | `react-dom` | 19.2.6 | 19.2.8 | 7 |
@@ -480,7 +456,7 @@ update2026  (current state)
  └── phase/2-babel8              ✅ DONE: @babel/core ^8, babel-loader ^10, babel.config.js, removed regenerator plugin, allowScripts
  └── phase/3-webpack-toolchain   ✅ DONE: webpack-cli ^7, webpack-dev-server ^6, webpack-merge ^6, process/browser.js alias
  └── phase/4-mongodb7            ✅ DONE: mongo-collections ^0.0.5, mongodb ^7, jest-mongodb ^6, useUnifiedTopology/useNewUrlParser removed, SWC+JSX transform
- └── phase/5-jest30              jest ^30, @jest/globals ^30, @testing-library/jest-dom ^7
+ └── phase/5-jest30              ✅ DONE: jest ^30, @jest/globals ^30, @testing-library/jest-dom ^7, removed standalone expect, fixed story imports to storybook/test
  └── phase/6-joi18               joi ^18, verify joi-objectid
  └── phase/7-minor-updates       npm update on semver-compatible ranges
  └── phase/8-breaking-deps       color ^5, bson-objectid ^2, autosize ^6, markdown-to-jsx ^9

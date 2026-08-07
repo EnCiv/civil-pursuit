@@ -1,8 +1,7 @@
 import React from 'react'
 import Ranking from '../app/components/ranking'
 import common, { onDoneDecorator } from './common'
-import expect from 'expect'
-import { userEvent, within } from 'storybook/test'
+import { expect, userEvent, within } from 'storybook/test'
 
 export default {
   component: Ranking,

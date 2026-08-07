@@ -2,8 +2,7 @@
 import React, { useState } from 'react'
 import CompareWhysStep, { CompareWhys } from '../app/components/steps/compare-whys'
 import { asyncSleep, onDoneDecorator, socketEmitDecorator, DeliberationContextDecorator, deliberationContextData } from './common'
-import { within, userEvent, waitFor } from 'storybook/test'
-import expect from 'expect'
+import { expect, within, userEvent, waitFor } from 'storybook/test'
 
 export default { component: CompareWhys, args: {}, decorators: [onDoneDecorator] }
 

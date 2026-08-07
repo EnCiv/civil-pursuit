@@ -1,7 +1,6 @@
-import { userEvent, within } from 'storybook/test'
+import { expect, userEvent, within } from 'storybook/test'
 import React from 'react'
 import WhyInput from '../app/components/why-input'
-import expect from 'expect'
 import { onDoneDecorator } from './common'
 import DemInfo from '../app/components/dem-info'
 

@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { Button, ModifierButton, SecondaryButton, PrimaryButton, TextButton } from '../app/components/button'
-import expect from 'expect'
-import { userEvent, within, waitFor, fireEvent } from 'storybook/test'
+import { expect, userEvent, within, waitFor, fireEvent } from 'storybook/test'
 import { onDoneDecorator } from './common'
 import SvgPlusSign from '../app/svgr/plus-sign'
 
