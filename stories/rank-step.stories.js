@@ -147,6 +147,12 @@ export const onDoneIsCalledAfterUserChangesRank = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
+    await waitFor(() => {
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({
+        valid: false,
+        value: 0.3333333333333333,
+      })
+    })
     const categories = canvas.getAllByText('Neutral')
     await userEvent.click(categories[0])
 

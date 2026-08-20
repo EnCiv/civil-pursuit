@@ -3,7 +3,7 @@
 import { RankPoints } from '../app/components/steps/rank'
 import React from 'react'
 import { onDoneDecorator } from './common'
-import { userEvent, within, expect } from 'storybook/test'
+import { userEvent, within, expect, waitFor } from 'storybook/test'
 import { reduce } from 'lodash'
 
 const discussionId = '1101'
@@ -111,9 +111,11 @@ export const threePoints = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const { onDone } = args
-    expect(onDone.mock.calls[0][0]).toMatchObject({
-      valid: true,
-      value: 1,
+    await waitFor(() => {
+      expect(onDone.mock.calls[0][0]).toMatchObject({
+        valid: true,
+        value: 1,
+      })
     })
   },
 }
@@ -167,25 +169,28 @@ export const tenRanksTooManyMost = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    expect(args.onDone.mock.calls[0][0]).toMatchObject({
-      valid: false,
-      value: 1,
+    await waitFor(() => {
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({
+        valid: false,
+        value: 1,
+      })
     })
     const point10Heading = await canvas.findByRole('heading', { level: 2, name: 'Point 10' })
     const point10Div = point10Heading.closest('div')
     await userEvent.click(within(point10Div).getByText('Neutral'))
-
-    expect(args.onDone.mock.calls[1][0]).toMatchObject({
-      valid: true,
-      value: 1,
-      delta: {
-        _id: '100',
-        stage: 'pre',
-        category: 'neutral',
-        parentId: '10',
-        discussionId: '1101',
-        round: 0,
-      },
+    await waitFor(() => {
+      expect(args.onDone.mock.calls[1][0]).toMatchObject({
+        valid: true,
+        value: 1,
+        delta: {
+          _id: '100',
+          stage: 'pre',
+          category: 'neutral',
+          parentId: '10',
+          discussionId: '1101',
+          round: 0,
+        },
+      })
     })
   },
 }
