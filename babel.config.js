@@ -3,9 +3,10 @@
 module.exports = function (api) {
   const isWebpack = api.caller(c => c && c.name === 'babel-loader')
   const isTest = api.env('test')
+  const isDevelopment = api.env('development') || process.env.NODE_ENV === 'development'
   return {
     presets: [
-      '@babel/preset-react',
+      ['@babel/preset-react', { development: isDevelopment, runtime: 'automatic' }],
       [
         '@babel/preset-env',
         {

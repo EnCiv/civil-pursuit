@@ -1,6 +1,6 @@
 const { merge } = require('webpack-merge')
 const path = require('path')
-const webpackDevConfig = require('../webpack-dev.config')
+const webpackDevConfig = require('../webpack.config')
 
 const config = {
   stories: [
@@ -25,6 +25,8 @@ const config = {
       ...newConfig.resolve.alias,
       react: path.resolve('node_modules/react'),
       'react-dom': path.resolve('node_modules/react-dom'),
+      // CRITICAL: Ensure all chunks use the same superagent instance so preview.js mock works
+      superagent: path.resolve('node_modules/superagent'),
     }
     // Storybook's DefinePlugin replaces `process.env` with a literal object everywhere,
     // including on the LEFT-HAND SIDE of assignments like `if (!process.env) process.env = {}`.
