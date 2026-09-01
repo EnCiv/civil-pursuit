@@ -1,11 +1,21 @@
-// use a common babel.config across this project, customize below if necessary
-const commonConfig = require('civil-client/babel.config')
+// Use ESM for webpack/Storybook (babel-loader sets caller.name = 'babel-loader');
+// use commonjs for CLI transpile and jest.
 module.exports = function (api) {
-  // Evaluate or spread the external configuration
-  const resolvedConfig = typeof commonConfig === 'function' ? commonConfig(api) : commonConfig
-
+  const isWebpack = api.caller(c => c && c.name === 'babel-loader')
+  const isTest = api.env('test')
+  const isDevelopment = api.env('development') || process.env.NODE_ENV === 'development'
   return {
-    ...resolvedConfig,
-    // Add any local overrides or additional plugins/presets here
+    presets: [
+      ['@babel/preset-react', { development: isDevelopment, runtime: 'automatic' }],
+      [
+        '@babel/preset-env',
+        {
+          targets: isTest ? { node: 'current' } : { node: '24' },
+          modules: isTest || !isWebpack ? 'commonjs' : false,
+        },
+      ],
+    ],
+    plugins: ['@babel/plugin-transform-class-properties'],
+    sourceMap: 'inline',
   }
 }
