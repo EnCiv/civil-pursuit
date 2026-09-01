@@ -34,8 +34,8 @@
     "node": ">=24.0.0"
   },
   "peerDependencies": {
-    "civil-client": "github:EnCiv/civil-client#update2026",
-    "civil-server": "github:EnCiv/civil-server#update2026"
+    "civil-client": "github:EnCiv/civil-client",
+    "civil-server": "github:EnCiv/civil-server"
   },
   "dependencies": {
     "@enciv/mongo-collections": "^0.0.5",
