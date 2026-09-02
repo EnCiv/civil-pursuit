@@ -2,9 +2,8 @@
 
 import React, { useContext, useState } from 'react'
 import GroupingStep, { GroupPoints } from '../app/components/steps/grouping'
-import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, buildApiDecorator } from './common'
-import { within, userEvent, expect, waitFor } from '@storybook/test'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
+import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, buildApiDecorator } from './common'
+import { within, userEvent, expect, waitFor } from 'storybook/test'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 
 const discussionId = '1101'
@@ -12,11 +11,6 @@ const round = 0
 
 export default {
   component: GroupPoints,
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
   decorators: [onDoneDecorator],
 }
 
@@ -85,7 +79,7 @@ export const canCreateGroup = {
     reducedPointList: pointItems,
   },
   decorators: [onDoneDecorator],
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const point1 = canvas.getByText('Point 1')
     await userEvent.click(point1)
@@ -93,44 +87,40 @@ export const canCreateGroup = {
     await userEvent.click(point2)
     const CreateGroup = canvas.getByText('Create Group')
     await userEvent.click(CreateGroup)
-    expect(onDoneResult(canvas)).toMatchObject({
-      onDoneResult: {
-        valid: false,
-      },
+    expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
+      valid: false,
     })
     const selectAsLead = canvas.getByTitle('Select as Lead: Point 1')
     await userEvent.click(selectAsLead)
     await userEvent.click(canvas.getByTitle('Done'))
-    expect(onDoneResult(canvas)).toMatchObject({
-      onDoneResult: {
-        valid: true,
-        delta: [
-          {
-            point: {
-              _id: 1,
-              subject: 'Point 1',
-              description: 'Point Description 1',
+    expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
+      valid: true,
+      delta: [
+        {
+          point: {
+            _id: 1,
+            subject: 'Point 1',
+            description: 'Point Description 1',
+            demInfo: {
+              dob: '1990-10-20T00:00:00.000Z',
+              state: 'NY',
+              party: 'Independent',
+            },
+          },
+          group: [
+            {
+              _id: 2,
+              subject: 'Point 2',
+              description: 'Point Description 2',
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
               },
             },
-            group: [
-              {
-                _id: 2,
-                subject: 'Point 2',
-                description: 'Point Description 2',
-                demInfo: {
-                  dob: '1990-10-20T00:00:00.000Z',
-                  state: 'NY',
-                  party: 'Independent',
-                },
-              },
-            ],
-          },
-        ],
-      },
+          ],
+        },
+      ],
     })
     // Problem Hack - ungroup the points so this story will run again - but if you need to get the onDone data after something changes, you need to take this out.
     await userEvent.click(canvas.getByTitle('Ungroup'))
@@ -141,7 +131,7 @@ export const canUnGroup = {
     reducedPointList: pointItems,
   },
   decorators: [onDoneDecorator],
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByText('Point 1'))
     await userEvent.click(canvas.getByText('Point 2'))
@@ -149,142 +139,140 @@ export const canUnGroup = {
     await userEvent.click(canvas.getByTitle('Select as Lead: Point 1'))
     await userEvent.click(canvas.getByTitle('Done'))
     await userEvent.click(canvas.getByTitle('Ungroup'))
-    expect(onDoneResult(canvas)).toMatchObject({
-      onDoneResult: {
-        valid: true,
-        delta: [
-          {
-            point: {
-              _id: 0,
-              subject: 'Point 0',
-              description: 'Point Description 0',
-              demInfo: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
-              },
+    expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
+      valid: true,
+      delta: [
+        {
+          point: {
+            _id: 0,
+            subject: 'Point 0',
+            description: 'Point Description 0',
+            demInfo: {
+              dob: '1990-10-20T00:00:00.000Z',
+              state: 'NY',
+              party: 'Independent',
             },
-            group: [],
           },
-          {
-            point: {
-              _id: 3,
-              subject: 'Point 3',
-              description: 'Point Description 3',
-              demInfo: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
-              },
+          group: [],
+        },
+        {
+          point: {
+            _id: 3,
+            subject: 'Point 3',
+            description: 'Point Description 3',
+            demInfo: {
+              dob: '1990-10-20T00:00:00.000Z',
+              state: 'NY',
+              party: 'Independent',
             },
-            group: [],
           },
-          {
-            point: {
-              _id: 4,
-              subject: 'Point 4',
-              description: 'Point Description 4',
-              demInfo: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
-              },
+          group: [],
+        },
+        {
+          point: {
+            _id: 4,
+            subject: 'Point 4',
+            description: 'Point Description 4',
+            demInfo: {
+              dob: '1990-10-20T00:00:00.000Z',
+              state: 'NY',
+              party: 'Independent',
             },
-            group: [],
           },
-          {
-            point: {
-              _id: 5,
-              subject: 'Point 5',
-              description: 'Point Description 5',
-              demInfo: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
-              },
+          group: [],
+        },
+        {
+          point: {
+            _id: 5,
+            subject: 'Point 5',
+            description: 'Point Description 5',
+            demInfo: {
+              dob: '1990-10-20T00:00:00.000Z',
+              state: 'NY',
+              party: 'Independent',
             },
-            group: [],
           },
-          {
-            point: {
-              _id: 6,
-              subject: 'Point 6',
-              description: 'Point Description 6',
-              demInfo: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
-              },
+          group: [],
+        },
+        {
+          point: {
+            _id: 6,
+            subject: 'Point 6',
+            description: 'Point Description 6',
+            demInfo: {
+              dob: '1990-10-20T00:00:00.000Z',
+              state: 'NY',
+              party: 'Independent',
             },
-            group: [],
           },
-          {
-            point: {
-              _id: 7,
-              subject: 'Point 7',
-              description: 'Point Description 7',
-              demInfo: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
-              },
+          group: [],
+        },
+        {
+          point: {
+            _id: 7,
+            subject: 'Point 7',
+            description: 'Point Description 7',
+            demInfo: {
+              dob: '1990-10-20T00:00:00.000Z',
+              state: 'NY',
+              party: 'Independent',
             },
-            group: [],
           },
-          {
-            point: {
-              _id: 8,
-              subject: 'Point 8',
-              description: 'Point Description 8',
-              demInfo: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
-              },
+          group: [],
+        },
+        {
+          point: {
+            _id: 8,
+            subject: 'Point 8',
+            description: 'Point Description 8',
+            demInfo: {
+              dob: '1990-10-20T00:00:00.000Z',
+              state: 'NY',
+              party: 'Independent',
             },
-            group: [],
           },
-          {
-            point: {
-              _id: 9,
-              subject: 'Point 9',
-              description: 'Point Description 9',
-              demInfo: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
-              },
+          group: [],
+        },
+        {
+          point: {
+            _id: 9,
+            subject: 'Point 9',
+            description: 'Point Description 9',
+            demInfo: {
+              dob: '1990-10-20T00:00:00.000Z',
+              state: 'NY',
+              party: 'Independent',
             },
-            group: [],
           },
-          {
-            point: {
-              _id: 2,
-              subject: 'Point 2',
-              description: 'Point Description 2',
-              demInfo: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
-              },
+          group: [],
+        },
+        {
+          point: {
+            _id: 2,
+            subject: 'Point 2',
+            description: 'Point Description 2',
+            demInfo: {
+              dob: '1990-10-20T00:00:00.000Z',
+              state: 'NY',
+              party: 'Independent',
             },
-            group: [],
           },
-          {
-            point: {
-              _id: 1,
-              subject: 'Point 1',
-              description: 'Point Description 1',
-              demInfo: {
-                dob: '1990-10-20T00:00:00.000Z',
-                state: 'NY',
-                party: 'Independent',
-              },
+          group: [],
+        },
+        {
+          point: {
+            _id: 1,
+            subject: 'Point 1',
+            description: 'Point Description 1',
+            demInfo: {
+              dob: '1990-10-20T00:00:00.000Z',
+              state: 'NY',
+              party: 'Independent',
             },
-            group: [],
           },
-        ],
-      },
+          group: [],
+        },
+      ],
     })
   },
 }
@@ -295,7 +283,7 @@ export const canCreateGroupWithAGroup = {
     reducedPointList: pointItems,
   },
   decorators: [onDoneDecorator],
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByText('Point 1'))
     await userEvent.click(canvas.getByText('Point 2'))
@@ -307,46 +295,44 @@ export const canCreateGroupWithAGroup = {
     await userEvent.click(canvas.getByText('Create Group'))
     await userEvent.click(canvas.getByTitle('Select as Lead: Point 1'))
     await userEvent.click(canvas.getByTitle('Done'))
-    expect(onDoneResult(canvas)).toMatchObject({
-      onDoneResult: {
-        valid: true,
-        delta: [
-          {
-            point: {
-              _id: 1,
-              subject: 'Point 1',
-              description: 'Point Description 1',
+    expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
+      valid: true,
+      delta: [
+        {
+          point: {
+            _id: 1,
+            subject: 'Point 1',
+            description: 'Point Description 1',
+            demInfo: {
+              dob: '1990-10-20T00:00:00.000Z',
+              state: 'NY',
+              party: 'Independent',
+            },
+          },
+          group: [
+            {
+              _id: 3,
+              subject: 'Point 3',
+              description: 'Point Description 3',
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
               },
             },
-            group: [
-              {
-                _id: 3,
-                subject: 'Point 3',
-                description: 'Point Description 3',
-                demInfo: {
-                  dob: '1990-10-20T00:00:00.000Z',
-                  state: 'NY',
-                  party: 'Independent',
-                },
+            {
+              _id: 2,
+              subject: 'Point 2',
+              description: 'Point Description 2',
+              demInfo: {
+                dob: '1990-10-20T00:00:00.000Z',
+                state: 'NY',
+                party: 'Independent',
               },
-              {
-                _id: 2,
-                subject: 'Point 2',
-                description: 'Point Description 2',
-                demInfo: {
-                  dob: '1990-10-20T00:00:00.000Z',
-                  state: 'NY',
-                  party: 'Independent',
-                },
-              },
-            ],
-          },
-        ],
-      },
+            },
+          ],
+        },
+      ],
     })
     // Problem Hack - ungroup the points so this story will run again - but if you need to get the onDone data after something changes, you need to take this out.
     await userEvent.click(canvas.getByTitle('Ungroup'))
@@ -359,7 +345,7 @@ export const canRemoveOnePointFromAGroup = {
     reducedPointList: pointItems,
   },
   decorators: [onDoneDecorator],
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await userEvent.click(canvas.getByText('Point 1'))
     await userEvent.click(canvas.getByText('Point 2'))
@@ -372,9 +358,10 @@ export const canRemoveOnePointFromAGroup = {
     await userEvent.click(canvas.getByTitle('Select as Lead: Point 1'))
     await userEvent.click(canvas.getByTitle('Done'))
     await userEvent.click(canvas.getByTitle('Edit'))
-    await userEvent.click(canvas.getByTitle('Remove from Group: Point 2'))
-    expect(onDoneResult(canvas)).toMatchObject({
-      onDoneResult: {
+    // Wait for edit mode to activate so remove buttons are in the DOM
+    await userEvent.click(await waitFor(() => canvas.getByTitle('Remove from Group: Point 2')))
+    await waitFor(() =>
+      expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
         valid: true,
         delta: [
           { point: { _id: 0, subject: 'Point 0', description: 'Point Description 0', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
@@ -390,8 +377,8 @@ export const canRemoveOnePointFromAGroup = {
             group: [{ _id: 3, subject: 'Point 3', description: 'Point Description 3', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }],
           },
         ],
-      },
-    })
+      })
+    )
     // Problem Hack - ungroup the points so this story will run again - but if you need to get the onDone data after something changes, you need to take this out.
     await userEvent.click(canvas.getByTitle('Ungroup'))
   },

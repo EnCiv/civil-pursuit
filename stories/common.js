@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useContext } from 'react'
 import { DeliberationContext, DeliberationContextProvider } from '../app/components/deliberation-context'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { Level } from 'react-accessible-headings'
 
 // usage: {decorators: [buildApiDecorator('handle', result)]}

@@ -2,7 +2,7 @@ const { Mongo } = require('@enciv/mongo-collections')
 const InviteLog = require('../invite-log')
 
 beforeAll(async () => {
-  await Mongo.connect(global.__MONGO_URI__, { useUnifiedTopology: true })
+  await Mongo.connect(global.__MONGO_URI__)
 })
 
 beforeEach(async () => {

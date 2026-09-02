@@ -21,12 +21,6 @@ jest.mock('react-jss', () => {
     createUseStyles: jest.fn(),
   }
 })
-// Button uses this one
-jest.mock('@codastic/react-positioning-portal', () => {
-  return {
-    PositioningPortal: jest.fn(),
-  }
-})
 // Points and others use LEVEL and H from here
 jest.mock('react-accessible-headings', () => {
   return {

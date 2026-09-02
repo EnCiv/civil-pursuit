@@ -2,18 +2,12 @@
 
 import React from 'react'
 import ReviewPoint from '../app/components/review-point'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import { onDoneDecorator, onDoneResult } from './common'
-import { within, userEvent, expect } from '@storybook/test'
+import { onDoneDecorator } from './common'
+import { within, userEvent, expect } from 'storybook/test'
 
 export default {
   component: ReviewPoint,
   decorators: [onDoneDecorator],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 const point0 = {
@@ -99,7 +93,7 @@ export const ReviewOnDone = {
     rightPointList: [point4, point5, point6],
   },
   decorators: [onDoneDecorator],
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     // Click to open the why lists
     await userEvent.click(canvas.getByTitle('open'))
@@ -107,11 +101,9 @@ export const ReviewOnDone = {
     await userEvent.click(canvas.getByText('Expand Table'))
     // Select the "Most" ranking option using role="radio" to avoid ambiguity with header text
     await userEvent.click(canvas.getByRole('radio', { name: 'Most' }))
-    expect(onDoneResult(canvas)).toMatchObject({
-      onDoneResult: {
-        valid: true,
-        value: 'Most',
-      },
+    expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
+      valid: true,
+      value: 'Most',
     })
   },
 }

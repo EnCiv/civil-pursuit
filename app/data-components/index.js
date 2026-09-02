@@ -43,4 +43,3 @@ class DataComponents {
 }
 exports.DataComponents = DataComponents;
 var _default = exports.default = DataComponents;
-//# sourceMappingURL=data-components-template.js.map

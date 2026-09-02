@@ -1,18 +1,12 @@
 import React from 'react'
 import PointGroup from '../app/components/point-group'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
-import { onDoneDecorator, onDoneResult } from './common'
-import { within, userEvent, expect } from '@storybook/test'
+import { onDoneDecorator } from './common'
+import { within, userEvent, expect } from 'storybook/test'
 import DemInfo from '../app/components/dem-info'
 
 export default {
   component: PointGroup,
   decorators: [onDoneDecorator],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 const createPointDoc = (
@@ -108,16 +102,14 @@ export const mobileSelectLeadPoints = {
 
 export const selectLeadPoint3OnDone = {
   args: { pointGroup: pointGroupDoc5, vState: 'selectLead' },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const SelectedPoint = canvas.getByTitle('Select as Lead: Point 3')
     await userEvent.click(SelectedPoint)
     const DoneButton = canvas.getByTitle('Done')
     await userEvent.click(DoneButton)
 
-    expect(onDoneResult(canvas)).toMatchObject({
-      count: 1,
-      onDoneResult: {
+    expect(args.onDone.mock.calls[0][0]).toMatchObject({
         valid: true,
         value: {
           pointGroup: {
@@ -165,24 +157,21 @@ export const selectLeadPoint3OnDone = {
             ],
           },
         },
-      },
     })
   },
 }
 
 export const selectLeadUngroupOnDone = {
   args: { pointGroup: pointGroupDoc5, vState: 'selectLead' },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const element = canvas.getByTitle('Ungroup and close')
     await userEvent.click(element)
 
-    expect(onDoneResult(canvas)).toMatchObject({
-      count: 1,
-      onDoneResult: {
-        valid: true,
-        value: {
-          removedPgs: [
+    expect(args.onDone.mock.calls[0][0]).toMatchObject({
+      valid: true,
+      value: {
+        removedPgs: [
             {
               point: {
                 _id: '2',
@@ -232,7 +221,7 @@ export const selectLeadUngroupOnDone = {
               },
             },
           ],
-        },
+
       },
     })
   },
@@ -240,17 +229,15 @@ export const selectLeadUngroupOnDone = {
 
 export const editMultiplePointsRemovePoint3OnDone = {
   args: { pointGroup: pointGroupDoc5, vState: 'edit' },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const element = canvas.getByTitle('Remove from Group: Point 3')
     await userEvent.click(element)
 
-    expect(onDoneResult(canvas)).toMatchObject({
-      count: 1,
-      onDoneResult: {
-        valid: true,
-        value: {
-          pointGroup: {
+    expect(args.onDone.mock.calls[0][0]).toMatchObject({
+      valid: true,
+      value: {
+        pointGroup: {
             point: {
               _id: '5',
               subject: 'Point 5',
@@ -310,7 +297,6 @@ export const editMultiplePointsRemovePoint3OnDone = {
             },
           ],
         },
-      },
     })
   },
 }

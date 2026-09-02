@@ -4,6 +4,7 @@ import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts'
 
+const colorList = ['#038a47', '#f0a500', '#d62828']
 export default function RankingResults(props) {
   const { resultList, className, ...otherProps } = props
   const classes = useStylesFromThemeFunction(props)
@@ -31,17 +32,17 @@ export default function RankingResults(props) {
   const maxPercentage = Math.ceil(Math.max(...dataArray.map(item => item.percentage)))
 
   return (
-    <div className={cx(classes.wrapper, className)} {...props}>
-      <ResponsiveContainer width="100%" height="100%" className={cx(classes.wrapper, className)} {...props}>
-        <BarChart data={dataArray} width="100%" height="100%" layout="vertical">
+    <div className={cx(classes.wrapper, className)} {...otherProps}>
+      <ResponsiveContainer>
+        <BarChart data={dataArray} layout="vertical">
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis type="number" tickFormatter={tick => `${tick}%`} domain={[0, dataMax => Math.max(dataMax, maxPercentage)]} />
           <YAxis type="category" dataKey="name" className={cx(classes.yAxisFont)} />
           {/*cursor={{fill: 'transparent'}} to disable hover effect*/}
           <Tooltip />
-          <Bar dataKey="percentage" maxBarSize={25}>
+          <Bar dataKey="percentage">
             {dataArray.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill="#038a47" />
+              <Cell key={`cell-${index}`} fill={colorList[index % colorList.length]} />
             ))}
           </Bar>
         </BarChart>

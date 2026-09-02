@@ -3,7 +3,7 @@
 import { Mongo } from '@enciv/mongo-collections'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
-import { Iota, User, SibGetTemplateId, SibSendTransacEmail } from 'civil-server'
+import { Iota, User, BrevoGetTemplateId, BrevoSendTransacEmail } from 'civil-server'
 import { initDiscussion, insertStatementId, getUsersToInviteBack, getStatementIds } from '../../dturn/dturn'
 import InviteLog from '../../models/invite-log'
 import inviteUsersBackJob from '../invite-users-back'
@@ -11,11 +11,11 @@ import path from 'path'
 
 let MemoryServer
 
-// Mock SibGetTemplateId and SibSendTransacEmail
+// Mock BrevoGetTemplateId and BrevoSendTransacEmail
 jest.mock('civil-server', () => ({
   ...jest.requireActual('civil-server'),
-  SibGetTemplateId: jest.fn(),
-  SibSendTransacEmail: jest.fn(),
+  BrevoGetTemplateId: jest.fn(),
+  BrevoSendTransacEmail: jest.fn(),
 }))
 
 // Mock global logger but also console the messages except for info
@@ -57,8 +57,8 @@ beforeEach(async () => {
 
   // Reset mocks completely
   jest.clearAllMocks()
-  SibGetTemplateId.mockResolvedValue(123)
-  SibSendTransacEmail.mockResolvedValue(new Promise(resolve => resolve({ messageId: 1234 })))
+  BrevoGetTemplateId.mockResolvedValue(123)
+  BrevoSendTransacEmail.mockResolvedValue(new Promise(resolve => resolve({ messageId: 1234 })))
 
   // Set up environment
   process.env.HOSTNAME = 'example.com'
@@ -131,8 +131,8 @@ describe('invite-users-back job', () => {
 
     // Verify emails were sent
     expect(result.invitesSent).toBeGreaterThan(0)
-    expect(SibGetTemplateId).toHaveBeenCalledWith(path.resolve(__dirname, '../../../assets/email-templates/invite-next-round.html'))
-    expect(SibSendTransacEmail).toHaveBeenCalled()
+    expect(BrevoGetTemplateId).toHaveBeenCalledWith(path.resolve(__dirname, '../../../assets/email-templates/invite-next-round.html'))
+    expect(BrevoSendTransacEmail).toHaveBeenCalled()
 
     // Verify invite was logged
     const inviteLog = await InviteLog.findOne({ discussionId: discussionId.toString() })
@@ -200,7 +200,7 @@ describe('invite-users-back job', () => {
 
     // Should not send email to first user due to throttling, but may send to others
     // The specific behavior depends on dturn logic
-    expect(SibSendTransacEmail).not.toHaveBeenCalledWith('user0@example.com', expect.anything(), expect.anything())
+    expect(BrevoSendTransacEmail).not.toHaveBeenCalledWith('user0@example.com', expect.anything(), expect.anything())
   })
 
   test('should handle missing user gracefully', async () => {
@@ -279,7 +279,7 @@ describe('invite-users-back job', () => {
     await inviteUsersBackJob()
 
     // Should not process finished discussions
-    expect(SibSendTransacEmail).not.toHaveBeenCalled()
+    expect(BrevoSendTransacEmail).not.toHaveBeenCalled()
   })
 
   test('should handle email sending errors gracefully', async () => {
@@ -333,13 +333,13 @@ describe('invite-users-back job', () => {
     }
 
     // Mock email sending to fail
-    SibSendTransacEmail.mockRejectedValue(new Error('Email service error'))
+    BrevoSendTransacEmail.mockRejectedValue(new Error('Email service error'))
 
     // Run the job - should not throw
     await expect(inviteUsersBackJob()).resolves.not.toThrow()
 
     // Should log error
-    expect(logger.error).toHaveBeenCalledWith('Failed to send invite email via SibSendTransacEmail:', expect.any(Error))
+    expect(logger.error).toHaveBeenCalledWith('Failed to send invite email via BrevoSendTransacEmail:', expect.any(Error))
 
     // Should not log invite since email failed
     const inviteLog = await InviteLog.findOne({ discussionId: discussionId.toString() })

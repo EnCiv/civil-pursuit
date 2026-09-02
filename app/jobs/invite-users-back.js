@@ -1,12 +1,12 @@
 // https://github.com/EnCiv/civil-pursuit/issues/362
 import InviteLog from '../models/invite-log'
 import { getUsersToInviteBack } from '../dturn/dturn'
-import { SibGetTemplateId, SibSendTransacEmail, Iota, User } from 'civil-server'
+import { BrevoGetTemplateId, BrevoSendTransacEmail, brevoDefaultFromEmail, Iota, User } from 'civil-server'
 import { ObjectId } from 'mongodb'
 import path from 'path'
 
 // Job: invite users back to continue their discussion participation
-// Following civil-server pattern with SibGetTemplateId and SibSendTransacEmail
+// Following civil-server pattern with BrevoGetTemplateId and BrevoSendTransacEmail
 
 let templateId = null
 
@@ -43,14 +43,14 @@ async function sendInviteEmail(userId, discussion, round) {
       to: [{ email: user.email }],
       sender: {
         name: 'EnCiv.org',
-        email: process.env.SENDINBLUE_DEFAULT_FROM_EMAIL,
+        email: brevoDefaultFromEmail,
       },
       templateId,
       tags: ['invite-next-round', discussion._id.toString()],
       params,
     }
 
-    const result = await SibSendTransacEmail(messageProps)
+    const result = await BrevoSendTransacEmail(messageProps)
     if (!result || !result.messageId) {
       logger.error(`Failed to send invite email to ${user.email}`)
       return false
@@ -58,7 +58,7 @@ async function sendInviteEmail(userId, discussion, round) {
     logger.info(`Sent invite email to ${user.email} for discussion ${discussion._id}, round ${round}`)
     return true
   } catch (error) {
-    logger.error('Failed to send invite email via SibSendTransacEmail:', error)
+    logger.error('Failed to send invite email via BrevoSendTransacEmail:', error)
     return false
   }
 }
@@ -78,7 +78,7 @@ export default async function inviteUsersBackJob() {
 
   // Get template ID at the beginning if not already cached
   if (!templateId) {
-    templateId = await SibGetTemplateId(path.resolve(__dirname, '../../assets/email-templates/invite-next-round.html'))
+    templateId = await BrevoGetTemplateId(path.resolve(__dirname, '../../assets/email-templates/invite-next-round.html'))
     if (!templateId) {
       logger.error('Failed to get template ID for invite-next-round - aborting job')
       return { invitesSent: 0, discussionsProcessed: 0, error: 'Template ID retrieval failed' }

@@ -1,7 +1,7 @@
 // https://github.com/EnCiv/civil-pursuit/blob/main/docs/late-sign-up-spec.md
 
 import React, { useState } from 'react'
-import { within, userEvent, expect, waitFor } from '@storybook/test'
+import { within, userEvent, expect, waitFor } from 'storybook/test'
 import TermsAgreement from '../app/components/terms-agreement'
 
 export default {

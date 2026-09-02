@@ -107,13 +107,13 @@ export function Answer(props) {
   // myAnswer could be undefined initially, if so it needs to be initialized with an _id, and if the user types in the WhyAnswer first, it's parentId needs to be the answers _id
   // Use 'unknown' for userId if user doesn't have an id yet (new user before skip)
   const effectiveUserId = userId || 'unknown'
-  const [_myAnswer, setMyAnswer] = useState(myAnswer || { _id: ObjectId().toString(), subject: '', description: '', parentId: discussionId, userId: effectiveUserId })
+  const [_myAnswer, setMyAnswer] = useState(myAnswer || { _id: new ObjectId().toString(), subject: '', description: '', parentId: discussionId, userId: effectiveUserId })
   useEffect(() => {
     if (myAnswer && !isEqual(myAnswer, _myAnswer)) setMyAnswer(myAnswer)
   }, [myAnswer])
 
   // myWhy could be undefined initially if so it needs to be initialized with an _id and parentId
-  const [_myWhy, setMyWhy] = useState(myWhy || { _id: ObjectId().toString(), subject: '', description: '', parentId: _myAnswer._id, userId: effectiveUserId })
+  const [_myWhy, setMyWhy] = useState(myWhy || { _id: new ObjectId().toString(), subject: '', description: '', parentId: _myAnswer._id, userId: effectiveUserId })
   useEffect(() => {
     if (myWhy && !isEqual(myWhy, _myWhy)) setMyWhy(myWhy)
   }, [myWhy])
@@ -144,7 +144,10 @@ export function Answer(props) {
           setTimeout(() => {
             onDone({ valid: overallValid, value: percentDone(validByType), delta, onNext: onNextRef.current })
           })
-        return validByType // abort the rerender
+        return validByType // abort the rerender — bidirectional data pattern:
+        // validByType is mutated in place and same reference returned to prevent
+        // a re-render loop (user input → onDone → parent re-renders → child re-renders → repeat).
+        // See docs/bidirectional-data-pattern.md.
       })
     }
 

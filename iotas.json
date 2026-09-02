@@ -594,6 +594,9 @@
               "stepVisibility": {
                 "rounds": [0]
               },
+              "options": {
+                "submitOnNext": true
+              },
               "stepIntro": {
                 "subject": "Some details",
                 "description": "We ask these questions about participants to help us engage diverse participation.  In order to find the best possible solutions, and the ones that unite the nation, all views need to be represented if not participating directly.  This details are specific to this conversations. For other conversations, we will ask again."
@@ -809,6 +812,9 @@
               "stepIntro": {
                 "subject": "Feedback",
                 "description": "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters."
+              },
+              "options": {
+                "submitOnNext": true
               },
               "schema": {
                 "type": "object",

@@ -3,8 +3,7 @@
 import React from 'react'
 import useDeliberationStats from '../app/components/use-deliberation-stats'
 import { socketEmitDecorator } from './common'
-import { userEvent, within, waitFor } from '@storybook/test'
-import expect from 'expect'
+import { expect, userEvent, within, waitFor } from 'storybook/test'
 
 export default {
   component: useDeliberationStats,

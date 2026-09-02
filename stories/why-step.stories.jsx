@@ -2,19 +2,13 @@
 //https://github.com/EnCiv/civil-pursuit/issues/214
 
 import React, { useState, useEffect, useContext } from 'react'
-import { userEvent, within, waitFor, expect } from '@storybook/test'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
+import { userEvent, within, waitFor, expect } from 'storybook/test'
 import WhyStep from '../app/components/steps/why'
-import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, asyncSleep } from './common'
+import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, asyncSleep } from './common'
 
 export default {
   component: WhyStep,
   decorators: [onDoneDecorator, socketEmitDecorator],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 const reducedPointList = [
@@ -123,7 +117,7 @@ export const UserEntersInitialData = {
   },
   decorators: [DeliberationContextDecorator],
   render: whyStepTemplate,
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
 
     await waitFor(() => {
@@ -145,9 +139,8 @@ export const UserEntersInitialData = {
     await userEvent.type(descriptionInputs[1], 'User Description 2')
     await userEvent.tab()
     await waitFor(() => {
-      const result = onDoneResult()
-      expect(result.count).toBe(6)
-      expect(result.onDoneResult).toMatchObject({
+      expect(args.onDone.mock.calls).toHaveLength(6)
+      expect(args.onDone.mock.calls[5][0]).toMatchObject({
         valid: true,
         value: 1,
       })
@@ -201,17 +194,13 @@ export const UserUpdatesExistingData = {
   },
   render: whyStepTemplate,
   decorators: [DeliberationContextDecorator],
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await asyncSleep(1000)
     await waitFor(() => {
-      const result = onDoneResult()
-      expect(result).toMatchObject({
-        count: 2,
-        onDoneResult: {
-          valid: true,
-          value: 1,
-        },
+      expect(args.onDone.mock.calls[1][0]).toMatchObject({
+        valid: true,
+        value: 1,
       })
       expect(window.socket._socketEmitHandlerResults['upsert-why'].length).toBe(0)
     })
@@ -247,13 +236,9 @@ export const UserUpdatesExistingData = {
         parentId: '60b8d295f1c8ab1d2f4a1c01',
       })
       expect(window.socket._socketEmitHandlerResults['upsert-why'].length).toBe(2)
-      const result = onDoneResult()
-      expect(result).toMatchObject({
-        count: 4,
-        onDoneResult: {
-          valid: true,
-          value: 1,
-        },
+      expect(args.onDone.mock.calls[3][0]).toMatchObject({
+        valid: true,
+        value: 1,
       })
     })
   },

@@ -12,7 +12,7 @@ beforeEach(async () => {
 })
 
 beforeAll(async () => {
-  await Mongo.connect(global.__MONGO_URI__, { useUnifiedTopology: true })
+  await Mongo.connect(global.__MONGO_URI__)
   await Dturns.setCollectionProps()
 })
 

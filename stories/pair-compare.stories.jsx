@@ -1,7 +1,6 @@
 import PairCompare from '../app/components/pair-compare'
-import { onDoneDecorator, onDoneResult, asyncSleep } from './common'
-import { within, userEvent, waitFor } from '@storybook/test'
-import expect from 'expect'
+import { onDoneDecorator } from './common'
+import { expect, within, userEvent, waitFor } from 'storybook/test'
 import React, { useState } from 'react'
 
 export default {
@@ -65,48 +64,39 @@ export const onePointCanBeUsefulStartOverNotUseful = {
     },
     whyRankList: [whyRankList[0]],
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const Useful = canvas.getByText('Useful')
     await userEvent.click(Useful)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
-        onDoneResult: {
-          valid: true,
-          value: {
-            // _id will be auto generated
-            category: 'most',
-            parentId: '1',
-            stage: 'why',
-          },
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({
+        valid: true,
+        value: {
+          // _id will be auto generated
+          category: 'most',
+          parentId: '1',
+          stage: 'why',
         },
       })
     })
     const StartOver = canvas.getByText('Start Over')
     await userEvent.click(StartOver)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
-        onDoneResult: {
-          valid: false,
-          value: null,
-        },
+      expect(args.onDone.mock.calls[1][0]).toMatchObject({
+        valid: false,
+        value: null,
       })
     })
     const NotUseful = canvas.getByText('Not useful')
     await userEvent.click(NotUseful)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 3,
-        onDoneResult: {
-          valid: true,
-          value: {
-            // _id will be auto generated
-            category: 'neutral',
-            parentId: '1',
-            stage: 'why',
-          },
+      expect(args.onDone.mock.calls[2][0]).toMatchObject({
+        valid: true,
+        value: {
+          // _id will be auto generated
+          category: 'neutral',
+          parentId: '1',
+          stage: 'why',
         },
       })
     })
@@ -121,14 +111,10 @@ export const onePointRankedGetsOnDone = {
     },
     whyRankList: [rankedWhyRankList[0]],
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement)
+  play: async ({ canvasElement, args }) => {
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
-        onDoneResult: {
-          valid: true,
-        },
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({
+        valid: true,
       })
     })
   },
@@ -151,52 +137,43 @@ export const UserChoosesNoPoint = {
     },
     whyRankList: [whyRankList[0], whyRankList[1], whyRankList[2]],
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const Neither = canvas.getByText('Neither')
     // don't await users event so not to miss the onDone calls from the same event
     userEvent.click(Neither)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
-        onDoneResult: {
-          valid: false,
-          value: {
-            // _id will be auto generated
-            category: 'neutral',
-            parentId: '1',
-            stage: 'why',
-          },
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({
+        valid: false,
+        value: {
+          // _id will be auto generated
+          category: 'neutral',
+          parentId: '1',
+          stage: 'why',
         },
       })
     })
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
-        onDoneResult: {
-          valid: false,
-          value: {
-            // _id will be auto generated
-            category: 'neutral',
-            parentId: '2',
-            stage: 'why',
-          },
+      expect(args.onDone.mock.calls[1][0]).toMatchObject({
+        valid: false,
+        value: {
+          // _id will be auto generated
+          category: 'neutral',
+          parentId: '2',
+          stage: 'why',
         },
       })
     })
     const NotUseful = canvas.getByText('Not useful')
     await userEvent.click(NotUseful)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 3,
-        onDoneResult: {
-          valid: true,
-          value: {
-            // _id will be auto generated
-            category: 'neutral',
-            parentId: '3',
-            stage: 'why',
-          },
+      expect(args.onDone.mock.calls[2][0]).toMatchObject({
+        valid: true,
+        value: {
+          // _id will be auto generated
+          category: 'neutral',
+          parentId: '3',
+          stage: 'why',
         },
       })
     })
@@ -211,70 +188,69 @@ export const onDoneTest = {
     },
     whyRankList: [whyRankList[0], whyRankList[1], whyRankList[2], whyRankList[3]],
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const Point1 = canvas.getByText('Point 1')
+    const Point1 = await waitFor(() => canvas.getByText('Point 1'))
     await userEvent.click(Point1)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
-        onDoneResult: {
-          valid: false,
-          value: {
-            // _id will be auto generated
-            category: 'neutral',
-            parentId: '2',
-            stage: 'why',
-          },
+      const calls = args.onDone.mock.calls
+      if (!calls[0]) throw new Error(`[after click Point1] onDone.calls[0] undefined — total calls: ${calls.length}`)
+      expect(calls[0][0]).toMatchObject({
+        valid: false,
+        value: {
+          // _id will be auto generated
+          category: 'neutral',
+          parentId: '2',
+          stage: 'why',
         },
       })
     })
-    await asyncSleep(500)
-    const Point3 = canvas.getByText('Point 3')
+    // Wait for Point 3 to be in the visible clickable button (not the disabled hidden
+    // transition container). asyncSleep(500) races with the component's own 500ms
+    // transition timer; getByTitle only matches the <button title="Choose as more
+    // important: Point 3"> which only renders when idxRight=2 is committed.
+    const Point3 = await waitFor(() => canvas.getByTitle('Choose as more important: Point 3'))
     await userEvent.click(Point3)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
-        onDoneResult: {
-          valid: false,
-          value: {
-            // _id will be auto generated
-            category: 'neutral',
-            parentId: '1',
-            stage: 'why',
-          },
+      const calls = args.onDone.mock.calls
+      if (!calls[1]) throw new Error(`[after click Point3] onDone.calls[1] undefined — total calls: ${calls.length}, calls[0]: ${JSON.stringify(calls[0])}`)
+      expect(calls[1][0]).toMatchObject({
+        valid: false,
+        value: {
+          // _id will be auto generated
+          category: 'neutral',
+          parentId: '1',
+          stage: 'why',
         },
       })
     })
-    await asyncSleep(500)
-    const Point4 = canvas.getByText('Point 4')
+    // Same: wait for Point 4 to be in the clickable button position
+    const Point4 = await waitFor(() => canvas.getByTitle('Choose as more important: Point 4'))
     /* don't await - there are two onDone updates in succession and if we await the user event we miss the first one */
     userEvent.click(Point4)
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 3,
-        onDoneResult: {
-          valid: false,
-          value: {
-            // _id will be auto generated
-            category: 'neutral',
-            parentId: '3',
-            stage: 'why',
-          },
+      const calls = args.onDone.mock.calls
+      if (!calls[2]) throw new Error(`[after click Point4] onDone.calls[2] undefined — total calls: ${calls.length}`)
+      expect(calls[2][0]).toMatchObject({
+        valid: false,
+        value: {
+          // _id will be auto generated
+          category: 'neutral',
+          parentId: '3',
+          stage: 'why',
         },
       })
     })
     await waitFor(() => {
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 4,
-        onDoneResult: {
-          valid: true,
-          value: {
-            // _id will be auto generated
-            category: 'most',
-            parentId: '4',
-            stage: 'why',
-          },
+      const calls = args.onDone.mock.calls
+      if (!calls[3]) throw new Error(`[after click Point4, waiting for call 3] onDone.calls[3] undefined — total calls: ${calls.length}`)
+      expect(calls[3][0]).toMatchObject({
+        valid: true,
+        value: {
+          // _id will be auto generated
+          category: 'most',
+          parentId: '4',
+          stage: 'why',
         },
       })
     })
@@ -289,15 +265,12 @@ export const OnePointRankedInitially = {
     },
     whyRankList: [rankedWhyRankList[0]],
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await waitFor(() => {
-      const StartOver = canvas.getByText('Start Over')
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
-        onDoneResult: {
-          valid: true,
-        },
+      canvas.getByText('Start Over')
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({
+        valid: true,
       })
     })
   },
@@ -323,15 +296,12 @@ export const OnePointRankedAfterFirstRendered = {
       return <Story />
     },
   ],
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await waitFor(() => {
-      const StartOver = canvas.getByText('Start Over')
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
-        onDoneResult: {
-          valid: true,
-        },
+      canvas.getByText('Start Over')
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({
+        valid: true,
       })
     })
   },

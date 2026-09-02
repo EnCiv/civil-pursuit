@@ -14,7 +14,7 @@ const ParticipantsBadge = props => {
     return null
   }
 
-  return <StatusBadge name={badgeName} status="" className={className} {...otherProps} />
+  return <StatusBadge name={badgeName} status="" className={className} suppressHydrationWarning {...otherProps} />
 }
 
 export default ParticipantsBadge

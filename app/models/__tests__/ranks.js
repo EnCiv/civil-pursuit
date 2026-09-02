@@ -4,7 +4,7 @@ const { Mongo, Collection } = require('@enciv/mongo-collections')
 const Ranks = require('../ranks')
 
 beforeAll(async () => {
-  await Mongo.connect(global.__MONGO_URI__, { useUnifiedTopology: true })
+  await Mongo.connect(global.__MONGO_URI__)
   await Ranks.setCollectionProps()
 })
 
