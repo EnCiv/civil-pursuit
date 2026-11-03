@@ -48,7 +48,7 @@ class App extends React.Component {
               <GlobalStyles />
               <TopNavWrap {...this.props} />
               <WebComponents key="web-component" webComponent={this.props.iota.webComponent} {...newProps} />
-              <EncivCookies user={newProps.user} cookieCategories={newProps.cookieCategories} cookieScripts={newProps.cookieScripts} />
+              <EncivCookies user={newProps.user} cookieCategories={newProps.cookieCategories} />
               <Footer mode="dark" key="footer" />
             </div>
           </ThemeProvider>
