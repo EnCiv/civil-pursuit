@@ -34,10 +34,10 @@
     "node": ">=24.0.0"
   },
   "peerDependencies": {
-    "civil-client": "github:EnCiv/civil-client"
+    "civil-client": "github:EnCiv/civil-client#semver:^0.0.21"
   },
   "dependencies": {
-    "civil-server": "github:EnCiv/civil-server#accept-cookies#61",
+    "civil-server": "github:EnCiv/civil-server#semver:^2.0.9",
     "@enciv/mongo-collections": "^0.0.5",
     "@jsonforms/core": "^3.8.0",
     "@jsonforms/react": "^3.8.0",
@@ -103,8 +103,8 @@
     "@swc/core@1.16.0": true,
     "esbuild@0.28.2": true,
     "unrs-resolver@1.12.2": true,
-    "civil-client@0.0.21": true,
-    "civil-server@2.0.7": true,
+    "github:EnCiv/civil-client": true,
+    "github:EnCiv/civil-server": true,
     "core-js@3.50.0": true,
     "use-methods@1.1.3": true,
     "bcrypt@6.0.0": true,
