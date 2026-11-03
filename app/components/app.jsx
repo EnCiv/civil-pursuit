@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async'
 import theme from './theme'
 import TopNavBar from './top-nav-bar'
 import GlobalStyles from './global-styles'
+import EncivCookies from 'civil-server/dist/components/enciv-cookies'
 
 class App extends React.Component {
   render() {
@@ -47,6 +48,7 @@ class App extends React.Component {
               <GlobalStyles />
               <TopNavWrap {...this.props} />
               <WebComponents key="web-component" webComponent={this.props.iota.webComponent} {...newProps} />
+              <EncivCookies user={newProps.user} cookieCategories={newProps.cookieCategories} />
               <Footer mode="dark" key="footer" />
             </div>
           </ThemeProvider>
