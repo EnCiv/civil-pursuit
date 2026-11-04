@@ -34,10 +34,10 @@
     "node": ">=24.0.0"
   },
   "peerDependencies": {
-    "civil-client": "github:EnCiv/civil-client#semver:^0.0.21"
+    "civil-client": "github:EnCiv/civil-client#semver:^0.0.22"
   },
   "dependencies": {
-    "civil-server": "github:EnCiv/civil-server#semver:^2.0.9",
+    "civil-server": "github:EnCiv/civil-server#semver:^2.0.10",
     "@enciv/mongo-collections": "^0.0.5",
     "@jsonforms/core": "^3.8.0",
     "@jsonforms/react": "^3.8.0",
