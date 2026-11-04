@@ -36,7 +36,13 @@ export default async function getPointsForRound(discussionId, round, cb) {
   }
 
   // Get the list and return if successful
-  let pointsList = await Points.find({ _id: { $in: statementIds.map(_id => new ObjectId(_id)) } }).toArray()
+  let pointsList
+  try {
+    pointsList = await Points.find({ _id: { $in: statementIds.map(_id => new ObjectId(_id)) } }).toArray()
+  } catch (error) {
+    logger.error('getPointsForRound failed to retrieve points:', error)
+    return cbFailure('Failed to retrieve points for round - Points lookup failed.')
+  }
 
   // Anonymize points by removing userids, except if the point was made by the current user
   pointsList = pointsList.map(point => {

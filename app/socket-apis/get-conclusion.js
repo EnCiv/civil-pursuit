@@ -17,25 +17,26 @@ export default async function getConclusion(discussionId, cb) {
     return cb && cb(undefined)
   }
 
-  // Gather conclusion points
-  let statementIds = await getConclusionIds(discussionId)
-  let topPointAndWhys = []
+  try {
+    // Gather conclusion points
+    let statementIds = await getConclusionIds(discussionId)
+    let topPointAndWhys = []
 
-  if (!statementIds) {
-    console.error('getConclusion called but discussion not complete.')
-    return cb && cb(undefined)
-  } else {
-    for await (const statementId of statementIds) {
-      let mosts, leasts, counts
+    if (!statementIds) {
+      console.error('getConclusion called but discussion not complete.')
+      return cb && cb(undefined)
+    } else {
+      for await (const statementId of statementIds) {
+        let mosts, leasts, counts
 
-      await getTopRankedWhysForPoint.call(this, statementId, 'most', start, pageSize, data => {
-        mosts = data || []
-      })
-      await getTopRankedWhysForPoint.call(this, statementId, 'least', start, pageSize, data => {
-        leasts = data || []
-      })
+        await getTopRankedWhysForPoint.call(this, statementId, 'most', start, pageSize, data => {
+          mosts = data || []
+        })
+        await getTopRankedWhysForPoint.call(this, statementId, 'least', start, pageSize, data => {
+          leasts = data || []
+        })
 
-      counts = await Ranks.aggregate([
+        counts = await Ranks.aggregate([
         // 1) Filter ranks for the given parent, discussion, and stage
         {
           $match: {
@@ -68,17 +69,22 @@ export default async function getConclusion(discussionId, cb) {
             countByCategory: { $arrayToObject: '$kv' },
           },
         },
-      ]).toArray()
+        ]).toArray()
 
-      const point = await Point.findOne({ _id: new ObjectId(statementId) })
-      const convertedPoint = { ...point, _id: point._id.toString() }
-      const newCounts = counts[0]?.countByCategory || {}
-      ;['most', 'neutral', 'least'].forEach(cat => {
-        if (!newCounts[cat]) newCounts[cat] = 0
-      })
-      topPointAndWhys.push({ mosts: mosts, leasts: leasts, point: convertedPoint, counts: newCounts })
+        const point = await Point.findOne({ _id: new ObjectId(statementId) })
+        if (!point) throw new Error(`Conclusion point '${statementId}' was not found`)
+        const convertedPoint = { ...point, _id: point._id.toString() }
+        const newCounts = counts[0]?.countByCategory || {}
+        ;['most', 'neutral', 'least'].forEach(cat => {
+          if (!newCounts[cat]) newCounts[cat] = 0
+        })
+        topPointAndWhys.push({ mosts: mosts, leasts: leasts, point: convertedPoint, counts: newCounts })
+      }
     }
-  }
 
-  return cb && cb(topPointAndWhys)
+    return cb && cb(topPointAndWhys)
+  } catch (error) {
+    logger.error('getConclusion failed:', error)
+    return cb && cb(undefined)
+  }
 }

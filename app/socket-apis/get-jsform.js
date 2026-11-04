@@ -13,7 +13,11 @@ export default async function getJsform(parentId, cb) {
     return cb && cb()
   }
 
-  let result = await Jsforms.findOne({ parentId: parentId, userId: this.synuser.id })
-
-  return cb && cb(result ?? {})
+  try {
+    let result = await Jsforms.findOne({ parentId: parentId, userId: this.synuser.id })
+    return cb && cb(result ?? {})
+  } catch (error) {
+    logger.error('getJsform failed:', error)
+    return cb && cb(undefined)
+  }
 }
