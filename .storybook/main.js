@@ -1,5 +1,5 @@
 import { merge } from 'webpack-merge'
-import webpackDevConfig from '../webpack-dev.config'
+import webpackDevConfig from '../webpack-dev.config.js'
 
 const config = {
   stories: [
