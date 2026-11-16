@@ -19,7 +19,12 @@ export default async function finishRound(discussionId, round, idRanks, grouping
     return cbFailure('Invalid arguments provided to finishRound.')
   }
 
-  await dturn.finishRound(discussionId, round, userId, idRanks, groupings)
+  try {
+    await dturn.finishRound(discussionId, round, userId, idRanks, groupings)
+  } catch (error) {
+    logger.error('finishRound failed:', error)
+    return cbFailure(error?.message || 'Failed to finish round.')
+  }
 
   if (cb) cb(true)
 }

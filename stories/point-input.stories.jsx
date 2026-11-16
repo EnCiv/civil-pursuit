@@ -1,7 +1,6 @@
 import PointInput from '../app/components/point-input'
-import { onDoneDecorator, onDoneResult } from './common'
-import expect from 'expect'
-import { userEvent, within, waitFor } from '@storybook/test'
+import { onDoneDecorator } from './common'
+import { expect, userEvent, within, waitFor } from 'storybook/test'
 
 export default {
   component: PointInput,
@@ -47,35 +46,26 @@ export const subjectFieldErrorTooMuchText = {
 
 export const onDoneTest = {
   args: { value: {} },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const subjectEle = canvas.getByPlaceholderText(/type some thing here/i)
     const descriptionEle = canvas.getByPlaceholderText(/description/i)
     await waitFor(() =>
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 1,
-        onDoneResult: { valid: false, value: {} },
-      })
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({ valid: false, value: {} })
     )
     await userEvent.type(subjectEle, 'This is the subject')
     await userEvent.tab() // moving out of the input field causes onDone to be called
     await waitFor(() =>
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
-        onDoneResult: { valid: false, value: { subject: 'This is the subject' } },
-      })
+      expect(args.onDone.mock.calls[1][0]).toMatchObject({ valid: false, value: { subject: 'This is the subject' } })
     )
     await userEvent.type(descriptionEle, 'This is the detailed description')
     await userEvent.tab() // moving out of the input field causes onDone to be called
     await waitFor(() =>
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 3,
-        onDoneResult: {
-          valid: true,
-          value: {
-            subject: 'This is the subject',
-            description: 'This is the detailed description',
-          },
+      expect(args.onDone.mock.calls[2][0]).toMatchObject({
+        valid: true,
+        value: {
+          subject: 'This is the subject',
+          description: 'This is the detailed description',
         },
       })
     )

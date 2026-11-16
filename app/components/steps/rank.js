@@ -124,7 +124,7 @@ export function useRankByParentId(discussionId, round, stage, reducedPointList, 
         }
       } else {
         rank = {
-          _id: ObjectId().toString(),
+          _id: new ObjectId().toString(),
           stage,
           category: newCategory,
           parentId: point._id,

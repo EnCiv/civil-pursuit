@@ -1,7 +1,6 @@
 import React from 'react'
 import PairWise from '../app/components/pair-wise'
-import { within, userEvent, waitFor } from '@storybook/test'
-import expect from 'expect'
+import { expect, within, userEvent, waitFor } from 'storybook/test'
 
 export default { title: 'Components/PairWise' }
 

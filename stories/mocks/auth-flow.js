@@ -37,9 +37,12 @@ export function withAuthTestState(Template) {
  *
  * This decorator:
  * 1. Initializes `testState` in args if not present
- * 2. Mocks socket methods (close, removeListener) to simulate reconnection
- * 3. Intercepts superagent POST to /tempid endpoint
+ * 2. Registers testState in global registry for superagent mock (in preview.js)
+ * 3. Mocks socket methods (close, removeListener) to simulate reconnection
  * 4. Updates context with new user after tempid response
+ *
+ * Note: The actual superagent mock is installed in .storybook/preview.js
+ * before any modules load, ensuring use-auth gets the mocked version.
  *
  * Usage:
  * ```
@@ -68,6 +71,13 @@ export const authFlowDecorator = (Story, context) => {
 
   // Get test state from args (shared between decorator and play function)
   const testState = context.args.testState
+  
+  // Register testState in global registry for superagent mock
+  if (!window.__superagentMockRegistry) {
+    window.__superagentMockRegistry = {}
+  }
+  window.__superagentMockRegistry.testState = testState
+  console.log('✅ [authFlowDecorator] Registered testState in global mock registry')
 
   const [_this] = useState(() => {
     const _this = {}
@@ -119,77 +129,8 @@ export const authFlowDecorator = (Story, context) => {
     return _this
   })
 
-  // Import superagent and wrap its post method
+  // Cleanup effect
   React.useEffect(() => {
-    // Dynamically import and wrap superagent
-    const setupSuperagentMock = async () => {
-      try {
-        // Get the superagent module that useAuth is using
-        const superagent = await import('superagent')
-
-        // Wrap the post method
-        // we will not actually call superagent.post because we are running in Storybook the middleware routes are not supported
-        superagent.default.post = function (url) {
-          if (url === '/tempid') {
-            console.log('🔄 Intercepted superagent.post("/tempid")')
-
-            // Return a mock request object that implements the fluent API
-            const mockRequest = {
-              send: function (data) {
-                console.log('📤 superagent.send() called with:', data)
-                testState.tempidRequestData = data
-                return this
-              },
-              end: function (callback) {
-                console.log('✅ superagent.end() called, simulating /tempid response')
-                testState.tempidCalled = true
-
-                // Simulate successful server response
-                const response = {
-                  status: 200,
-                  text: JSON.stringify({ userId: 'temp-user-123' }),
-                  body: { userId: 'temp-user-123' },
-                  ok: true,
-                }
-                testState.tempidResponse = response.body
-                console.log('✅ /tempid mock returned:', response.body)
-
-                // Call the callback with (err, res)
-                setTimeout(() => {
-                  if (callback) {
-                    callback(null, response)
-                  }
-                }, 100)
-
-                return this
-              },
-              set: function () {
-                return this
-              },
-              type: function () {
-                return this
-              },
-              accept: function () {
-                return this
-              },
-              timeout: function () {
-                return this
-              },
-              retry: function () {
-                return this
-              },
-            }
-
-            return mockRequest
-          }
-        }
-
-        console.log('✅ Superagent mock installed')
-      } catch (error) {
-        console.error('❌ Failed to setup superagent mock:', error)
-      }
-    }
-    setupSuperagentMock()
     return () => {
       if (typeof _this.userAuthTimeout === 'number') {
         clearTimeout(_this.userAuthTimeout)
@@ -205,6 +146,10 @@ export const authFlowDecorator = (Story, context) => {
         _this.connectTimeout = null
       }
       window.socket.removeListener = () => {} // clean up socket mock to prevent affecting other tests
+      // Unregister testState from global registry
+      if (window.__superagentMockRegistry) {
+        window.__superagentMockRegistry.testState = null
+      }
     }
   }, [])
   return <Story />

@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import StepSlider from '../app/components/step-slider'
 import TopNavBar from '../app/components/top-nav-bar'
 import Footer from '../app/components/footer'
-import { userEvent, within, waitFor, expect } from '@storybook/test'
+import { userEvent, within, waitFor, expect } from 'storybook/test'
 
 /**
  * Helper to wait for step slider transitions to complete.

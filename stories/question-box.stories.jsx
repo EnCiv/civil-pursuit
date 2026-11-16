@@ -3,17 +3,11 @@
 
 import React from 'react'
 import QuestionBox from '../app/components/question-box'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import StatusBadge from '../app/components/status-badge'
 import { PrimaryButton, SecondaryButton, ModifierButton } from '../app/components/button.jsx'
 
 export default {
   component: QuestionBox,
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 const Template = args => <QuestionBox {...args} />

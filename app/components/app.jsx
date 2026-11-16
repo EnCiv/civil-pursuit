@@ -1,13 +1,13 @@
 import React from 'react'
-import { hot } from 'react-hot-loader'
 import WebComponents from '../web-components'
 import Footer from './footer'
 import { ErrorBoundary } from 'civil-client'
 import { ThemeProvider, createUseStyles } from 'react-jss'
-import { Helmet } from 'react-helmet'
+import { Helmet } from 'react-helmet-async'
 import theme from './theme'
 import TopNavBar from './top-nav-bar'
 import GlobalStyles from './global-styles'
+import EncivCookies from 'civil-server/dist/components/enciv-cookies'
 
 class App extends React.Component {
   render() {
@@ -48,6 +48,7 @@ class App extends React.Component {
               <GlobalStyles />
               <TopNavWrap {...this.props} />
               <WebComponents key="web-component" webComponent={this.props.iota.webComponent} {...newProps} />
+              <EncivCookies user={newProps.user} cookieCategories={newProps.cookieCategories} />
               <Footer mode="dark" key="footer" />
             </div>
           </ThemeProvider>
@@ -56,10 +57,12 @@ class App extends React.Component {
     } else
       return (
         <ErrorBoundary>
-          <div style={{ position: 'relative' }}>
-            <div>Nothing Here</div>
-            <Footer />
-          </div>
+          <ThemeProvider theme={theme}>
+            <div style={{ position: 'relative' }}>
+              <div>Nothing Here</div>
+              <Footer />
+            </div>
+          </ThemeProvider>
         </ErrorBoundary>
       )
   }
@@ -115,4 +118,4 @@ function TopNavWrap(props) {
   return <TopNavBar mode={'dark'} menu={menu} />
 }
 
-export default hot(module)(App)
+export default App

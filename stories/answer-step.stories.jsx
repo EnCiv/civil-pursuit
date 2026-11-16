@@ -1,10 +1,9 @@
 // https://github.com/EnCiv/civil-pursuit/issues/102
 
-import { userEvent, within, waitFor, expect } from '@storybook/test'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
+import { userEvent, within, waitFor, expect } from 'storybook/test'
 import React, { useState, useEffect } from 'react'
 import AnswerStep, { Answer } from '../app/components/steps/answer'
-import { DeliberationContextDecorator, deliberationContextData, onDoneDecorator, onDoneResult, socketEmitDecorator } from './common'
+import { DeliberationContextDecorator, deliberationContextData, onDoneDecorator, socketEmitDecorator } from './common'
 import ObjectId from 'bson-objectid'
 import { withAuthTestState, authFlowDecorators } from './mocks/auth-flow'
 import LocalStorageManager from '../app/lib/local-storage-manager'
@@ -12,11 +11,6 @@ import LocalStorageManager from '../app/lib/local-storage-manager'
 export default {
   component: Answer,
   decorators: [onDoneDecorator],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 const startingQuestion = {
@@ -159,7 +153,7 @@ export const onDoneTestSwap = {
     user: { id: 'a', email: 'test@example.com' },
     round: 0,
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const subjectEle = canvas.getAllByPlaceholderText(/type some thing here/i)
     const descriptionEle = canvas.getAllByPlaceholderText(/description/i)
@@ -176,10 +170,7 @@ export const onDoneTestSwap = {
     await userEvent.type(descriptionEle[0], 'This is the first description!')
     await userEvent.tab()
 
-    expect(onDoneResult(canvas)).toMatchObject({
-      count: 2,
-      onDoneResult: { delta: { myAnswer: { description: 'This is the first description!', parentId: '5d0137260dacd06732a1d814', subject: 'This is the first subject!' } }, valid: true, value: 1 },
-    })
+    expect(args.onDone.mock.calls[1][0]).toMatchObject({ delta: { myAnswer: { description: 'This is the first description!', parentId: '5d0137260dacd06732a1d814', subject: 'This is the first subject!' } }, valid: true, value: 1 })
   },
 }
 

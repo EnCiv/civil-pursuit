@@ -4,16 +4,10 @@
 
 import React from 'react'
 import RoundTracker from '../app/components/round-tracker'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 
 export default {
   title: 'RoundTracker',
   component: RoundTracker,
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 export const OneRound = {

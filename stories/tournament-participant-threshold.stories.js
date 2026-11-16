@@ -4,7 +4,7 @@
 import React from 'react'
 import Tournament from '../app/components/tournament'
 import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator, mockBatchUpsertDeliberationDataRoute, clearGlobalStateDecorator } from './common'
-import { userEvent, within, waitFor, expect } from '@storybook/test'
+import { userEvent, within, waitFor, expect } from 'storybook/test'
 import { authFlowDecorators, withAuthTestState } from './mocks/auth-flow'
 import { tournamentSteps, demInfoDecorator, tournamentDefaultValueMinimal, samplePoints, sampleWhys } from './tournament.stories'
 import { clear } from '../app/lib/local-storage-manager'

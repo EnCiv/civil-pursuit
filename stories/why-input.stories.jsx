@@ -1,20 +1,13 @@
-import { userEvent, within } from '@storybook/test'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
+import { expect, userEvent, within } from 'storybook/test'
 import React from 'react'
 import WhyInput from '../app/components/why-input'
-import expect from 'expect'
-import { onDoneDecorator, onDoneResult } from './common'
+import { onDoneDecorator } from './common'
 import DemInfo from '../app/components/dem-info'
 
 export default {
   component: WhyInput,
   args: {},
   decorators: [onDoneDecorator],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 const point = {
@@ -57,29 +50,23 @@ export const onDoneTest = {
       _id: 'ExampleId',
     },
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const subjectEle = canvas.getByPlaceholderText(/type some thing here/i)
     const descriptionEle = canvas.getByPlaceholderText(/description/i)
     await userEvent.type(subjectEle, 'This is the subject!')
     await userEvent.tab() // onDone will be called after moving out of input field
 
-    expect(onDoneResult(canvas)).toMatchObject({
-      count: 1,
-      onDoneResult: { valid: false, value: { subject: 'This is the subject!', description: '' } },
-    })
+    expect(args.onDone.mock.calls[0][0]).toMatchObject({ valid: false, value: { subject: 'This is the subject!', description: '' } })
 
     await userEvent.type(descriptionEle, 'This is the description!')
     await userEvent.tab() // onDone will be called after moving out of input field
 
-    expect(onDoneResult(canvas)).toMatchObject({
-      count: 2,
-      onDoneResult: {
-        valid: true,
-        value: {
-          subject: 'This is the subject!',
-          description: 'This is the description!',
-        },
+    expect(args.onDone.mock.calls[1][0]).toMatchObject({
+      valid: true,
+      value: {
+        subject: 'This is the subject!',
+        description: 'This is the description!',
       },
     })
   },

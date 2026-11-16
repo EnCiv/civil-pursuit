@@ -1,8 +1,7 @@
 import React from 'react'
 import Ranking from '../app/components/ranking'
-import common, { onDoneDecorator, onDoneResult } from './common'
-import expect from 'expect'
-import { userEvent, within } from '@storybook/test'
+import common, { onDoneDecorator } from './common'
+import { expect, userEvent, within } from 'storybook/test'
 
 export default {
   component: Ranking,
@@ -221,12 +220,11 @@ export const Empty = {
 
 export const LeastOnDone = {
   args: {},
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     const leastEle = canvas.getByText(/Least/i)
     await userEvent.click(leastEle)
-    const result = onDoneResult()
-    expect(result).toMatchObject({ count: 1, onDoneResult: { valid: true, value: 'Least' } })
+    expect(args.onDone.mock.calls[0][0]).toMatchObject({ valid: true, value: 'Least' })
   },
 }
 
@@ -236,15 +234,11 @@ export const DefaultMost = {
 
 export const BadDefault = {
   args: { defaultValue: 'BadDefault' },
-  play: async ({ step }) => {
+  play: async ({ step, args }) => {
     // using step instead of canvasElement because don't want userEvent
     await common.asyncSleep(1) // wait for the rerender after onDone is called
     await step('onDone should be called after initial render with valid: false', async () => {
-      const result = onDoneResult()
-      expect(result).toMatchObject({
-        count: 1,
-        onDoneResult: { valid: false, value: '' },
-      })
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({ valid: false, value: '' })
     })
   },
 }

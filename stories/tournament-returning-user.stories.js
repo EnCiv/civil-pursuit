@@ -5,7 +5,7 @@
 import React from 'react'
 import Tournament from '../app/components/tournament'
 import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator } from './common'
-import { userEvent, within, waitFor, expect } from '@storybook/test'
+import { userEvent, within, waitFor, expect } from 'storybook/test'
 import { tournamentSteps, demInfoDecorator, samplePoints, sampleWhys } from './tournament.stories'
 import { waitForStepSlider } from './step-slider.stories'
 

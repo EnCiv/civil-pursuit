@@ -1,7 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/57
 
 import React from 'react'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import ShowDualPointList from '../app/components/show-dual-point-list'
 
 export default {
@@ -9,11 +8,6 @@ export default {
   args: {
     leftHeader: "Why It's most Important",
     rightHeader: "Why It's least Important",
-  },
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
   },
 }
 

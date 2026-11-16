@@ -3,9 +3,9 @@
 
 import React from 'react'
 import Intermission from '../app/components/intermission'
-import { DeliberationContextDecorator, onDoneDecorator, onDoneResult, buildApiDecorator, mockBatchUpsertDeliberationDataRoute, clearGlobalStateDecorator } from './common'
+import { DeliberationContextDecorator, onDoneDecorator, buildApiDecorator, mockBatchUpsertDeliberationDataRoute, clearGlobalStateDecorator } from './common'
 import { authFlowDecorator } from './mocks/auth-flow'
-import { within, userEvent, waitFor, expect } from '@storybook/test'
+import { within, userEvent, waitFor, expect } from 'storybook/test'
 
 const round0Incomplete = { 0: undefined }
 const round0Complete = { 0: { idRanks: [] } }
@@ -115,18 +115,15 @@ export const CanContinueToNextRoundOnDone = {
     defaultValue: { lastRound: 2, participants: 40, dturn: { group_size: 5, finalRound: 2 }, roundCompleteData: round1Complete, user: { id: '123456', email: 'user@email.com' } },
     round: 1,
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
 
     const continueButton = canvas.getByText('Yes, Continue')
     await userEvent.click(continueButton)
     await waitFor(() =>
-      expect(onDoneResult(canvas)).toMatchObject({
-        count: 2,
-        onDoneResult: {
-          valid: true,
-          value: 'continue',
-        },
+      expect(args.onDone.mock.calls[1][0]).toMatchObject({
+        valid: true,
+        value: 'continue',
       })
     )
     const remindButton = canvas.getByText('Remind Me Later')

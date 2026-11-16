@@ -1,0 +1,9 @@
+<script>
+  // Unregister any stale Service Workers so HMR never gets into a reload loop
+  // after Storybook rebuilds or restarts.
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      regs.forEach(r => r.unregister())
+    })
+  }
+</script>

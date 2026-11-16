@@ -3,8 +3,7 @@
 import React, { useContext, useState } from 'react'
 import GroupingStep, { GroupPoints } from '../app/components/steps/grouping'
 import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, buildApiDecorator } from './common'
-import { within, userEvent, expect, waitFor } from '@storybook/test'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
+import { within, userEvent, expect, waitFor } from 'storybook/test'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 
 const discussionId = '1101'
@@ -12,11 +11,6 @@ const round = 0
 
 export default {
   component: GroupPoints,
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
   decorators: [onDoneDecorator],
 }
 

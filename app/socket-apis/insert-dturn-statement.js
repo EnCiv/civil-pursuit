@@ -40,7 +40,13 @@ export default async function insertDturnStatement(dTurnId, pointObj, cb) {
   pointObj.userId = userId
 
   // Insert ID into dturn
-  const insertStatementResult = await insertStatementId(dTurnId, userId, pointObj._id)
+  let insertStatementResult
+  try {
+    insertStatementResult = await insertStatementId(dTurnId, userId, pointObj._id)
+  } catch (error) {
+    logger.error('insertDturnStatement failed to insert the D-turn statement ID:', error)
+    return cbFailure('An error occurred inserting the D-turn statement ID.')
+  }
 
   // If insert to dturn failed - discussion isn't initialized, and don't need to try to insert into Points.
   if (!insertStatementResult) {
@@ -56,5 +62,10 @@ export default async function insertDturnStatement(dTurnId, pointObj, cb) {
     }
   }
 
-  await upsertPoint.call(this, pointObj, pointInsertCb)
+  try {
+    await upsertPoint.call(this, pointObj, pointInsertCb)
+  } catch (error) {
+    logger.error('insertDturnStatement failed to insert the point:', error)
+    cbFailure('An error occurred inserting the pointObj.')
+  }
 }

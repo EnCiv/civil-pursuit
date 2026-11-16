@@ -70,13 +70,19 @@ function PairCompare(props) {
   }, [whyRankList])
 
   // send up the rank, and track it locally
+  // Bidirectional data pattern: ranksByParentId is mutated directly and the same
+  // reference returned when !valid to suppress re-renders on each intermediate
+  // comparison. A new object is only returned when all points are ranked (valid=true)
+  // to trigger the final UI update. See docs/bidirectional-data-pattern.md.
+  // Note: the setTimeout(() => onDone(...)) fires promptly (~<50ms) from inside the
+  // updater — returning the same reference does NOT delay the callback.
   function rankIdxCategory(idx, category) {
     if (idx >= whyRankList.length) return // if only one to rank, this could be out of bounds
     setRanksByParentId(ranksByParentId => {
       const value = ranksByParentId[whyRankList[idx].why._id]
         ? { ...ranksByParentId[whyRankList[idx].why._id], category }
         : {
-            _id: ObjectId().toString(),
+            _id: new ObjectId().toString(),
             category,
             parentId: whyRankList[idx].why._id,
             stage: 'why',

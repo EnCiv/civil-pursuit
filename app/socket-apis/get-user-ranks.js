@@ -19,12 +19,18 @@ export default async function getUserRanks(discussionId, round, stage, cb) {
   }
 
   // Get ranks for user
-  const results = await Ranks.find({
-    discussionId: discussionId,
-    round: round,
-    stage: stage,
-    userId: this.synuser.id,
-  }).toArray()
+  let results
+  try {
+    results = await Ranks.find({
+      discussionId: discussionId,
+      round: round,
+      stage: stage,
+      userId: this.synuser.id,
+    }).toArray()
+  } catch (error) {
+    logger.error('getUserRanks failed:', error)
+    return cbFailure('Failed to retrieve user ranks.')
+  }
 
   if (cb) cb(results)
   return results

@@ -1,7 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/150
 
 import React from 'react'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import SignUp from '../app/components/sign-up'
 
 export default {
@@ -20,11 +19,6 @@ export default {
       )
     },
   ],
-  parameters: {
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
-  },
 }
 
 export const sign_up_page = {

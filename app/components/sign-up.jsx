@@ -125,7 +125,7 @@ function SignUp(props, ref) {
         </div>
       </div>
       <div className={classes.oauthSection}>
-        <LinkedInSignInButton returnPath={destination || window.location.pathname} disabled={!isLogIn && !state.agree} />
+        <LinkedInSignInButton returnPath={destination || (typeof window !== 'undefined' ? window.location.pathname : '')} disabled={!isLogIn && !state.agree} />
       </div>
       <div className={classes.divider}>
         <span>or continue with email</span>

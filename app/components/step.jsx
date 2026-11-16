@@ -6,7 +6,7 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
-import { PositioningPortal } from '@codastic/react-positioning-portal/lib/legacy/index.js'
+import { TooltipPortal } from './tooltip-portal'
 
 const Step = forwardRef((props, ref) => {
   const { name, title = '', complete, active, unlocked, skip, onDone = () => {}, index, stepIndex, className, ...otherProps } = props
@@ -37,6 +37,7 @@ const Step = forwardRef((props, ref) => {
 
   // begin a timneout when the span wrapping the step is clicked
   const handleMouseDown = () => {
+    if (!title) return
     timeRef.current = setTimeout(() => {
       setIsPortalOpen(true)
     }, 500)
@@ -82,9 +83,9 @@ const Step = forwardRef((props, ref) => {
       {...otherProps}
     >
       <span onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
-        <PositioningPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
+        <TooltipPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
           <div className={textStyle}>{stepIndex + ': ' + name}</div>
-        </PositioningPortal>
+        </TooltipPortal>
       </span>
     </div>
   )

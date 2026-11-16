@@ -1,16 +1,12 @@
 import React from 'react'
 import Footer from '../app/components/footer'
-import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport'
 import Common from './common'
-import { userEvent, within, expect } from '@storybook/test'
+import { userEvent, within, expect } from 'storybook/test'
 
 export default {
   component: Footer,
   parameters: {
     layout: 'fullscreen',
-    viewport: {
-      viewports: INITIAL_VIEWPORTS,
-    },
   },
 }
 

@@ -1,10 +1,9 @@
 //https://github.com/EnCiv/civil-pursuit/issues/51
 import StepFooter from '../app/components/step-footer'
 import React from 'react'
-import expect from 'expect'
+import { expect, userEvent, within } from 'storybook/test'
 
-import { onDoneDecorator, onDoneResult, onBackDecorator, onBackResult } from './common'
-import { userEvent, within } from '@storybook/test'
+import { onDoneDecorator, onBackDecorator, onBackResult } from './common'
 
 export default {
   component: StepFooter,
@@ -63,15 +62,14 @@ export const OnDoneClicked = {
   decorators: [onDoneDecorator, onBackDecorator],
 
   //Property we use to define test case for this story
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     //Query the component so we can interact with it
 
     const canvas = within(canvasElement)
     //userEvent will simulate user behavior to test the element of the component
     await userEvent.click(canvas.getByRole('button', { name: 'Next' }))
 
-    let result = onDoneResult(canvas)
-    expect(result.count).toEqual(1)
+    expect(args.onDone.mock.calls).toHaveLength(1)
   },
 }
 

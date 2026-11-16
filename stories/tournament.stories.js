@@ -84,7 +84,7 @@ import React, { useState } from 'react'
 import Tournament from '../app/components/tournament'
 import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator, buildApiDecorator, deliberationContextData, mockBatchUpsertDeliberationDataRoute } from './common'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
-import { userEvent, within, waitFor, expect } from '@storybook/test'
+import { userEvent, within, waitFor, expect } from 'storybook/test'
 import { authFlowDecorators, withAuthTestState } from './mocks/auth-flow'
 import { waitForStepSlider } from './step-slider.stories'
 

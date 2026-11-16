@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
-import { within, expect } from '@storybook/test'
+import { within, expect } from 'storybook/test'
 import LocalStorageManager from '../app/lib/local-storage-manager'
 
 export default {

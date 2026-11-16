@@ -9,55 +9,69 @@ import Dturns from '../models/dturns'
 
 export async function ensureDeliberationLoaded(deliberationId) {
   if (Discussions[deliberationId]) return true
-  const iota = await Iota.findOne({ _id: new ObjectId(deliberationId) }) // Lookup in the iota collection
-  if (iota) {
-    const server = this.server // don't reference "this" in the UInfoUpdate handler.
-    const options = {
-      ...(iota?.webComponent?.dturn ?? {}),
-      updateUInfo: async UInfoData => {
-        const userId = Object.keys(UInfoData)[0]
+  try {
+    const iota = await Iota.findOne({ _id: new ObjectId(deliberationId) }) // Lookup in the iota collection
+    if (iota) {
+      const server = this.server // don't reference "this" in the UInfoUpdate handler.
+      const options = {
+        ...(iota?.webComponent?.dturn ?? {}),
+        updateUInfo: async UInfoData => {
+          try {
+            const userId = Object.keys(UInfoData)[0]
 
-        // extract the round and info note round is a string because this was an object
-        // info is an object which may have shownStatementIds and/or groupings but is a delta not the whole object
-        const [roundStr, info] = Object.entries(UInfoData[userId][deliberationId])[0]
+            // extract the round and info note round is a string because this was an object
+            // info is an object which may have shownStatementIds and/or groupings but is a delta not the whole object
+            const [roundStr, info] = Object.entries(UInfoData[userId][deliberationId])[0]
 
-        await Dturns.upsert(userId, deliberationId, +roundStr, info)
-      },
-      getAllUInfo: async () => {
-        const allUInfo = await Dturns.getAllFromDiscussion(deliberationId)
-        const all = allUInfo.map(({ discussionId, userId, round, shownStatementIds = {}, groupings = [], _id, ...otherProps }) => ({
-          // do not put _id into the UInfo
-          [userId]: {
-            [discussionId]: {
-              [round]: {
-                shownStatementIds,
-                groupings: Object.values(groupings).map(group => Object.values(group)), // convert from plain object with nested objects to array of arrays
-                ...otherProps,
+            await Dturns.upsert(userId, deliberationId, +roundStr, info)
+          } catch (error) {
+            logger.error('subscribeDeliberation updateUInfo failed:', error)
+          }
+        },
+        getAllUInfo: async () => {
+          try {
+            const allUInfo = await Dturns.getAllFromDiscussion(deliberationId)
+            return allUInfo.map(({ discussionId, userId, round, shownStatementIds = {}, groupings = [], _id, ...otherProps }) => ({
+              // do not put _id into the UInfo
+              [userId]: {
+                [discussionId]: {
+                  [round]: {
+                    shownStatementIds,
+                    groupings: Object.values(groupings).map(group => Object.values(group)), // convert from plain object with nested objects to array of arrays
+                    ...otherProps,
+                  },
+                },
               },
-            },
-          },
-        }))
-        return all
-      },
-      updates: updateData => {
-        const eventName = subscribeEventName('subscribe-deliberation', deliberationId)
+            }))
+          } catch (error) {
+            logger.error('subscribeDeliberation getAllUInfo failed:', error)
+            return []
+          }
+        },
+        updates: updateData => {
+          const eventName = subscribeEventName('subscribe-deliberation', deliberationId)
 
-        server.to(deliberationId).emit(eventName, updateData)
-      },
+          server.to(deliberationId).emit(eventName, updateData)
+        },
+      }
+      await initDiscussion(deliberationId, options)
+      return true
     }
-    await initDiscussion(deliberationId, options)
-    return true
-  } else return false
+    return false
+  } catch (error) {
+    logger.error('ensureDeliberationLoaded failed:', error)
+    return false
+  }
 }
 
 export default async function subscribeDeliberation(deliberationId, requestHandler) {
   const socket = this // making it clear this is a socket
-
-  // Verify argument
-  if (!deliberationId) {
-    console.error('DeliberationId was not provided to subscribeDeliberation(deliberationId).')
-    return requestHandler?.()
-  }
+  try {
+    // Verify argument
+    if (!deliberationId) {
+      console.error('DeliberationId was not provided to subscribeDeliberation(deliberationId).')
+      return requestHandler?.()
+    }
 
   /*if (!this.synuser?.id) {
     // use not logged in, let them know the number of participants
@@ -69,26 +83,30 @@ export default async function subscribeDeliberation(deliberationId, requestHandl
     return
   }*/
 
-  // Check if discussion is loaded in memory
-  if (!Discussions[deliberationId]) {
-    const loaded = await ensureDeliberationLoaded.call(this, deliberationId)
-    if (!loaded) {
-      requestHandler?.() // let the client know there was an error
-      return console.error(`Failed to load deliberation with id '${deliberationId}'.`) // Else fail
-    } // else deliberation is now loaded
-  }
+    // Check if discussion is loaded in memory
+    if (!Discussions[deliberationId]) {
+      const loaded = await ensureDeliberationLoaded.call(this, deliberationId)
+      if (!loaded) {
+        requestHandler?.() // let the client know there was an error
+        return console.error(`Failed to load deliberation with id '${deliberationId}'.`) // Else fail
+      } // else deliberation is now loaded
+    }
 
-  if (this.synuser?.id) socket.join(deliberationId) // subscribe this user to the room for this deliberation
+    if (this.synuser?.id) socket.join(deliberationId) // subscribe this user to the room for this deliberation
   /* if we need to do anything when the user disconnects
   socket.on('disconnecting',()=>{
     // remove the user 
   })*/
 
-  const uInfo = this.synuser?.id ? initUitems(deliberationId, this.synuser.id) : [{ shownStatementIds: {} }] // adds user if they are not yet there
+    const uInfo = this.synuser?.id ? initUitems(deliberationId, this.synuser.id) : [{ shownStatementIds: {} }] // adds user if they are not yet there
 
-  requestHandler?.({
-    participants: Discussions[deliberationId].participants,
-    lastRound: Discussions[deliberationId].lastRound,
-    uInfo,
-  })
+    requestHandler?.({
+      participants: Discussions[deliberationId].participants,
+      lastRound: Discussions[deliberationId].lastRound,
+      uInfo,
+    })
+  } catch (error) {
+    logger.error('subscribeDeliberation failed:', error)
+    requestHandler?.()
+  }
 }

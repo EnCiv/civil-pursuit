@@ -48,10 +48,10 @@ const ShareButtons = ({ url, subject, description, copied, onCopyClick, classNam
           </svg>
           {copied && <span className={classes.copiedPopup}>Copied!</span>}
         </button>
-        <EmailShareButton url={url} subject={shareTitle} body={shareBody} title="Share via email">
+        <EmailShareButton url={url} subject={shareTitle} body={shareBody} htmlTitle="Share via email">
           <EmailIcon size={32} round />
         </EmailShareButton>
-        <FacebookShareButton url={url} quote={shareTitle} title="Share on Facebook">
+        <FacebookShareButton url={url} htmlTitle="Share on Facebook">
           <FacebookIcon size={32} round />
         </FacebookShareButton>
         <div title="Share on X">

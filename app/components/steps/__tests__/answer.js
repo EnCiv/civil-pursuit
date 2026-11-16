@@ -20,12 +20,6 @@ jest.mock('react-jss', () => {
   }
 })
 
-jest.mock('@codastic/react-positioning-portal', () => {
-  return {
-    PositioningPortal: jest.fn(),
-  }
-})
-
 jest.mock('react-accessible-headings', () => {
   return {
     H: jest.fn(),
