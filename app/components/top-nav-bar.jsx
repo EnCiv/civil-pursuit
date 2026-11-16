@@ -11,6 +11,7 @@ import { createUseStyles } from 'react-jss'
 import SvgEncivBlack from '../svgr/enciv-black'
 import SvgEncivWhite from '../svgr/enciv-white'
 import Donate from './donate'
+import theme from './theme'
 
 /*
  * # TopNavBar
