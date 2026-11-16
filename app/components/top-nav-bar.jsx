@@ -12,6 +12,8 @@ import SvgEncivBlack from '../svgr/enciv-black'
 import SvgEncivWhite from '../svgr/enciv-white'
 import Donate from './donate'
 
+const condensedWidthBreakPoint = '92rem'
+
 /*
  * # TopNavBar
  *
@@ -195,10 +197,10 @@ const TopNavBar = props => {
                     </li>
                   )
                 )}
-              <div className={classes.donate}>
-                <Donate />
-              </div>
             </menu>
+            <div className={classes.donate}>
+              <Donate />
+            </div>
           </div>
 
           {/* Mobile menu toggle */}
@@ -218,15 +220,18 @@ const TopNavBar = props => {
             {menu &&
               menu.map((item, index) =>
                 Array.isArray(item) ? (
-                  <li className={classes.menuList}>
-                    <div
-                      className={cx(classes.mobileMenuGroup, classes.colors, {
-                        [classes.selectedItem]: selectedItem === item[0].name,
-                      })}
-                      key={index}
-                      onClick={() => handleMobileMenuGroupClick(item, index)}
-                    >
-                      {item[0].name} {'\u25BE'}
+                  <li className={classes.menuList} key={index}>
+                    <div className={cx(classes.mobileMenuGroup, { [classes.mobileMenuGroupOpen]: openDropdown === index })}>
+                      <button
+                        type="button"
+                        className={cx(classes.mobileMenuGroupHeader, classes.colors, {
+                          [classes.selectedItem]: selectedItem === item[0].name,
+                        })}
+                        aria-expanded={openDropdown === index}
+                        onClick={() => handleMobileMenuGroupClick(item, index)}
+                      >
+                        {item[0].name} {'\u25BE'}
+                      </button>
                       {openDropdown === index && (
                         <div className={classes.mobileDropdownMenu}>
                           {item.slice(1).map((subItem, subIndex) => (
@@ -286,6 +291,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   }),
   topNavBar: props => ({
     width: '100%',
+    containerType: 'inline-size',
+    containerName: 'topNavBar',
     zIndex: theme.zIndexes.menu, // High z-index to ensure navbar and dropdowns appear above other content
     position: (() => {
       if (props.mode === 'transparent' || props.mode === 'dark-transparent' || props.mode === 'light-transparent') {
@@ -298,6 +305,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: '1rem',
+    boxShadow: props.mode === 'dark' || props.mode === 'light' ? '0 0.375rem 1rem rgba(0, 0, 0, 0.16)' : 'none',
     backgroundColor: (() => {
       if (props.mode === 'dark') {
         return theme.colors.darkModeGray
@@ -320,21 +328,47 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     //maxWidth: theme.maxPanelWidth,
   }),
   donate: {
-    padding: '0 0 0 1rem',
+    boxSizing: 'border-box',
+    flex: '0 0 auto',
+    '& > a': {
+      display: 'block',
+      width: '100%',
+      maxWidth: '12rem',
+    },
+    '& button': {
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '3rem',
+    },
   },
   mobileDonate: {
-    padding: '0 0 0.5rem 0',
+    boxSizing: 'border-box',
+    width: '100%',
+    marginTop: '0.75rem',
+    padding: '0.75rem 0 0',
+    '& > a': {
+      display: 'block',
+      width: '100%',
+    },
+    '& button': {
+      boxSizing: 'border-box',
+      width: '100%',
+      height: '3rem',
+    },
   },
   navBarContainer: {
-    width: '80%',
+    width: 'min(90%, 90rem)',
+    boxSizing: 'border-box',
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '0.5rem',
+    padding: '1rem 0.5rem',
     position: 'relative',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+    [`@container topNavBar (max-width: ${condensedWidthBreakPoint})`]: {
       flexWrap: 'nowrap',
+      width: '100%',
+      padding: '1rem 1.5rem',
     },
   },
   logoContainer: {
@@ -342,144 +376,291 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'center',
     flexShrink: 0,
     // On desktop, logo is in left column
-    [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
+    [`@container topNavBar (min-width: ${condensedWidthBreakPoint})`]: {
       alignSelf: 'flex-start',
     },
   },
   logo: {
     width: '8.5rem',
     height: 'auto',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '4rem',
+    [`@container topNavBar (max-width: ${condensedWidthBreakPoint})`]: {
+      width: 'clamp(4.5rem, 7cqi, 7rem)',
     },
   },
   menuAndActionsContainer: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
     flex: '1 1 auto',
+    gap: '0.5rem',
     minWidth: 0,
     position: 'relative',
     alignSelf: 'flex-end',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+    [`@container topNavBar (max-width: ${condensedWidthBreakPoint})`]: {
       display: 'none',
     },
   },
   menuContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-evenly',
-    gap: '0.4rem',
+    boxSizing: 'border-box',
+    display: 'grid',
+    flex: '1 1 auto',
+    minWidth: 0,
+    gridTemplateColumns: 'repeat(auto-fit, minmax(7rem, 1fr))',
+    gap: '0.5rem',
     margin: 0,
-    padding: 0,
-    alignItems: 'baseline',
-    width: '100%',
+    padding: '0 3rem',
+    alignItems: 'center',
+    width: 'auto',
   },
   mobileMenuContainer: props => ({
-    padding: '1.25rem 1.25rem',
+    boxSizing: 'border-box',
+    padding: '1rem',
     display: 'flex',
-    width: '80%',
-    background: props.mode === 'dark' || props.mode === 'transparent' || props.mode === 'dark-transparent' ? theme.colors.darkModeGray : theme.colors.encivYellow,
+    width: 'min(90%, 34rem)',
+    gap: '0.375rem',
+    background: '#ffda66',
+    color: '#1a1a1a',
     flexDirection: 'column',
-    justifyContent: 'left',
+    justifyContent: 'center',
+    alignItems: 'stretch',
     position: 'relative',
-    [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
+    borderRadius: '0.5rem',
+    boxShadow: '0 0.5rem 1rem rgba(0, 0, 0, 0.2)',
+    animation: '$mobileMenuOpen 280ms ease-out',
+    '& $mobileMenuGroupHeader, & $mobileMenuItem': {
+      color: '#1a1a1a',
+    },
+    '& $selectedItem': {
+      borderBottom: '0.125rem solid #1a1a1a',
+    },
+    [`@container topNavBar (min-width: ${condensedWidthBreakPoint})`]: {
       display: 'none',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      animation: 'none',
     },
   }),
   menuGroup: props => ({
+    boxSizing: 'border-box',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '3rem',
     fontFamily: 'Inter',
     fontStyle: 'normal',
     fontWeight: 500,
-    fontSize: '1rem', // forcing because unknown things are overriding it
+    fontSize: '1.125rem',
     cursor: 'default',
     background: 'none',
     border: 'none',
-    padding: '0.5rem 1rem',
-    margin: '0 0.25rem',
+    padding: '0.75rem 0.5rem',
+    margin: 0,
     whiteSpace: 'nowrap',
     position: 'relative',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+    borderRadius: '0.375rem',
+    transition: 'background-color 400ms ease, color 400ms ease',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+    [`@container topNavBar (max-width: ${condensedWidthBreakPoint})`]: {
       cursor: 'pointer',
     },
     '&:hover': {
       background: theme.colors.encivYellow,
-      color: props.mode === 'dark' || props.mode === 'transparent' || props.mode === 'dark-transparent' ? 'black' : 'white',
+      color: '#1a1a1a',
+    },
+    '&:focus': {
+      outline: `${theme.focusOutline}`,
+    },
+  }),
+  mobileMenuGroupHeader: props => ({
+    boxSizing: 'border-box',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    minHeight: '3rem',
+    fontFamily: 'Inter',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    fontSize: '1.125rem',
+    cursor: 'pointer',
+    color: '#1a1a1a',
+    background: 'rgba(255, 255, 255, 0.42)',
+    border: 'none',
+    padding: '0.75rem 0.5rem',
+    margin: 0,
+    whiteSpace: 'nowrap',
+    borderRadius: '0.375rem',
+    boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.12)',
+    transition: 'background-color 400ms ease, color 400ms ease',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+    '&:hover': {
+      background: theme.colors.encivYellow,
+      color: '#1a1a1a',
     },
     '&:focus': {
       outline: `${theme.focusOutline}`,
     },
   }),
   mobileMenuGroup: props => ({
-    fontFamily: 'Inter',
-    fontStyle: 'normal',
-    fontWeight: 500,
-    fontSize: '1rem', // forcing because unknown things are overriding it
-    cursor: 'default',
-    background: 'none',
-    border: 'none',
-    padding: '0.5rem',
-    margin: '0',
-    whiteSpace: 'nowrap',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      cursor: 'pointer',
-    },
-    '&:hover': {
-      background: theme.colors.encivYellow,
-      color: props.mode === 'dark' ? 'black' : 'white',
-    },
-    '&:focus': {
-      outline: `${theme.focusOutline}`,
-    },
+    boxSizing: 'border-box',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    gap: '0.25rem',
   }),
+  mobileMenuGroupOpen: {
+    gap: 0,
+    background: '#ffe8a6',
+    borderRadius: '0.375rem',
+    boxShadow: '0 0.25rem 0.5rem rgba(0, 0, 0, 0.16)',
+    overflow: 'hidden',
+    '& $mobileMenuGroupHeader': {
+      background: '#ffda66',
+      borderRadius: '0.375rem 0.375rem 0 0',
+      boxShadow: 'none',
+    },
+    '& $mobileDropdownMenu': {
+      borderRadius: '0 0 0.375rem 0.375rem',
+      boxShadow: 'none',
+    },
+  },
   dropdownMenu: props => ({
     position: 'absolute',
     top: '100%',
     left: 0,
-    background: theme.colors.encivYellow,
+    background: '#ffda66',
     display: 'flex',
     flexDirection: 'column',
+    gap: '0.25rem',
+    minWidth: '100%',
+    padding: '0.375rem',
+    boxSizing: 'border-box',
+    borderRadius: '0 0 0.375rem 0.375rem',
+    boxShadow: '0 0.5rem 1rem rgba(0, 0, 0, 0.18)',
+    animation: '$dropdownOpen 280ms ease-out',
+    '& $menuItem': {
+      boxSizing: 'border-box',
+      width: '100%',
+      margin: 0,
+      color: '#1a1a1a',
+      background: 'transparent',
+      boxShadow: 'none',
+      whiteSpace: 'normal',
+      '&:hover': {
+        background: 'rgba(0, 0, 0, 0.1)',
+        color: '#1a1a1a',
+      },
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      animation: 'none',
+    },
   }),
   mobileDropdownMenu: {
+    boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',
-    padding: '0.25rem 0.25rem',
+    width: '100%',
+    gap: 0,
+    padding: '0 0 0.25rem',
+    background: '#ffe8a6',
+    borderRadius: 0,
+    boxShadow: 'none',
+    overflow: 'hidden',
+    animation: '$dropdownOpen 280ms ease-out',
+    '& $mobileMenuItem': {
+      boxSizing: 'border-box',
+      width: '100%',
+      margin: 0,
+      padding: '0.75rem 0',
+      color: '#1a1a1a',
+      background: 'rgba(255, 255, 255, 0.3)',
+      borderRadius: 0,
+      boxShadow: 'none',
+      borderBottom: '1px solid rgba(26, 26, 26, 0.16)',
+      '&:last-child': {
+        borderBottom: 'none',
+      },
+      '&:hover': {
+        background: 'rgba(0, 0, 0, 0.1)',
+        color: '#1a1a1a',
+      },
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      animation: 'none',
+    },
+  },
+  '@keyframes dropdownOpen': {
+    from: { opacity: 0, transform: 'translateY(-0.5rem)' },
+    to: { opacity: 1, transform: 'translateY(0)' },
+  },
+  '@keyframes mobileMenuOpen': {
+    from: { opacity: 0, transform: 'translateY(-0.5rem)' },
+    to: { opacity: 1, transform: 'translateY(0)' },
   },
   menuItem: props => ({
+    boxSizing: 'border-box',
+    width: '100%',
+    height: '3rem',
     fontFamily: 'Inter',
     fontStyle: 'normal',
     fontWeight: 500,
-    fontSize: '1rem', // forcing because unknown things are overriding it
+    fontSize: '1.125rem', // forcing because unknown things are overriding it
     cursor: 'pointer',
-    background: 'none',
+    appearance: 'none',
+    background: 'transparent',
     border: 'none',
-    padding: '0.5rem 1rem',
-    margin: '0 0.25rem',
+    padding: '0.75rem 0.5rem',
+    margin: 0,
     whiteSpace: 'nowrap',
-    textAlign: 'left',
+    textAlign: 'center',
+    borderRadius: '0.375rem',
+    boxShadow: 'none',
+    transition: 'background-color 400ms ease, color 400ms ease',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
     '&:hover': {
       background: theme.colors.encivYellow,
-      color: props.mode === 'dark' || props.mode === 'transparent' || props.mode === 'dark-transparent' ? 'black' : 'white',
+      color: '#1a1a1a',
     },
     '&:focus': {
       outline: `${theme.focusOutline}`,
     },
   }),
   mobileMenuItem: props => ({
+    boxSizing: 'border-box',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '3rem',
     fontFamily: 'Inter',
     fontStyle: 'normal',
     fontWeight: 500,
-    fontSize: '1rem', // forcing because unknown things are overriding it
+    fontSize: '1.125rem', // forcing because unknown things are overriding it
     cursor: 'pointer',
     background: 'none',
     border: 'none',
-    padding: '0.5rem',
-    margin: '0',
-    whiteSpace: 'nowrap',
-    textAlign: 'left',
+    padding: '0.75rem 1rem',
+    margin: 0,
+    whiteSpace: 'normal',
+    textAlign: 'center',
+    color: '#1a1a1a',
+    background: 'rgba(255, 255, 255, 0.42)',
+    boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.12)',
+    borderRadius: '0.375rem',
+    transition: 'background-color 400ms ease, color 400ms ease',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
     '&:hover': {
       background: theme.colors.encivYellow,
-      color: props.mode === 'dark' || props.mode === 'transparent' || props.mode === 'dark-transparent' ? 'black' : 'white',
+      color: '#1a1a1a',
     },
     '&:focus': {
       outline: `${theme.focusOutline}`,
@@ -499,7 +680,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     top: 0,
     right: 0,
     padding: '0.25rem 0',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+    [`@container topNavBar (max-width: ${condensedWidthBreakPoint})`]: {
       display: 'none',
     },
   },
@@ -509,34 +690,47 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     right: '0.5rem',
   },
   menuToggle: props => ({
-    width: '15%',
-    height: 'auto',
-    fontSize: '1.5rem',
+    boxSizing: 'border-box',
+    flexShrink: 0,
+    width: 'clamp(4rem, 6cqi, 6rem)',
+    height: 'clamp(3.5rem, 6cqi, 5rem)',
+    padding: '0.25rem',
+    fontSize: 'clamp(2rem, 3.5cqi, 3rem)',
     background: (() => {
       if (props.mode === 'dark') {
-        return theme.colors.darkModeGray
+        return 'rgba(255, 255, 255, 0.12)'
       } else if (props.mode === 'light') {
-        return theme.colors.lightModeColor
+        return 'rgba(0, 0, 0, 0.06)'
       } else if (props.mode === 'transparent' || props.mode === 'dark-transparent' || props.mode === 'light-transparent') {
-        return 'transparent'
+        return props.mode === 'light-transparent' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.12)'
       } else {
-        return 'white'
+        return 'rgba(0, 0, 0, 0.06)'
       }
     })(),
     border: 'none',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
+    [`@container topNavBar (min-width: ${condensedWidthBreakPoint})`]: {
       display: 'none',
     },
     '&:hover': {
       background: theme.colors.encivYellow,
-      color: props.mode === 'dark' || props.mode === 'transparent' || props.mode === 'dark-transparent' ? 'black' : 'white',
+      color: '#1a1a1a',
+    },
+    borderRadius: '0.375rem',
+    boxShadow: '0 0.25rem 0.5rem rgba(0, 0, 0, 0.2)',
+    transition: 'background-color 400ms ease, color 400ms ease, box-shadow 400ms ease',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+    '&:focus': {
+      outline: `${theme.focusOutline}`,
     },
   }),
   menuList: {
     listStyle: 'none',
+    width: '100%',
   },
   verticalMenuContainer: {
     display: 'flex',
