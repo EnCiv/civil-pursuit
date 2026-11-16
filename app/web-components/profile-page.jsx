@@ -1,29 +1,28 @@
 // https://github.com/EnCiv/civil-pursuit/issues/385
+// https://github.com/EnCiv/civil-pursuit/issues/388
 
 'use strict'
 
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
-import TopNavBar from '../components/top-nav-bar'
 import DiscussionTab from './discussion-tab'
 import { H } from 'react-accessible-headings'
 
 function ProfilePage(props) {
-  const { className, discussions = [], initialTab = 'Profile', ...otherProps } = props
+  const { className, discussions = [], initialTab = 'Discussions', ...otherProps } = props
   const [activeTab, setActiveTab] = useState(initialTab)
   const classes = useStylesFromThemeFunction()
 
-  const createMenuItem = name => {
+  const createMenuItem = (name, disabled = false) => {
     return {
       name: name,
-      func: () => {
-        setActiveTab(name)
-      },
+      disabled,
+      func: disabled ? undefined : () => setActiveTab(name),
     }
   }
 
-  const menuArray = [, /*createMenuItem('Profile')*/ createMenuItem('Discussions') /*createMenuItem('Settings')*/]
+  const menuArray = [createMenuItem('Profile', true), createMenuItem('Discussions'), createMenuItem('Settings', true)]
 
   const ProfilePlaceholder = () => (
     <>
@@ -61,7 +60,23 @@ function ProfilePage(props) {
   return (
     <div className={cx(classes.container, className)} {...otherProps}>
       <div className={classes.sidebar}>
-        <TopNavBar mode="vertical" menu={menuArray} defaultSelectedItem={activeTab} className={classes.navigation} />
+        <nav className={classes.navigation} aria-label="Profile sections">
+          {menuArray.filter(Boolean).map(item => (
+            <button
+              key={item.name}
+              type="button"
+              disabled={item.disabled}
+              className={cx(classes.navigationItem, {
+                [classes.navigationItemSelected]: activeTab === item.name,
+                [classes.navigationItemDisabled]: item.disabled,
+              })}
+              aria-current={activeTab === item.name ? 'page' : undefined}
+              onClick={item.func}
+            >
+              {item.name}
+            </button>
+          ))}
+        </nav>
       </div>
       <div className={classes.content}>{renderContent()}</div>
     </div>
@@ -72,13 +87,70 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   container: {
     display: 'flex',
     padding: '2rem',
+    [`@media (max-width: ${theme.profileMobileBreakPoint})`]: {
+      flexDirection: 'column',
+      gap: '1rem',
+      padding: '1rem',
+    },
   },
   sidebar: {
-    width: '17rem',
+    flex: '0 0 17rem',
+    position: 'sticky',
+    top: 0,
+    alignSelf: 'flex-start',
+    zIndex: theme.zIndexes.menu,
+    height: 'fit-content',
+    backgroundColor: theme.colors.white,
+    [`@media (max-width: ${theme.profileMobileBreakPoint})`]: {
+      flex: '0 0 auto',
+      width: '100%',
+    },
   },
-  navigation: {},
+  navigation: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.25rem',
+    [`@media (max-width: ${theme.profileMobileBreakPoint})`]: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: '0.5rem',
+      borderBottom: `0.0625rem solid ${theme.colors.borderGray}`,
+    },
+  },
+  navigationItem: {
+    padding: '0.75rem 1rem',
+    border: 0,
+    borderLeft: '0.2rem solid transparent',
+    background: 'transparent',
+    color: theme.colors.textPrimary,
+    font: 'inherit',
+    textAlign: 'left',
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: theme.colors.lightGray,
+    },
+    '&:focus-visible': {
+      outline: theme.focusOutline,
+    },
+  },
+  navigationItemSelected: {
+    backgroundColor: theme.colors.tabSelected,
+    fontWeight: 600,
+    [`@media (max-width: ${theme.profileMobileBreakPoint})`]: {
+      borderLeft: 0,
+      borderBottom: `0.2rem solid ${theme.colors.primaryButtonBlue}`,
+    },
+  },
+  navigationItemDisabled: {
+    color: theme.colors.inactiveGray,
+    cursor: 'not-allowed',
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+  },
   content: {
     flex: 1,
+    minWidth: 0,
   },
   tabContent: {
     padding: '2rem 4rem',
@@ -91,6 +163,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       fontWeight: 300,
       margin: 0,
       marginBottom: '2rem',
+    },
+    [`@media (max-width: ${theme.profileMobileBreakPoint})`]: {
+      padding: '1.5rem 1rem',
     },
   },
 }))

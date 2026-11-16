@@ -177,7 +177,11 @@ const Intermission = props => {
         if (response.error) {
           setValidationError(response.error)
         } else {
-          window.socket.emit('send-password', email, window.location.pathname, response => {
+          window.socket.emit(
+            'send-password',
+            email,
+            { returnTo: window.location.pathname, emailType: 'welcome' },
+            response => {
             if (response && response.error) {
               let { error } = response
 

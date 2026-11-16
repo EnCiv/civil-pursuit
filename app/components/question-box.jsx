@@ -132,8 +132,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     overflow: 'hidden',
     alignItems: props => (props.contentAlign === 'center' ? 'center' : props.contentAlign === 'left' ? 'flex-start' : 'flex-end'),
     padding: props => (props.compact ? '2rem 3rem' : '3.625rem 9.875rem'),
+    [`@media (max-width: ${theme.mediumWidthBreakPoint})`]: {
+      padding: props => (props.compact ? '1.75rem 1.5rem' : '3.1875rem 1.5625rem'),
+    },
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      padding: props => (props.compact ? '1rem 0.75rem' : '3.1875rem 1.5625rem'),
+      padding: props => (props.compact ? '1.75rem 1.25rem' : '3.1875rem 1.5625rem'),
       borderRadius: '0',
     },
   },
@@ -143,8 +146,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     gap: props => (props.compact ? '1rem' : '1.5rem'),
+    width: props => (props.compact ? '100%' : undefined),
+    minWidth: 0,
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      gap: props => (props.compact ? '0.75rem' : '1.5rem'),
+      gap: props => (props.compact ? '1rem' : '1.5rem'),
     },
   },
 
@@ -169,6 +174,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     letterSpacing: '-0.03em',
     color: theme.colors.primaryButtonBlue,
     textAlign: props => props.contentAlign,
+    [`@media (max-width: ${theme.mediumWidthBreakPoint})`]: {
+      width: '100%',
+      minWidth: 0,
+      fontSize: props => (props.compact ? '1.5rem' : '3.75rem'),
+      lineHeight: props => (props.compact ? '2rem' : '4.125rem'),
+      letterSpacing: 0,
+      overflowWrap: 'break-word',
+    },
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       fontSize: props => (props.compact ? '1.25rem' : '1.5rem'),
       lineHeight: props => (props.compact ? '1.75rem' : '2rem'),
@@ -214,8 +227,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       transform: 'scale(1.1)',
     },
     '&:focus': {
-      outline: `2px solid ${theme.colors.primaryButtonBlue}`,
-      outlineOffset: '2px',
+      outline: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+      outlineOffset: '0.125rem',
       borderRadius: '0.25rem',
     },
   },
@@ -231,8 +244,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: props => (props.compact ? '1.5rem' : '2.5rem'),
     padding: props => (props.compact ? '0.75rem 0' : '1rem 0'),
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      gap: props => (props.compact ? '1rem' : '2.5rem'),
-      padding: props => (props.compact ? '0.5rem 0' : '1rem 0'),
+      gap: props => (props.compact ? '1.25rem' : '2.5rem'),
+      padding: props => (props.compact ? '0.75rem 0' : '1rem 0'),
     },
   },
   item: {
