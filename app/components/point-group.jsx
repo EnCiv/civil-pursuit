@@ -11,7 +11,7 @@ import Point from './point'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
 import SvgClose from '../svgr/close'
-import { ModifierButton, TextButton, SecondaryButton } from './button'
+import { TextButton, SecondaryButton } from './button'
 import DemInfo from './dem-info'
 import { H, Level } from 'react-accessible-headings'
 
@@ -26,12 +26,15 @@ const PointGroup = props => {
   const [expanded, setExpanded] = useState(vState === 'selectLead' || vState === 'edit')
   const classes = useStylesFromThemeFunction()
 
-  const { group, point } = pG
+  const { group = [], point } = pG ?? {}
   const { subject, description, demInfo } = point ?? {}
 
   const singlePoint = !group || group.length === 0
   const [selected, setSelected] = useState('')
+  const selectedLeadPoint = group.find(point => point._id === selected)
   const [isHovered, setIsHovered] = useState(false)
+  const [isUngrouping, setIsUngrouping] = useState(false)
+  const [ungroupResult, setUngroupResult] = useState(null)
 
   const onMouseIn = () => {
     setIsHovered(true)
@@ -56,6 +59,24 @@ const PointGroup = props => {
     setPg(pointGroup)
   }, [pointGroup]) // could be changed by parent component, or within this component
 
+  useEffect(() => {
+    const mobile = window.matchMedia?.('(max-width: 40rem)').matches
+    const isMobileModal = mobile && (vs === 'selectLead' || (vs === 'edit' && expanded && vState === 'editable'))
+    if (!isMobileModal) return
+
+    const body = document.body
+    const root = document.documentElement
+    const previousBodyOverflow = body.style.overflow
+    const previousRootOverflow = root.style.overflow
+    body.style.overflow = 'hidden'
+    root.style.overflow = 'hidden'
+
+    return () => {
+      body.style.overflow = previousBodyOverflow
+      root.style.overflow = previousRootOverflow
+    }
+  }, [vs, expanded, vState])
+
   const ungroupAndClose = () => {
     setPg({})
     onDone({
@@ -69,62 +90,74 @@ const PointGroup = props => {
     })
   }
   return (
-    <div className={cx(classes.pointGroup, className)} {...otherProps}>
+    <div
+      className={cx(classes.pointGroup, vs === 'edit' && expanded && vState === 'editable' && classes.mobileEditModal, isUngrouping && classes.pointGroupExiting, className)}
+      {...otherProps}
+      onAnimationEnd={event => {
+        if (event.target !== event.currentTarget || !isUngrouping) return
+        setIsUngrouping(false)
+        if (ungroupResult) onDone(ungroupResult)
+      }}
+    >
       {vs === 'collapsed' && (
         <div className={cx(classes.borderStyle, classes.collapsedBorder, classes.contentContainer, classes.informationGrid)}>{subject && <H className={cx(classes.subjectStyle, classes.collapsedSubject)}>{subject}</H>}</div>
       )}
       {vs === 'selectLead' && (
-        <div className={cx(classes.borderStyle, classes.contentContainer)}>
-          <H className={classes.titleGroup}>Please select the response you want to lead with</H>
+        <div className={cx(classes.borderStyle, classes.contentContainer, classes.selectLeadContent)}>
+          <H className={cx(classes.titleGroup, classes.selectLeadTitle)}>Please select the response you want to lead with</H>
+          <div className={classes.selectedLeadSummary} aria-live="polite">
+            {selectedLeadPoint ? `${selectedLeadPoint.subject} selected as lead` : 'Make a selection'}
+          </div>
           <div className={classes.SvgContainer}>
-            <TextButton title="Ungroup and close" aria-label="Ungroup and close" onClick={ungroupAndClose}>
+            <TextButton title="Ungroup and close" aria-label="Ungroup and Close" onClick={ungroupAndClose}>
               <span className={classes.chevronButton}>
                 <SvgClose />
               </span>
             </TextButton>
           </div>
-          {expanded && (
-            <Level>
-              <div className={classes.selectPointsContainer}>
-                {group?.map(pD => {
-                  return (
-                    <div key={pD._id} className={classes.selectPoints}>
-                      <Point
-                        point={pD}
-                        vState={pD._id === selected ? 'selected' : 'default'}
-                        className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
-                        onClick={() => {
-                          setSelected(pD._id)
-                        }}
-                      >
-                        <div className={classes.invisibleElement}>
-                          {/* this is here to take up space for the height calculation of every grid cell, but not be visible */}
-                          <ModifierButton children={'Select as Lead'} />
+          <div className={cx(classes.expandableContent, expanded && classes.contentExpanded, classes.selectLeadExpandable)} aria-hidden={!expanded} inert={!expanded}>
+            <div className={cx(classes.expandableContentInner, classes.selectLeadInner)}>
+              <Level>
+                <div className={cx(classes.selectPointsContainer, classes.selectLeadPointsContainer)}>
+                  {group?.map(pD => {
+                    return (
+                      <div key={pD._id} className={classes.selectPoints}>
+                        <div className={classes.selectionIndicator} aria-hidden="true">
+                          <div className={cx(classes.radioIndicator, pD._id === selected && classes.checkedIndicator)} />
                         </div>
-                        <div className={classes.selectButtonRow}>
-                          {/* some grid cells will be taller than others, based on content. The real button is absolute positioned so they are all at the bottom of the grid cell
-                          We welcome an alternative to positioning the select button at the bottom of the grid cell when a cell is shorter than others in the row */}
-                          <ModifierButton
-                            className={cx(classes.selectSelectButton, pD._id === selected && classes.selectedButton)}
-                            title={`Select as Lead: ${pD.subject}`}
-                            children={`Select as Lead`}
-                            disabled={false}
-                            disableOnClick={false}
-                            onDone={() => {
+                        <Point
+                          point={pD}
+                          demInfoTopRight
+                          vState={pD._id === selected ? 'selected' : 'default'}
+                          className={cx(classes.selectPointsPassDown, classes.noBoxShadow, classes.leadSelectablePoint)}
+                          role="button"
+                          tabIndex={0}
+                          aria-pressed={pD._id === selected}
+                          title={pD._id === selected ? `Selected as Lead: ${pD.subject}` : `Select as Lead: ${pD.subject}`}
+                          aria-label={pD._id === selected ? `${pD.subject}, Selected as Lead` : `Select ${pD.subject} as Lead`}
+                          onClick={() => {
+                            setSelected(pD._id)
+                          }}
+                          onKeyDown={event => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault()
                               setSelected(pD._id)
-                            }}
-                          />
-                        </div>
-                      </Point>
-                    </div>
-                  )
-                })}
-              </div>
-            </Level>
-          )}
-          <div className={cx(classes.bottomButtons, classes.bottomButtonsOne)}>
+                            }
+                          }}
+                        >
+                          {pD._id === selected && <span className={classes.leadSelectedLabel}>Selected as Lead</span>}
+                        </Point>
+                      </div>
+                    )
+                  })}
+                </div>
+              </Level>
+            </div>
+          </div>
+          <div className={cx(classes.bottomButtons, classes.bottomButtonsOne, classes.selectLeadActions)}>
             <span className={classes.buttonSpan}>
               <SecondaryButton
+                className={classes.leadDoneButton}
                 disabled={selected === ''}
                 title="Done"
                 children="Done"
@@ -153,7 +186,11 @@ const PointGroup = props => {
                   setExpanded(false)
                 }}
               />
-              <SecondaryButton title="Ungroup" children="Ungroup" onDone={ungroupAndClose} />
+              <SecondaryButton
+                title="Ungroup this selection and close"
+                children="Ungroup"
+                onDone={ungroupAndClose}
+              />
             </span>
           </div>
         </div>
@@ -164,6 +201,7 @@ const PointGroup = props => {
             classes.borderStyle,
             classes.contentContainer,
             classes.informationGrid,
+            vs === 'edit' && expanded && vState === 'editable' && classes.mobileEditContent,
             {
               [classes.selectedBorder]: select,
               [classes.clickable]: (vState === 'view' || vState === 'editable') && vState !== 'disabled',
@@ -197,49 +235,32 @@ const PointGroup = props => {
               <div className={cx(classes.radioIndicator, select && classes.checkedIndicator)} aria-hidden="true" />
             </div>
           )}
-          {!singlePoint && (
-            <div className={classes.SvgContainer}>
-              {expanded ? (
-                <TextButton
-                  onClick={e => {
-                    e.stopPropagation()
-                    setExpanded(false)
-                  }}
-                  title="collapse"
-                  aria-label="Collapse group"
-                  tabIndex={0}
-                >
-                  <span className={classes.chevronButton}>
-                    <SvgChevronUp />
-                  </span>
-                </TextButton>
-              ) : (
-                <TextButton
-                  onClick={e => {
-                    e.stopPropagation()
-                    setExpanded(true)
-                  }}
-                  title="expand"
-                  aria-label="Expand group"
-                  tabIndex={0}
-                >
-                  <span className={classes.chevronButton}>
-                    <SvgChevronDown />
-                  </span>
-                </TextButton>
-              )}
-            </div>
-          )}
           {subject && <H className={cx(classes.subjectStyle, vState === 'disabled' && classes.disabledSubject)}>{subject}</H>}
           {description && <div className={cx(classes.descriptionStyle, vState === 'disabled' && classes.disabledDescription)}>{description}</div>}
           {demInfo && <DemInfo {...demInfo} />}
           {childrenWithProps}
-          {vs === 'edit' && expanded && !singlePoint && (
-            <div className={classes.defaultWidth}>
-              {!singlePoint && <H className={classes.titleGroup}>Edit the response you'd like to lead with</H>}
-              <div className={classes.selectPointsContainer}>
-                <Level>
-                  {group.map((pD, leadIndex) => {
+          {vs === 'edit' && expanded && vState === 'editable' && (
+            <div className={cx(classes.SvgContainer, classes.mobileEditClose)}>
+              <TextButton
+                title="Done editing group"
+                aria-label="Done editing group"
+                onClick={() => {
+                  setExpanded(false)
+                  onDone({ valid: true, value: { pointGroup: pG } })
+                }}
+              >
+                <span className={classes.chevronButton}><SvgClose /></span>
+              </TextButton>
+            </div>
+          )}
+          {vs === 'edit' && !singlePoint && (
+            <div className={cx(classes.expandableContent, expanded && classes.contentExpanded, expanded && vState === 'editable' && classes.mobileEditExpandable)} aria-hidden={!expanded} inert={!expanded}>
+              <div className={cx(classes.expandableContentInner, expanded && vState === 'editable' && classes.mobileEditInner)}>
+                <div className={classes.defaultWidth}>
+                  <H className={classes.titleGroup}>Select the response you'd like to lead with</H>
+                  <Level>
+                    <div className={cx(classes.selectPointsContainer, expanded && vState === 'editable' && classes.mobileEditPoints)}>
+                        {group.map((pD, leadIndex) => {
                     function doSelectLead() {
                       const newPg = {
                         point: pD,
@@ -248,24 +269,31 @@ const PointGroup = props => {
                       setPg(newPg)
                       return newPg
                     }
-                    return (
-                      <div key={pD._id} className={classes.selectPoints}>
+                        return (
+                          <div key={pD._id} className={classes.selectPoints}>
                         <Point
                           point={pD}
+                          demInfoTopRight
                           vState={'default'}
-                          className={cx(classes.selectPointsPassDown, classes.noBoxShadow)}
-                          onClick={() => {
-                            const pointGroup = doSelectLead()
-                            onDone({
-                              valid: true,
-                              value: { pointGroup },
-                            })
+                          className={cx(classes.selectPointsPassDown, classes.noBoxShadow, classes.leadSelectablePoint)}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`Select ${pD.subject} as Lead`}
+                          title={`Select as Lead: ${pD.subject}`}
+                          onClick={event => {
+                            const interactive = event.target.closest('button, a, input, label, select, textarea, [role="button"], [role="link"], [role="radio"], [role="checkbox"], [role="switch"]')
+                            if (interactive && interactive !== event.currentTarget) return
+                            doSelectLead()
+                          }}
+                          onKeyDown={event => {
+                            if (event.target !== event.currentTarget) return
+                            if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+                              event.preventDefault()
+                              doSelectLead()
+                            }
                           }}
                         >
                           <div className={classes.pointBottomButtons}>
-                            <div className={classes.pointWidthButton}>
-                              <ModifierButton className={classes.pointWidthButton} title={`Select as Lead: ${pD.subject}`} children={`Select as Lead`} onDone={doSelectLead} disabled={false} disableOnClick={false} />
-                            </div>
                             <div className={classes.pointWidthButton}>
                               <TextButton
                                 className={classes.pointWidthButton}
@@ -287,35 +315,41 @@ const PointGroup = props => {
                             </div>
                           </div>
                         </Point>
+                          </div>
+                        )
+                        })}
                       </div>
-                    )
-                  })}
-                </Level>
+                  </Level>
+                </div>
               </div>
             </div>
           )}
-          {vs !== 'edit' && expanded && (
-            <div className={classes.defaultWidth}>
-              {!singlePoint && <H className={classes.titleGroup}>Other Responses</H>}
-              <Level>
-                <div className={classes.selectPointsContainer}>
-                  {group.map(pD => {
-                    return (
-                      <div key={pD._id} className={classes.selectPoints}>
-                        <Point point={pD} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)} vState={vState} />
-                      </div>
-                    )
-                  })}
+          {vs !== 'edit' && (
+            <div className={cx(classes.expandableContent, expanded && classes.contentExpanded)} aria-hidden={!expanded} inert={!expanded}>
+              <div className={classes.expandableContentInner}>
+                <div className={classes.defaultWidth}>
+                  {!singlePoint && <H className={classes.titleGroup}>Other Responses</H>}
+                  <Level>
+                    <div className={classes.selectPointsContainer}>
+                      {group.map(pD => {
+                        return (
+                          <div key={pD._id} className={classes.selectPoints}>
+                            <Point point={pD} className={cx(classes.selectPointsPassDown, classes.noBoxShadow)} vState={vState} />
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </Level>
                 </div>
-              </Level>
+              </div>
             </div>
           )}
-          {(vs === 'edit' || vs === 'selectLead') && !singlePoint && (
-            <div className={cx(classes.bottomButtons, classes.bottomButtonsTwo)}>
+          {(vs === 'selectLead' || (vs === 'edit' && vState !== 'selectLead')) && !singlePoint && (
+            <div className={cx(classes.bottomButtons, classes.bottomButtonsTwo, expanded && vState === 'editable' && classes.mobileEditActions)}>
               {expanded ? (
                 <span>
                   <SecondaryButton
-                    className={classes.doneButton}
+                    className={classes.leadDoneButton}
                     onDone={() => {
                       setExpanded(false)
                       // the pointGroup has changed, notify the parent
@@ -328,21 +362,21 @@ const PointGroup = props => {
                 </span>
               ) : (
                 <span>
-                  <ModifierButton
-                    className={classes.editButton}
+                  <SecondaryButton
+                    className={cx(classes.leadDoneButton, classes.buttonPress)}
                     onDone={() => {
                       setVState('edit')
                       setExpanded(true)
                     }}
-                    title="Edit"
-                    children="Edit"
+                    title="Edit Lead Point"
+                    children="Edit Lead Point"
                     disableOnClick={true}
                   />
                 </span>
               )}
               <span>
-                <TextButton
-                  className={classes.ungroupButton}
+                <SecondaryButton
+                  className={cx(classes.ungroupButton, classes.buttonPress)}
                   title="Ungroup"
                   children="Ungroup"
                   onDone={() => {
@@ -350,16 +384,26 @@ const PointGroup = props => {
                       point,
                       group: [],
                     } // This is a point object, not a component
-                    setPg(pG)
-
-                    onDone({
+                    setUngroupResult({
                       valid: true,
                       value: { pointGroup: pG, removedPgs: group.map(pD => ({ point: pD, group: [] })) },
                     })
+                    setIsUngrouping(true)
                   }}
                 />
               </span>
             </div>
+          )}
+          {!singlePoint && (
+            <TextButton
+              className={cx(classes.expandButton, expanded && vState === 'editable' && classes.mobileEditExpandButton)}
+              onClick={() => setExpanded(!expanded)}
+              title={expanded ? 'Collapse Group' : 'Expand Group'}
+              aria-label={expanded ? 'Collapse Group' : 'Expand Group'}
+              aria-expanded={expanded}
+            >
+              <span className={classes.chevronButton}>{expanded ? <SvgChevronUp /> : <SvgChevronDown />}</span>
+            </TextButton>
           )}
         </div>
       )}
@@ -370,6 +414,51 @@ const PointGroup = props => {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   pointGroup: {
     display: 'flex',
+  },
+  mobileEditModal: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      position: 'fixed',
+      inset: 0,
+      zIndex: 1100,
+      width: '100vw',
+      height: '100vh',
+      height: '100dvh',
+      overflow: 'hidden',
+      backgroundColor: theme.colors.white,
+      flexDirection: 'column',
+      '& $expandButton': {
+        display: 'none',
+      },
+      '& $selectionIndicator': {
+        display: 'none',
+      },
+    },
+  },
+  pointGroupExiting: {
+    animation: '$pointGroupExit 220ms ease-in both',
+    pointerEvents: 'none',
+    '@media (prefers-reduced-motion: reduce)': {
+      animationDuration: '1ms',
+    },
+  },
+  '@keyframes pointGroupExit': {
+    from: {
+      opacity: 1,
+      transform: 'translateY(0) scale(1)',
+    },
+    to: {
+      opacity: 0,
+      transform: 'translateY(0.5rem) scale(0.98)',
+    },
+  },
+  buttonPress: {
+    transition: 'transform 120ms ease',
+    '&:active:not(:disabled)': {
+      transform: 'scale(0.97)',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
   },
   borderStyle: {
     borderRadius: '0.9375rem',
@@ -438,10 +527,165 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     boxSizing: 'border-box',
     marginLeft: '0.5rem',
     marginRight: '0.5rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      marginLeft: 0,
+      marginRight: 0,
+      padding: '1.25rem 1rem',
+    },
+  },
+
+  selectLeadContent: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      marginLeft: 0,
+      marginRight: 0,
+      padding: 'calc(env(safe-area-inset-top) + 1rem) 1rem calc(env(safe-area-inset-bottom) + 0.75rem)',
+      height: '100%',
+      borderRadius: 0,
+      boxShadow: 'none',
+      overflow: 'hidden',
+      alignItems: 'stretch',
+    },
+  },
+
+  selectLeadTitle: {
+    paddingRight: '2.5rem',
+  },
+
+  selectedLeadSummary: {
+    alignSelf: 'flex-start',
+    padding: '0.25rem 0.75rem',
+    borderRadius: '0.25rem',
+    backgroundColor: theme.colors.lightSuccess,
+    color: theme.colors.success,
+    fontSize: '0.875rem',
+    fontWeight: 600,
+    lineHeight: '1.25rem',
+  },
+
+  mobileEditContent: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      height: '100%',
+      margin: 0,
+      padding: 'calc(env(safe-area-inset-top) + 3.25rem) 1rem calc(env(safe-area-inset-bottom) + 0.5rem)',
+      borderRadius: 0,
+      boxShadow: 'none',
+      overflow: 'hidden',
+      alignItems: 'stretch',
+    },
+  },
+
+  mobileEditClose: {
+    display: 'none',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      display: 'block',
+      top: 'calc(env(safe-area-inset-top) + 0.75rem)',
+      right: '1rem',
+      zIndex: 2,
+    },
+  },
+
+  mobileEditExpandButton: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      display: 'none',
+    },
+  },
+
+  mobileEditExpandable: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      flex: '1 1 auto',
+      minHeight: 0,
+      '&$contentExpanded': {
+        gridTemplateRows: 'minmax(0, 1fr)',
+      },
+    },
+  },
+
+  mobileEditInner: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      height: '100%',
+      overflowY: 'auto',
+      overscrollBehavior: 'contain',
+    },
+  },
+
+  mobileEditPoints: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      gridTemplateColumns: 'minmax(0, 1fr)',
+      gap: '1.25rem',
+      padding: '1rem 0.5rem 1.25rem',
+    },
+  },
+
+  mobileEditActions: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      flexDirection: 'column',
+      flexShrink: 0,
+      gap: '0.75rem',
+      padding: '0.75rem 0 calc(0.5rem + env(safe-area-inset-bottom))',
+      '& > span': {
+        width: '100%',
+        flex: '0 0 auto',
+      },
+    },
+  },
+
+  selectLeadExpandable: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      flex: '1 1 auto',
+      minHeight: 0,
+      '&$contentExpanded': {
+        gridTemplateRows: 'minmax(0, 1fr)',
+      },
+    },
+  },
+
+  selectLeadInner: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+    },
+  },
+
+  selectLeadActions: {
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      flexShrink: 0,
+      marginTop: 'auto',
+      paddingBottom: 'calc(0.5rem + env(safe-area-inset-bottom))',
+    },
   },
 
   defaultWidth: {
     width: '100%',
+  },
+
+  expandableContent: {
+    display: 'grid',
+    gridTemplateRows: '0fr',
+    opacity: 0,
+    width: '100%',
+    transition: 'grid-template-rows 300ms ease, opacity 200ms ease',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+  },
+
+  contentExpanded: {
+    gridTemplateRows: '1fr',
+    opacity: 1,
+  },
+
+  expandableContentInner: {
+    minHeight: 0,
+    overflow: 'hidden',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      '&$mobileEditInner': {
+        height: '100%',
+        overflowX: 'hidden',
+        overflowY: 'auto',
+        overscrollBehavior: 'contain',
+      },
+    },
   },
 
   informationGrid: {
@@ -452,27 +696,41 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignSelf: 'stretch',
   },
 
-  editButton: {
-    width: '8rem',
+  buttonSpan: {
+    display: 'flex',
+    gap: '1.5rem',
+    width: '100%',
+    '& > button': {
+      flex: '1 1 0',
+      minWidth: 0,
+      width: '50%',
+    },
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '7rem',
+      flexDirection: 'column',
+      gap: '0.75rem',
+      '& > button': {
+        width: '100%',
+      },
     },
   },
 
-  buttonSpan: {
-    display: 'flex',
-    gap: '1rem',
-    justifyContent: 'center',
+  leadDoneButton: {
+    backgroundColor: `${theme.colors.primaryButtonBlue} !important`,
+    color: `${theme.colors.white} !important`,
+    border: `0.125rem solid ${theme.colors.primaryButtonBlue} !important`,
+    '&:hover, &.hover, &:active': {
+      backgroundColor: `${theme.colors.primaryButtonBlue} !important`,
+      color: `${theme.colors.white} !important`,
+      borderColor: `${theme.colors.primaryButtonBlue} !important`,
+    },
+    '&[aria-disabled="true"]': {
+      backgroundColor: `${theme.colors.inactiveGray} !important`,
+      color: `${theme.colors.white} !important`,
+      borderColor: `${theme.colors.inactiveGray} !important`,
+    },
   },
 
   ungroupButton: {},
-
-  doneButton: {
-    width: '17rem',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '7rem',
-    },
-  },
 
   titleGroup: {
     ...theme.font,
@@ -491,15 +749,36 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '1.5rem 1rem 0 1rem',
     display: 'flex',
     '&$bottomButtonsTwo': {
+      gap: '1.5rem',
       '& span': {
-        flex: '0 0 50%',
+        flex: '1 1 0',
+        minWidth: 0,
         textAlign: 'center',
+      },
+      '& span > button': {
+        boxSizing: 'border-box',
+        width: '100%',
+        minWidth: 0,
       },
     },
     '&$bottomButtonsOne': {
       '& span': {
         flex: '0 0 100%',
         textAlign: 'center',
+      },
+    },
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      padding: '1rem 0.75rem 0',
+      '&$bottomButtonsTwo': {
+        flexDirection: 'column',
+        gap: '0.75rem',
+        '& > span': {
+          flex: '0 0 auto',
+          width: '100%',
+        },
+        '& > span > button': {
+          width: '100%',
+        },
       },
     },
   },
@@ -512,8 +791,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   SvgContainer: {
     position: 'absolute',
     top: '1rem',
-    right: '3.5rem',
+    right: '1rem',
     fontSize: '1.5rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      top: 'calc(env(safe-area-inset-top) + 0.75rem)',
+      right: '0.75rem',
+    },
   },
 
   selectPointsContainer: {
@@ -521,6 +804,39 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gridTemplateColumns: 'repeat(auto-fill, minmax(calc(min(100%,20rem)), 1fr))',
     gap: '2rem',
     width: '100%',
+    boxSizing: 'border-box',
+    padding: '0.5rem',
+  },
+
+  selectLeadPointsContainer: {
+    display: 'flex',
+    alignItems: 'stretch',
+    gap: '1.25rem',
+    overflowX: 'auto',
+    overflowY: 'auto',
+    boxSizing: 'border-box',
+    padding: '0.5rem 0.5rem 0.75rem',
+    '& $selectPoints': {
+      flex: '1 0 18rem',
+      minWidth: '18rem',
+    },
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      flexDirection: 'column',
+      alignItems: 'stretch',
+      overflowX: 'hidden',
+      overflowY: 'auto',
+      gap: '1.25rem',
+      padding: '1rem 0.5rem 1.25rem',
+      '& $selectPoints': {
+        flex: '0 0 auto',
+        minWidth: 0,
+        width: '100%',
+        margin: 0,
+      },
+      flex: '1 1 auto',
+      minHeight: 0,
+      maxHeight: 'none',
+    },
   },
 
   selectPoints: {
@@ -538,32 +854,23 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     height: '100%',
   },
 
+  leadSelectablePoint: {
+    cursor: 'pointer',
+  },
+
   pointWidthButton: {
     margin: '.5rem',
   },
 
-  invisibleElement: {
-    width: '100%',
-    visibility: 'hidden',
-  },
-
-  selectButtonRow: {
-    position: 'absolute',
-    bottom: '1rem',
-    left: 0,
-    width: '100%',
-    textAlign: 'center',
-  },
-
-  selectSelectButton: {
-    width: '75%',
-  },
-
-  selectedButton: {
-    backgroundColor: theme.colors.encivYellow,
-    '&:hover, &.hover': {
-      backgroundColor: theme.colors.encivYellow,
-    },
+  leadSelectedLabel: {
+    alignSelf: 'flex-start',
+    padding: '0.25rem 0.75rem',
+    borderRadius: '0.25rem',
+    backgroundColor: theme.colors.lightSuccess,
+    color: theme.colors.success,
+    fontSize: '0.875rem',
+    fontWeight: 600,
+    lineHeight: '1.25rem',
   },
 
   chevronButton: {
@@ -578,6 +885,23 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         background: 'none',
         color: 'none',
       },
+    },
+  },
+
+  expandButton: {
+    alignSelf: 'stretch',
+    boxSizing: 'border-box',
+    width: '100%',
+    minHeight: '3rem',
+    marginTop: '1.25rem',
+    marginBottom: '-1.5rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      minHeight: '2.75rem',
+      marginTop: '0.75rem',
+      marginBottom: '-0.75rem',
     },
   },
 
@@ -622,6 +946,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     top: '1rem',
     right: '1rem',
     zIndex: 2,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
     pointerEvents: 'none',
     '&::before': {
       content: '""',
