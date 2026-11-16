@@ -1,7 +1,9 @@
 // https://github.com/EnCiv/civil-pursuit/issues/385
+// https://github.com/EnCiv/civil-pursuit/issues/388
 
 import React from 'react'
 import { ThemeProvider } from 'react-jss'
+import { expect, userEvent, within } from 'storybook/test'
 import theme from '../app/components/theme'
 import ProfilePage from '../app/web-components/profile-page'
 import { buildApiDecorator } from './common'
@@ -87,14 +89,44 @@ export const SingleDiscussion = {
   render: () => <ProfilePage initialTab="Discussions" />,
 }
 
-export const ProfileTabActive = () => {
-  return <ProfilePage initialTab="Profile" />
-}
-
 export const DiscussionsTabActive = () => {
   return <ProfilePage initialTab="Discussions" />
 }
 
-export const SettingsTabActive = () => {
-  return <ProfilePage initialTab="Settings" />
+export const ProfileAndSettingsTabsDisabled = {
+  render: () => <ProfilePage initialTab="Discussions" />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const profileTab = canvas.getByRole('button', { name: 'Profile' })
+    const settingsTab = canvas.getByRole('button', { name: 'Settings' })
+
+    expect(profileTab).toBeDisabled()
+    expect(settingsTab).toBeDisabled()
+    await userEvent.click(profileTab)
+    await userEvent.click(settingsTab)
+    expect(canvas.getByRole('heading', { name: 'Discussions' })).toBeInTheDocument()
+  },
 }
+
+export const MobileDiscussionsTab = {
+  parameters: {
+    layout: 'fullscreen',
+    viewport: {
+      defaultViewport: 'profileMobile',
+      viewports: {
+        profileMobile: {
+          name: 'Profile Mobile (375px)',
+          styles: {
+            width: '375px',
+            height: '812px',
+          },
+        },
+      },
+    },
+  },
+  render: () => <ProfilePage initialTab="Discussions" />,
+  play: async () => {
+    expect(window.innerWidth).toBeLessThanOrEqual(375)
+  },
+}
+

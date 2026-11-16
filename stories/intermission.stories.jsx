@@ -19,7 +19,7 @@ export default {
     onDoneDecorator,
     DeliberationContextDecorator,
     mockBatchUpsertDeliberationDataRoute, // Mock fetch for batch-upsert HTTP endpoint
-    buildApiDecorator('send-password', (email, path, cb) => {
+    buildApiDecorator('send-password', (email, options, cb) => {
       if (email === 'fail@email.com') cb({ error: 'could not send email' })
       else cb({ error: '' })
     }),
@@ -64,6 +64,10 @@ export const NoEmailSuccess = {
       expect(window.socket._socketEmitHandlerResults['set-user-info'][0][0]).toEqual({ email: 'success@email.com' })
       expect(window.socket._socketEmitHandlerResults['send-password']).toHaveLength(1)
       expect(window.socket._socketEmitHandlerResults['send-password'][0][0]).toEqual('success@email.com')
+      expect(window.socket._socketEmitHandlerResults['send-password'][0][1]).toEqual({
+        returnTo: window.location.pathname,
+        emailType: 'welcome',
+      })
       const successMessage = canvas.getByText('Success, an email has been sent to success@email.com. Please check your inbox and follow the instructions to continue.')
       expect(successMessage).toBeInTheDocument()
     })
@@ -87,6 +91,10 @@ export const NoEmailFail = {
       expect(window.socket._socketEmitHandlerResults['set-user-info'][0][0]).toEqual({ email: 'fail@email.com' })
       expect(window.socket._socketEmitHandlerResults['send-password']).toHaveLength(1)
       expect(window.socket._socketEmitHandlerResults['send-password'][0][0]).toEqual('fail@email.com')
+      expect(window.socket._socketEmitHandlerResults['send-password'][0][1]).toEqual({
+        returnTo: window.location.pathname,
+        emailType: 'welcome',
+      })
       const successMessage = canvas.getByText('could not send email')
       expect(successMessage).toBeInTheDocument()
     })

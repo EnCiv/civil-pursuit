@@ -11,6 +11,7 @@ import { createUseStyles } from 'react-jss'
 import SvgEncivBlack from '../svgr/enciv-black'
 import SvgEncivWhite from '../svgr/enciv-white'
 import Donate from './donate'
+import theme from './theme'
 
 /*
  * # TopNavBar
@@ -54,7 +55,17 @@ import Donate from './donate'
  */
 
 const TopNavBar = props => {
-  const { className, menu, mode, defaultSelectedItem, UserOrSignInUp, tabIndex = 0, ...otherProps } = props
+  const {
+    className,
+    menu,
+    mode,
+    defaultSelectedItem,
+    UserOrSignInUp,
+    mobileHorizontal = false,
+    mobileBreakpoint = theme.condensedWidthBreakPoint,
+    tabIndex = 0,
+    ...otherProps
+  } = props
   const [isExpanded, setIsExpanded] = useState(false)
   const [selectedItem, setSelectedItem] = useState(defaultSelectedItem)
   const [openDropdown, setOpenDropdown] = useState(null)
@@ -73,6 +84,7 @@ const TopNavBar = props => {
   }
 
   const handleMenuItemClick = item => {
+    if (item?.disabled || typeof item?.func !== 'function') return
     item.func()
     setSelectedItem(item.name)
   }
@@ -110,11 +122,12 @@ const TopNavBar = props => {
       <menu className={cx(classes.verticalMenuContainer, className)} {...otherProps}>
         {menu &&
           menu.map((item, index) => (
-            <li className={classes.menuList}>
-              <div
-                key={item.name}
-                tabIndex={tabIndex}
-                onKeyDown={e => handleKeyDown(e, 'menu', index)}
+            <li className={classes.menuList} key={item.name}>
+              <button
+                type="button"
+                disabled={item.disabled}
+                tabIndex={item.disabled ? -1 : tabIndex}
+                aria-current={selectedItem === item.name ? 'page' : undefined}
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={() => handleMouseLeave()}
                 className={cx(classes.verticalMenuItem, {
@@ -123,7 +136,7 @@ const TopNavBar = props => {
                 onClick={() => handleMenuItemClick(item)}
               >
                 {item.name}
-              </div>
+              </button>
             </li>
           ))}
       </menu>
@@ -538,7 +551,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   menuList: {
     listStyle: 'none',
   },
-  verticalMenuContainer: {
+  verticalMenuContainer: props => ({
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '#f5f4f48d',
@@ -547,12 +560,47 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontWeight: 600,
     borderRadius: '0.5rem',
     gap: '0.4rem',
-  },
+    ...(props.mobileHorizontal && {
+      [`@media (max-width: ${props.mobileBreakpoint})`]: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        width: '100%',
+        boxSizing: 'border-box',
+        backgroundColor: theme.colors.white,
+        borderRadius: 0,
+        borderBottom: `0.0625rem solid ${theme.colors.borderGray}`,
+        padding: '0.25rem 0',
+        gap: '0.5rem',
+        '& > li': {
+          flex: '0 0 auto',
+        },
+        '& > li > button': {
+          width: 'auto',
+        },
+      },
+    }),
+  }),
   verticalMenuItem: {
+    appearance: 'none',
+    background: 'transparent',
+    border: 0,
+    color: 'inherit',
+    cursor: 'pointer',
+    display: 'block',
+    font: 'inherit',
+    width: '100%',
     padding: '0.8rem 1.0rem',
     borderRadius: '0.5rem',
-    '&:hover': {
+    textAlign: 'left',
+    '&:hover:not(:disabled)': {
       background: 'rgba(235, 234, 234, 0.61)',
+    },
+    '&:disabled': {
+      color: theme.colors.inactiveGray,
+      cursor: 'not-allowed',
+    },
+    '&:focus-visible': {
+      outline: theme.focusOutline,
     },
   },
   logoContainer: {

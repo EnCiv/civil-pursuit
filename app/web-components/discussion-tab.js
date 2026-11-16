@@ -1,4 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/385
+// https://github.com/EnCiv/civil-pursuit/issues/388
 
 import React, { useState, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
@@ -161,11 +162,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'grid',
     gap: '2rem',
     gridTemplateColumns: 'repeat(auto-fit, minmax(max(30rem, calc(50% - 1rem)), 1fr))',
+    [`@media (max-width: ${theme.discussionSingleColumnBreakPoint})`]: {
+      gridTemplateColumns: 'minmax(0, 1fr)',
+      gap: '1.5rem',
+    },
   },
 
   discussionItem: {
     display: 'flex',
     flexDirection: 'column',
+    minWidth: 0,
   },
 
   compactQuestionBox: {

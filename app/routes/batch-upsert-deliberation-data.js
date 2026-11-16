@@ -103,14 +103,22 @@ export async function batchUpsertHandler(req, res, next) {
     let emailUpdated = false
     if (email && typeof email === 'string') {
       try {
+        const normalizedEmail = User.normalizeEmail(email)
         const existingUser = await User.findOne({ _id: new User.ObjectId(userId) })
-        await User.updateOne({ _id: new User.ObjectId(userId) }, { $set: { email } })
+        const emailOwner = await User.findOne(
+          { email: normalizedEmail },
+          { collation: User.emailCollation }
+        )
+        if (emailOwner && emailOwner._id.toString() !== userId) {
+          return sendError(409, 'Email already in use')
+        }
+        await User.updateOne({ _id: new User.ObjectId(userId) }, { $set: { email: normalizedEmail } })
         emailUpdated = true
 
         // Set req.user so setUserCookie middleware will update the cookie with email
-        req.user = { _id: userId, email }
+        req.user = { _id: userId, email: normalizedEmail }
 
-        // Send password reset email only for non-LinkedIn users — LinkedIn users sign back
+        // Send password setup email only for non-LinkedIn users — LinkedIn users sign back
         // in via LinkedIn and don't have (or need) a password
         if (!existingUser?.linkedinId) {
           // Create a mock socket context for the send-password API
@@ -124,7 +132,11 @@ export async function batchUpsertHandler(req, res, next) {
 
           // Call send-password with mock socket context
           await new Promise((resolve, reject) => {
-            sendPassword.call(mockSocket, email, req.originalUrl || '/', error => {
+            sendPassword.call(
+              mockSocket,
+              normalizedEmail,
+              { returnTo: req.originalUrl || '/', emailType: 'welcome' },
+              error => {
               if (error) {
                 logger.error('batch-upsert-deliberation-data route: Error sending password email:', { userId, email }, error)
                 // Don't fail the entire request if email send fails
