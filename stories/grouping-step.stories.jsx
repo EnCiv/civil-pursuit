@@ -2,7 +2,7 @@
 
 import React, { useContext, useState } from 'react'
 import GroupingStep, { GroupPoints } from '../app/components/steps/grouping'
-import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, buildApiDecorator } from './common'
+import { onDoneDecorator, onDoneResult, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, buildApiDecorator } from './common'
 import { within, userEvent, expect, waitFor } from 'storybook/test'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 
@@ -36,6 +36,33 @@ const createPointDoc = (
 }
 
 const pointItems = Array.from({ length: 10 }, (_, index) => createPointDoc(index, 'Point ' + index, 'Point Description ' + index))
+
+const getPointGroupByLead = (canvas, subject) => within(canvas.getByRole('checkbox', { name: `Select point group: ${subject}` }))
+
+const ungroupPoint = async (canvas, subject) => {
+  const groupedPoints = within(canvas.getByRole('group', { name: 'Your grouped responses' }))
+  const card = groupedPoints.getByRole('checkbox', { name: `Select point group: ${subject}` })
+  await userEvent.click(within(card).getByTitle('Ungroup'))
+  await waitFor(() => expect(card.isConnected).toBe(false))
+}
+
+const selectAvailablePoint = async (canvas, subject) => {
+  const availablePoints = within(canvas.getByRole('group', { name: 'Available responses to group' }))
+  await userEvent.click(availablePoints.getByRole('checkbox', { name: `Select point group: ${subject}` }))
+}
+
+const selectGroupedPoint = async (canvas, subject) => {
+  const groupedPoints = within(canvas.getByRole('group', { name: 'Your grouped responses' }))
+  await userEvent.click(groupedPoints.getByRole('checkbox', { name: `Select point group: ${subject}` }))
+}
+
+const finishSelectingLead = async (canvas, subject) => {
+  const picker = canvas.getByRole('region', { name: 'Select lead response' })
+  const pickerContents = within(picker)
+  await userEvent.click(pickerContents.getByRole('button', { name: `Select ${subject} as Lead` }))
+  await userEvent.click(pickerContents.getByRole('button', { name: 'Done' }))
+  await waitFor(() => expect(picker.isConnected).toBe(false))
+}
 
 function groupingPointsToContext(groupingPoints) {
   const cn = {
@@ -78,239 +105,83 @@ export const canCreateGroup = {
   args: {
     reducedPointList: pointItems,
   },
-  decorators: [onDoneDecorator],
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    const point1 = canvas.getByText('Point 1')
-    await userEvent.click(point1)
-    const point2 = canvas.getByText('Point 2')
-    await userEvent.click(point2)
-    const CreateGroup = canvas.getByText('Create Group')
-    await userEvent.click(CreateGroup)
-    expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
-      valid: false,
-    })
-    const selectAsLead = canvas.getByTitle('Select as Lead: Point 1')
-    await userEvent.click(selectAsLead)
-    await userEvent.click(canvas.getByTitle('Done'))
-    expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
-      valid: true,
-      delta: [
-        {
-          point: {
-            _id: 1,
-            subject: 'Point 1',
-            description: 'Point Description 1',
-            demInfo: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          group: [
-            {
-              _id: 2,
-              subject: 'Point 2',
-              description: 'Point Description 2',
+    await selectAvailablePoint(canvas, 'Point 1')
+    await selectAvailablePoint(canvas, 'Point 2')
+    const createGroupButton = canvas.getByRole('button', { name: /Group Selected Responses/ })
+    await userEvent.click(createGroupButton)
+    await waitFor(() => expect(onDoneResult(canvas)).toMatchObject({
+      onDoneResult: {
+        valid: false,
+      },
+    }))
+    await finishSelectingLead(canvas, 'Point 1')
+    await waitFor(() => expect(onDoneResult(canvas)).toMatchObject({
+      onDoneResult: {
+        valid: true,
+        delta: [
+          {
+            point: {
+              _id: 1,
+              subject: 'Point 1',
+              description: 'Point Description 1',
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
                 party: 'Independent',
               },
             },
-          ],
-        },
-      ],
-    })
+            group: [
+              {
+                _id: 2,
+                subject: 'Point 2',
+                description: 'Point Description 2',
+                demInfo: {
+                  dob: '1990-10-20T00:00:00.000Z',
+                  state: 'NY',
+                  party: 'Independent',
+                },
+              },
+            ],
+          },
+        ],
+      },
+    }))
     // Problem Hack - ungroup the points so this story will run again - but if you need to get the onDone data after something changes, you need to take this out.
-    await userEvent.click(canvas.getByTitle('Ungroup'))
+    await ungroupPoint(canvas, 'Point 1')
   },
 }
 export const canUnGroup = {
   args: {
     reducedPointList: pointItems,
   },
-  decorators: [onDoneDecorator],
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByText('Point 1'))
-    await userEvent.click(canvas.getByText('Point 2'))
-    await userEvent.click(canvas.getByText('Create Group'))
-    await userEvent.click(canvas.getByTitle('Select as Lead: Point 1'))
-    await userEvent.click(canvas.getByTitle('Done'))
-    await userEvent.click(canvas.getByTitle('Ungroup'))
-    expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
-      valid: true,
-      delta: [
-        {
-          point: {
-            _id: 0,
-            subject: 'Point 0',
-            description: 'Point Description 0',
-            demInfo: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
+    await selectAvailablePoint(canvas, 'Point 1')
+    await selectAvailablePoint(canvas, 'Point 2')
+    await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
+    await finishSelectingLead(canvas, 'Point 1')
+    await ungroupPoint(canvas, 'Point 1')
+    await waitFor(() => expect(onDoneResult(canvas)).toMatchObject({
+      onDoneResult: {
+        valid: true,
+        delta: [
+          {
+            point: {
+              _id: 0,
+              subject: 'Point 0',
+              description: 'Point Description 0',
+              demInfo: {
+                dob: '1990-10-20T00:00:00.000Z',
+                state: 'NY',
+                party: 'Independent',
+              },
             },
+            group: [],
           },
-          group: [],
-        },
-        {
-          point: {
-            _id: 3,
-            subject: 'Point 3',
-            description: 'Point Description 3',
-            demInfo: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          group: [],
-        },
-        {
-          point: {
-            _id: 4,
-            subject: 'Point 4',
-            description: 'Point Description 4',
-            demInfo: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          group: [],
-        },
-        {
-          point: {
-            _id: 5,
-            subject: 'Point 5',
-            description: 'Point Description 5',
-            demInfo: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          group: [],
-        },
-        {
-          point: {
-            _id: 6,
-            subject: 'Point 6',
-            description: 'Point Description 6',
-            demInfo: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          group: [],
-        },
-        {
-          point: {
-            _id: 7,
-            subject: 'Point 7',
-            description: 'Point Description 7',
-            demInfo: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          group: [],
-        },
-        {
-          point: {
-            _id: 8,
-            subject: 'Point 8',
-            description: 'Point Description 8',
-            demInfo: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          group: [],
-        },
-        {
-          point: {
-            _id: 9,
-            subject: 'Point 9',
-            description: 'Point Description 9',
-            demInfo: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          group: [],
-        },
-        {
-          point: {
-            _id: 2,
-            subject: 'Point 2',
-            description: 'Point Description 2',
-            demInfo: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          group: [],
-        },
-        {
-          point: {
-            _id: 1,
-            subject: 'Point 1',
-            description: 'Point Description 1',
-            demInfo: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          group: [],
-        },
-      ],
-    })
-  },
-}
-
-// Problem: this runs the first time, but if you go to some other story and come back to this one it fails - the pointList doesn't go back to it's initial state
-export const canCreateGroupWithAGroup = {
-  args: {
-    reducedPointList: pointItems,
-  },
-  decorators: [onDoneDecorator],
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByText('Point 1'))
-    await userEvent.click(canvas.getByText('Point 2'))
-    await userEvent.click(canvas.getByText('Create Group'))
-    await userEvent.click(canvas.getByTitle('Select as Lead: Point 1'))
-    await userEvent.click(canvas.getByTitle('Done'))
-    await userEvent.click(canvas.getByText('Point 3'))
-    await userEvent.click(canvas.getByText('Point 1'))
-    await userEvent.click(canvas.getByText('Create Group'))
-    await userEvent.click(canvas.getByTitle('Select as Lead: Point 1'))
-    await userEvent.click(canvas.getByTitle('Done'))
-    expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
-      valid: true,
-      delta: [
-        {
-          point: {
-            _id: 1,
-            subject: 'Point 1',
-            description: 'Point Description 1',
-            demInfo: {
-              dob: '1990-10-20T00:00:00.000Z',
-              state: 'NY',
-              party: 'Independent',
-            },
-          },
-          group: [
-            {
+          {
+            point: {
               _id: 3,
               subject: 'Point 3',
               description: 'Point Description 3',
@@ -320,7 +191,88 @@ export const canCreateGroupWithAGroup = {
                 party: 'Independent',
               },
             },
-            {
+            group: [],
+          },
+          {
+            point: {
+              _id: 4,
+              subject: 'Point 4',
+              description: 'Point Description 4',
+              demInfo: {
+                dob: '1990-10-20T00:00:00.000Z',
+                state: 'NY',
+                party: 'Independent',
+              },
+            },
+            group: [],
+          },
+          {
+            point: {
+              _id: 5,
+              subject: 'Point 5',
+              description: 'Point Description 5',
+              demInfo: {
+                dob: '1990-10-20T00:00:00.000Z',
+                state: 'NY',
+                party: 'Independent',
+              },
+            },
+            group: [],
+          },
+          {
+            point: {
+              _id: 6,
+              subject: 'Point 6',
+              description: 'Point Description 6',
+              demInfo: {
+                dob: '1990-10-20T00:00:00.000Z',
+                state: 'NY',
+                party: 'Independent',
+              },
+            },
+            group: [],
+          },
+          {
+            point: {
+              _id: 7,
+              subject: 'Point 7',
+              description: 'Point Description 7',
+              demInfo: {
+                dob: '1990-10-20T00:00:00.000Z',
+                state: 'NY',
+                party: 'Independent',
+              },
+            },
+            group: [],
+          },
+          {
+            point: {
+              _id: 8,
+              subject: 'Point 8',
+              description: 'Point Description 8',
+              demInfo: {
+                dob: '1990-10-20T00:00:00.000Z',
+                state: 'NY',
+                party: 'Independent',
+              },
+            },
+            group: [],
+          },
+          {
+            point: {
+              _id: 9,
+              subject: 'Point 9',
+              description: 'Point Description 9',
+              demInfo: {
+                dob: '1990-10-20T00:00:00.000Z',
+                state: 'NY',
+                party: 'Independent',
+              },
+            },
+            group: [],
+          },
+          {
+            point: {
               _id: 2,
               subject: 'Point 2',
               description: 'Point Description 2',
@@ -330,12 +282,85 @@ export const canCreateGroupWithAGroup = {
                 party: 'Independent',
               },
             },
-          ],
-        },
-      ],
-    })
+            group: [],
+          },
+          {
+            point: {
+              _id: 1,
+              subject: 'Point 1',
+              description: 'Point Description 1',
+              demInfo: {
+                dob: '1990-10-20T00:00:00.000Z',
+                state: 'NY',
+                party: 'Independent',
+              },
+            },
+            group: [],
+          },
+        ],
+      },
+    }))
+  },
+}
+
+// Problem: this runs the first time, but if you go to some other story and come back to this one it fails - the pointList doesn't go back to it's initial state
+export const canCreateGroupWithAGroup = {
+  args: {
+    reducedPointList: pointItems,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await selectAvailablePoint(canvas, 'Point 1')
+    await selectAvailablePoint(canvas, 'Point 2')
+    await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
+    await finishSelectingLead(canvas, 'Point 1')
+    await selectAvailablePoint(canvas, 'Point 3')
+    await selectGroupedPoint(canvas, 'Point 1')
+    await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
+    await finishSelectingLead(canvas, 'Point 1')
+    await waitFor(() => expect(onDoneResult(canvas)).toMatchObject({
+      onDoneResult: {
+        valid: true,
+        delta: [
+          {
+            point: {
+              _id: 1,
+              subject: 'Point 1',
+              description: 'Point Description 1',
+              demInfo: {
+                dob: '1990-10-20T00:00:00.000Z',
+                state: 'NY',
+                party: 'Independent',
+              },
+            },
+            group: [
+              {
+                _id: 3,
+                subject: 'Point 3',
+                description: 'Point Description 3',
+                demInfo: {
+                  dob: '1990-10-20T00:00:00.000Z',
+                  state: 'NY',
+                  party: 'Independent',
+                },
+              },
+              {
+                _id: 2,
+                subject: 'Point 2',
+                description: 'Point Description 2',
+                demInfo: {
+                  dob: '1990-10-20T00:00:00.000Z',
+                  state: 'NY',
+                  party: 'Independent',
+                },
+              },
+            ],
+          },
+        ],
+      },
+    }))
     // Problem Hack - ungroup the points so this story will run again - but if you need to get the onDone data after something changes, you need to take this out.
-    await userEvent.click(canvas.getByTitle('Ungroup'))
+    await ungroupPoint(canvas, 'Point 1')
   },
 }
 
@@ -344,24 +369,20 @@ export const canRemoveOnePointFromAGroup = {
   args: {
     reducedPointList: pointItems,
   },
-  decorators: [onDoneDecorator],
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByText('Point 1'))
-    await userEvent.click(canvas.getByText('Point 2'))
-    await userEvent.click(canvas.getByText('Create Group'))
-    await userEvent.click(canvas.getByTitle('Select as Lead: Point 1'))
-    await userEvent.click(canvas.getByTitle('Done'))
-    await userEvent.click(canvas.getByText('Point 3'))
-    await userEvent.click(canvas.getByText('Point 1'))
-    await userEvent.click(canvas.getByText('Create Group'))
-    await userEvent.click(canvas.getByTitle('Select as Lead: Point 1'))
-    await userEvent.click(canvas.getByTitle('Done'))
-    await userEvent.click(canvas.getByTitle('Edit'))
-    // Wait for edit mode to activate so remove buttons are in the DOM
-    await userEvent.click(await waitFor(() => canvas.getByTitle('Remove from Group: Point 2')))
-    await waitFor(() =>
-      expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
+    await selectAvailablePoint(canvas, 'Point 1')
+    await selectAvailablePoint(canvas, 'Point 2')
+    await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
+    await finishSelectingLead(canvas, 'Point 1')
+    await selectAvailablePoint(canvas, 'Point 3')
+    await selectGroupedPoint(canvas, 'Point 1')
+    await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
+    await finishSelectingLead(canvas, 'Point 1')
+    await userEvent.click(getPointGroupByLead(canvas, 'Point 1').getByTitle('Edit Lead Point'))
+    await userEvent.click(getPointGroupByLead(canvas, 'Point 1').getByTitle('Remove from Group: Point 2'))
+    await waitFor(() => expect(onDoneResult(canvas)).toMatchObject({
+      onDoneResult: {
         valid: true,
         delta: [
           { point: { _id: 0, subject: 'Point 0', description: 'Point Description 0', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
@@ -377,10 +398,10 @@ export const canRemoveOnePointFromAGroup = {
             group: [{ _id: 3, subject: 'Point 3', description: 'Point Description 3', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }],
           },
         ],
-      })
-    )
+      },
+    }))
     // Problem Hack - ungroup the points so this story will run again - but if you need to get the onDone data after something changes, you need to take this out.
-    await userEvent.click(canvas.getByTitle('Ungroup'))
+    await ungroupPoint(canvas, 'Point 1')
   },
 }
 
@@ -437,16 +458,18 @@ export const canStartGroupingTheXOut = {
   args: {
     reducedPointList: pointItems,
   },
-  decorators: [onDoneDecorator],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByText('Point 1'))
-    await userEvent.click(canvas.getByText('Point 2'))
-    await userEvent.click(canvas.getByText('Create Group'))
-    await userEvent.click(canvas.getByTitle('Ungroup and close'))
+    await selectAvailablePoint(canvas, 'Point 1')
+    await selectAvailablePoint(canvas, 'Point 2')
+    await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
+    const picker = canvas.getByRole('region', { name: 'Select lead response' })
+    await userEvent.click(within(picker).getByTitle('Ungroup and close'))
     // make sure they are still there
-    canvas.getByText('Point 1')
-    canvas.getByText('Point 2')
+    const availablePoints = within(canvas.getByRole('group', { name: 'Available responses to group' }))
+    expect(await availablePoints.findByRole('checkbox', { name: 'Select point group: Point 1' })).toBeTruthy()
+    expect(await availablePoints.findByRole('checkbox', { name: 'Select point group: Point 2' })).toBeTruthy()
+    await waitFor(() => expect(picker.isConnected).toBe(false))
   },
 }
 
@@ -472,7 +495,7 @@ const groupingStepTemplate = args => {
 }
 export const groupingStepWithPartialDataAndUserUpdate = {
   args: { ...getGroupingArgsFrom(groupingPoints) },
-  decorators: [DeliberationContextDecorator, socketEmitDecorator, onDoneDecorator],
+  decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: groupingStepTemplate,
 }
 
