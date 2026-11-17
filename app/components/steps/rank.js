@@ -32,6 +32,20 @@ const minSelectionsTable = {
   12: { least: 1, most: 2 },
 }
 
+export function isRankDataComplete(reducedPointList, rankByParentId = {}) {
+  if (!reducedPointList) return false
+  const target = minSelectionsTable[reducedPointList.length] ?? { least: 0, most: 0 }
+  let doneCount = 0
+  const countByCategory = {}
+  for (const pointGroup of reducedPointList) {
+    const category = rankByParentId[pointGroup.point._id]?.category
+    if (!category) continue
+    doneCount++
+    countByCategory[category] = (countByCategory[category] || 0) + 1
+  }
+  return doneCount === reducedPointList.length && (countByCategory.most || 0) === target.most && (countByCategory.least || 0) === target.least
+}
+
 export default function RankStep(props) {
   const { onDone, round, ...otherProps } = props
   const { data, upsert } = useDeliberationContext()
@@ -173,7 +187,7 @@ export function RankPoints(props) {
     const mostDiscrepancy = (countByCategory.most ?? 0) - target.most
     const leastDiscrepancy = (countByCategory.least ?? 0) - target.least
 
-    const valid = (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === reducedPointList.length) || (doneCount === reducedPointList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
+    const valid = isRankDataComplete(reducedPointList, rankByParentId)
 
     setRankDiscrepancies({ most: mostDiscrepancy, least: leastDiscrepancy })
 

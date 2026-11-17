@@ -318,6 +318,11 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     cursor: 'pointer',
     borderRadius: '0.9375rem',
+    boxShadow: 'none !important',
+    '&:hover': {
+      boxShadow: 'none !important',
+      transform: 'none',
+    },
     '&:focus': {
       outline: `${theme.focusOutline}`,
     },

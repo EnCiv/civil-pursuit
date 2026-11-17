@@ -115,6 +115,13 @@ export const twoPointListsPlayThrough = {
   play: async ({ canvasElement, args }) => {
     const { onDone } = args
     const canvas = within(canvasElement)
+    expect(canvas.getByText('1 / 2')).toBeInTheDocument()
+    const nextReason = canvas.getByRole('button', { name: 'Next reason' })
+    expect(nextReason).not.toBeDisabled()
+    await userEvent.click(nextReason)
+    expect(canvas.getByText('2 / 2')).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: 'Previous reason' }))
+    expect(canvas.getByText('1 / 2')).toBeInTheDocument()
     const one = canvas.getByText('1 is less than 2')
     await userEvent.click(one)
     await asyncSleep(500) // allow transitions on the component to complete
@@ -137,6 +144,7 @@ export const twoPointListsPlayThrough = {
       expect(onDone.mock.calls[3][0]).toMatchObject({ valid: false, value: 0, delta: { category: 'neutral', stage: 'why', parentId: '6' } })
       expect(onDone.mock.calls[4][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'most', stage: 'why', parentId: '2' } })
     })
+    await userEvent.click(canvas.getByRole('button', { name: 'Next reason' }))
     const two = canvas.getByText('21 is greater than 2')
     await userEvent.click(two)
     await asyncSleep(500)
@@ -231,6 +239,7 @@ export const FirstMostFetchFromApiTheUserCompletes = {
     await waitFor(() => {
       expect(onDone.mock.calls[0][0]).toMatchObject({ valid: false, value: 1 / 3 })
     })
+    await userEvent.click(canvas.getByRole('button', { name: 'Next reason' }))
     const one = canvas.getByText('21 is greater than 2')
     await userEvent.click(one)
     await asyncSleep(500) // allow transitions on the component to complete
@@ -254,6 +263,7 @@ export const FirstMostFetchFromApiTheUserCompletes = {
       expect(onDone.mock.calls[5][0]).toMatchObject({ valid: false, value: 2 / 3 })
       expect(onDone.mock.calls.length).toBe(6)
     })
+    await userEvent.click(canvas.getByRole('button', { name: 'Next reason' }))
     const two = canvas.getByText('30 is greater than 2')
     await userEvent.click(two)
     await asyncSleep(500)

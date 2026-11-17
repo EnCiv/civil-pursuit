@@ -7,9 +7,9 @@ import theme from './theme'
 const responseOptions = ['Most', 'Neutral', 'Least']
 
 const optionColors = {
-  Most: theme.colors.success,
+  Most: '#71947A',
   Neutral: theme.colors.primaryButtonBlue,
-  Least: theme.colors.inputErrorBorder,
+  Least: '#B77973',
 }
 
 const selectedOption = color => (
@@ -144,9 +144,9 @@ const rankingStyleClasses = createUseStyles(theme => ({
     boxShadow: '0 0.125rem 0 rgba(26, 26, 26, 0.08), 0 0.4rem 0.8rem rgba(6, 51, 92, 0.12), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.55)',
   },
   mostSelected: {
-    borderColor: theme.colors.success,
-    backgroundColor: theme.colors.lightSuccess,
-    color: theme.colors.success,
+    borderColor: '#D5E2D7',
+    backgroundColor: '#F5F9F5',
+    color: '#4E7056',
   },
   neutralSelected: {
     borderColor: theme.colors.primaryButtonBlue,
@@ -154,8 +154,8 @@ const rankingStyleClasses = createUseStyles(theme => ({
     color: theme.colors.primaryButtonBlue,
   },
   leastSelected: {
-    borderColor: theme.colors.inputErrorBorder,
-    backgroundColor: theme.colors.inputErrorContainer,
-    color: theme.colors.inputErrorBorder,
+    borderColor: '#EBD5D2',
+    backgroundColor: '#FCF6F5',
+    color: '#925C57',
   },
 }))

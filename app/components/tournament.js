@@ -9,7 +9,7 @@ import RoundTracker from './round-tracker'
 import StepSlider from './step-slider'
 import AnswerStep from './steps/answer'
 import GroupingStep from './steps/grouping'
-import RankStep from './steps/rank'
+import RankStep, { isRankDataComplete } from './steps/rank'
 import ReviewPointList from './steps/rerank'
 import WhyStep from './steps/why'
 import CompareReasons from './steps/compare-whys'
@@ -96,6 +96,64 @@ function stepFilter(step, context) {
   }
 
   return true
+}
+
+function getLoadedStepComplete(step, data, round) {
+  if (data.uInfo?.[round]?.finished) return true
+
+  const reducedPointList = data.reducedPointList || []
+  const preRankByParentId = data.preRankByParentId || {}
+  const hasText = value => typeof value === 'string' && value.trim().length > 0
+
+  switch (step.webComponent) {
+    case 'Answer': {
+      const userId = data.user?.id
+      if (!userId) return false
+      const answer = Object.values(data.pointById || {}).find(point => point.userId === userId)
+      const why = data.myWhyByCategoryByParentId?.most?.[answer?._id]
+      return hasText(answer?.subject) && hasText(answer?.description) && hasText(why?.subject) && hasText(why?.description)
+    }
+    case 'GroupingStep':
+      return data.groupIdsLists !== undefined || data.uInfo?.[round]?.groupings !== undefined
+    case 'RankStep':
+      return reducedPointList.length > 0 && data.preRankByParentId ? isRankDataComplete(reducedPointList, preRankByParentId) : undefined
+    case 'WhyStep': {
+      if (!data.preRankByParentId) return undefined
+      const selectedPoints = reducedPointList.filter(({ point }) => preRankByParentId[point._id]?.category === step.category)
+      const whysByParentId = data.myWhyByCategoryByParentId?.[step.category] || {}
+      return selectedPoints.every(({ point }) => hasText(whysByParentId[point._id]?.subject) && hasText(whysByParentId[point._id]?.description))
+    }
+    case 'CompareReasons': {
+      if (!data.preRankByParentId) return undefined
+      const selectedParentIds = new Set(reducedPointList.filter(({ point }) => preRankByParentId[point._id]?.category === step.category).map(({ point }) => String(point._id)))
+      if (!selectedParentIds.size) return true
+      const whyById = new Map()
+      for (const categoryWhys of Object.values(data.myWhyByCategoryByParentId || {})) {
+        for (const why of Object.values(categoryWhys || {})) whyById.set(String(why._id), why)
+      }
+      for (const why of Object.values(data.randomWhyById || {})) whyById.set(String(why._id), why)
+      const whyRankByParentId = data.whyRankByParentId || {}
+      const hasUnknownRank = Object.values(whyRankByParentId).some(rank => rank.stage === 'why' && !whyById.has(String(rank.parentId)))
+      if (hasUnknownRank) return undefined
+      return [...whyById.values()]
+        .filter(why => why.category === step.category && selectedParentIds.has(String(why.parentId)))
+        .every(why => !!whyRankByParentId[why._id]?.category)
+    }
+    case 'ReviewPointList':
+      return reducedPointList.length > 0 && data.postRankByParentId ? reducedPointList.every(({ point }) => !!data.postRankByParentId[point._id]?.category) : undefined
+    case 'Jsform': {
+      const formData = data.jsformData?.[step.name]
+      if (!formData) return undefined
+      return (step.schema?.required || []).every(key => {
+        const property = step.schema?.properties?.[key]
+        if (!property) return false
+        if (property.type === 'object' && property.properties) return Object.keys(property.properties).every(propertyKey => !!formData[key]?.[propertyKey])
+        return !!formData[key]
+      })
+    }
+    default:
+      return undefined
+  }
 }
 
 function buildChildren(steps, round) {
@@ -208,6 +266,7 @@ function Tournament(props) {
     return {
       name: step.stepName,
       title: step.stepIntro.description,
+      complete: getLoadedStepComplete(step, data, round),
     }
   })
   if (state.round !== undefined && !state.stepComponents) {
@@ -241,7 +300,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     width: '100%',
   },
   roundTracker: {
+    position: 'relative',
+    zIndex: 10,
+    marginTop: '-3.875rem',
     marginBottom: '3.6875rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      marginTop: '-1.625rem',
+    },
   },
   stepClass: {
     marginRight: '1rem', // or there's a problem with the AnswerStep when viewport is between 40 and 78 rems wide

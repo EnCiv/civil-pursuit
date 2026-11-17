@@ -5,6 +5,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
 import PairCompare from '../pair-compare'
+import { ChevronDown } from '../../svgr'
 import { H, Level } from 'react-accessible-headings'
 import StepIntro from '../step-intro'
 
@@ -60,13 +61,15 @@ export default function CompareWhysStep(props) {
 export function CompareWhys(props) {
   const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round, stepIntro } = props
   const classes = useStyles()
-  // completedByPointId does not effect rendering, so no need to set state, just mutate.
-  const [completedByPointId] = useState(
+  const [completedByPointId, setCompletedByPointId] = useState(() =>
     (pointWithWhyRankListList || []).reduce((completedByPointId, pointWithWhyRankList) => {
-      completedByPointId[pointWithWhyRankList.point._id] = false
+      completedByPointId[pointWithWhyRankList.point._id] = isWhyListComplete(pointWithWhyRankList.whyRankList)
       return completedByPointId
     }, {})
   )
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const currentPointIndex = Math.min(currentIndex, Math.max((pointWithWhyRankListList?.length || 1) - 1, 0))
+  const currentPointWithWhyRankList = pointWithWhyRankListList?.[currentPointIndex]
 
   useEffect(() => {
     // if new points get added, mark them as incomplete
@@ -74,55 +77,137 @@ export function CompareWhys(props) {
       onDone({ valid: true, value: 'skip' })
       return
     }
-    for (const pointWithWhyRankList of pointWithWhyRankListList) {
-      if (typeof completedByPointId[pointWithWhyRankList.point._id] === 'undefined') completedByPointId[pointWithWhyRankList.point._id] = false
-    }
+    const updatedCompletedByPointId = pointWithWhyRankListList.reduce(
+      (updated, pointWithWhyRankList) => {
+        updated[pointWithWhyRankList.point._id] = isWhyListComplete(pointWithWhyRankList.whyRankList)
+        return updated
+      },
+      {}
+    )
+    setCompletedByPointId(updatedCompletedByPointId)
+    setCurrentIndex(index => Math.min(index, Math.max(pointWithWhyRankListList.length - 1, 0)))
+    const done = Object.values(updatedCompletedByPointId).filter(Boolean).length
+    const total = pointWithWhyRankListList.length
+    onDone({ valid: done === total, value: total ? done / total : 1 })
   }, [pointWithWhyRankListList])
 
   const handlePairCompare = ({ valid, value }, _id) => {
-    if (valid) completedByPointId[_id] = true
-    else completedByPointId[_id] = false
-    const [done, total] = Object.values(completedByPointId).reduce(
-      ([done, total], completed) => {
-        if (completed) done++
-        total++
-        return [done, total]
-      },
-      [0, 0]
-    )
-    const percentDone = done / total
+    const updatedCompletedByPointId = { ...completedByPointId, [_id]: valid }
+    setCompletedByPointId(updatedCompletedByPointId)
+    const done = Object.values(updatedCompletedByPointId).filter(Boolean).length
+    const percentDone = pointWithWhyRankListList.length ? done / pointWithWhyRankListList.length : 1
     onDone({ valid: percentDone >= 1, value: percentDone, delta: value })
   }
   return (
     <div className={classes.container}>
       <StepIntro {...stepIntro} />
-      {!pointWithWhyRankListList ? (
+      {!pointWithWhyRankListList?.length ? (
         <div className={classes.headlineTitle}>Nothing to do here, hit Next to continue</div>
       ) : (
-        pointWithWhyRankListList.map(({ point, whyRankList }) => (
-          <div key={point._id} className={classes.headlinePoint}>
+        <>
+          <div className={classes.headlinePoint}>
             <H className={classes.headlineTitle}>Please choose the most convincing explanation for...</H>
-            <H className={classes.headlineSubject}>{point.subject}</H>
+            <H className={classes.headlineSubject}>{currentPointWithWhyRankList.point.subject}</H>
             <Level>
-              <PairCompare round={round} discussionId={discussionId} className={classes.pairCompare} whyRankList={whyRankList} onDone={value => handlePairCompare(value, point._id)} />
+              <PairCompare
+                key={currentPointWithWhyRankList.point._id}
+                round={round}
+                discussionId={discussionId}
+                className={classes.pairCompare}
+                whyRankList={currentPointWithWhyRankList.whyRankList}
+                onDone={value => handlePairCompare(value, currentPointWithWhyRankList.point._id)}
+              />
             </Level>
           </div>
-        ))
+          <nav className={classes.navigation} aria-label="Compare reasons navigation">
+            <button
+              type="button"
+              className={classes.navigationButton}
+              onClick={() => setCurrentIndex(index => Math.max(index - 1, 0))}
+              disabled={currentPointIndex === 0}
+              title="Previous reason"
+              aria-label="Previous reason"
+            >
+              <ChevronDown className={classes.previousIcon} />
+            </button>
+            <span className={classes.counter} aria-live="polite">{currentPointIndex + 1} / {pointWithWhyRankListList.length}</span>
+            <button
+              type="button"
+              className={classes.navigationButton}
+              onClick={() => setCurrentIndex(index => Math.min(index + 1, pointWithWhyRankListList.length - 1))}
+              disabled={currentPointIndex === pointWithWhyRankListList.length - 1}
+              title="Next reason"
+              aria-label="Next reason"
+            >
+              <ChevronDown className={classes.nextIcon} />
+            </button>
+          </nav>
+        </>
       )}
     </div>
   )
+}
+
+function isWhyListComplete(whyRankList = []) {
+  return whyRankList.length === 0 || whyRankList.every(({ rank }) => !!rank?.category)
 }
 
 const useStyles = createUseStyles(theme => ({
   container: {
     fontFamily: theme.font.fontFamily,
   },
-  headlinePoint: {
-    borderTop: '0.0625rem solid #000000',
-    paddingTop: '2rem',
-    '&:first-child': {
-      borderTop: 'none',
+  navigation: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '1rem',
+    marginTop: '1.5rem',
+  },
+  navigationButton: {
+    width: '2.75rem',
+    height: '2.75rem',
+    padding: '0.5rem',
+    display: 'inline-flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: theme.colors.primaryButtonBlue,
+    backgroundColor: theme.colors.white,
+    border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+    borderRadius: '0.5rem',
+    cursor: 'pointer',
+    transition: 'transform 160ms ease',
+    '&:hover:not(:disabled)': {
+      transform: 'translateY(-0.08rem)',
     },
+    '&:active:not(:disabled)': {
+      transform: 'translateY(0.04rem)',
+    },
+    '&:focus-visible': {
+      outline: `${theme.focusOutline}`,
+    },
+    '&:disabled': {
+      color: theme.colors.disableGray,
+      borderColor: theme.colors.disableSecBorderGray,
+      cursor: 'not-allowed',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+      '&:hover, &:active': {
+        transform: 'none',
+      },
+    },
+  },
+  previousIcon: {
+    transform: 'rotate(90deg)',
+  },
+  nextIcon: {
+    transform: 'rotate(-90deg)',
+  },
+  counter: {
+    minWidth: '3rem',
+    textAlign: 'center',
+    fontWeight: 600,
+    fontVariantNumeric: 'tabular-nums',
   },
   headlineTitle: {
     fontWeight: '600',

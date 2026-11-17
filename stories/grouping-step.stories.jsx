@@ -9,6 +9,22 @@ import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-cont
 const discussionId = '1101'
 const round = 0
 
+const samplePoints = [
+  { subject: 'Extend evening bus service', description: 'Run high-demand routes until midnight on Fridays and Saturdays.' },
+  { subject: 'Protect bike lanes on main streets', description: 'Add physical barriers where cyclists share fast-moving traffic.' },
+  { subject: 'Plant shade trees along sidewalks', description: 'Prioritize blocks with low canopy and high summer temperatures.' },
+  { subject: 'Create neighborhood community gardens', description: 'Convert unused public lots into shared growing spaces.' },
+  { subject: 'Expand weekend library hours', description: 'Keep branches open later on Saturdays for students and working families.' },
+  { subject: 'Improve crosswalk lighting', description: 'Install brighter lighting near schools, transit stops, and senior housing.' },
+  { subject: 'Offer free swim lessons', description: 'Provide instruction at city pools throughout the summer.' },
+  { subject: 'Add benches near transit stops', description: 'Place durable seating at high-use stops with long wait times.' },
+  { subject: 'Fund after-school arts programs', description: 'Support music, theater, and visual arts programs at local schools.' },
+  { subject: 'Help households weatherize homes', description: 'Offer grants for insulation and air sealing to reduce energy costs.' },
+]
+
+const pointSubject = index => samplePoints[index].subject
+const pointDescription = index => samplePoints[index].description
+
 export default {
   component: GroupPoints,
   decorators: [onDoneDecorator],
@@ -17,7 +33,7 @@ export default {
 const createPointDoc = (
   _id,
   subject,
-  description = 'Point Description',
+  description = pointDescription(_id),
   demInfo = {
     dob: '1990-10-20T00:00:00.000Z',
     state: 'NY',
@@ -35,7 +51,7 @@ const createPointDoc = (
   }
 }
 
-const pointItems = Array.from({ length: 10 }, (_, index) => createPointDoc(index, 'Point ' + index, 'Point Description ' + index))
+const pointItems = samplePoints.map(({ subject, description }, index) => createPointDoc(index, subject, description))
 
 const getPointGroupByLead = (canvas, subject) => within(canvas.getByRole('checkbox', { name: `Select point group: ${subject}` }))
 
@@ -107,8 +123,8 @@ export const canCreateGroup = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await selectAvailablePoint(canvas, 'Point 1')
-    await selectAvailablePoint(canvas, 'Point 2')
+    await selectAvailablePoint(canvas, pointSubject(1))
+    await selectAvailablePoint(canvas, pointSubject(2))
     const createGroupButton = canvas.getByRole('button', { name: /Group Selected Responses/ })
     await userEvent.click(createGroupButton)
     await waitFor(() => expect(onDoneResult(canvas)).toMatchObject({
@@ -116,7 +132,7 @@ export const canCreateGroup = {
         valid: false,
       },
     }))
-    await finishSelectingLead(canvas, 'Point 1')
+    await finishSelectingLead(canvas, pointSubject(1))
     await waitFor(() => expect(onDoneResult(canvas)).toMatchObject({
       onDoneResult: {
         valid: true,
@@ -124,8 +140,8 @@ export const canCreateGroup = {
           {
             point: {
               _id: 1,
-              subject: 'Point 1',
-              description: 'Point Description 1',
+              subject: pointSubject(1),
+              description: pointDescription(1),
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
@@ -135,8 +151,8 @@ export const canCreateGroup = {
             group: [
               {
                 _id: 2,
-                subject: 'Point 2',
-                description: 'Point Description 2',
+                subject: pointSubject(2),
+                description: pointDescription(2),
                 demInfo: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
@@ -149,7 +165,7 @@ export const canCreateGroup = {
       },
     }))
     // Problem Hack - ungroup the points so this story will run again - but if you need to get the onDone data after something changes, you need to take this out.
-    await ungroupPoint(canvas, 'Point 1')
+    await ungroupPoint(canvas, pointSubject(1))
   },
 }
 export const canUnGroup = {
@@ -158,11 +174,11 @@ export const canUnGroup = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await selectAvailablePoint(canvas, 'Point 1')
-    await selectAvailablePoint(canvas, 'Point 2')
+    await selectAvailablePoint(canvas, pointSubject(1))
+    await selectAvailablePoint(canvas, pointSubject(2))
     await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
-    await finishSelectingLead(canvas, 'Point 1')
-    await ungroupPoint(canvas, 'Point 1')
+    await finishSelectingLead(canvas, pointSubject(1))
+    await ungroupPoint(canvas, pointSubject(1))
     await waitFor(() => expect(onDoneResult(canvas)).toMatchObject({
       onDoneResult: {
         valid: true,
@@ -170,8 +186,8 @@ export const canUnGroup = {
           {
             point: {
               _id: 0,
-              subject: 'Point 0',
-              description: 'Point Description 0',
+              subject: pointSubject(0),
+              description: pointDescription(0),
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
@@ -183,8 +199,8 @@ export const canUnGroup = {
           {
             point: {
               _id: 3,
-              subject: 'Point 3',
-              description: 'Point Description 3',
+              subject: pointSubject(3),
+              description: pointDescription(3),
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
@@ -196,8 +212,8 @@ export const canUnGroup = {
           {
             point: {
               _id: 4,
-              subject: 'Point 4',
-              description: 'Point Description 4',
+              subject: pointSubject(4),
+              description: pointDescription(4),
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
@@ -209,8 +225,8 @@ export const canUnGroup = {
           {
             point: {
               _id: 5,
-              subject: 'Point 5',
-              description: 'Point Description 5',
+              subject: pointSubject(5),
+              description: pointDescription(5),
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
@@ -222,8 +238,8 @@ export const canUnGroup = {
           {
             point: {
               _id: 6,
-              subject: 'Point 6',
-              description: 'Point Description 6',
+              subject: pointSubject(6),
+              description: pointDescription(6),
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
@@ -235,8 +251,8 @@ export const canUnGroup = {
           {
             point: {
               _id: 7,
-              subject: 'Point 7',
-              description: 'Point Description 7',
+              subject: pointSubject(7),
+              description: pointDescription(7),
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
@@ -248,8 +264,8 @@ export const canUnGroup = {
           {
             point: {
               _id: 8,
-              subject: 'Point 8',
-              description: 'Point Description 8',
+              subject: pointSubject(8),
+              description: pointDescription(8),
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
@@ -261,8 +277,8 @@ export const canUnGroup = {
           {
             point: {
               _id: 9,
-              subject: 'Point 9',
-              description: 'Point Description 9',
+              subject: pointSubject(9),
+              description: pointDescription(9),
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
@@ -274,8 +290,8 @@ export const canUnGroup = {
           {
             point: {
               _id: 2,
-              subject: 'Point 2',
-              description: 'Point Description 2',
+              subject: pointSubject(2),
+              description: pointDescription(2),
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
@@ -287,8 +303,8 @@ export const canUnGroup = {
           {
             point: {
               _id: 1,
-              subject: 'Point 1',
-              description: 'Point Description 1',
+              subject: pointSubject(1),
+              description: pointDescription(1),
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
@@ -310,14 +326,14 @@ export const canCreateGroupWithAGroup = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await selectAvailablePoint(canvas, 'Point 1')
-    await selectAvailablePoint(canvas, 'Point 2')
+    await selectAvailablePoint(canvas, pointSubject(1))
+    await selectAvailablePoint(canvas, pointSubject(2))
     await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
-    await finishSelectingLead(canvas, 'Point 1')
-    await selectAvailablePoint(canvas, 'Point 3')
-    await selectGroupedPoint(canvas, 'Point 1')
+    await finishSelectingLead(canvas, pointSubject(1))
+    await selectAvailablePoint(canvas, pointSubject(3))
+    await selectGroupedPoint(canvas, pointSubject(1))
     await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
-    await finishSelectingLead(canvas, 'Point 1')
+    await finishSelectingLead(canvas, pointSubject(1))
     await waitFor(() => expect(onDoneResult(canvas)).toMatchObject({
       onDoneResult: {
         valid: true,
@@ -325,8 +341,8 @@ export const canCreateGroupWithAGroup = {
           {
             point: {
               _id: 1,
-              subject: 'Point 1',
-              description: 'Point Description 1',
+              subject: pointSubject(1),
+              description: pointDescription(1),
               demInfo: {
                 dob: '1990-10-20T00:00:00.000Z',
                 state: 'NY',
@@ -336,8 +352,8 @@ export const canCreateGroupWithAGroup = {
             group: [
               {
                 _id: 3,
-                subject: 'Point 3',
-                description: 'Point Description 3',
+                subject: pointSubject(3),
+                description: pointDescription(3),
                 demInfo: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
@@ -346,8 +362,8 @@ export const canCreateGroupWithAGroup = {
               },
               {
                 _id: 2,
-                subject: 'Point 2',
-                description: 'Point Description 2',
+                subject: pointSubject(2),
+                description: pointDescription(2),
                 demInfo: {
                   dob: '1990-10-20T00:00:00.000Z',
                   state: 'NY',
@@ -360,7 +376,7 @@ export const canCreateGroupWithAGroup = {
       },
     }))
     // Problem Hack - ungroup the points so this story will run again - but if you need to get the onDone data after something changes, you need to take this out.
-    await ungroupPoint(canvas, 'Point 1')
+    await ungroupPoint(canvas, pointSubject(1))
   },
 }
 
@@ -371,37 +387,37 @@ export const canRemoveOnePointFromAGroup = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await selectAvailablePoint(canvas, 'Point 1')
-    await selectAvailablePoint(canvas, 'Point 2')
+    await selectAvailablePoint(canvas, pointSubject(1))
+    await selectAvailablePoint(canvas, pointSubject(2))
     await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
-    await finishSelectingLead(canvas, 'Point 1')
-    await selectAvailablePoint(canvas, 'Point 3')
-    await selectGroupedPoint(canvas, 'Point 1')
+    await finishSelectingLead(canvas, pointSubject(1))
+    await selectAvailablePoint(canvas, pointSubject(3))
+    await selectGroupedPoint(canvas, pointSubject(1))
     await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
-    await finishSelectingLead(canvas, 'Point 1')
-    await userEvent.click(getPointGroupByLead(canvas, 'Point 1').getByTitle('Edit Lead Point'))
-    await userEvent.click(getPointGroupByLead(canvas, 'Point 1').getByTitle('Remove from Group: Point 2'))
+    await finishSelectingLead(canvas, pointSubject(1))
+    await userEvent.click(getPointGroupByLead(canvas, pointSubject(1)).getByTitle('Edit Lead Point'))
+    await userEvent.click(getPointGroupByLead(canvas, pointSubject(1)).getByTitle(`Remove from Group: ${pointSubject(2)}`))
     await waitFor(() => expect(onDoneResult(canvas)).toMatchObject({
       onDoneResult: {
         valid: true,
         delta: [
-          { point: { _id: 0, subject: 'Point 0', description: 'Point Description 0', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 4, subject: 'Point 4', description: 'Point Description 4', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 5, subject: 'Point 5', description: 'Point Description 5', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 6, subject: 'Point 6', description: 'Point Description 6', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 7, subject: 'Point 7', description: 'Point Description 7', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 8, subject: 'Point 8', description: 'Point Description 8', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 9, subject: 'Point 9', description: 'Point Description 9', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
-          { point: { _id: 2, subject: 'Point 2', description: 'Point Description 2', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 0, subject: pointSubject(0), description: pointDescription(0), demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 4, subject: pointSubject(4), description: pointDescription(4), demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 5, subject: pointSubject(5), description: pointDescription(5), demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 6, subject: pointSubject(6), description: pointDescription(6), demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 7, subject: pointSubject(7), description: pointDescription(7), demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 8, subject: pointSubject(8), description: pointDescription(8), demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 9, subject: pointSubject(9), description: pointDescription(9), demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
+          { point: { _id: 2, subject: pointSubject(2), description: pointDescription(2), demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }, group: [] },
           {
-            point: { _id: 1, subject: 'Point 1', description: 'Point Description 1', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
-            group: [{ _id: 3, subject: 'Point 3', description: 'Point Description 3', demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }],
+            point: { _id: 1, subject: pointSubject(1), description: pointDescription(1), demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } },
+            group: [{ _id: 3, subject: pointSubject(3), description: pointDescription(3), demInfo: { dob: '1990-10-20T00:00:00.000Z', state: 'NY', party: 'Independent' } }],
           },
         ],
       },
     }))
     // Problem Hack - ungroup the points so this story will run again - but if you need to get the onDone data after something changes, you need to take this out.
-    await ungroupPoint(canvas, 'Point 1')
+    await ungroupPoint(canvas, pointSubject(1))
   },
 }
 
@@ -415,8 +431,8 @@ const groupingPoints = [
   {
     point: {
       _id: 0,
-      subject: 'Point 0',
-      description: 'Point Description 0',
+      subject: pointSubject(0),
+      description: pointDescription(0),
       demInfo: {
         dob: '1990-10-20T00:00:00.000Z',
         state: 'NY',
@@ -428,8 +444,8 @@ const groupingPoints = [
   {
     point: {
       _id: 4,
-      subject: 'Point 4',
-      description: 'Point Description 4',
+      subject: pointSubject(4),
+      description: pointDescription(4),
       demInfo: {
         dob: '1990-10-20T00:00:00.000Z',
         state: 'NY',
@@ -441,8 +457,8 @@ const groupingPoints = [
   {
     point: {
       _id: 5,
-      subject: 'Point 5',
-      description: 'Point Description 5',
+      subject: pointSubject(5),
+      description: pointDescription(5),
 
       demInfo: {
         dob: '1990-10-20T00:00:00.000Z',
@@ -460,15 +476,15 @@ export const canStartGroupingTheXOut = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await selectAvailablePoint(canvas, 'Point 1')
-    await selectAvailablePoint(canvas, 'Point 2')
+    await selectAvailablePoint(canvas, pointSubject(1))
+    await selectAvailablePoint(canvas, pointSubject(2))
     await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
     const picker = canvas.getByRole('region', { name: 'Select lead response' })
     await userEvent.click(within(picker).getByTitle('Ungroup and close'))
     // make sure they are still there
     const availablePoints = within(canvas.getByRole('group', { name: 'Available responses to group' }))
-    expect(await availablePoints.findByRole('checkbox', { name: 'Select point group: Point 1' })).toBeTruthy()
-    expect(await availablePoints.findByRole('checkbox', { name: 'Select point group: Point 2' })).toBeTruthy()
+    expect(await availablePoints.findByRole('checkbox', { name: `Select point group: ${pointSubject(1)}` })).toBeTruthy()
+    expect(await availablePoints.findByRole('checkbox', { name: `Select point group: ${pointSubject(2)}` })).toBeTruthy()
     await waitFor(() => expect(picker.isConnected).toBe(false))
   },
 }

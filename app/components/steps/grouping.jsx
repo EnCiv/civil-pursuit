@@ -69,6 +69,8 @@ export function GroupPoints(props) {
 
   const classes = useStylesFromThemeFunction(props)
   const delayedOnDone = value => setTimeout(() => onDone(value), 0)
+  const [activeTab, setActiveTab] = useState('points')
+  const groupingTabRefs = useRef([])
 
   // using an object for gs (grouping-state) makes it easier understand which variable in the code refers to the new value being generated, and which refers to the old
   // also reduces the number of different set-somethings that have to be called each time.
@@ -79,6 +81,9 @@ export function GroupPoints(props) {
     yourGroupsSelected: [], // points that have been grouped that have been selected again to be incorporated into a group
     selectLead: null, // the new point group, with no point but with a group for selecting the Lead
   })
+  const selectedPointIds = new Set(gs.selectedIds)
+  const selectedPointsCount = gs.pGsToGroup.filter(pointGroup => selectedPointIds.has(pointGroup.point._id)).length
+  const selectedGroupsCount = gs.yourGroups.filter(pointGroup => selectedPointIds.has(pointGroup.point._id)).length
   const [selectLeadMounted, setSelectLeadMounted] = useState(false)
   const [selectLeadPointGroup, setSelectLeadPointGroup] = useState(null)
   const [returningPointIds, setReturningPointIds] = useState([])
@@ -87,6 +92,23 @@ export function GroupPoints(props) {
   const yourGroupsRef = useRef(null)
   const previousGroupPositions = useRef(null)
   const previousYourGroupsTop = useRef(null)
+
+  useEffect(() => {
+    if (!gs.yourGroups.length && activeTab === 'yourGroups') setActiveTab('points')
+  }, [gs.yourGroups.length, activeTab])
+
+  const handleTabKeyDown = (event, tabIndex) => {
+    let nextTabIndex
+    if (event.key === 'Home') nextTabIndex = 0
+    else if (event.key === 'End') nextTabIndex = gs.yourGroups.length ? 1 : 0
+    else if (event.key === 'ArrowRight' && tabIndex === 0 && gs.yourGroups.length) nextTabIndex = 1
+    else if (event.key === 'ArrowLeft' && tabIndex === 1) nextTabIndex = 0
+    if (nextTabIndex === undefined) return
+    event.preventDefault()
+    const nextTab = nextTabIndex === 0 ? 'points' : 'yourGroups'
+    setActiveTab(nextTab)
+    groupingTabRefs.current[nextTabIndex]?.focus()
+  }
 
   useEffect(() => {
     if (gs.selectLead) {
@@ -179,7 +201,8 @@ export function GroupPoints(props) {
     if (gs.selectedIds.length < 2) return
     const container = groupsContainerRef.current
     const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    if (container && !reducedMotion) {
+    const availablePanelVisible = container?.getClientRects().length > 0
+    if (container && availablePanelVisible && !reducedMotion) {
       const containerRect = container.getBoundingClientRect()
       const previousPositions = new Map()
       for (const element of container.children) {
@@ -208,6 +231,9 @@ export function GroupPoints(props) {
           })
           .filter(Boolean)
       )
+    } else {
+      previousGroupPositions.current = null
+      setDepartingPointGroups([])
     }
     setGs(oldGs => {
       if (oldGs.selectedIds.length < 2) {
@@ -362,8 +388,47 @@ export function GroupPoints(props) {
           <PointGroup pointGroup={gs.selectLead || selectLeadPointGroup} vState={'selectLead'} onDone={onSelectLeadDone} />
         </div>
       )}
-      {
-        /*!gs.selectLead&& */ <div ref={groupsContainerRef} className={classes.groupsContainer} role="group" aria-label="Available responses to group">
+      <div className={classes.groupTabs} role="tablist" aria-label="Grouping sections">
+        <button
+          ref={element => (groupingTabRefs.current[0] = element)}
+          id="grouping-points-tab"
+          className={cx(classes.groupTab, activeTab === 'points' && classes.groupTabSelected)}
+          type="button"
+          role="tab"
+          aria-label={selectedPointsCount > 0 ? `Points, ${selectedPointsCount} selected` : `${gs.pGsToGroup.length} points`}
+          aria-selected={activeTab === 'points'}
+          aria-controls="grouping-points-panel"
+          tabIndex={activeTab === 'points' ? 0 : -1}
+          onClick={() => setActiveTab('points')}
+          onKeyDown={event => handleTabKeyDown(event, 0)}
+        >
+          <span>Points</span>
+          <span className={cx(classes.groupTabCount, selectedPointsCount > 0 && classes.groupTabCountSelected)}>
+            {selectedPointsCount > 0 ? selectedPointsCount : gs.pGsToGroup.length}
+          </span>
+        </button>
+        <button
+          ref={element => (groupingTabRefs.current[1] = element)}
+          id="grouping-your-groups-tab"
+          className={cx(classes.groupTab, activeTab === 'yourGroups' && classes.groupTabSelected)}
+          type="button"
+          role="tab"
+          aria-label={selectedGroupsCount > 0 ? `Your Groups, ${selectedGroupsCount} selected` : `${gs.yourGroups.length} groups`}
+          aria-selected={activeTab === 'yourGroups'}
+          aria-controls="grouping-your-groups-panel"
+          tabIndex={activeTab === 'yourGroups' ? 0 : -1}
+          disabled={!gs.yourGroups.length}
+          onClick={() => setActiveTab('yourGroups')}
+          onKeyDown={event => handleTabKeyDown(event, 1)}
+        >
+          <span>Your Groups</span>
+          <span className={cx(classes.groupTabCount, selectedGroupsCount > 0 && classes.groupTabCountSelected)}>
+            {selectedGroupsCount > 0 ? selectedGroupsCount : gs.yourGroups.length}
+          </span>
+        </button>
+      </div>
+      <div id="grouping-points-panel" className={classes.tabPanel} role="tabpanel" aria-labelledby="grouping-points-tab" tabIndex={0} hidden={activeTab !== 'points'}>
+        <div ref={groupsContainerRef} className={classes.groupsContainer} role="group" aria-label="Available responses to group">
           {departingPointGroups.map(({ id, pointGroup, style }) => (
             <div
               key={`departing-${id}`}
@@ -396,11 +461,10 @@ export function GroupPoints(props) {
             )
           })}
         </div>
-      }
-      {
-        /*!gs.selectLead && **/ !!gs.yourGroups.length && (
+      </div>
+      <div id="grouping-your-groups-panel" className={classes.tabPanel} role="tabpanel" aria-labelledby="grouping-your-groups-tab" tabIndex={0} hidden={activeTab !== 'yourGroups'}>
+        {!!gs.yourGroups.length && (
           <div ref={yourGroupsRef} className={classes.yourGroupsWrapper}>
-            <div className={classes.yourGroupsTitle}>{'Your Groups'}</div>
             <div className={classes.groupsContainer} role="group" aria-label="Your grouped responses">
               {gs.yourGroups.map(pointGroup => {
                 return (
@@ -419,8 +483,8 @@ export function GroupPoints(props) {
               })}
             </div>
           </div>
-        )
-      }
+        )}
+      </div>
     </div>
   )
 }
@@ -450,9 +514,79 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       paddingLeft: '0.5rem',
       paddingRight: '0.5rem',
-      paddingTop: '1rem',
       paddingBottom: '1.25rem',
       rowGap: '1.25rem',
+    },
+  },
+  groupTabs: {
+    display: 'flex',
+    gap: '0.375rem',
+    margin: '1.5rem 2rem 0',
+    borderBottom: `1px solid ${theme.colors.secondaryDivider}`,
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      margin: '1rem 0.5rem 0',
+    },
+  },
+  groupTab: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.5rem',
+    minHeight: '2.75rem',
+    padding: '0.625rem 1rem',
+    border: '1px solid transparent',
+    borderBottom: 'none',
+    borderRadius: '0.5rem 0.5rem 0 0',
+    backgroundColor: 'transparent',
+    color: theme.colors.encivGray,
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
+    fontSize: '0.9375rem',
+    fontWeight: 600,
+    cursor: 'pointer',
+    '&:hover:not(:disabled)': {
+      backgroundColor: theme.colors.lightGray,
+      color: theme.colors.title,
+    },
+    '&:focus-visible': {
+      outline: theme.focusOutline,
+      outlineOffset: '-0.125rem',
+    },
+    '&:disabled': {
+      opacity: 0.55,
+      cursor: 'not-allowed',
+    },
+  },
+  groupTabSelected: {
+    borderColor: theme.colors.secondaryDivider,
+    backgroundColor: theme.colors.white,
+    color: theme.colors.primaryButtonBlue,
+    boxShadow: '0 -0.125rem 0 rgba(6, 51, 92, 0.08)',
+  },
+  groupTabCount: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: '1.5rem',
+    height: '1.5rem',
+    padding: '0 0.375rem',
+    borderRadius: '9999px',
+    backgroundColor: theme.colors.lightGray,
+    color: theme.colors.encivGray,
+    fontSize: '0.75rem',
+    lineHeight: 1,
+  },
+  groupTabCountSelected: {
+    backgroundColor: theme.colors.primaryButtonBlue,
+    color: theme.colors.white,
+  },
+  tabPanel: {
+    minWidth: 0,
+    paddingTop: '1rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      paddingTop: '0.5rem',
+    },
+    '&[hidden]': {
+      display: 'none',
     },
   },
   statusContainer: {
@@ -629,21 +763,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
   yourGroupsWrapper: {
-    marginTop: '2rem',
     width: '100%',
-    backgroundColor: theme.colors.lightGray,
-    border: '1px solid rgba(0, 0, 0, 0.1)',
-    borderRadius: '0.5rem',
-    boxShadow: '0 0.25rem 0.875rem rgba(0, 0, 0, 0.12)',
-    paddingBottom: '2rem',
-  },
-  yourGroupsTitle: {
-    padding: '1.125rem 2rem 1rem',
-    fontSize: '2rem',
-    lineHeight: '2.625rem',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      padding: '1rem 1rem 0.875rem',
-    },
   },
   yourGroupsPoint: {
     backgroundColor: 'white',

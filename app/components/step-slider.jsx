@@ -126,6 +126,15 @@ export const StepSlider = props => {
         } else {
           return state
         }
+      case 'markLoadedStepsComplete': {
+        let changed = false
+        const stepStatuses = state.stepStatuses.map((stepStatus, index) => {
+          if (!action.indices.includes(index) || stepStatus.complete) return stepStatus
+          changed = true
+          return { ...stepStatus, complete: true, seen: true }
+        })
+        return changed ? { ...state, stepStatuses } : state
+      }
     }
   }
   // if the other props have changed, we need to rerender the children
@@ -143,9 +152,21 @@ export const StepSlider = props => {
   // Keep track of each step's seen/completion status
   // Populate statuses with initial values
   const defaultStepIndex = defaultStepName && typeof stepNameToIndex[defaultStepName] === 'number' ? stepNameToIndex[defaultStepName] : 0
-  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i <= defaultStepIndex, complete: false, skip: false })) : undefined
+  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i <= defaultStepIndex || step.complete === true, complete: step.complete === true, skip: false })) : undefined
 
   const [state, dispatch] = useReducer(reducer, { currentStep: defaultStepIndex, nextStep: defaultStepIndex, transitions: false, stepStatuses: initialStepStatuses })
+  const appliedLoadedCompletions = useRef(new Set((steps || []).flatMap((step, index) => (step.complete === true ? [index] : []))))
+
+  useEffect(() => {
+    const indices = []
+    steps?.forEach((step, index) => {
+      if (step.complete === true && !appliedLoadedCompletions.current.has(index)) {
+        appliedLoadedCompletions.current.add(index)
+        indices.push(index)
+      }
+    })
+    if (indices.length) dispatch({ type: 'markLoadedStepsComplete', indices })
+  }, [steps])
 
   function cloneChild(currentStep) {
     return React.cloneElement(children[currentStep], {
@@ -300,9 +321,9 @@ const useStyles = createUseStyles(theme => ({
   contentSurface: {
     width: '100%',
     boxSizing: 'border-box',
-    padding: '1.5rem',
+    padding: '2.25rem 1.5rem 1.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      padding: '0.75rem',
+      padding: '1rem 0.75rem',
     },
   },
   panel: {
@@ -324,7 +345,8 @@ const useStyles = createUseStyles(theme => ({
   outerWrapper: {
     position: 'relative', // was absolute: so that clip will work
     width: '100%',
-    overflow: 'hidden',
+    overflowX: 'clip',
+    overflowY: 'visible',
     height: 'auto',
     clip: 'rect(0,auto,auto,0)', // to make sure the fixed position NavBar in a child is also hidden
     backgroundColor: 'inherit', // otherwise background is white

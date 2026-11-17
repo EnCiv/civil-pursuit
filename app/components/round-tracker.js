@@ -154,6 +154,8 @@ const useStyles = createUseStyles(theme => ({
     alignItems: 'center',
   },
   roundNumber: {
+    position: 'relative',
+    zIndex: 2,
     color: theme.colors.title,
     fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontSize: '1rem',
@@ -171,6 +173,7 @@ const useStyles = createUseStyles(theme => ({
   lineBase: {
     position: 'relative',
     zIndex: 0,
+    transform: 'translateY(0.875rem)',
     width: '3.375rem',
     height: '0rem',
     borderBottomWidth: '0.125rem',
@@ -179,6 +182,7 @@ const useStyles = createUseStyles(theme => ({
     margin: '-3.75rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       margin: '-1.5rem',
+      transform: 'translateY(1rem)',
     },
   },
 

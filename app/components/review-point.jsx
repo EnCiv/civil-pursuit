@@ -53,10 +53,6 @@ function ReviewPoint(props) {
   const topRow = (
     <div className={classes.topRowContent}>
       <span className={vState !== 'disabled' ? classes.statusBadgeComplete : classes.statusBadge}>{vState !== 'disabled' ? 'Read' : 'Unread'}</span>
-      <div className={classes.rankingDesktop}>
-        <div></div>
-        <Ranking className={classes.ranking} disabled={vState === 'disabled'} defaultValue={rank} onDone={handleRankingDone} />
-      </div>
     </div>
   )
 
@@ -64,16 +60,20 @@ function ReviewPoint(props) {
     <div className={cx(classes.wrapper, className)} {...otherProps}>
       <div className={classes.pointContainer}>
         <Point point={point} vState={vState === 'disabled' ? 'disabled' : 'default'} topRow={topRow} className={classes.reviewPoint}>
-          <div className={classes.rankingMobile}>
-            <Ranking className={classes.ranking} disabled={vState === 'disabled'} defaultValue={rank} onDone={handleRankingDone} />
-          </div>
-          {vState === 'open' && (leftPointList.length > 0 || rightPointList.length > 0) && (
-            <div className={classes.showDualPointListContainer}>
-              <Level>
-                <ShowDualPointList className={classes.showDualPointList} leftHeader="Why It's Most Important" rightHeader="Why It's Least Important" leftPoints={leftPointList} rightPoints={rightPointList} vState={'expanded'} />
-              </Level>
+          {(leftPointList.length > 0 || rightPointList.length > 0) && (
+            <div className={cx(classes.showDualPointListDisclosure, vState === 'open' && classes.showDualPointListExpanded)} aria-hidden={vState !== 'open'}>
+              <div className={classes.showDualPointListInner}>
+                <div className={classes.showDualPointListContainer}>
+                  <Level>
+                    <ShowDualPointList className={classes.showDualPointList} leftHeader="Why It's Most Important" rightHeader="Why It's Least Important" leftPoints={leftPointList} rightPoints={rightPointList} vState={'expanded'} />
+                  </Level>
+                </div>
+              </div>
             </div>
           )}
+          <div className={classes.rankingPlacement}>
+            <Ranking className={classes.ranking} disabled={vState === 'disabled'} defaultValue={rank} onDone={handleRankingDone} />
+          </div>
         </Point>
         <div className={classes.SvgContainer}>
           {vState === 'open' ? (
@@ -131,30 +131,39 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexShrink: 0,
   },
 
-  rankingDesktop: {
-    display: 'none',
-    [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
-      display: 'grid',
-      gridTemplateColumns: '1fr auto',
-      gap: '1rem',
-      flex: 1,
-      alignItems: 'flex-start',
-    },
-  },
-
-  rankingMobile: {
+  rankingPlacement: {
     display: 'flex',
+    justifyContent: 'flex-end',
     width: '100%',
-    marginTop: '1rem',
-    marginBottom: '1rem',
-    [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
-      display: 'none',
-    },
+    marginTop: '1.25rem',
   },
 
   ranking: {
-    width: '70%',
+    width: 'min(100%, 24rem)',
     fontSize: '1rem',
+    '&[role="radiogroup"]': {
+      flexWrap: 'nowrap',
+    },
+    '& > [role="radio"]': {
+      flex: '1 1 0',
+      minWidth: 0,
+      padding: '0.5rem 0.375rem',
+      gap: '0.375rem',
+    },
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '100%',
+      '& > [role="radio"]': {
+        padding: '0.375rem 0.25rem',
+        gap: '0.25rem',
+      },
+      '& svg': {
+        width: '1rem',
+        height: '1rem',
+      },
+      '& span': {
+        fontSize: '0.8125rem',
+      },
+    },
     '& label': {
       fontWeight: 'normal',
     },
@@ -174,10 +183,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   showDualPointListContainer: {
     padding: '0rem 0rem 1.875rem',
-    paddingRight: '15%',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      paddingRight: '0',
-    },
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
@@ -188,16 +193,47 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginTop: '1.5rem',
   },
 
+  showDualPointListDisclosure: {
+    display: 'grid',
+    gridTemplateRows: '0fr',
+    opacity: 0,
+    visibility: 'hidden',
+    pointerEvents: 'none',
+    boxShadow: 'none',
+    transition: 'grid-template-rows 300ms ease, opacity 200ms ease, visibility 0s linear 300ms, box-shadow 300ms ease',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+  },
+
+  showDualPointListExpanded: {
+    gridTemplateRows: '1fr',
+    opacity: 1,
+    visibility: 'visible',
+    pointerEvents: 'auto',
+    boxShadow: '0 0.375rem 0.875rem rgba(6, 51, 92, 0.14)',
+    borderRadius: '0.75rem',
+    transition: 'grid-template-rows 300ms ease, opacity 200ms ease, visibility 0s, box-shadow 300ms ease',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
+  },
+
+  showDualPointListInner: {
+    minHeight: 0,
+    overflow: 'hidden',
+  },
+
   showDualPointList: {
     width: '100%',
     padding: '0rem',
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+    '&&': {
       border: 'none',
-      paddingBottom: '0.1rem',
-      '& > div': {
-        borderTopLeftRadius: '0rem',
-        borderTopRightRadius: '0rem',
-      },
+      borderRadius: '0.75rem',
+    },
+    '& > div': {
+      borderTopLeftRadius: '0.75rem',
+      borderTopRightRadius: '0.75rem',
     },
   },
 }))

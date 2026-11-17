@@ -157,7 +157,6 @@ export function Why(props) {
         <div className={classes.pointsContainer}>
           {pointWhyList.map(({ point, why }, i) => (
             <div key={point._id}>
-              {i > 0 && <hr className={classes.pointsHr}></hr>}
               <WhyInput point={point} value={why} onDone={handleOnDone} maxWordCount={maxWordCount} maxCharCount={maxCharCount} />
             </div>
           ))}
@@ -248,10 +247,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1.25rem',
   },
   pointsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4rem',
     fontSize: '1.25rem',
-  },
-  pointsHr: {
-    color: '#D9D9D9',
-    margin: '4rem 0',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      gap: '2rem',
+    },
   },
 }))
