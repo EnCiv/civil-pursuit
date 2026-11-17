@@ -414,6 +414,10 @@ const PointGroup = props => {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   pointGroup: {
     display: 'flex',
+    width: '100%',
+    minWidth: 0,
+    containerType: 'inline-size',
+    containerName: 'pointGroupActions',
   },
   mobileEditModal: {
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
@@ -769,6 +773,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       padding: '1rem 0.75rem 0',
+    },
+    '@container pointGroupActions (max-width: 34rem)': {
       '&$bottomButtonsTwo': {
         flexDirection: 'column',
         gap: '0.75rem',
@@ -778,6 +784,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
         },
         '& > span > button': {
           width: '100%',
+          whiteSpace: 'nowrap',
         },
       },
     },

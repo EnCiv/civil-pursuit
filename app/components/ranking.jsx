@@ -6,10 +6,16 @@ import theme from './theme'
 
 const responseOptions = ['Most', 'Neutral', 'Least']
 
-const selectedOption = (
+const optionColors = {
+  Most: theme.colors.success,
+  Neutral: theme.colors.primaryButtonBlue,
+  Least: theme.colors.inputErrorBorder,
+}
+
+const selectedOption = color => (
   <>
-    <rect x="1" y="1" width="22" height="22" rx="11" stroke={theme.colors.radioButtonSelected} strokeWidth="2" />
-    <rect x="6" y="6" width="12" height="12" rx="6" fill={theme.colors.radioButtonSelected} />
+    <rect x="1" y="1" width="22" height="22" rx="11" stroke={color} strokeWidth="2" />
+    <rect x="6" y="6" width="12" height="12" rx="6" fill={color} />
   </>
 )
 
@@ -51,6 +57,7 @@ export default function Ranking(props) {
     <div role="radiogroup" aria-disabled={disabled || undefined} data-value={response} className={cx(className, styleClasses.group, disabled && styleClasses.disabled)} {...otherProps}>
       {responseOptions.map(option => {
         const isSelected = response === option
+        const optionStyle = option.toLowerCase()
         return (
           <div
             key={option}
@@ -59,10 +66,10 @@ export default function Ranking(props) {
             tabIndex={disabled ? -1 : 0} // each one is tab‑focusable
             onClick={() => handleSelect(option)}
             onKeyDown={e => onKeyDown(e, option)}
-            className={cx(styleClasses.radioOption, isSelected && styleClasses.selected)}
+            className={cx(styleClasses.radioOption, isSelected && styleClasses.selected, isSelected && styleClasses[`${optionStyle}Selected`])}
           >
             <svg className={styleClasses.optionIcon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {isSelected ? selectedOption : unselectedOption}
+              {isSelected ? selectedOption(optionColors[option]) : unselectedOption}
             </svg>
             <span className={styleClasses.labelText}>{option}</span>
           </div>
@@ -74,45 +81,81 @@ export default function Ranking(props) {
 
 const rankingStyleClasses = createUseStyles(theme => ({
   optionIcon: {
-    height: '1.5rem',
-    width: '1.5rem',
-    marginRight: '0.5rem',
+    height: '1.25rem',
+    width: '1.25rem',
     flexShrink: 0,
   },
   labelText: {
-    lineHeight: '1.5rem',
-    fontWeight: '300',
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    color: 'inherit',
+    lineHeight: 1.25,
+    fontSize: '0.9375rem',
+    fontWeight: 600,
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
   },
   group: {
     display: 'flex',
-    gap: '1.4375rem',
+    flexWrap: 'wrap',
+    width: '100%',
+    gap: '0.625rem',
   },
   disabled: {
-    opacity: '30%',
+    opacity: 0.55,
+    pointerEvents: 'none',
   },
 
   radioOption: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
+    flex: '1 1 7rem',
+    minWidth: 0,
+    minHeight: '3.25rem',
+    boxSizing: 'border-box',
+    gap: '0.5rem',
+    padding: '0.625rem 0.75rem',
+    border: `0.0625rem solid ${theme.colors.secondaryDivider}`,
+    borderRadius: '9999px',
+    backgroundColor: theme.colors.white,
+    color: theme.colors.title,
+    boxShadow: '0 0.125rem 0 rgba(26, 26, 26, 0.06), 0 0.3rem 0.65rem rgba(6, 51, 92, 0.08), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.8)',
     cursor: 'pointer',
     outline: 'none',
-
-    '&:focus': {
-      position: 'relative',
-      '&::before': {
-        content: '""',
-        position: 'absolute',
-        width: '2.5rem',
-        height: '2.5rem',
-        top: 0,
-        left: 0,
-        borderRadius: '50%',
-        transform: 'translate(-20%, -20%)',
-        backgroundColor: theme.colors.focusRing,
-        pointerEvents: 'none',
-        zIndex: 1,
+    transition: 'transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease, border-color 150ms ease',
+    '&:hover:not([aria-checked="true"])': {
+      borderColor: theme.colors.primaryButtonBlue,
+      transform: 'translateY(-0.0625rem)',
+      boxShadow: '0 0.2rem 0 rgba(26, 26, 26, 0.06), 0 0.45rem 0.8rem rgba(6, 51, 92, 0.12)',
+    },
+    '&:active': {
+      transform: 'translateY(0.0625rem)',
+    },
+    '&:focus-visible': {
+      outline: theme.focusOutline,
+      outlineOffset: '0.125rem',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+      '&:hover, &:active': {
+        transform: 'none',
       },
     },
+  },
+  selected: {
+    boxShadow: '0 0.125rem 0 rgba(26, 26, 26, 0.08), 0 0.4rem 0.8rem rgba(6, 51, 92, 0.12), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.55)',
+  },
+  mostSelected: {
+    borderColor: theme.colors.success,
+    backgroundColor: theme.colors.lightSuccess,
+    color: theme.colors.success,
+  },
+  neutralSelected: {
+    borderColor: theme.colors.primaryButtonBlue,
+    backgroundColor: theme.colors.lightBlueBackground,
+    color: theme.colors.primaryButtonBlue,
+  },
+  leastSelected: {
+    borderColor: theme.colors.inputErrorBorder,
+    backgroundColor: theme.colors.inputErrorContainer,
+    color: theme.colors.inputErrorBorder,
   },
 }))

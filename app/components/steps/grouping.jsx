@@ -428,22 +428,26 @@ export function GroupPoints(props) {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   groupingStep: {
     marginBottom: '1rem', // for box shadow of children
+    containerType: 'inline-size',
+    containerName: 'groupingStep',
   },
   groupsContainer: {
     position: 'relative',
     paddingLeft: '2rem',
     paddingRight: '2rem',
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridTemplateColumns: 'repeat(1, minmax(0, 1fr))',
     gap: '1.25rem',
-    '@media (min-width: 90rem)': {
+    '@container groupingStep (min-width: 40rem)': {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+    '@container groupingStep (min-width: 70rem)': {
       gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
     },
-    '@media (min-width: 90rem) and (min-aspect-ratio: 21/9)': {
+    '@container groupingStep (min-width: 90rem)': {
       gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
     },
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      gridTemplateColumns: 'repeat(1, 1fr)',
       paddingLeft: '0.5rem',
       paddingRight: '0.5rem',
       paddingTop: '1rem',

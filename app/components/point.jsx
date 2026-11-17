@@ -134,20 +134,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     background: theme.colors.white,
     '&:hover': {
       outline: `0.1875rem solid ${theme.colors.success}`,
-      color: theme.colors.success,
-    },
-    '&:hover $defaultSubject': {
-      color: theme.colors.success,
-    },
-    '&:hover $defaultDescription': {
-      color: theme.colors.success,
-    },
-    '&:hover $informationGrid *': {
-      color: theme.colors.success,
     },
   },
   selectedBorder: {
     outline: `0.1875rem solid ${theme.colors.success}`,
+    borderColor: theme.colors.success,
     background: theme.colors.lightSuccess,
     '& $informationGrid': {
       color: theme.colors.success,
@@ -167,8 +158,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
   secondaryBorder: {
-    borderRadius: '0 !important',
-    boxShadow: 'none !important',
+    borderRadius: '0.75rem',
   },
 
   // subject states
@@ -188,17 +178,22 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontWeight: '400',
     lineHeight: '1.5rem !important',
   },
-  secondarySubject: {},
+  secondarySubject: {
+    color: theme.colors.title,
+  },
 
   // description states
   defaultDescription: {
-    color: theme.colors.title,
+    color: theme.colors.encivGray,
   },
   selectedDescription: {
     color: theme.colors.success,
   },
   disabledDescription: {
-    color: theme.colors.title,
+    color: theme.colors.encivGray,
+  },
+  secondaryDescription: {
+    color: theme.colors.encivGray,
   },
   collapsedDescription: {
     display: 'none',
@@ -220,24 +215,37 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   // shared styling
   sharedBorderStyle: {
-    borderRadius: '0.9375rem',
-    boxShadow: theme.boxShadowRightBottom,
+    border: '0.0625rem solid rgba(217, 217, 217, 0.8)',
+    borderRadius: '0.75rem',
+    boxShadow: '0 0.125rem 0 rgba(26, 26, 26, 0.05), 0 0.5rem 1rem rgba(6, 51, 92, 0.1)',
     paddingBottom: '0.5rem',
+    transition: 'box-shadow 180ms ease, transform 180ms ease',
+    '&:hover': {
+      boxShadow: '0 0.2rem 0 rgba(26, 26, 26, 0.06), 0 0.75rem 1.25rem rgba(6, 51, 92, 0.14)',
+      transform: 'translateY(-0.08rem)',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+      '&:hover': {
+        transform: 'none',
+      },
+    },
   },
   sharedSubjectStyle: {
     ...theme.font,
-    fontSize: '1.25rem',
-    fontWeight: '400',
-    marginBlockStart: '.3925rem',
-    lineHeight: '1.5em',
-    marginBlockEnd: '.3925rem',
+    fontFamily: `${theme.font.headingFontFamily}, Georgia, serif`,
+    fontSize: '1.375rem',
+    fontWeight: 600,
+    marginBlockStart: '0.25rem',
+    lineHeight: 1.3,
+    marginBlockEnd: '0.5rem',
   },
   sharedDescriptionStyle: {
     ...theme.font,
     alignSelf: 'stretch',
-    fontSize: '1rem',
+    fontSize: '0.9375rem',
     fontWeight: '400',
-    lineHeight: '1.5rem',
+    lineHeight: 1.6,
     whiteSpace: 'pre-wrap',
     marginBottom: '0.25rem',
   },

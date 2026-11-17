@@ -156,11 +156,11 @@ const useStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.white,
     outline: 'none',
     fontFamily: theme.font.fontFamily,
-    boxShadow: '0 0.125rem 0 rgba(6, 51, 92, 0.06), 0 0.35rem 0.8rem rgba(6, 51, 92, 0.1), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.9)',
+    boxShadow: 'inset 0 0.125rem 0.35rem rgba(26, 26, 26, 0.07), inset 0 0.0625rem 0.125rem rgba(6, 51, 92, 0.04)',
     transition: 'border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease',
     '&:focus-visible': {
       borderColor: theme.colors.primaryButtonBlue,
-      boxShadow: '0 0 0 0.2rem rgba(6, 51, 92, 0.14), 0 0.35rem 0.8rem rgba(6, 51, 92, 0.1)',
+      boxShadow: 'inset 0 0.125rem 0.35rem rgba(26, 26, 26, 0.07), 0 0 0 0.15rem rgba(6, 51, 92, 0.12)',
     },
   },
   subject: {
@@ -204,7 +204,7 @@ const useStyles = createUseStyles(theme => ({
     ...sharedErrorStyle(theme),
     '&:focus-visible': {
       borderColor: theme.colors.inputErrorBorder,
-      boxShadow: '0 0 0 0.2rem rgba(191, 19, 0, 0.14), 0 0.35rem 0.8rem rgba(191, 19, 0, 0.1)',
+      boxShadow: 'inset 0 0.125rem 0.35rem rgba(191, 19, 0, 0.08), 0 0 0 0.15rem rgba(191, 19, 0, 0.12)',
     },
     '&:hover': {
       ...sharedErrorStyle(theme),
@@ -236,7 +236,7 @@ const sharedPlaceholderStyle = theme => ({
 
 const sharedHoverStyle = theme => ({
   borderColor: theme.colors.hoverGray,
-  boxShadow: '0 0.2rem 0 rgba(6, 51, 92, 0.08), 0 0.5rem 1rem rgba(6, 51, 92, 0.14)',
+  boxShadow: 'inset 0 0.2rem 0.45rem rgba(26, 26, 26, 0.1)',
 })
 
 const sharedErrorStyle = theme => ({
