@@ -12,7 +12,7 @@ import { H, Level } from 'react-accessible-headings'
 import DemInfo from './dem-info'
 
 const Point = forwardRef((props, ref) => {
-  const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, topRow, ...otherProps } = props
+  const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, topRow, demInfoTopRight = false, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
 
@@ -39,7 +39,12 @@ const Point = forwardRef((props, ref) => {
   return (
     <div className={cx(classes.sharedBorderStyle, classes[vState + 'Border'], className)} {...otherProps} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} ref={ref}>
       <div className={classes.contentContainer}>
-        {topRow && <div className={classes.topRow}>{topRow}</div>}
+        {(topRow || demInfoTopRight) && (
+          <div className={classes.topRow}>
+            {topRow}
+            {demInfoTopRight && <DemInfo className={classes.topRightDemInfo} pointId={_id} />}
+          </div>
+        )}
         <div className={classes.informationGrid}>
           {(isLoading || subject) && (
             <H className={isLoading ? cx(classes.loadingAnimation, classes.loadingAnimationSubject) : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'], isInvalid ? classes.invalidText : undefined)}>{isLoading ? '' : subject}</H>
@@ -49,7 +54,7 @@ const Point = forwardRef((props, ref) => {
               {isLoading ? '' : description}
             </p>
           )}
-          <DemInfo className={cx(classes[vState + 'DemInfo'])} pointId={_id} />
+          {!demInfoTopRight && <DemInfo className={cx(classes[vState + 'DemInfo'])} pointId={_id} />}
           <Level>{childrenWithProps}</Level>
         </div>
       </div>
@@ -73,6 +78,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'flex-start',
     gap: '1rem',
     marginBottom: '0.5rem',
+  },
+
+  topRightDemInfo: {
+    marginLeft: 'auto',
+    marginRight: '2.5rem',
+    textAlign: 'right',
   },
 
   informationGrid: {
