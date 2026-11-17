@@ -331,14 +331,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     boxSizing: 'border-box',
     flex: '0 0 auto',
     '& > a': {
-      display: 'block',
+      display: 'flex',
       width: '100%',
       maxWidth: '12rem',
-    },
-    '& button': {
-      boxSizing: 'border-box',
-      width: '100%',
       height: '3rem',
+      boxSizing: 'border-box',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   },
   mobileDonate: {
@@ -347,13 +346,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginTop: '0.75rem',
     padding: '0.75rem 0 0',
     '& > a': {
-      display: 'block',
-      width: '100%',
-    },
-    '& button': {
-      boxSizing: 'border-box',
+      display: 'flex',
       width: '100%',
       height: '3rem',
+      boxSizing: 'border-box',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   },
   navBarContainer: {
@@ -447,7 +445,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     justifyContent: 'center',
     width: '100%',
     height: '3rem',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontStyle: 'normal',
     fontWeight: 500,
     fontSize: '1.125rem',
@@ -481,7 +479,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     justifyContent: 'center',
     width: '100%',
     minHeight: '3rem',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontStyle: 'normal',
     fontWeight: 500,
     fontSize: '1.125rem',
@@ -517,7 +515,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: 0,
     background: '#ffe8a6',
     borderRadius: '0.375rem',
-    boxShadow: '0 0.25rem 0.5rem rgba(0, 0, 0, 0.16)',
+    boxShadow: '0 0.25rem 0 rgba(26, 26, 26, 0.24), 0 0.75rem 1.25rem rgba(0, 0, 0, 0.28)',
     overflow: 'hidden',
     '& $mobileMenuGroupHeader': {
       background: '#ffda66',
@@ -541,7 +539,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '0.375rem',
     boxSizing: 'border-box',
     borderRadius: '0 0 0.375rem 0.375rem',
-    boxShadow: '0 0.5rem 1rem rgba(0, 0, 0, 0.18)',
+    boxShadow: '0 0.25rem 0 rgba(26, 26, 26, 0.28), 0 0.75rem 1.25rem rgba(0, 0, 0, 0.3), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.35)',
     animation: '$dropdownOpen 280ms ease-out',
     '& $menuItem': {
       boxSizing: 'border-box',
@@ -606,7 +604,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     boxSizing: 'border-box',
     width: '100%',
     height: '3rem',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontStyle: 'normal',
     fontWeight: 500,
     fontSize: '1.125rem', // forcing because unknown things are overriding it
@@ -639,7 +637,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     justifyContent: 'center',
     width: '100%',
     height: '3rem',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontStyle: 'normal',
     fontWeight: 500,
     fontSize: '1.125rem', // forcing because unknown things are overriding it

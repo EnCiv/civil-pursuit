@@ -57,7 +57,7 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
   const isError = !!errors
 
   return (
-    <div style={{ position: 'relative', marginTop: '0.5rem', marginBottom: '2.0rem' }}>
+    <div className={classes.field}>
       {isError && (
         <div
           className={classes.errorInput}
@@ -75,7 +75,9 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
         </div>
       )}
 
-      <label htmlFor={id}>{label}</label>
+      <label className={classes.fieldLabel} htmlFor={id}>
+        {label}
+      </label>
 
       {type === 'select' ? (
         <select id={id} value={data || ''} onChange={handleInputChange} className={cx(classes.formInput, { [classes.errorInput]: isError })}>
@@ -89,9 +91,22 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
           ))}
         </select>
       ) : isMulti ? (
-        <textarea id={id} ref={textareaRef} value={data || ''} onChange={handleInputChange} className={cx(classes.formInput, { [classes.errorInput]: isError })} />
+        <textarea
+          id={id}
+          ref={textareaRef}
+          value={data || ''}
+          onChange={handleInputChange}
+          className={cx(classes.formInput, classes.textareaInput, { [classes.errorInput]: isError })}
+        />
       ) : (
-        <input id={id} type={type} checked={type === 'checkbox' ? !!data : undefined} value={type === 'checkbox' ? undefined : data || ''} onChange={handleInputChange} className={cx(classes.formInput, { [classes.errorInput]: isError })} />
+        <input
+          id={id}
+          type={type}
+          checked={type === 'checkbox' ? !!data : undefined}
+          value={type === 'checkbox' ? undefined : data || ''}
+          onChange={handleInputChange}
+          className={cx(type === 'checkbox' ? classes.checkboxInput : classes.formInput, { [classes.errorInput]: isError })}
+        />
       )}
     </div>
   )
@@ -223,7 +238,7 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
     backgroundColor: props.mode === 'dark' ? theme.colors.darkModeGray : theme.colors.white,
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.black,
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
   }),
   formTitle: props => ({
     textAlign: 'center',
@@ -236,15 +251,60 @@ const useStyles = createUseStyles(theme => ({
     lineHeight: '2.25rem',
     marginTop: '4rem',
   },
+  field: {
+    position: 'relative',
+    marginTop: '0.75rem',
+    marginBottom: '2rem',
+  },
+  fieldLabel: props => ({
+    display: 'block',
+    marginBottom: '0.625rem',
+    color: props.mode === 'dark' ? theme.colors.white : theme.colors.primaryButtonBlue,
+    fontSize: '1rem',
+    fontWeight: 600,
+    lineHeight: 1.4,
+  }),
   formInput: props => ({
     width: '100%',
-    padding: '0.625rem !important',
-    borderRadius: '0.25rem !important',
+    minHeight: '3.5rem !important',
+    padding: '0.875rem 1rem !important',
+    borderRadius: '0.5rem !important',
     border: `0.1rem solid ${theme.colors.borderGray} !important`,
-    backgroundColor: props.mode === 'dark' ? theme.colors.title : theme.colors.cardOutline,
+    backgroundColor: props.mode === 'dark' ? theme.colors.title : theme.colors.white,
     color: props.mode === 'dark' ? theme.colors.cardOutline : theme.colors.title,
     boxSizing: 'border-box',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
+    fontSize: '1.0625rem',
+    lineHeight: 1.5,
+    boxShadow:
+      props.mode === 'dark'
+        ? '0 0.125rem 0 rgba(0, 0, 0, 0.32), 0 0.4rem 0.8rem rgba(0, 0, 0, 0.18), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.06)'
+        : '0 0.125rem 0 rgba(6, 51, 92, 0.08), 0 0.35rem 0.8rem rgba(6, 51, 92, 0.1), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.8)',
+    transition: 'border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease',
+    '&:hover:not(:focus-visible):not(:disabled)': {
+      borderColor: `${theme.colors.primaryButtonBlue} !important`,
+    },
+    '&:focus-visible': {
+      borderColor: `${theme.colors.primaryButtonBlue} !important`,
+      boxShadow: '0 0 0 0.2rem rgba(6, 51, 92, 0.14), 0 0.35rem 0.8rem rgba(6, 51, 92, 0.1)',
+    },
+    '&:disabled': {
+      cursor: 'not-allowed',
+      opacity: 0.65,
+    },
   }),
+  textareaInput: {
+    display: 'block',
+    minHeight: '9rem',
+    resize: 'vertical',
+  },
+  checkboxInput: {
+    width: '1.25rem',
+    height: '1.25rem',
+    margin: '0.25rem 0 0',
+    accentColor: theme.colors.primaryButtonBlue,
+    cursor: 'pointer',
+  },
   actionButton: {
     width: '100%',
     margin: '1.5rem 0',
@@ -252,6 +312,10 @@ const useStyles = createUseStyles(theme => ({
   errorInput: {
     borderColor: `${theme.colors.inputErrorBorder} !important`,
     color: `${theme.colors.inputErrorBorder}`,
+    '&:focus-visible': {
+      borderColor: `${theme.colors.inputErrorBorder} !important`,
+      boxShadow: '0 0 0 0.2rem rgba(191, 19, 0, 0.14), 0 0.35rem 0.8rem rgba(191, 19, 0, 0.1)',
+    },
   },
 }))
 

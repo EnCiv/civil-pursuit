@@ -149,7 +149,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   fixedText: {
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontWeight: 600,
     fontSize: '1.0625rem',
     lineHeight: '1.5625rem',
@@ -162,11 +162,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   subject: {
     marginBlockStart: '0',
     marginBlockEnd: '0',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.headingFontFamily}, Georgia, serif`,
     fontWeight: 700,
     fontSize: props => (props.compact ? '2rem' : '3.75rem'),
     lineHeight: props => (props.compact ? '2.5rem' : '4.125rem'),
-    letterSpacing: '-0.03em',
+    letterSpacing: 0,
     color: theme.colors.primaryButtonBlue,
     textAlign: props => props.contentAlign,
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
@@ -176,7 +176,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   description: {
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontWeight: 400,
     fontSize: '1rem',
     lineHeight: '1.5rem',

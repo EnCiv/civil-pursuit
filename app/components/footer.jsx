@@ -26,10 +26,11 @@ const Footer = props => {
         <div className={classes.row}>
           <div className={`${classes.column} ${classes.item3}`}>
             <div className={classes.secondaryText}>
-              Copyright © {new Date().getFullYear()}{' '}
+              Copyright © 2014-{new Date().getFullYear()} by{' '}
               <a href="https://www.enciv.org" className={`${classes.copyright} ${classes.links}`}>
-                EnCiv
+                EnCiv, Inc.
               </a>
+              , a 501(c)(3) nonprofit.
             </div>
           </div>
           <div className={`${classes.column} ${classes.item4}`}>

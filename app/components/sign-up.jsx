@@ -223,7 +223,7 @@ const useStyles = createUseStyles(theme => ({
     margin: 0,
     borderRadius: '1rem',
     padding: '0',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontSize: '1rem',
     fontWeight: '700',
     lineHeight: '1rem',
@@ -340,7 +340,7 @@ const useStyles = createUseStyles(theme => ({
     marginBottom: '2rem',
     borderRadius: '0.5rem !important',
     boxSizing: 'border-box !important',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontSize: '1rem',
     '&::placeholder': {
       color: theme.colors.inputFieldPlaceholder,

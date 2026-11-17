@@ -1,8 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/164
 import React from 'react'
 import { createUseStyles } from 'react-jss'
-import { Button } from './button'
-import cx from 'classnames'
 
 function Donate(props) {
   const {
@@ -18,25 +16,25 @@ function Donate(props) {
 
   const classes = buttonStyles()
 
-  const handleKeyDown = e => {
-    if (e.keyCode === 32) {
-      e.stopPropagation()
-      onDone({ valid: true, value })
+  const handleClick = event => {
+    if (disabled) {
+      event.preventDefault()
+      return
     }
+    onDone({ valid: true, value })
   }
 
   return (
     <a
+      className={classes.buttonBase}
       href="https://www.pledge.to/organizations/82-5200967/enciv"
       tabIndex={tabIndex}
       title={title}
-      disabled={disabled}
-      type={type}
-      value={value}
-      onKeyDown={handleKeyDown}
+      aria-disabled={disabled}
+      onClick={handleClick}
       {...otherProps}
     >
-      <Button className={cx(classes.buttonBase)} children="Donate" />
+      Donate
     </a>
   )
 }
@@ -48,7 +46,12 @@ const buttonStyles = createUseStyles(theme => ({
     backgroundColor: `${theme.colors.encivYellow}`,
     borderRadius: '2rem',
     padding: '0.2rem 2rem',
-    fontFamily: 'Inter, sans-serif',
+    boxSizing: 'border-box',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textDecoration: 'none',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontWeight: 600,
     fontSize: '1rem',
     lineHeight: '1.5rem',
@@ -57,8 +60,17 @@ const buttonStyles = createUseStyles(theme => ({
       textDecoration: 'underline',
       cursor: 'pointer',
     },
+    boxShadow: '0 0.125rem 0.25rem rgba(0,0,0,.18)',
     '&:focus': {
-      outline: `${theme.focusOutline}`,
+      outline: 'none',
+    },
+    '&:focus-visible': {
+      outline: '0.125rem solid #343433',
+      outlineOffset: '0.125rem',
+    },
+    '&[aria-disabled="true"]': {
+      opacity: 0.6,
+      cursor: 'not-allowed',
     },
   },
 }))

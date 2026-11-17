@@ -491,15 +491,18 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
   headline: {
-    fontFamily: 'Inter',
-    fontWeight: 300,
-    fontSize: '2.25rem',
-    lineHeight: '2.9375rem',
+    fontFamily: `${theme.font.headingFontFamily}, Georgia, serif`,
+    fontWeight: 600,
+    fontSize: '2.5rem',
+    lineHeight: 1.15,
     color: theme.colors.primaryButtonBlue,
     textAlign: 'left',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      fontSize: '2rem',
+    },
   },
   headlineSmall: {
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontWeight: 400,
     fontSize: '1.25rem',
     lineHeight: '1.875rem',
@@ -507,7 +510,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     textAlign: 'left !important',
   },
   thresholdMessage: {
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
@@ -524,7 +527,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   text: {
     fontWeight: '400',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontSize: '1rem',
     lineHeight: '1.5rem',
     color: theme.colors.title,

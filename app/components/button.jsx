@@ -170,13 +170,29 @@ const buttonStyles = createUseStyles(theme => ({
     height: 'auto',
     borderRadius: '0.5rem',
     padding: '0.75rem 1.25rem',
-    fontFamily: 'Inter, sans-serif',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontWeight: 600,
     fontSize: '1rem',
     lineHeight: '1.5rem',
     textAlign: 'center',
-    '&:focus': {
+    transition: 'transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease',
+    '&:focus-visible': {
       outline: `${theme.focusOutline}`,
+    },
+    '&:not([aria-disabled="true"]):hover': {
+      transform: 'translateY(-0.08rem)',
+    },
+    '&:active:not([aria-disabled="true"])': {
+      transform: 'translateY(0.04rem)',
+    },
+    '&[aria-disabled="true"]': {
+      transform: 'none',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+      '&:not([aria-disabled="true"]):hover, &:active:not([aria-disabled="true"])': {
+        transform: 'none',
+      },
     },
     // Add any other common styles here
   },
@@ -186,6 +202,7 @@ const buttonStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.white,
     color: theme.colors.primaryButtonBlue,
     border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+    boxShadow: '0 0.125rem 0 rgba(6, 51, 92, 0.14), 0 0.35rem 0.7rem rgba(6, 51, 92, 0.1)',
 
     '&[aria-disabled="true"]': {
       backgroundColor: theme.colors.white,
@@ -214,6 +231,7 @@ const buttonStyles = createUseStyles(theme => ({
       color: theme.colors.white,
       border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
       textDecoration: 'none',
+      boxShadow: 'inset 0 0.125rem 0.25rem rgba(0, 0, 0, 0.18)',
     },
 
     '&[aria-disabled="true"]:hover, &[aria-disabled="true"]:active': {
@@ -226,6 +244,7 @@ const buttonStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.white,
     color: theme.colors.textBrown,
     border: `0.125rem solid ${theme.colors.encivYellow}`,
+    boxShadow: '0 0.125rem 0 rgba(102, 68, 0, 0.14), 0 0.35rem 0.7rem rgba(102, 68, 0, 0.1)',
 
     '&:hover, &.hover': {
       textDecoration: 'underline',
@@ -247,6 +266,7 @@ const buttonStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.primaryButtonBlue,
     color: theme.colors.white,
     border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+    boxShadow: '0 0.125rem 0 rgba(1, 23, 44, 0.28), 0 0.35rem 0.7rem rgba(6, 51, 92, 0.2)',
 
     '&[aria-disabled="true"]': {
       backgroundColor: theme.colors.borderGray,
@@ -269,6 +289,7 @@ const buttonStyles = createUseStyles(theme => ({
       backgroundColor: theme.colors.mouseDownPrimeBlue,
       border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
       textDecoration: 'none',
+      boxShadow: 'inset 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2)',
     },
     '&[aria-disabled="true"]:hover, &[aria-disabled="true"]:active': {
       textDecoration: 'none',

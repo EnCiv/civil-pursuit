@@ -49,7 +49,7 @@ export const useDeliberationStats = discussionId => {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   status: {
     marginTop: '2rem',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
     color: theme.colors.primaryButtonBlue,
