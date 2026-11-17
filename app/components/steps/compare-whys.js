@@ -39,7 +39,7 @@ export default function CompareWhysStep(props) {
     const { discussionId, preRankByParentId } = data
     const { mostIds, leastIds } = Object.values(preRankByParentId ?? {}).reduce(
       ({ mostIds, leastIds }, rank) => {
-        if (Object.values(data.randomWhyById || {}).some(why => why.parentId === rank.parentId)) return { mostIds, leastIds } // already have this why
+        if (Object.values(data.randomWhyById || {}).some(why => why.parentId === rank.parentId && why.category === rank.category)) return { mostIds, leastIds } // already have this why
         if (rank.category === 'most') mostIds.push(rank.parentId)
         else if (rank.category === 'least') leastIds.push(rank.parentId)
         return { mostIds, leastIds }
@@ -60,7 +60,15 @@ export default function CompareWhysStep(props) {
       //if (!ranks.length && !whys.length) return // nothing to do
       const whyRankByParentId = ranks.reduce((whyRankByParentId, rank) => ((whyRankByParentId[rank.parentId] = rank), whyRankByParentId), {})
       const randomWhyById = whys.reduce((randomWhyById, point) => ((randomWhyById[point._id] = point), randomWhyById), {})
-      upsert({ whyRankByParentId, randomWhyById })
+      const requestedParentIds = [...mostIds, ...leastIds]
+      const whyDataLoadedByParentIdByRound = {
+        ...data.whyDataLoadedByParentIdByRound,
+        [round]: {
+          ...data.whyDataLoadedByParentIdByRound?.[round],
+          ...Object.fromEntries(requestedParentIds.map(parentId => [parentId, true])),
+        },
+      }
+      upsert({ whyRankByParentId, randomWhyById, whyDataLoadedByParentIdByRound })
 
       // Fetch dem-info for all why points
       const whyIds = whys.map(w => w._id)

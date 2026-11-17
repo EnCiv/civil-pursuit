@@ -23,8 +23,10 @@ function StepBar(props) {
   const optionsContainerRef = useRef(null)
   const selectItemsContainerRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
+  const [isMobileLayout, setIsMobileLayout] = useState(isMobile)
   const stepsWithIds = useMemo(() => steps.map((step, i) => ({ ...step, id: i + 1 })), [steps])
   const [scrollState, setScrollState] = useState({ canScrollLeft: false, canScrollRight: false })
+  const isStepUnlocked = index => index === 0 || steps[index]?.seen || steps.slice(0, index).every(step => step.skip || (step.complete && step.seen))
 
   const getCenteredScrollLeft = step => {
     const container = stepContainerRef.current
@@ -52,7 +54,7 @@ function StepBar(props) {
   }
 
   const centerCurrentStep = () => {
-    if (isMobile()) return
+    if (isMobileLayout) return
     const container = stepContainerRef.current
     const currentStep = stepRefs.current[current - 1]
     if (!container || !currentStep) return
@@ -113,14 +115,20 @@ function StepBar(props) {
     }
   }, [])
 
+  useEffect(() => {
+    const updateMobileLayout = () => setIsMobileLayout(isMobile())
+    window.addEventListener('resize', updateMobileLayout)
+    return () => window.removeEventListener('resize', updateMobileLayout)
+  }, [])
+
   useLayoutEffect(() => {
     centerCurrentStep()
     updateScrollState()
-  }, [current, steps.length])
+  }, [current, steps.length, isMobileLayout])
 
   useEffect(() => {
     const container = stepContainerRef.current
-    if (!container || isMobile() || !window.ResizeObserver) return
+    if (!container || isMobileLayout || !window.ResizeObserver) return
     const resizeObserver = new window.ResizeObserver(() => {
       centerCurrentStep()
       updateScrollState()
@@ -128,28 +136,29 @@ function StepBar(props) {
     resizeObserver.observe(container)
     stepRefs.current.forEach(step => step && resizeObserver.observe(step))
     return () => resizeObserver.disconnect()
-  }, [current, steps.length])
+  }, [current, steps.length, isMobileLayout])
 
   /*
   NOTE that index refers to the index of the step within its array, while step.id refers to the step #. I.e, Step 2 has an id of 2.
   */
-  return !isMobile() ? (
+  return !isMobileLayout ? (
     <div className={cx(classes.container, className)} style={style}>
       <button onClick={leftClick} className={cx(classes.resetButtonStyling, classes.svgContainer)} data-testid="leftclick" aria-label="Scroll steps left" disabled={!scrollState.canScrollLeft}>
         <SvgStepBarArrowDesktop className={cx({ [classes.svgColor]: !scrollState.canScrollLeft })} width="1rem" height="1.2rem" style={{ transform: 'rotate(180deg)' }} />
       </button>
       <div className={classes.stepsContainer} ref={stepContainerRef} onScroll={updateScrollState}>
         {stepsWithIds.map((step, index) => {
+          const stepUnlocked = isStepUnlocked(index)
           return (
             <div ref={element => (stepRefs.current[index] = element)} className={classes.stepDiv} key={step.id}>
               <Step
                 name={step.name}
                 title={step.title}
                 stepIndex={step.id}
-                complete={step.id < steps.length ? steps[step.id - 1].complete : false}
+                complete={steps[index].complete && stepUnlocked}
                 active={current === step.id ? true : false}
-                unlocked={steps[step.id - 1]?.seen}
-                skip={steps[step.id - 1]?.skip}
+                unlocked={stepUnlocked}
+                skip={steps[index].skip}
                 onDone={() => onDone({ valid: true, value: step.id })}
                 index={index}
                 {...otherProps}
@@ -176,15 +185,17 @@ function StepBar(props) {
             <div className={classes.dropdownContent}>
               <div className={classes.stepsContainerMobile}>
                 {stepsWithIds.map((step, index) => {
+                  const stepUnlocked = isStepUnlocked(index)
                   return (
                     <Step
                       key={index}
                       stepIndex={step.id}
                       name={step.name}
                       title={step.title}
-                      complete={steps[index].complete}
+                      complete={steps[index].complete && stepUnlocked}
                       active={current === step.id ? true : false}
-                      unlocked={index > 0 && steps[index - 1].complete}
+                      unlocked={stepUnlocked}
+                      skip={steps[index].skip}
                       onDone={() => {
                         setIsOpen(false) // close the dropdown when a step is selected
                         onDone({ valid: true, value: step.id })
@@ -208,6 +219,8 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   container: {
     display: 'flex',
     background: theme.transparent,
+    containerType: 'inline-size',
+    containerName: 'stepBar',
   },
 
   stepsContainer: {
@@ -229,6 +242,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       display: 'block',
       flex: '0 0 33.333333%',
     },
+    '@container stepBar (min-width: 90rem)': {
+      '&::before, &::after': {
+        flex: '0 0 40%',
+      },
+    },
   },
 
   stepDiv: {
@@ -237,6 +255,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     minWidth: 0,
     padding: '0 0.25rem',
     boxSizing: 'border-box',
+    '@container stepBar (min-width: 90rem)': {
+      flex: '0 0 20%',
+    },
   },
 
   svgContainer: {

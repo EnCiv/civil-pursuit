@@ -97,6 +97,17 @@ export const NewUserFullFlow = {
       expect(element).toBeInTheDocument()
     })
 
+    const getStepBarItem = name => canvas.getAllByTestId('testClick').find(step => step.textContent.includes(name))
+    const openMobileStepBar = async () => {
+      const mobileStepBar = canvas.queryByTestId('mobile-select-bar')
+      if (mobileStepBar && !canvas.queryByTestId('testClick')) await userEvent.click(mobileStepBar)
+    }
+    await openMobileStepBar()
+    const getGroupingStepBarItem = () => getStepBarItem('Group')
+    await waitFor(() => expect(getGroupingStepBarItem()).toHaveAttribute('tabindex', '-1'))
+    await userEvent.click(getGroupingStepBarItem())
+    expect(canvasElement.querySelector('[data-current-step]')).toHaveAttribute('data-current-step', '0')
+
     // Fill in the answer fields
     const subjectInputs = canvas.getAllByPlaceholderText(/type some thing here/i)
     const descriptionInputs = canvas.getAllByPlaceholderText(/description/i)
@@ -116,15 +127,14 @@ export const NewUserFullFlow = {
     await userEvent.click(termsCheckbox)
     console.log('  ✓ Checked Terms checkbox')
 
-    // Click Next to proceed to grouping
-    let nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /^Next$/i })
-      expect(btn).toBeInTheDocument()
-      expect(btn).not.toBeDisabled()
-      return btn
-    })
-    await userEvent.click(nextButton)
-    console.log('  ✓ Clicked Next')
+    await waitFor(() => expect(getGroupingStepBarItem()).toHaveAttribute('tabindex', '0'))
+
+    // The completed answer unlocks Group in the StepBar.
+    await waitFor(() => expect(getGroupingStepBarItem()).toHaveAttribute('tabindex', '0'))
+    await userEvent.click(getGroupingStepBarItem())
+    await waitFor(() => expect(canvasElement.querySelector('[data-current-step]')).toHaveAttribute('data-current-step', '1'))
+    await waitForStepSlider(canvasElement)
+    console.log('  ✓ Opened Group from the StepBar after completing Answer')
 
     // Wait for step slider transition to complete
     await waitForStepSlider(canvasElement)
@@ -138,6 +148,8 @@ export const NewUserFullFlow = {
       expect(heading).toBeInTheDocument()
     })
     console.log('  ✓ Grouping step loaded')
+    await openMobileStepBar()
+    await waitFor(() => expect(getStepBarItem('Rank')).toHaveAttribute('tabindex', '-1'))
 
     // Click Next to proceed
     nextButton = await waitFor(() => {
@@ -150,6 +162,8 @@ export const NewUserFullFlow = {
 
     // Wait for step slider transition to complete
     await waitForStepSlider(canvasElement)
+    await openMobileStepBar()
+    await waitFor(() => expect(getStepBarItem('Rank')).toHaveAttribute('tabindex', '0'))
 
     // ========== STEP 3: Ranking step ==========
     console.log('Step 3: Ranking step - ranking points')

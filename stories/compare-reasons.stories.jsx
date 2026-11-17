@@ -1,6 +1,8 @@
 // https://github.com/EnCiv/civil-pursuit/issues/200
 import React, { useState } from 'react'
 import CompareWhysStep, { CompareWhys } from '../app/components/steps/compare-whys'
+import { getLoadedStepComplete } from '../app/components/tournament'
+import { useDeliberationContext } from '../app/components/deliberation-context'
 import { asyncSleep, onDoneDecorator, socketEmitDecorator, DeliberationContextDecorator, deliberationContextData } from './common'
 import { expect, within, userEvent, waitFor } from 'storybook/test'
 
@@ -160,7 +162,7 @@ function getStepArgsFrom(pointWithWhyRankListList) {
 // sets up the socket api mocks and renders the component
 const StepTemplate = args => {
   // topWhyById and preRankByParentId are taken from args to uses by the api call
-  const { defaultValue, apiResult, ...otherArgs } = args
+  const { defaultValue, apiResult, fetchDelay = 0, ...otherArgs } = args
   useState(() => {
     // execute this code once, before the component is initally rendered
     // the api call will provide the new data for this step
@@ -168,7 +170,7 @@ const StepTemplate = args => {
       window.socket._socketEmitHandlerResults['get-why-ranks-and-points'].push([discussionId, round, mostIds, leastIds])
       setTimeout(() => {
         cb(apiResult)
-      })
+      }, fetchDelay)
     }
     window.socket._socketEmitHandlerResults['get-why-ranks-and-points'] = []
     window.socket._socketEmitHandlers['upsert-rank'] = (rank, cb) => {
@@ -179,6 +181,20 @@ const StepTemplate = args => {
   })
   return <CompareWhysStep {...otherArgs} />
 }
+
+const CompareReasonsCompletionStatus = ({ category, round }) => {
+  const { data } = useDeliberationContext()
+  const complete = getLoadedStepComplete({ webComponent: 'CompareReasons', category }, data, round)
+  return <output data-testid="compare-reasons-loaded-status">{complete === undefined ? 'loading' : complete ? 'complete' : 'incomplete'}</output>
+}
+
+const StepTemplateWithCompletionStatus = props => (
+  <>
+    <StepTemplate {...props} />
+    <CompareReasonsCompletionStatus category={props.category} round={props.round} />
+  </>
+)
+
 export const BeginStepMost = {
   args: { ...getStepArgsFrom(pointWithWhyRankListList), category: 'most', round: 1 },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
@@ -202,6 +218,18 @@ export const FirstMostFetchFromApi = {
       expect(onDone.mock.calls[0][0]).toMatchObject({ valid: false, value: 1 / 3 })
     })
     expect(canvas.getByText('1 / 3')).toBeInTheDocument()
+  },
+}
+
+export const TournamentCompletionWaitsForWhyData = {
+  args: { ...getStepArgsFrom([pointWithWhyRankListList[0]]), category: 'most', round, fetchDelay: 200 },
+  decorators: [DeliberationContextDecorator, socketEmitDecorator],
+  render: props => <StepTemplateWithCompletionStatus {...props} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const status = canvas.getByTestId('compare-reasons-loaded-status')
+    await waitFor(() => expect(status).toHaveTextContent('loading'))
+    await waitFor(() => expect(status).toHaveTextContent('incomplete'), { timeout: 3000 })
   },
 }
 

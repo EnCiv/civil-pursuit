@@ -81,10 +81,10 @@ const Step = forwardRef((props, ref) => {
       }}
       onKeyDown={handleKeyDown}
       title={`${title}`}
-      tabIndex={complete || active || unlocked ? 0 : -1}
+      tabIndex={isStepEnabled ? 0 : -1}
       aria-current={active ? 'step' : undefined}
       data-testid="testClick"
-      ref={complete || active || unlocked ? ref : null}
+      ref={isStepEnabled ? ref : null}
       {...otherProps}
     >
       <span onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>

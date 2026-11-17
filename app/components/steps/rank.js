@@ -43,7 +43,11 @@ export function isRankDataComplete(reducedPointList, rankByParentId = {}) {
     doneCount++
     countByCategory[category] = (countByCategory[category] || 0) + 1
   }
-  return doneCount === reducedPointList.length && (countByCategory.most || 0) === target.most && (countByCategory.least || 0) === target.least
+  const hasCategoryCountRequirements = target.most > 0 || target.least > 0
+  return (
+    doneCount === reducedPointList.length &&
+    (!hasCategoryCountRequirements || ((countByCategory.most || 0) === target.most && (countByCategory.least || 0) === target.least))
+  )
 }
 
 export default function RankStep(props) {

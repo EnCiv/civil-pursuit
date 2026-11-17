@@ -166,6 +166,32 @@ export const onDoneIsCalledAfterUserChangesRank = {
   },
 }
 
+export const smallListCanUseMostAndLeast = {
+  args: {
+    reducedPointList: rankPoints.slice(0, 2),
+    preRankByParentId: {},
+    discussionId,
+    round,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+
+    await waitFor(() => {
+      expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({ valid: false, value: 0 })
+    })
+
+    await userEvent.click(within(canvas.getAllByRole('radiogroup')[0]).getByRole('radio', { name: 'Most' }))
+    await waitFor(() => {
+      expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({ valid: false, value: 0.5 })
+    })
+
+    await userEvent.click(within(canvas.getAllByRole('radiogroup')[1]).getByRole('radio', { name: 'Least' }))
+    await waitFor(() => {
+      expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({ valid: true, value: 1 })
+    })
+  },
+}
+
 // need to have one source of data {rankPoints}, but split it into defaultValue representing what should be setup in the context before RankStep renders
 // and topWhyById and postRankByParentId which are for the simulated response to the get-user-post-ranks-and-top-ranked-whys socket api call
 function getRankArgsFrom(rankPoints) {

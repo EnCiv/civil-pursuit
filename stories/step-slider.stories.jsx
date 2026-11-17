@@ -186,6 +186,38 @@ export const DefaultStepNameTest = {
   },
 }
 
+export const StepBarNavigationDoesNotSkipVisitedSteps = {
+  args: {
+    steps: createPrimarySteps(4).map(step => ({ ...step, complete: true })),
+    children: createPanels(4),
+    defaultStepName: 'Why Most',
+  },
+  render: Template,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const currentStep = () => canvasElement.querySelector('[data-current-step]')
+    const stepBarItem = name => canvas.getAllByTestId('testClick').find(step => step.textContent.includes(name))
+    const navigateTo = async (name, index) => {
+      const step = stepBarItem(name)
+      expect(step).toHaveAttribute('tabindex', '0')
+      await userEvent.click(step)
+      await waitForStepSlider(canvasElement)
+      await waitFor(() => expect(currentStep()).toHaveAttribute('data-current-step', String(index)))
+    }
+
+    await waitFor(() => expect(currentStep()).toHaveAttribute('data-current-step', '3'))
+    await navigateTo('Answer', 0)
+    await navigateTo('Why Most', 3)
+    await navigateTo('Answer', 0)
+    await navigateTo('Why Most', 3)
+
+    await waitFor(() => {
+      expect(stepBarItem('Group')).toHaveAttribute('tabindex', '0')
+      expect(stepBarItem('Rank')).toHaveAttribute('tabindex', '0')
+    })
+  },
+}
+
 // Test for waitForStepSlider helper
 export const WaitForStepSliderTest = {
   args: { steps: createPrimarySteps(4), children: createPanels(4) },

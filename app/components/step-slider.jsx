@@ -74,7 +74,7 @@ export const StepSlider = props => {
         return { ...state, transitions: true }
       case 'moveTo':
         const newStepStatuses = state.stepStatuses?.map((stepStatus, i) => {
-          if (i > state.currentStep && i < action.to) return { ...stepStatus, skip: true }
+          if (i > state.currentStep && i < action.to && !stepStatus.seen && !stepStatus.complete && !stepStatus.skip) return { ...stepStatus, skip: true }
           else return stepStatus
         })
         return { ...state, transitions: false, stepStatuses: newStepStatuses, nextStep: action.to }
@@ -131,7 +131,7 @@ export const StepSlider = props => {
         const stepStatuses = state.stepStatuses.map((stepStatus, index) => {
           if (!action.indices.includes(index) || stepStatus.complete) return stepStatus
           changed = true
-          return { ...stepStatus, complete: true, seen: true }
+          return { ...stepStatus, complete: true }
         })
         return changed ? { ...state, stepStatuses } : state
       }
@@ -152,7 +152,7 @@ export const StepSlider = props => {
   // Keep track of each step's seen/completion status
   // Populate statuses with initial values
   const defaultStepIndex = defaultStepName && typeof stepNameToIndex[defaultStepName] === 'number' ? stepNameToIndex[defaultStepName] : 0
-  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i <= defaultStepIndex || step.complete === true, complete: step.complete === true, skip: false })) : undefined
+  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i <= defaultStepIndex, complete: step.complete === true, skip: false })) : undefined
 
   const [state, dispatch] = useReducer(reducer, { currentStep: defaultStepIndex, nextStep: defaultStepIndex, transitions: false, stepStatuses: initialStepStatuses })
   const appliedLoadedCompletions = useRef(new Set((steps || []).flatMap((step, index) => (step.complete === true ? [index] : []))))

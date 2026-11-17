@@ -98,7 +98,7 @@ function stepFilter(step, context) {
   return true
 }
 
-function getLoadedStepComplete(step, data, round) {
+export function getLoadedStepComplete(step, data, round) {
   if (data.uInfo?.[round]?.finished) return true
 
   const reducedPointList = data.reducedPointList || []
@@ -127,6 +127,9 @@ function getLoadedStepComplete(step, data, round) {
       if (!data.preRankByParentId) return undefined
       const selectedParentIds = new Set(reducedPointList.filter(({ point }) => preRankByParentId[point._id]?.category === step.category).map(({ point }) => String(point._id)))
       if (!selectedParentIds.size) return true
+      const randomWhyParentIds = new Set(Object.values(data.randomWhyById || {}).filter(why => why.category === step.category).map(why => String(why.parentId)))
+      const loadedWhyParentIds = data.whyDataLoadedByParentIdByRound?.[round] || {}
+      if ([...selectedParentIds].some(parentId => !randomWhyParentIds.has(parentId) && !loadedWhyParentIds[parentId])) return undefined
       const whyById = new Map()
       for (const categoryWhys of Object.values(data.myWhyByCategoryByParentId || {})) {
         for (const why of Object.values(categoryWhys || {})) whyById.set(String(why._id), why)

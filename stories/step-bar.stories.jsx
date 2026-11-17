@@ -66,6 +66,119 @@ export const MobileViewTwo = {
   parameters: { viewport: { defaultViewport: 'iphone14promax' } },
 }
 
+export const ResponsiveLayoutUpdatesOnResize = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const originalWidth = window.innerWidth
+    const originalDescriptor = Object.getOwnPropertyDescriptor(window, 'innerWidth')
+    const setViewportWidth = width => {
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: width })
+      window.dispatchEvent(new Event('resize'))
+    }
+
+    try {
+      setViewportWidth(1200)
+      await waitFor(() => expect(canvas.getByTestId('rightclick')).toBeInTheDocument())
+
+      setViewportWidth(600)
+      await waitFor(() => expect(canvas.getByTestId('mobile-select-bar')).toBeInTheDocument())
+
+      setViewportWidth(1200)
+      await waitFor(() => expect(canvas.getByTestId('rightclick')).toBeInTheDocument())
+    } finally {
+      if (originalDescriptor) Object.defineProperty(window, 'innerWidth', originalDescriptor)
+      else delete window.innerWidth
+      window.dispatchEvent(new Event('resize'))
+      await waitFor(() => {
+        if (originalWidth < 640) expect(canvas.getByTestId('mobile-select-bar')).toBeInTheDocument()
+        else expect(canvas.getByTestId('rightclick')).toBeInTheDocument()
+      })
+    }
+  },
+}
+
+export const LaterStepStaysLockedUntilPreviousCompletes = {
+  args: {
+    steps: [
+      { name: 'Answer', title: 'Complete the answer first', complete: false, seen: true },
+      { name: 'Grouping', title: 'Group similar responses', complete: true, seen: false },
+      { name: 'Rank', title: 'Rank the responses', complete: false, seen: false },
+    ],
+    current: 1,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const groupingStep = canvas.getAllByTestId('testClick').find(step => step.textContent.includes('Grouping'))
+    expect(groupingStep).toBeDefined()
+    expect(groupingStep).toHaveAttribute('tabindex', '-1')
+  },
+}
+
+export const PreviouslyVisitedStepRemainsAvailableAfterBackNavigation = {
+  args: {
+    steps: [
+      { name: 'Answer', title: 'Answer was edited', complete: false, seen: true },
+      { name: 'Grouping', title: 'Grouping was visited', complete: false, seen: true },
+      { name: 'Rank', title: 'Rank was completed', complete: true, seen: true },
+      { name: 'Why Most', title: 'A later step', complete: false, seen: true },
+    ],
+    current: 2,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const rankStep = canvas.getAllByTestId('testClick').find(step => step.textContent.includes('Rank'))
+    expect(rankStep).toBeDefined()
+    expect(rankStep).toHaveAttribute('tabindex', '0')
+  },
+}
+
+export const SkippedStepStaysOutOfTabOrderOnMobile = {
+  args: {
+    steps: [
+      { name: 'Answer', title: 'Answer complete', complete: true, seen: true },
+      { name: 'Optional', title: 'This step was skipped', complete: false, seen: true, skip: true },
+      { name: 'Group', title: 'Continue to grouping', complete: false, seen: true },
+    ],
+    current: 3,
+  },
+  parameters: { viewport: { defaultViewport: 'iphone14promax' } },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByTestId('mobile-select-bar'))
+    await waitFor(() => {
+      const stepItems = canvas.getAllByTestId('testClick')
+      const skippedStep = stepItems.find(step => step.textContent.includes('Optional'))
+      const groupStep = stepItems.find(step => step.textContent.includes('Group'))
+      expect(skippedStep).toHaveAttribute('tabindex', '-1')
+      expect(groupStep).toHaveAttribute('tabindex', '0')
+    })
+  },
+}
+
+export const FiveStepsVisibleOnWideScreens = {
+  args: { steps: primarySteps, current: 5 },
+  parameters: {
+    viewport: {
+      viewports: {
+        wideDesktop: { name: 'Wide desktop', styles: { width: '1920px', height: '1080px' } },
+      },
+      defaultViewport: 'wideDesktop',
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await waitFor(() => {
+      const stepContainer = canvas.getByTestId('leftclick').nextElementSibling
+      const bounds = stepContainer.getBoundingClientRect()
+      const fullyVisibleSteps = canvas.getAllByTestId('testClick').filter(step => {
+        const stepBounds = step.getBoundingClientRect()
+        return stepBounds.left >= bounds.left - 1 && stepBounds.right <= bounds.right + 1
+      })
+      expect(fullyVisibleSteps).toHaveLength(5)
+    })
+  },
+}
+
 // tests the right scroll button
 export const ScrollRight = {
   play: async ({ canvasElement }) => {
