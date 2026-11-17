@@ -28,7 +28,11 @@ const StepIntro = props => {
 // Styles for the StepIntro component using react-jss
 const stepIntroStyles = createUseStyles(theme => ({
   stepIntro: {
-    // Add your common styles here
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    textAlign: 'center',
     fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontStyle: 'normal',
     paddingBottom: '3rem',
@@ -57,13 +61,15 @@ const stepIntroStyles = createUseStyles(theme => ({
   },
 
   secondaryText: {
+    width: '100%',
     color: theme.colors.encivGray,
     fontSize: '1.25rem',
     fontWeight: 400,
     lineHeight: 1.65,
     fontFamily: `${theme.font.fontFamily}, sans-serif`,
     maxWidth: '66ch',
-    margin: '0.75rem 0 0',
+    margin: '0.75rem auto 0',
+    textAlign: 'center',
   },
 
   '@keyframes introRise': {

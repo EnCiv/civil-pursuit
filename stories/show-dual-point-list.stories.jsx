@@ -142,11 +142,11 @@ const createPointObj = (
   }
 }
 
-const point7 = createPointObj('7', 'Point 7', 'Point 7 Description', [])
+const point7 = createPointObj('7', 'Clear litter from creek corridors', 'Regular cleanups protect wildlife and keep trash from reaching neighborhood waterways.', [])
 const point8 = createPointObj(
   '8',
-  'Point 8',
-  'Point 8 Description, Point 8 Description, Point 8 Description, Point 8 Description, Point 8 Description, Point 8 Description, Point 8 Description, ',
+  'Light neighborhood walking paths',
+  'Well-placed lights can make popular paths feel safer after sunset. Residents who work late should be able to walk to transit and home with confidence. Fixtures should direct light downward to limit glare for nearby homes.',
   [],
   {
     dob: '1980-10-20T00:00:00.000Z',
@@ -154,14 +154,14 @@ const point8 = createPointObj(
     party: 'Independent',
   }
 )
-const point9 = createPointObj('9', 'Point 9', 'Point 9 Description', [], {
+const point9 = createPointObj('9', 'Offer evening adult classes', 'Flexible class times help working adults earn credentials and build new skills.', [], {
   dob: '1995-10-20T00:00:00.000Z',
   state: 'CA',
   party: 'Independent',
 })
-const point10 = createPointObj('10', 'Point 10', 'Point 10 Description')
-const point11 = createPointObj('11', 'Point 11', 'Point 11 Description', [point7, point8, point9, point10])
-const point12 = createPointObj('12', 'Point 12', 'Point 12 Description')
+const point10 = createPointObj('10', 'Improve access to public restrooms', 'Clean, accessible facilities make downtown and park visits easier for everyone.')
+const point11 = createPointObj('11', 'Create safer crossings near parks', 'Visible crosswalks and slower traffic help families reach nearby recreation areas.', [point7, point8, point9, point10])
+const point12 = createPointObj('12', 'Repair playground equipment promptly', 'Routine inspections can prevent injuries and keep play areas open for children.')
 
 // Case when the chart is collapsed:
 export const CollapsedChartWithGroups = {

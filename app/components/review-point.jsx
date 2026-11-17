@@ -185,7 +185,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     padding: '0rem 0rem 1.875rem',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-start',
+    alignItems: 'stretch',
     gap: '1rem',
     position: 'relative',
     width: '100%',
@@ -195,12 +195,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   showDualPointListDisclosure: {
     display: 'grid',
+    width: 'calc(100% + 3.75rem)',
+    marginLeft: '-1.875rem',
     gridTemplateRows: '0fr',
     opacity: 0,
     visibility: 'hidden',
     pointerEvents: 'none',
-    boxShadow: 'none',
-    transition: 'grid-template-rows 300ms ease, opacity 200ms ease, visibility 0s linear 300ms, box-shadow 300ms ease',
+    transition: 'grid-template-rows 300ms ease, opacity 200ms ease, visibility 0s linear 300ms',
     '@media (prefers-reduced-motion: reduce)': {
       transition: 'none',
     },
@@ -211,9 +212,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     opacity: 1,
     visibility: 'visible',
     pointerEvents: 'auto',
-    boxShadow: '0 0.375rem 0.875rem rgba(6, 51, 92, 0.14)',
-    borderRadius: '0.75rem',
-    transition: 'grid-template-rows 300ms ease, opacity 200ms ease, visibility 0s, box-shadow 300ms ease',
+    transition: 'grid-template-rows 300ms ease, opacity 200ms ease, visibility 0s',
     '@media (prefers-reduced-motion: reduce)': {
       transition: 'none',
     },
@@ -225,15 +224,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   showDualPointList: {
+    display: 'block',
     width: '100%',
+    boxSizing: 'border-box',
     padding: '0rem',
     '&&': {
-      border: 'none',
-      borderRadius: '0.75rem',
+      border: 'none !important',
+      borderRadius: 0,
+      boxShadow: 'none !important',
     },
     '& > div': {
-      borderTopLeftRadius: '0.75rem',
-      borderTopRightRadius: '0.75rem',
+      borderRadius: 0,
     },
   },
 }))

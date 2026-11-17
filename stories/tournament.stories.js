@@ -88,10 +88,42 @@ import { userEvent, within, waitFor, expect } from 'storybook/test'
 import { authFlowDecorators, withAuthTestState } from './mocks/auth-flow'
 import { waitForStepSlider } from './step-slider.stories'
 
+const storyPointContent = [
+  { subject: 'Make school crossings safer', description: 'Raised crosswalks and slower traffic can protect students on their daily walk to class.' },
+  { subject: 'Run buses later on weekdays', description: 'Extending evening routes gives shift workers a reliable way to reach home.' },
+  { subject: 'Make childcare more affordable', description: 'Lower fees and more local slots help parents work while children receive consistent care.' },
+  { subject: 'Repair sidewalks before winter', description: 'Fixing cracked pavement makes neighborhood trips safer for wheelchair users and families with strollers.' },
+  { subject: 'Protect mature neighborhood trees', description: 'Healthy trees cool streets and provide shade during hotter summers.' },
+  { subject: 'Keep library branches open later', description: 'Evening hours make study spaces and public computers available to more residents.' },
+  { subject: 'Expand community mental health care', description: 'Nearby counseling and crisis support can reduce long waits for help.' },
+  { subject: 'Test drinking water regularly', description: 'Routine testing helps detect contamination before it affects households.' },
+  { subject: 'Add shade to neighborhood parks', description: 'Trees and covered seating make public spaces more comfortable in hot weather.' },
+  { subject: 'Support local storefronts', description: 'Affordable leases help neighborhood shops stay open and keep jobs nearby.' },
+  { subject: 'Build accessible playgrounds', description: 'Inclusive equipment gives children with different abilities more ways to play together.' },
+  { subject: 'Donate surplus food to pantries', description: 'Food recovery programs can redirect good groceries to families facing shortages.' },
+  { subject: 'Offer training for in-demand careers', description: 'Practical classes help adults build skills for growing local industries.' },
+  { subject: 'Light paths near transit stops', description: 'Clear lighting can help people feel safer walking to buses after dark.' },
+  { subject: 'Connect bike lanes safely', description: 'Protected links between routes make cycling a more practical way to get around.' },
+  { subject: 'Add affordable homes near transit', description: 'More housing choices close to frequent service can lower transportation costs.' },
+  { subject: 'Increase community clinic hours', description: 'Flexible appointments let residents get preventive care around work and school.' },
+  { subject: 'Make town halls easier to attend', description: 'Online access and accessible meeting spaces let more residents take part in local decisions.' },
+  { subject: 'Open cooling centers during heat waves', description: 'Public indoor spaces can protect older adults and families during dangerous temperatures.' },
+  { subject: 'Restore wetlands that reduce flooding', description: 'Healthy wetlands absorb stormwater and protect nearby homes and streets.' },
+  { subject: 'Expand after-school programs', description: 'More supervised activities give students a safe place to learn and connect after class.' },
+  { subject: 'Clear snow from sidewalks quickly', description: 'Timely clearing helps pedestrians reach transit, shops, and medical appointments in winter.' },
+  { subject: 'Add public restrooms downtown', description: 'Clean, accessible facilities make downtown visits easier for residents and visitors.' },
+  { subject: 'Build neighborhood emergency hubs', description: 'Local gathering points can share supplies and information during power outages or storms.' },
+  { subject: 'Create safe routes to community colleges', description: 'Better lighting and crossings can make walking and biking to class more practical.' },
+  { subject: 'Add weekend bus service', description: 'Weekend routes help residents reach work, groceries, and recreation without a car.' },
+  { subject: 'Inspect playgrounds regularly', description: 'Routine maintenance can prevent injuries and keep play areas open for children.' },
+  { subject: 'Help renters reduce energy bills', description: 'Weatherization and efficient appliances can lower monthly costs in older apartments.' },
+  { subject: 'Protect tenants from unfair evictions', description: 'Clear guidance and early legal support can help families keep stable housing.' },
+  { subject: 'Bring fresh food markets closer', description: 'Convenient markets make nutritious groceries easier to reach in every neighborhood.' },
+]
+
 const pointItems = Array.from({ length: 30 }, (_, index) => ({
-  _id: index + 'a', //
-  subject: 'Point ' + index,
-  description: 'Point Description ' + index,
+  _id: index + 'a',
+  ...storyPointContent[index],
   userId: '1000' + index,
 }))
 
@@ -330,7 +362,7 @@ export default {
 }
 
 function makePoints(n) {
-  return Array.from({ length: n }, (_, i) => ({ _id: i + 1 + '', subject: 'Point ' + i, description: 'Point Description ' + i, parentId: 'd' }))
+  return Array.from({ length: n }, (_, i) => ({ _id: i + 1 + '', ...storyPointContent[i % storyPointContent.length], parentId: 'd' }))
 }
 const pointList = makePoints(9)
 
@@ -345,10 +377,29 @@ pointList.forEach((point, index) => {
 })
 
 let id = 100
+const whyContentByCategory = {
+  most: [
+    { subject: 'Reliable access creates more choices', description: 'Dependable service helps people reach work, school, and care without losing hours to travel.' },
+    { subject: 'Prevention costs less than crisis response', description: 'Addressing risks early protects residents and avoids larger public costs later.' },
+    { subject: 'The benefit reaches families with few alternatives', description: 'Residents with limited income or mobility gain options they may not have today.' },
+    { subject: 'Local services keep communities connected', description: 'Shared spaces and dependable programs make it easier for neighbors to learn and support one another.' },
+    { subject: 'A healthier environment helps everyone', description: 'Cleaner air, cooler streets, and safe outdoor spaces improve daily life across the community.' },
+  ],
+  least: [
+    { subject: 'Cosmetic upgrades can wait behind basic repairs', description: 'Residents should not have to choose appearance projects over safe sidewalks, clean water, or reliable service.' },
+    { subject: 'A narrow benefit should not displace urgent needs', description: 'Public funds can do more good when they address problems affecting a larger share of the community.' },
+    { subject: 'Short-term fixes can shift costs elsewhere', description: 'A quick patch may leave the underlying problem for residents and future budgets to handle.' },
+    { subject: 'Limited demand may not justify the full expense', description: 'Projects should be compared with services that reach more people or meet a more immediate need.' },
+    { subject: 'The same goal may be reached at lower cost', description: 'A simpler approach can preserve resources for other priorities without sacrificing the intended outcome.' },
+  ],
+}
+
 function make5Whys(points, category) {
-  return points.map(point =>
+  const whyContent = whyContentByCategory[category]
+  return points.map((point, pointIndex) =>
     Array.from({ length: 5 }, (_, i) => {
-      const whyPoint = { _id: id++, subject: `Why ${category} ` + point._id + i, description: `Why ${category} Description ` + point._id + i, parentId: point._id, category }
+      const why = whyContent[(pointIndex + i) % whyContent.length]
+      const whyPoint = { _id: id++, subject: why.subject, description: `${why.description} This is especially relevant to ${point.subject.toLowerCase()}.`, parentId: point._id, category }
       // Add demographic data for why points
       demInfoByPointId[whyPoint._id] = {
         yearOfBirth: (1970 + (id % 30)).toString(), // Increments based on id
@@ -404,26 +455,26 @@ export const demInfoDecorator = Story => {
 export const samplePoints = [
   {
     _id: 'point-1',
-    subject: 'Issue One',
-    description: 'Description of issue one',
+    subject: 'Safer school crossings',
+    description: 'Clear crosswalks and slower traffic can protect students and families near schools.',
     parentId: '5d0137260dacd06732a1d814',
   },
   {
     _id: 'point-2',
-    subject: 'Issue Two',
-    description: 'Description of issue two',
+    subject: 'More frequent evening buses',
+    description: 'Reliable service after work helps residents reach home and essential services.',
     parentId: '5d0137260dacd06732a1d814',
   },
   {
     _id: 'point-3',
-    subject: 'Issue Three',
-    description: 'Description of issue three',
+    subject: 'Affordable childcare nearby',
+    description: 'More local childcare slots help parents work while young children receive consistent care.',
     parentId: '5d0137260dacd06732a1d814',
   },
   {
     _id: 'point-4',
-    subject: 'Issue Four',
-    description: 'Description of issue four',
+    subject: 'Shade trees along busy streets',
+    description: 'Mature trees cool sidewalks and create more comfortable places to walk in summer.',
     parentId: '5d0137260dacd06732a1d814',
   },
 ]
@@ -434,22 +485,22 @@ export const sampleWhys = {
   whys: [
     {
       _id: 'why-most-1',
-      subject: 'Reason why this is most important',
-      description: 'This issue is most important because...',
+      subject: 'Mature trees reduce neighborhood heat',
+      description: 'Shade along sidewalks protects people from hot weather and makes walking more comfortable.',
       parentId: 'point-4', // The point ranked as Most
       category: 'most',
     },
     {
       _id: 'why-least-1',
-      subject: 'First reason for least important',
-      description: 'Reason for issue one',
+      subject: 'Decorative upgrades can wait',
+      description: 'Basic repairs and essential services should come before cosmetic changes to public spaces.',
       parentId: 'point-1', // The point ranked as Least
       category: 'least',
     },
     {
       _id: 'why-least-2',
-      subject: 'Second reason for least important',
-      description: 'Another reason for issue one',
+      subject: 'The benefit reaches few residents',
+      description: 'Limited use may not justify the cost when other neighborhood needs affect more people.',
       parentId: 'point-1',
       category: 'least',
     },
@@ -735,15 +786,15 @@ export const BatchUpsertInteractionTest = {
         // User's answer point - use ObjectId string for new points
         '67bf9d6ae49200d1349ab350': { _id: '67bf9d6ae49200d1349ab350', subject: 'My Important Issue', description: 'This is why this issue matters', userId: 'temp-user-123' },
         // Points from tournament that are referenced by parentId
-        1: { _id: '1', subject: 'Point 0', description: 'Point Description 0', parentId: 'd' },
-        2: { _id: '2', subject: 'Point 1', description: 'Point Description 1', parentId: 'd' },
-        3: { _id: '3', subject: 'Point 2', description: 'Point Description 2', parentId: 'd' },
-        4: { _id: '4', subject: 'Point 3', description: 'Point Description 3', parentId: 'd' },
-        5: { _id: '5', subject: 'Point 4', description: 'Point Description 4', parentId: 'd' },
-        6: { _id: '6', subject: 'Point 5', description: 'Point Description 5', parentId: 'd' },
-        7: { _id: '7', subject: 'Point 6', description: 'Point Description 6', parentId: 'd' },
-        8: { _id: '8', subject: 'Point 7', description: 'Point Description 7', parentId: 'd' },
-        9: { _id: '9', subject: 'Point 8', description: 'Point Description 8', parentId: 'd' },
+        1: { _id: '1', ...storyPointContent[0], parentId: 'd' },
+        2: { _id: '2', ...storyPointContent[1], parentId: 'd' },
+        3: { _id: '3', ...storyPointContent[2], parentId: 'd' },
+        4: { _id: '4', ...storyPointContent[3], parentId: 'd' },
+        5: { _id: '5', ...storyPointContent[4], parentId: 'd' },
+        6: { _id: '6', ...storyPointContent[5], parentId: 'd' },
+        7: { _id: '7', ...storyPointContent[6], parentId: 'd' },
+        8: { _id: '8', ...storyPointContent[7], parentId: 'd' },
+        9: { _id: '9', ...storyPointContent[8], parentId: 'd' },
       },
       myWhyByCategoryByParentId: {
         // Why responses - parentId must match user's point _id above

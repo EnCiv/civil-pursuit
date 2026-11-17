@@ -12,8 +12,8 @@ export default {
 }
 
 const reducedPointList = [
-  { point: { _id: '60b8d295f1c8ab1d2f4a1c01', subject: 'Point 1 Subject', description: 'Point 1 Description', parentId: '60b8d295f1c8ab1d2f4a1c05' } },
-  { point: { _id: '60b8d295f1c8ab1d2f4a1c02', subject: 'Point 2 Subject', description: 'Point 2 Description', parentId: '60b8d295f1c8ab1d2f4a1c05' } },
+  { point: { _id: '60b8d295f1c8ab1d2f4a1c01', subject: 'Reliable evening bus service', description: 'More frequent trips after work help residents reach home, school, and essential services.', parentId: '60b8d295f1c8ab1d2f4a1c05' } },
+  { point: { _id: '60b8d295f1c8ab1d2f4a1c02', subject: 'Safer crossings near schools', description: 'Clear crosswalks and slower traffic protect students and families walking to class.', parentId: '60b8d295f1c8ab1d2f4a1c05' } },
 ]
 
 const preRankByParentId = {
@@ -26,15 +26,15 @@ const myWhyByCategoryByParentId = {
     '60b8d295f1c8ab1d2f4a1c01': {
       _id: '60b8d295f1c8ab1d2f4a1c03',
       parentId: '60b8d295f1c8ab1d2f4a1c01',
-      subject: 'Existing Subject 1',
-      description: 'Existing Description 1',
+      subject: 'Late buses keep night workers connected',
+      description: 'Dependable evening routes help workers reach home safely after other transportation options stop running.',
       category: 'most',
     },
     '60b8d295f1c8ab1d2f4a1c02': {
       _id: '60b8d295f1c8ab1d2f4a1c04',
       parentId: '60b8d295f1c8ab1d2f4a1c02',
-      subject: 'Existing Subject 2',
-      description: 'Existing Description 2',
+      subject: 'Safer school crossings protect children',
+      description: 'Lower speeds and visible crosswalks help students and families cross busy streets.',
       category: 'most',
     },
   },
@@ -119,28 +119,33 @@ export const UserEntersInitialData = {
   render: whyStepTemplate,
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
+    expect(canvas.getByText('1 / 2')).toBeInTheDocument()
 
     await waitFor(() => {
       const subjectInputs = canvas.getAllByPlaceholderText('Type some thing here')
       const descriptionInputs = canvas.getAllByPlaceholderText('Description')
-      expect(subjectInputs.length).toBe(2)
-      expect(descriptionInputs.length).toBe(2)
+      expect(subjectInputs.length).toBe(1)
+      expect(descriptionInputs.length).toBe(1)
     })
 
-    const subjectInputs = canvas.getAllByPlaceholderText('Type some thing here')
-    const descriptionInputs = canvas.getAllByPlaceholderText('Description')
+    let subjectInput = canvas.getByPlaceholderText('Type some thing here')
+    let descriptionInput = canvas.getByPlaceholderText('Description')
 
-    await userEvent.type(subjectInputs[0], 'User Subject 1')
+    await userEvent.type(subjectInput, 'User Subject 1')
     await userEvent.tab()
-    await userEvent.type(descriptionInputs[0], 'User Description 1')
+    await userEvent.type(descriptionInput, 'User Description 1')
     await userEvent.tab()
-    await userEvent.type(subjectInputs[1], 'User Subject 2')
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Next reason' }))
+    expect(canvas.getByText('2 / 2')).toBeInTheDocument()
+    subjectInput = canvas.getByPlaceholderText('Type some thing here')
+    descriptionInput = canvas.getByPlaceholderText('Description')
+    await userEvent.type(subjectInput, 'User Subject 2')
     await userEvent.tab()
-    await userEvent.type(descriptionInputs[1], 'User Description 2')
+    await userEvent.type(descriptionInput, 'User Description 2')
     await userEvent.tab()
     await waitFor(() => {
-      expect(args.onDone.mock.calls).toHaveLength(6)
-      expect(args.onDone.mock.calls[5][0]).toMatchObject({
+      expect(args.onDone.mock.calls.at(-1)[0]).toMatchObject({
         valid: true,
         value: 1,
       })
@@ -198,7 +203,7 @@ export const UserUpdatesExistingData = {
     const canvas = within(canvasElement)
     await asyncSleep(1000)
     await waitFor(() => {
-      expect(args.onDone.mock.calls[1][0]).toMatchObject({
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({
         valid: true,
         value: 1,
       })
@@ -207,14 +212,14 @@ export const UserUpdatesExistingData = {
 
     await waitFor(
       () => {
-        expect(canvas.getAllByDisplayValue('Existing Subject 1').length).toBeGreaterThan(0)
-        expect(canvas.getAllByDisplayValue('Existing Description 1').length).toBeGreaterThan(0)
+        expect(canvas.getAllByDisplayValue('Late buses keep night workers connected').length).toBeGreaterThan(0)
+        expect(canvas.getAllByDisplayValue('Dependable evening routes help workers reach home safely after other transportation options stop running.').length).toBeGreaterThan(0)
       },
       { timeout: 3000 }
     )
 
-    const subjectInputs = canvas.getAllByDisplayValue('Existing Subject 1')
-    const descriptionInputs = canvas.getAllByDisplayValue('Existing Description 1')
+    const subjectInputs = canvas.getAllByDisplayValue('Late buses keep night workers connected')
+    const descriptionInputs = canvas.getAllByDisplayValue('Dependable evening routes help workers reach home safely after other transportation options stop running.')
 
     await userEvent.type(subjectInputs[0], ' Updated')
     await userEvent.tab()
@@ -225,18 +230,18 @@ export const UserUpdatesExistingData = {
     await waitFor(() => {
       expect(window.socket._socketEmitHandlerResults['upsert-why'][0]).toMatchObject({
         _id: '60b8d295f1c8ab1d2f4a1c03',
-        subject: 'Existing Subject 1 Updated',
-        description: 'Existing Description 1',
+        subject: 'Late buses keep night workers connected Updated',
+        description: 'Dependable evening routes help workers reach home safely after other transportation options stop running.',
         parentId: '60b8d295f1c8ab1d2f4a1c01',
       })
       expect(window.socket._socketEmitHandlerResults['upsert-why'][1]).toMatchObject({
         _id: '60b8d295f1c8ab1d2f4a1c03',
-        subject: 'Existing Subject 1 Updated',
-        description: 'Existing Description 1 Updated',
+        subject: 'Late buses keep night workers connected Updated',
+        description: 'Dependable evening routes help workers reach home safely after other transportation options stop running. Updated',
         parentId: '60b8d295f1c8ab1d2f4a1c01',
       })
       expect(window.socket._socketEmitHandlerResults['upsert-why'].length).toBe(2)
-      expect(args.onDone.mock.calls[3][0]).toMatchObject({
+      expect(args.onDone.mock.calls.at(-1)[0]).toMatchObject({
         valid: true,
         value: 1,
       })

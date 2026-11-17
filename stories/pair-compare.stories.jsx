@@ -10,21 +10,21 @@ export default {
 }
 
 const whyRankList = [
-  { why: { _id: '1', subject: 'Point 1', description: 'This is the first point' } },
-  { why: { _id: '2', subject: 'Point 2', description: 'This is the second point' } },
-  { why: { _id: '3', subject: 'Point 3', description: 'This is the third point' } },
-  { why: { _id: '4', subject: 'Point 4', description: 'This is the fourth point' } },
-  { why: { _id: '5', subject: 'Point 5', description: 'This is the fifth point' } },
-  { why: { _id: '6', subject: 'Point 6', description: 'This is the sixth point' } },
+  { why: { _id: '1', subject: 'Reliable buses connect residents to work', description: 'Frequent routes and dependable schedules help people reach jobs, school, and essential services.' } },
+  { why: { _id: '2', subject: 'Safe sidewalks make short trips possible', description: 'Continuous, accessible sidewalks let children, older adults, and people with mobility devices travel confidently.' } },
+  { why: { _id: '3', subject: 'Affordable childcare keeps parents employed', description: 'More low-cost childcare options help parents maintain steady work and give young children a strong start.' } },
+  { why: { _id: '4', subject: 'Libraries support learning at every age', description: 'Longer hours and useful programs give students and adults a welcoming place to study and build skills.' } },
+  { why: { _id: '5', subject: 'Shade trees cool busy neighborhoods', description: 'Mature trees reduce heat on sidewalks and create more comfortable places to gather outdoors.' } },
+  { why: { _id: '6', subject: 'Clean parks bring neighbors together', description: 'Well-maintained green spaces offer residents a safe place to exercise, relax, and meet one another.' } },
 ]
 
 const rankedWhyRankList = [
-  { why: { _id: '1', subject: 'Point 1', description: 'This is the first point' }, rank: { _id: '11', parentId: '1', stage: 'why', category: 'most' } },
-  { why: { _id: '2', subject: 'Point 2', description: 'This is the second point' }, rank: { _id: '12', parentId: '2', stage: 'why', category: 'neutral' } },
-  { why: { _id: '3', subject: 'Point 3', description: 'This is the third point' }, rank: { _id: '13', parentId: '3', stage: 'why', category: 'neutral' } },
-  { why: { _id: '4', subject: 'Point 4', description: 'This is the fourth point' }, rank: { _id: '14', parentId: '4', stage: 'why', category: 'neutral' } },
-  { why: { _id: '5', subject: 'Point 5', description: 'This is the fifth point' }, rank: { _id: '15', parentId: '5', stage: 'why', category: 'neutral' } },
-  { why: { _id: '6', subject: 'Point 6', description: 'This is the sixth point' }, rank: { _id: '16', parentId: '6', stage: 'why', category: 'neutral' } },
+  { why: { _id: '1', subject: 'Reliable buses connect residents to work', description: 'Frequent routes and dependable schedules help people reach jobs, school, and essential services.' }, rank: { _id: '11', parentId: '1', stage: 'why', category: 'most' } },
+  { why: { _id: '2', subject: 'Safe sidewalks make short trips possible', description: 'Continuous, accessible sidewalks let children, older adults, and people with mobility devices travel confidently.' }, rank: { _id: '12', parentId: '2', stage: 'why', category: 'neutral' } },
+  { why: { _id: '3', subject: 'Affordable childcare keeps parents employed', description: 'More low-cost childcare options help parents maintain steady work and give young children a strong start.' }, rank: { _id: '13', parentId: '3', stage: 'why', category: 'neutral' } },
+  { why: { _id: '4', subject: 'Libraries support learning at every age', description: 'Longer hours and useful programs give students and adults a welcoming place to study and build skills.' }, rank: { _id: '14', parentId: '4', stage: 'why', category: 'neutral' } },
+  { why: { _id: '5', subject: 'Shade trees cool busy neighborhoods', description: 'Mature trees reduce heat on sidewalks and create more comfortable places to gather outdoors.' }, rank: { _id: '15', parentId: '5', stage: 'why', category: 'neutral' } },
+  { why: { _id: '6', subject: 'Clean parks bring neighbors together', description: 'Well-maintained green spaces offer residents a safe place to exercise, relax, and meet one another.' }, rank: { _id: '16', parentId: '6', stage: 'why', category: 'neutral' } },
 ]
 export const sixPoints = {
   args: {
@@ -190,7 +190,7 @@ export const onDoneTest = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const Point1 = await waitFor(() => canvas.getByText('Point 1'))
+    const Point1 = await waitFor(() => canvas.getByText('Reliable buses connect residents to work'))
     await userEvent.click(Point1)
     await waitFor(() => {
       const calls = args.onDone.mock.calls
@@ -205,11 +205,11 @@ export const onDoneTest = {
         },
       })
     })
-    // Wait for Point 3 to be in the visible clickable button (not the disabled hidden
+    // Wait for the parks reason to be in the visible clickable button (not the disabled hidden
     // transition container). asyncSleep(500) races with the component's own 500ms
     // transition timer; getByTitle only matches the <button title="Choose as more
-    // important: Point 3"> which only renders when idxRight=2 is committed.
-    const Point3 = await waitFor(() => canvas.getByTitle('Choose as more important: Point 3'))
+    // important: park-reason title, which only renders when idxRight=2 is committed.
+    const Point3 = await waitFor(() => canvas.getByTitle('Choose as more important: Clean parks bring neighbors together'))
     await userEvent.click(Point3)
     await waitFor(() => {
       const calls = args.onDone.mock.calls

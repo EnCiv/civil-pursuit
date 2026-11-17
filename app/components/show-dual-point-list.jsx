@@ -32,8 +32,8 @@ export default function ShowDualPointList({ className, leftPoints = [], leftHead
               const rightPoint = rightPoints[index]
               return (
                 <React.Fragment key={leftPoint?._id || rightPoint?._id}>
-                  <Point point={leftPoint || {}} vState={isExpanded ? 'secondary' : 'collapsed'} className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)} />
-                  <Point point={rightPoint || {}} vState={isExpanded ? 'secondary' : 'collapsed'} className={cx(classes.point, index % 2 === 0 ? classes.evenRow : classes.oddRow)} />
+                  <Point point={leftPoint || {}} vState={isExpanded ? 'secondary' : 'collapsed'} className={cx(classes.point, classes.pointDescription, isExpanded ? classes.pointExpanded : classes.pointCollapsed, index % 2 === 0 ? classes.evenRow : classes.oddRow)} />
+                  <Point point={rightPoint || {}} vState={isExpanded ? 'secondary' : 'collapsed'} className={cx(classes.point, classes.pointDescription, isExpanded ? classes.pointExpanded : classes.pointCollapsed, index % 2 === 0 ? classes.evenRow : classes.oddRow)} />
                 </React.Fragment>
               )
             })}
@@ -101,6 +101,23 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   point: {
     flex: 1,
+    '&&': {
+      border: 'none !important',
+      borderRadius: 0,
+      boxShadow: 'none !important',
+      outline: 'none !important',
+      paddingBottom: 0,
+      transform: 'none !important',
+    },
+    '&& > div': {
+      transition: 'padding 300ms ease',
+    },
+    '&&:hover': {
+      border: 'none !important',
+      boxShadow: 'none !important',
+      outline: 'none !important',
+      transform: 'none !important',
+    },
     '& div': {
       paddingTop: '0.2rem',
       paddingBottom: '0.2rem',
@@ -121,6 +138,37 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       '&:hover $defaultDescription': {
         color: 'inherit !important',
       },
+    },
+  },
+  pointDescription: {
+    '&& p': {
+      display: 'block !important',
+      maxHeight: '40rem',
+      overflow: 'hidden',
+      transition: 'max-height 300ms ease, opacity 220ms ease, transform 300ms ease, margin 300ms ease',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      '&& > div': {
+        transition: 'none',
+      },
+      '&& p': {
+        transition: 'none',
+      },
+    },
+  },
+  pointExpanded: {
+    '& p': {
+      maxHeight: '40rem',
+      opacity: 1,
+      transform: 'translateY(0)',
+    },
+  },
+  pointCollapsed: {
+    '& p': {
+      maxHeight: 0,
+      marginBottom: 0,
+      opacity: 0,
+      transform: 'translateY(-0.5rem)',
     },
   },
   oddRow: {

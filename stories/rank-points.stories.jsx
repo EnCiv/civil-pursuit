@@ -40,19 +40,19 @@ const createPointObj = (
   }
 }
 
-const point1 = createPointObj('1', 'Point 1', 'Point 1 Description')
-const point2 = createPointObj('2', 'Point 2', 'Point 2 Description')
-const point3 = createPointObj('3', 'Point 3', 'Point 3 Description')
-const point4 = createPointObj('4', 'Point 4', 'Point 4 Description')
-const point5 = createPointObj('5', 'Point 5', 'Point 5 Description')
-const point6 = createPointObj('6', 'Point 6', 'Point 6 Description')
-const point7 = createPointObj('7', 'Point 7', 'Point 7 Description')
-const point8 = createPointObj('8', 'Point 8', 'Point 8 Description')
-const point9 = createPointObj('9', 'Point 9', 'Point 9 Description')
-const point10 = createPointObj('10', 'Point 10', 'Point 10 Description')
-const point11 = createPointObj('11', 'Point 11', 'Point 11 Description')
-const point12 = createPointObj('12', 'Point 12', 'Point 12 Description')
-const point13 = createPointObj('13', 'Point 13', 'Point 13 Description')
+const point1 = createPointObj('1', 'Build safer crossings near schools', 'Raised crosswalks and slower traffic can protect students on their daily walk.')
+const point2 = createPointObj('2', 'Run buses more often after work', 'Frequent evening trips help shift workers get home without a car.')
+const point3 = createPointObj('3', 'Make childcare more affordable', 'More local childcare slots let parents work while children receive consistent care.')
+const point4 = createPointObj('4', 'Repair sidewalks before winter', 'Smooth, accessible sidewalks help people travel safely in every season.')
+const point5 = createPointObj('5', 'Protect mature neighborhood trees', 'Healthy trees cool streets and provide shade during hotter summers.')
+const point6 = createPointObj('6', 'Keep libraries open later', 'Evening hours make study spaces and public computers available to more residents.')
+const point7 = createPointObj('7', 'Expand local mental health services', 'Nearby counseling can reduce wait times and make support easier to reach.')
+const point8 = createPointObj('8', 'Test drinking water more often', 'Regular testing helps identify contamination before it affects households.')
+const point9 = createPointObj('9', 'Add shade to public parks', 'Trees and covered seating make parks more usable on hot days.')
+const point10 = createPointObj('10', 'Support neighborhood small businesses', 'Affordable storefronts help local shops stay open and keep jobs nearby.')
+const point11 = createPointObj('11', 'Create accessible playgrounds', 'Inclusive equipment gives children with different abilities more ways to play together.')
+const point12 = createPointObj('12', 'Donate surplus food locally', 'Food recovery programs can redirect good groceries to families facing shortages.')
+const point13 = createPointObj('13', 'Offer training for new careers', 'Practical job programs help adults build skills for growing local industries.')
 
 function createRank(category, parentId = '200') {
   return {
@@ -175,7 +175,7 @@ export const tenRanksTooManyMost = {
         value: 1,
       })
     })
-    const point10Heading = await canvas.findByRole('heading', { level: 2, name: 'Point 10' })
+    const point10Heading = await canvas.findByRole('heading', { level: 2, name: 'Support neighborhood small businesses' })
     const point10Div = point10Heading.closest('div')
     await userEvent.click(within(point10Div).getByText('Neutral'))
     await waitFor(() => {
