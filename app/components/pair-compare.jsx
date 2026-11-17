@@ -18,6 +18,8 @@ function PairCompare(props) {
   const [nextRightPoint, setNextRightPoint] = useState(blankPoint)
   const [isRightTransitioning, setIsRightTransitioning] = useState(false)
   const [isLeftTransitioning, setIsLeftTransitioning] = useState(false)
+  const [animateLeftIncoming, setAnimateLeftIncoming] = useState(false)
+  const [animateRightIncoming, setAnimateRightIncoming] = useState(false)
   const classes = useStyles()
   // keep track of ranks locally, because this component needs to create/update them and this component needs to be independently unit testable
   const [ranksByParentId, setRanksByParentId] = useState(whyRankList.reduce((ranksByParentId, whyRank) => (whyRank.rank && (ranksByParentId[whyRank.rank.parentId] = whyRank.rank), ranksByParentId), {}))
@@ -113,6 +115,7 @@ function PairCompare(props) {
       setIsLeftTransitioning(false)
       setNextRightPoint(blankPoint) // reset next point
       setIdxRight(nextRightIdx)
+      setAnimateRightIncoming(true)
     }, 500)
   }
 
@@ -132,6 +135,7 @@ function PairCompare(props) {
       setIsRightTransitioning(false)
       setNextLeftPoint(blankPoint)
       setIdxLeft(nextLeftIdx)
+      setAnimateLeftIncoming(true)
     }, 500)
   }
 
@@ -140,11 +144,19 @@ function PairCompare(props) {
     rankIdxCategory(idxRight, 'neutral')
 
     if (idxLeft >= idxRight) {
-      setIdxRight(Math.min(idxLeft + 1, whyRankList.length))
-      setIdxLeft(Math.min(idxLeft + 2, whyRankList.length))
+      const nextRightIdx = Math.min(idxLeft + 1, whyRankList.length)
+      const nextLeftIdx = Math.min(idxLeft + 2, whyRankList.length)
+      setIdxRight(nextRightIdx)
+      setIdxLeft(nextLeftIdx)
+      setAnimateRightIncoming(nextRightIdx < whyRankList.length)
+      setAnimateLeftIncoming(nextLeftIdx < whyRankList.length)
     } else {
-      setIdxLeft(Math.min(idxRight + 1, whyRankList.length))
-      setIdxRight(Math.min(idxRight + 2, whyRankList.length))
+      const nextLeftIdx = Math.min(idxRight + 1, whyRankList.length)
+      const nextRightIdx = Math.min(idxRight + 2, whyRankList.length)
+      setIdxLeft(nextLeftIdx)
+      setIdxRight(nextRightIdx)
+      setAnimateLeftIncoming(nextLeftIdx < whyRankList.length)
+      setAnimateRightIncoming(nextRightIdx < whyRankList.length)
     }
   }
 
@@ -192,12 +204,12 @@ function PairCompare(props) {
         <div className={classes.visiblePointsContainer}>
           {idxLeft < whyRankList.length && (
             <button className={cx(classes.visiblePointButton)} onClick={handleLeftPointClick} tabIndex={0} title={`Choose as more important: ${whyRankList[idxLeft]?.why.subject}`}>
-              {<Point className={cx(classes.visiblePoint, isRightTransitioning && classes.transitioningLeft)} point={whyRankList[idxLeft].why} />}
+              {<Point key={whyRankList[idxLeft].why._id} onAnimationEnd={() => setAnimateLeftIncoming(false)} className={cx(classes.visiblePoint, isRightTransitioning && classes.transitioningLeft, animateLeftIncoming && classes.incomingFromLeft)} point={whyRankList[idxLeft].why} />}
             </button>
           )}
           {idxRight < whyRankList.length && (
             <button className={cx(classes.visiblePointButton)} onClick={handleRightPointClick} tabIndex={0} title={`Choose as more important: ${whyRankList[idxRight]?.why.subject}`}>
-              {<Point className={cx(classes.visiblePoint, isLeftTransitioning && classes.transitioningRight)} point={whyRankList[idxRight].why} />}
+              {<Point key={whyRankList[idxRight].why._id} onAnimationEnd={() => setAnimateRightIncoming(false)} className={cx(classes.visiblePoint, isLeftTransitioning && classes.transitioningRight, animateRightIncoming && classes.incomingFromRight)} point={whyRankList[idxRight].why} />}
             </button>
           )}
         </div>
@@ -352,19 +364,38 @@ const useStyles = createUseStyles(theme => ({
     transform: 'translateY(8.25rem)',
     //transition: 'transform 0.5s linear',
     //top: '9rem',
-    transition: 'all 0.5s linear',
+    transition: 'transform 500ms cubic-bezier(0.22, 0.61, 0.36, 1)',
+    '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
   },
   transitioningLeft: {
     //position: 'relative',
     //transform: 'translateX(-200%)',
     left: '-200%',
-    transition: 'all 0.5s linear',
+    transition: 'left 500ms cubic-bezier(0.22, 0.61, 0.36, 1)',
+    '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
   },
   transitioningRight: {
     //position: 'relative',
     //transform: 'translateX(200%)',
     left: '200%',
-    transition: 'all 0.5s linear',
+    transition: 'left 500ms cubic-bezier(0.22, 0.61, 0.36, 1)',
+    '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+  },
+  incomingFromLeft: {
+    animation: '$pairPointSlideFadeInFromLeft 300ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+  },
+  incomingFromRight: {
+    animation: '$pairPointSlideFadeInFromRight 300ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+  },
+  '@keyframes pairPointSlideFadeInFromLeft': {
+    from: { opacity: 0, transform: 'translateX(-1.25rem)' },
+    to: { opacity: 1, transform: 'translateX(0)' },
+  },
+  '@keyframes pairPointSlideFadeInFromRight': {
+    from: { opacity: 0, transform: 'translateX(1.25rem)' },
+    to: { opacity: 1, transform: 'translateX(0)' },
   },
   customButton: {
     width: '25rem',

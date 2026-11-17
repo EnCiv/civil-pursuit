@@ -26,7 +26,7 @@ function StepBar(props) {
   const [isMobileLayout, setIsMobileLayout] = useState(isMobile)
   const stepsWithIds = useMemo(() => steps.map((step, i) => ({ ...step, id: i + 1 })), [steps])
   const [scrollState, setScrollState] = useState({ canScrollLeft: false, canScrollRight: false })
-  const isStepUnlocked = index => index === 0 || steps[index]?.seen || steps.slice(0, index).every(step => step.skip || (step.complete && step.seen))
+  const isStepUnlocked = index => index === 0 || steps.slice(0, index).every(step => step.skip || step.complete)
 
   const getCenteredScrollLeft = step => {
     const container = stepContainerRef.current

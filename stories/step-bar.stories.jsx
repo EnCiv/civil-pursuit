@@ -101,7 +101,7 @@ export const LaterStepStaysLockedUntilPreviousCompletes = {
   args: {
     steps: [
       { name: 'Answer', title: 'Complete the answer first', complete: false, seen: true },
-      { name: 'Grouping', title: 'Group similar responses', complete: true, seen: false },
+      { name: 'Grouping', title: 'Group similar responses', complete: true, seen: true },
       { name: 'Rank', title: 'Rank the responses', complete: false, seen: false },
     ],
     current: 1,
@@ -114,21 +114,21 @@ export const LaterStepStaysLockedUntilPreviousCompletes = {
   },
 }
 
-export const PreviouslyVisitedStepRemainsAvailableAfterBackNavigation = {
+export const LaterVisitedStepStaysLockedUntilAllPreviousStepsComplete = {
   args: {
     steps: [
-      { name: 'Answer', title: 'Answer was edited', complete: false, seen: true },
-      { name: 'Grouping', title: 'Grouping was visited', complete: false, seen: true },
-      { name: 'Rank', title: 'Rank was completed', complete: true, seen: true },
+      { name: 'Answer', title: 'Answer completed', complete: true, seen: true },
+      { name: 'Grouping', title: 'Grouping still incomplete', complete: false, seen: true },
+      { name: 'Rank', title: 'Previously visited rank step', complete: true, seen: true },
       { name: 'Why Most', title: 'A later step', complete: false, seen: true },
     ],
-    current: 2,
+    current: 1,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const rankStep = canvas.getAllByTestId('testClick').find(step => step.textContent.includes('Rank'))
     expect(rankStep).toBeDefined()
-    expect(rankStep).toHaveAttribute('tabindex', '0')
+    expect(rankStep).toHaveAttribute('tabindex', '-1')
   },
 }
 

@@ -89,6 +89,7 @@ export function Why(props) {
 
   const classes = useStylesFromThemeFunction()
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [navigationDirection, setNavigationDirection] = useState(1)
   const reportedCompletionSignature = useRef(null)
 
   const [completedByPointId] = useState(() => {
@@ -159,28 +160,36 @@ export function Why(props) {
     return <div className={cx(classes.wrapper, className)}>Nothing to do here. Hit Next to continue.</div>
   }
   const currentPointIndex = Math.min(currentIndex, pointWhyList.length - 1)
+  const navigateToPoint = direction => {
+    setNavigationDirection(direction)
+    setCurrentIndex(index => Math.max(0, Math.min(pointWhyList.length - 1, index + direction)))
+  }
 
   return (
     <div className={cx(classes.wrapper, className)}>
       <StepIntro {...stepIntro} />
       <Level>
         <div className={classes.pointsContainer}>
-          <WhyInput
+          <div
             key={pointWhyList[currentPointIndex].point._id}
-            point={pointWhyList[currentPointIndex].point}
-            value={pointWhyList[currentPointIndex].why}
-            onDone={handleOnDone}
-            maxWordCount={maxWordCount}
-            maxCharCount={maxCharCount}
-          />
+            className={cx(classes.carouselItem, navigationDirection > 0 ? classes.slideInFromRight : classes.slideInFromLeft)}
+          >
+            <WhyInput
+              point={pointWhyList[currentPointIndex].point}
+              value={pointWhyList[currentPointIndex].why}
+              onDone={handleOnDone}
+              maxWordCount={maxWordCount}
+              maxCharCount={maxCharCount}
+            />
+          </div>
         </div>
       </Level>
       <nav className={classes.navigation} aria-label={`Why ${category} navigation`}>
-        <button type="button" className={classes.navigationButton} onClick={() => setCurrentIndex(index => Math.max(index - 1, 0))} disabled={currentIndex === 0} title="Previous reason" aria-label="Previous reason">
+        <button type="button" className={classes.navigationButton} onClick={() => navigateToPoint(-1)} disabled={currentIndex === 0} title="Previous reason" aria-label="Previous reason">
           <ChevronDown className={classes.previousIcon} />
         </button>
         <span className={classes.counter} aria-live="polite">{currentPointIndex + 1} / {pointWhyList.length}</span>
-        <button type="button" className={classes.navigationButton} onClick={() => setCurrentIndex(index => Math.min(index + 1, pointWhyList.length - 1))} disabled={currentIndex === pointWhyList.length - 1} title="Next reason" aria-label="Next reason">
+        <button type="button" className={classes.navigationButton} onClick={() => navigateToPoint(1)} disabled={currentIndex === pointWhyList.length - 1} title="Next reason" aria-label="Next reason">
           <ChevronDown className={classes.nextIcon} />
         </button>
       </nav>
@@ -278,6 +287,28 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '0',
     width: '100%',
     fontSize: '1.25rem',
+    overflow: 'hidden',
+  },
+  carouselItem: {
+    width: '100%',
+    minWidth: 0,
+    willChange: 'transform, opacity',
+  },
+  slideInFromRight: {
+    animation: '$whyCarouselSlideInFromRight 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+  },
+  slideInFromLeft: {
+    animation: '$whyCarouselSlideInFromLeft 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+  },
+  '@keyframes whyCarouselSlideInFromRight': {
+    from: { opacity: 0, transform: 'translateX(1.5rem)' },
+    to: { opacity: 1, transform: 'translateX(0)' },
+  },
+  '@keyframes whyCarouselSlideInFromLeft': {
+    from: { opacity: 0, transform: 'translateX(-1.5rem)' },
+    to: { opacity: 1, transform: 'translateX(0)' },
   },
   navigation: {
     display: 'flex',

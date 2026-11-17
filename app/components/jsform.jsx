@@ -15,7 +15,7 @@ import { withJsonFormsControlProps } from '@jsonforms/react'
 import StepIntro from './step-intro'
 import { H, Level } from 'react-accessible-headings'
 
-const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes, errors }) => {
+const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, path, uischema, schema, classes, errors, isFeedbackForm }) => {
   const options = schema.enum || []
   const label = schema.title || uischema.label
   const id = `input-${path.replace(/\./g, '-')}`
@@ -75,7 +75,7 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
         </div>
       )}
 
-      <label className={classes.fieldLabel} htmlFor={id}>
+      <label className={cx(classes.fieldLabel, { [classes.feedbackTextareaLabel]: isFeedbackForm && isMulti })} htmlFor={id}>
         {label}
       </label>
 
@@ -113,9 +113,9 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
 })
 
 /* new renderer for H uischema elements */
-const HRenderer = ({ uischema, path }) => {
+const HRenderer = ({ uischema, classes }) => {
   const text = (uischema && uischema.text) || ''
-  return <H>{text}</H>
+  return <H className={classes.questionText}>{text}</H>
 }
 
 /* customRenderers:*/
@@ -124,6 +124,7 @@ const customRenderers = [...vanillaRenderers, { tester: rankWith(3, isControl), 
 const JsForm = props => {
   const { className = '', schema = {}, uischema = {}, onDone = () => {}, name, title, stepIntro, discussionId, options = {} } = props
   const { submitOnNext = false } = options
+  const isFeedbackForm = /feedback/i.test(name || '')
   const [data, setData] = useState({})
   const [errors, setErrors] = useState([])
   const classes = useStyles(props)
@@ -178,9 +179,14 @@ const JsForm = props => {
   const memoedRenderers = useMemo(() => {
     return customRenderers.map(renderer => ({
       ...renderer,
-      renderer: renderer.renderer === CustomInputRenderer ? props => <CustomInputRenderer {...props} classes={classes} /> : renderer.renderer,
+      renderer:
+        renderer.renderer === CustomInputRenderer
+          ? props => <CustomInputRenderer {...props} classes={classes} isFeedbackForm={isFeedbackForm} />
+          : renderer.renderer === HRenderer
+            ? props => <HRenderer {...props} classes={classes} />
+            : renderer.renderer,
     }))
-  }, [schema, uischema])
+  }, [schema, uischema, classes, isFeedbackForm])
 
   const handleIsValid = (data, schema, errors) => {
     if (!data) return false
@@ -203,9 +209,9 @@ const JsForm = props => {
   const isValid = handleIsValid(data, schema, errors)
 
   return (
-    <div className={cx(classes.formContainer, className)}>
+    <div className={cx(classes.formContainer, { [classes.feedbackCard]: isFeedbackForm }, className)}>
       {title && <p className={classes.formTitle}>{title}</p>}
-      {stepIntro && <StepIntro {...stepIntro} />}
+      {stepIntro && <StepIntro {...stepIntro} className={isFeedbackForm ? classes.feedbackIntro : undefined} />}
       <Level>
         <div className={classes.jsonFormContainer}>
           <JsonForms
@@ -240,17 +246,49 @@ const useStyles = createUseStyles(theme => ({
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.black,
     fontFamily: `${theme.font.fontFamily}, sans-serif`,
   }),
+  feedbackCard: {
+    boxSizing: 'border-box',
+    padding: '2rem',
+    border: `0.0625rem solid ${theme.colors.borderGray}`,
+    borderTop: `0.25rem solid ${theme.colors.encivYellow}`,
+    borderRadius: '0.5rem',
+    boxShadow: '0 0.75rem 1.75rem rgba(6, 51, 92, 0.12), 0 0.125rem 0.375rem rgba(0, 0, 0, 0.06)',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      padding: '1.25rem',
+    },
+  },
+  feedbackIntro: {
+    paddingBottom: '0.5rem',
+    '& h1, & h2, & h3, & h4, & h5, & h6': {
+      fontFamily: `${theme.font.fontFamily}, sans-serif !important`,
+      fontSize: '1.75rem !important',
+      fontWeight: 700,
+      lineHeight: 1.25,
+    },
+    '& p': {
+      fontSize: '1rem',
+      marginTop: '0.5rem',
+    },
+  },
+  questionText: {
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
+    fontSize: '1.125rem',
+    fontWeight: 600,
+    lineHeight: 1.5,
+    color: theme.colors.primaryButtonBlue,
+    margin: '1.5rem 0 0.75rem',
+  },
   formTitle: props => ({
     textAlign: 'center',
     color: props.mode === 'dark' ? theme.colors.white : theme.colors.primaryButtonBlue,
     fontSize: '2rem',
   }),
-  jsonFormContainer: {
+  jsonFormContainer: props => ({
     width: '100%',
     marginBottom: '1rem',
     lineHeight: '2.25rem',
-    marginTop: '4rem',
-  },
+    marginTop: /feedback/i.test(props.name || '') ? '1.5rem' : '4rem',
+  }),
   field: {
     position: 'relative',
     marginTop: '0.75rem',
@@ -264,6 +302,9 @@ const useStyles = createUseStyles(theme => ({
     fontWeight: 600,
     lineHeight: 1.4,
   }),
+  feedbackTextareaLabel: {
+    marginBottom: '1.25rem',
+  },
   formInput: props => ({
     width: '100%',
     minHeight: '3.5rem !important',

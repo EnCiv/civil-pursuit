@@ -4,6 +4,7 @@
 'use strict'
 import React, { useEffect, useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
+import cx from 'classnames'
 import PairCompare from '../pair-compare'
 import { ChevronDown } from '../../svgr'
 import { H, Level } from 'react-accessible-headings'
@@ -92,8 +93,13 @@ export function CompareWhys(props) {
   const completedByPointIdRef = useRef(completedByPointId)
   const reportedCompletionByPointIdRef = useRef(null)
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [navigationDirection, setNavigationDirection] = useState(1)
   const currentPointIndex = Math.min(currentIndex, Math.max((pointWithWhyRankListList?.length || 1) - 1, 0))
   const currentPointWithWhyRankList = pointWithWhyRankListList?.[currentPointIndex]
+  const navigateToPoint = direction => {
+    setNavigationDirection(direction)
+    setCurrentIndex(index => Math.max(0, Math.min(pointWithWhyRankListList.length - 1, index + direction)))
+  }
 
   useEffect(() => {
     if (isLoading || loadError) return
@@ -144,12 +150,14 @@ export function CompareWhys(props) {
         <div className={classes.headlineTitle}>Nothing to do here, hit Next to continue</div>
       ) : (
         <>
-          <div className={classes.headlinePoint}>
+          <div
+            key={currentPointWithWhyRankList.point._id}
+            className={cx(classes.headlinePoint, navigationDirection > 0 ? classes.slideInFromRight : classes.slideInFromLeft)}
+          >
             <H className={classes.headlineTitle}>Please choose the most convincing explanation for...</H>
             <H className={classes.headlineSubject}>{currentPointWithWhyRankList.point.subject}</H>
             <Level>
               <PairCompare
-                key={currentPointWithWhyRankList.point._id}
                 round={round}
                 discussionId={discussionId}
                 className={classes.pairCompare}
@@ -162,7 +170,7 @@ export function CompareWhys(props) {
             <button
               type="button"
               className={classes.navigationButton}
-              onClick={() => setCurrentIndex(index => Math.max(index - 1, 0))}
+              onClick={() => navigateToPoint(-1)}
               disabled={currentPointIndex === 0}
               title="Previous reason"
               aria-label="Previous reason"
@@ -173,7 +181,7 @@ export function CompareWhys(props) {
             <button
               type="button"
               className={classes.navigationButton}
-              onClick={() => setCurrentIndex(index => Math.min(index + 1, pointWithWhyRankListList.length - 1))}
+              onClick={() => navigateToPoint(1)}
               disabled={currentPointIndex === pointWithWhyRankListList.length - 1}
               title="Next reason"
               aria-label="Next reason"
@@ -247,6 +255,26 @@ const useStyles = createUseStyles(theme => ({
     textAlign: 'center',
     fontWeight: 600,
     fontVariantNumeric: 'tabular-nums',
+  },
+  headlinePoint: {
+    width: '100%',
+    willChange: 'transform, opacity',
+  },
+  slideInFromRight: {
+    animation: '$compareReasonsSlideInFromRight 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+  },
+  slideInFromLeft: {
+    animation: '$compareReasonsSlideInFromLeft 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+  },
+  '@keyframes compareReasonsSlideInFromRight': {
+    from: { opacity: 0, transform: 'translateX(1.5rem)' },
+    to: { opacity: 1, transform: 'translateX(0)' },
+  },
+  '@keyframes compareReasonsSlideInFromLeft': {
+    from: { opacity: 0, transform: 'translateX(-1.5rem)' },
+    to: { opacity: 1, transform: 'translateX(0)' },
   },
   headlineTitle: {
     fontWeight: '600',

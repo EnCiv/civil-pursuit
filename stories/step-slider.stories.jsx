@@ -218,6 +218,36 @@ export const StepBarNavigationDoesNotSkipVisitedSteps = {
   },
 }
 
+const RestoredSessionTemplate = args => {
+  const [steps, setSteps] = useState(args.steps)
+  return (
+    <>
+      <button type="button" onClick={() => setSteps(current => current.map((step, index) => ({ ...step, complete: index < 3 })))}>
+        Restore previous session
+      </button>
+      <Template {...args} steps={steps} />
+    </>
+  )
+}
+
+export const RestoredCompletedStepsCanBeSelected = {
+  args: { steps: createPrimarySteps(4), children: createPanels(4), defaultStepName: 'Answer' },
+  render: RestoredSessionTemplate,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: 'Restore previous session' }))
+
+    const completedStep = await waitFor(() => {
+      const step = canvas.getAllByTestId('testClick').find(item => item.textContent.includes('Why Most'))
+      expect(step).toHaveAttribute('tabindex', '0')
+      return step
+    })
+    await userEvent.click(completedStep)
+    await waitForStepSlider(canvasElement)
+    await waitFor(() => expect(canvasElement.querySelector('[data-current-step]')).toHaveAttribute('data-current-step', '3'))
+  },
+}
+
 // Test for waitForStepSlider helper
 export const WaitForStepSliderTest = {
   args: { steps: createPrimarySteps(4), children: createPanels(4) },

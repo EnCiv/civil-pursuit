@@ -131,7 +131,7 @@ export const StepSlider = props => {
         const stepStatuses = state.stepStatuses.map((stepStatus, index) => {
           if (!action.indices.includes(index) || stepStatus.complete) return stepStatus
           changed = true
-          return { ...stepStatus, complete: true }
+          return { ...stepStatus, complete: true, seen: true }
         })
         return changed ? { ...state, stepStatuses } : state
       }
@@ -152,7 +152,7 @@ export const StepSlider = props => {
   // Keep track of each step's seen/completion status
   // Populate statuses with initial values
   const defaultStepIndex = defaultStepName && typeof stepNameToIndex[defaultStepName] === 'number' ? stepNameToIndex[defaultStepName] : 0
-  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i <= defaultStepIndex, complete: step.complete === true, skip: false })) : undefined
+  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i <= defaultStepIndex || step.complete === true, complete: step.complete === true, skip: false })) : undefined
 
   const [state, dispatch] = useReducer(reducer, { currentStep: defaultStepIndex, nextStep: defaultStepIndex, transitions: false, stepStatuses: initialStepStatuses })
   const appliedLoadedCompletions = useRef(new Set((steps || []).flatMap((step, index) => (step.complete === true ? [index] : []))))
@@ -360,7 +360,10 @@ const useStyles = createUseStyles(theme => ({
     position: 'relative',
   },
   transitions: {
-    transition: 'all 0.5s linear',
+    transition: 'left 500ms cubic-bezier(0.22, 0.61, 0.36, 1), height 300ms ease',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
   },
 }))
 
