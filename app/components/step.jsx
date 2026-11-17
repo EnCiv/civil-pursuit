@@ -9,12 +9,13 @@ import { createUseStyles } from 'react-jss'
 import { TooltipPortal } from './tooltip-portal'
 
 const Step = forwardRef((props, ref) => {
-  const { name, title = '', complete, active, unlocked, skip, onDone = () => {}, index, stepIndex, className, ...otherProps } = props
+  const { name = '', title = '', complete, active, unlocked, skip, onDone = () => {}, index, stepIndex, className, ...otherProps } = props
 
   const classes = useStylesFromThemeFunction()
 
   // how long the title will be displayed when longpress is triggered
   const displayTime = Math.max(8, 0.1 * title.length) * 1000
+  const isStepEnabled = !skip && (complete || active || unlocked)
   // state to manage open status of the portal
   const [isPortalOpen, setIsPortalOpen] = useState(false)
   // reference to hold timeout variable throughout lifetime of the component
@@ -26,14 +27,17 @@ const Step = forwardRef((props, ref) => {
     {
       [classes.containerActive]: active,
       [classes.containerInactiveComplete]: !active,
+        [classes.containerDisabled]: !isStepEnabled,
     },
     className
   )
 
   const textStyle = cx(classes.sharedTextStyles, {
-    [classes.stepTextActive]: !skip && ((active && !complete) || (!active && complete) || (!active && !complete && unlocked)),
-    [classes.stepTextInactiveIncomplete]: (!active && !complete && !unlocked) || skip,
+    [classes.stepTextActive]: isStepEnabled,
+    [classes.stepTextInactiveIncomplete]: !isStepEnabled,
   })
+  const stepNumberStyle = cx(classes.stepNumber, isStepEnabled ? classes.stepNumberEnabled : classes.stepNumberDisabled, active && classes.stepNumberCurrent)
+  const displayName = name.replace(/^Step\s+\d+\s*:\s*/i, '')
 
   // begin a timneout when the span wrapping the step is clicked
   const handleMouseDown = () => {
@@ -78,13 +82,17 @@ const Step = forwardRef((props, ref) => {
       onKeyDown={handleKeyDown}
       title={`${title}`}
       tabIndex={complete || active || unlocked ? 0 : -1}
+      aria-current={active ? 'step' : undefined}
       data-testid="testClick"
       ref={complete || active || unlocked ? ref : null}
       {...otherProps}
     >
       <span onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
         <TooltipPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
-          <div className={textStyle}>{stepIndex + ': ' + name}</div>
+          <div className={textStyle}>
+            <span className={cx(classes.stepName, active && classes.currentStepName)}>{displayName}</span>
+            <span className={stepNumberStyle}>Step {stepIndex}</span>
+          </div>
         </TooltipPortal>
       </span>
     </div>
@@ -93,14 +101,24 @@ const Step = forwardRef((props, ref) => {
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   sharedContainerStyles: {
+    width: '100%',
+    minWidth: 0,
     padding: '0.625rem 0.9375rem',
     borderRadius: '0.625rem',
+    border: `0.0625rem solid ${theme.colors.secondaryDivider}`,
+    boxSizing: 'border-box',
     overflow: 'hidden',
     cursor: 'default',
+    transition: 'background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
   },
 
   containerActive: {
-    background: theme.colors.stepContainerActive,
+    background: theme.colors.lightGray,
+    borderColor: theme.colors.primaryButtonBlue,
+    boxShadow: '0 0 0 0.0625rem rgba(6, 51, 92, 0.1), 0 0.2rem 0.5rem rgba(26, 26, 26, 0.1)',
     '&:hover $stepTextActive': {
       ...theme.enCivUnderline,
       cursor: 'pointer',
@@ -108,22 +126,57 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   containerInactiveComplete: {
-    background: theme.transparent,
+    background: theme.colors.white,
     '&:hover $stepTextActive': {
       ...theme.enCivUnderline,
       cursor: 'pointer',
     },
   },
 
+  containerDisabled: {
+    opacity: 0.7,
+  },
+
   sharedTextStyles: {
     ...theme.font,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '0.125rem',
     textAlign: 'start',
-    fontSize: '1.125rem',
-    fontWeight: '600',
-    lineHeight: '1.4375rem',
-    whiteSpace: 'nowrap',
+  },
+
+  stepName: {
+    width: '100%',
+    maxWidth: '100%',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    fontSize: '1rem',
+    fontWeight: 600,
+    lineHeight: 1.25,
+  },
+
+  currentStepName: {
+    fontWeight: 700,
+  },
+
+  stepNumber: {
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    lineHeight: 1.2,
+  },
+
+  stepNumberEnabled: {
+    color: theme.colors.primaryButtonBlue,
+  },
+
+  stepNumberDisabled: {
+    color: theme.colors.encivGray,
+  },
+
+  stepNumberCurrent: {
+    fontWeight: 700,
   },
 
   stepTextActive: {
@@ -131,7 +184,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   stepTextInactiveIncomplete: {
-    color: theme.colors.inactiveGray,
+    color: theme.colors.encivGray,
   },
 
   buttonFocus: {

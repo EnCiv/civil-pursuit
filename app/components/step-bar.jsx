@@ -17,46 +17,66 @@ function isMobile() {
 function StepBar(props) {
   const { className, style, steps = [], current = 0, onDone = () => {}, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
-  const stepbarDebounceTime = 100
-  /* 
-  The overflow: hidden property on the last step prevents us from finding the width of the last step, which
-  messes up step width calculations. The dummy step below prevents this issue, by acting as the last step of width 0
-  */
-  const dummyStep = { name: '', title: '', complete: false, id: steps.length }
-
-  /* 
-  This component dynamically adjusts visible steps in the carousel based on container width. 
-  handleCarouselSetup, optimized with debouncing, computes steps' widths and manages shifts on arrow clicks.
-  Event listeners handle interactions and window resizing. 
-  */
-
-  /*
-  I opted for this method due to its versatility across screen sizes and step bar dimensions. 
-  Rendering only necessary steps outperforms CSS-heavy solutions, which may behave unpredictably across browsers or resolutions. 
-  This approach also offers precise control over the last visible step, crucial for truncation if cut-off. 
-  We debounce the function to prevent slowdowns caused from expensive page layout recalculations.
-  */
-
-  // Create an array of references. Each reference will be assigned to a step, allowing easy access to its visual width.
-  const [stepRefs, setStepRefs] = useState(steps.map(() => useRef(null)))
-  // Reference to the steps container, to collect the maximum width of step visibility.
+  const stepRefs = useRef([])
   const stepContainerRef = useRef(null)
-  // Reference to the select dropdown. to track click event targets that are not a descendant of the select input.
   const selectRef = useRef(null)
-  // Reference to the select dropdown's options container. To track click event targets that are not in the options container.
   const optionsContainerRef = useRef(null)
-  // State to determine whether to display the mobile or desktop view. Maintained by the window resize event listener.
-  // State to handle the select input.
   const selectItemsContainerRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
-  // State to map each 'page' of the steps carousel to its steps.
-  const [pages, setPages] = useState(new Map())
-  // State to manage the current page of the step bar.
-  const [currentPage, setCurrentPage] = useState(1)
-  // add a unique numerical identifier to each step
   const stepsWithIds = useMemo(() => steps.map((step, i) => ({ ...step, id: i + 1 })), [steps])
-  // State to hold the steps that should be rendered on each page.
-  const [visibleSteps, setVisibleSteps] = useState([...stepsWithIds, dummyStep])
+  const [scrollState, setScrollState] = useState({ canScrollLeft: false, canScrollRight: false })
+
+  const getCenteredScrollLeft = step => {
+    const container = stepContainerRef.current
+    if (!container || !step) return 0
+    const containerBounds = container.getBoundingClientRect()
+    const stepBounds = step.getBoundingClientRect()
+    const targetLeft = container.scrollLeft + stepBounds.left - containerBounds.left - (container.clientWidth - stepBounds.width) / 2
+    return Math.max(0, Math.min(targetLeft, container.scrollWidth - container.clientWidth))
+  }
+
+  const updateScrollState = () => {
+    const container = stepContainerRef.current
+    if (!container) return
+    const firstStep = stepRefs.current[0]
+    const lastStep = stepRefs.current[steps.length - 1]
+    const nextScrollState = {
+      canScrollLeft: container.scrollLeft > getCenteredScrollLeft(firstStep) + 1,
+      canScrollRight: container.scrollLeft < getCenteredScrollLeft(lastStep) - 1,
+    }
+    setScrollState(previous =>
+      previous.canScrollLeft === nextScrollState.canScrollLeft && previous.canScrollRight === nextScrollState.canScrollRight
+        ? previous
+        : nextScrollState
+    )
+  }
+
+  const centerCurrentStep = () => {
+    if (isMobile()) return
+    const container = stepContainerRef.current
+    const currentStep = stepRefs.current[current - 1]
+    if (!container || !currentStep) return
+
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+
+    container.scrollTo({
+      left: getCenteredScrollLeft(currentStep),
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+    })
+  }
+
+  const scrollSteps = direction => {
+    const container = stepContainerRef.current
+    if (!container) return
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    container.scrollBy({
+      left: direction * container.clientWidth / 3,
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+    })
+  }
+
+  const leftClick = () => scrollSteps(-1)
+  const rightClick = () => scrollSteps(1)
 
   const handleClickOutside = event => {
     // this function is added to the mouseup event handler on initial render. Rerenders will rewrite the function with the latest values of state variables,
@@ -84,128 +104,44 @@ function StepBar(props) {
     })
   }
 
-  const handleResize = () => {
-    setVisibleSteps([...stepsWithIds, dummyStep])
-    setTimeout(() => handleCarouselSetup()) // do this after the visibleSteps are rendered
-  }
-
-  const rightClick = () => {
-    if (currentPage < pages.size) {
-      setVisibleSteps(pages.get(currentPage + 1))
-      setCurrentPage(prev => prev + 1)
-    }
-  }
-
-  const leftClick = () => {
-    if (currentPage > 1) {
-      setVisibleSteps(pages.get(currentPage - 1))
-      setCurrentPage(prev => prev - 1)
-    }
-  }
-
-  /**
-   * Debounces a function to be called after a specified delay
-   * @param {Function} func - The function to debounce.
-   * @param {number} delay - The delay (in milliseconds) after which the function should be called.
-   * @returns {Function} - The debounced function.
-   */
-  function debounce(func, delay) {
-    let timeoutId
-
-    return function (...args) {
-      clearTimeout(timeoutId)
-
-      timeoutId = setTimeout(() => {
-        func.apply(this, args)
-      }, delay)
-    }
-  }
-
-  /*
-  To handle the setup of the carousel, the width of each step is calculated and compared to the total width of the container
-  */
-  const handleCarouselSetup = () => {
-    if (isMobile()) return
-    // before calling handleCarouselSetup render all the steps so that all the widths can be measured
-
-    if (!stepContainerRef?.current) return
-    let containerWidth = stepContainerRef?.current?.offsetWidth
-
-    const newMap = new Map()
-    let currentWidth = 0
-    let firstStepIndex = 0
-    let page = 1
-    let newSteps = []
-    let initialPage = 1
-
-    for (let i = 0; i < stepRefs.length; i++) {
-      if (!stepRefs[i]?.current) return
-
-      let width = stepRefs[i]?.current?.offsetWidth
-      currentWidth += width
-
-      if (i === current - 1) {
-        // if the step is the current step, then we set the initial page
-        initialPage = page
-        setCurrentPage(initialPage)
-      }
-      if (currentWidth > containerWidth) {
-        // if the current width exceeds the container width, then we are currently on the last visible step.
-        // we slice to the last visible step, which is truncated (...) if needed. we then begin the process
-        // from this step, so that it is the first step displayed on the next page.
-        newSteps = stepsWithIds.slice(firstStepIndex, i + 1)
-        newMap.set(page, newSteps)
-        page++
-        currentWidth = 0
-        firstStepIndex = i
-        i = i - 1
-      }
-      if (i === stepRefs.length - 1) {
-        // if we are on the last step, slice from the index of the first visible step
-        newSteps = stepsWithIds.slice(firstStepIndex)
-        newMap.set(page, newSteps)
-      }
-    }
-    setPages(newMap)
-    setVisibleSteps(newMap.get(initialPage))
-  }
-
   useEffect(() => {
-    const handleResizeDebounced = debounce(handleResize, stepbarDebounceTime)
-
-    window.addEventListener('resize', handleResizeDebounced)
     window.addEventListener('mouseup', handleClickOutside)
     window.addEventListener('keyup', handleClickOutside) // to close the select input when the user presses escape
 
     return () => {
-      window.removeEventListener('resize', handleResizeDebounced)
       window.removeEventListener('mouseup', handleClickOutside)
     }
   }, [])
 
-  /*
-   Any changes in fonts, padding, etc after the width calculations could present visual issues in the step bar. 
-   UseLayoutEffect ensures that widths are calculated after the layout is rendered. 
-  */
   useLayoutEffect(() => {
-    if (!isMobile()) {
-      setVisibleSteps([...stepsWithIds, dummyStep])
-      setTimeout(() => handleCarouselSetup()) // do this after the visibleSteps are rendered
-    }
-  }, [isMobile(), current])
+    centerCurrentStep()
+    updateScrollState()
+  }, [current, steps.length])
+
+  useEffect(() => {
+    const container = stepContainerRef.current
+    if (!container || isMobile() || !window.ResizeObserver) return
+    const resizeObserver = new window.ResizeObserver(() => {
+      centerCurrentStep()
+      updateScrollState()
+    })
+    resizeObserver.observe(container)
+    stepRefs.current.forEach(step => step && resizeObserver.observe(step))
+    return () => resizeObserver.disconnect()
+  }, [current, steps.length])
 
   /*
   NOTE that index refers to the index of the step within its array, while step.id refers to the step #. I.e, Step 2 has an id of 2.
   */
   return !isMobile() ? (
     <div className={cx(classes.container, className)} style={style}>
-      <button onClick={leftClick} className={cx(classes.resetButtonStyling, classes.svgContainer)} data-testid="leftclick" tabIndex={currentPage !== 1 ? 0 : -1}>
-        <SvgStepBarArrowDesktop className={cx({ [classes.svgColor]: currentPage === 1 })} width="1rem" height="1.2rem" style={{ transform: 'rotate(180deg)' }} />
+      <button onClick={leftClick} className={cx(classes.resetButtonStyling, classes.svgContainer)} data-testid="leftclick" aria-label="Scroll steps left" disabled={!scrollState.canScrollLeft}>
+        <SvgStepBarArrowDesktop className={cx({ [classes.svgColor]: !scrollState.canScrollLeft })} width="1rem" height="1.2rem" style={{ transform: 'rotate(180deg)' }} />
       </button>
-      <div className={classes.stepsContainer} ref={stepContainerRef}>
-        {visibleSteps.map((step, index) => {
+      <div className={classes.stepsContainer} ref={stepContainerRef} onScroll={updateScrollState}>
+        {stepsWithIds.map((step, index) => {
           return (
-            <div ref={stepRefs[index]} className={cx(classes.stepDiv, { [classes.lastStep]: index === visibleSteps.length - 1 })} key={index}>
+            <div ref={element => (stepRefs.current[index] = element)} className={classes.stepDiv} key={step.id}>
               <Step
                 name={step.name}
                 title={step.title}
@@ -222,8 +158,8 @@ function StepBar(props) {
           )
         })}
       </div>
-      <button onClick={rightClick} className={cx(classes.resetButtonStyling, classes.svgContainer, classes.svgContainerRight)} data-testid="rightclick" tabIndex={currentPage !== pages.size ? 0 : -1}>
-        <SvgStepBarArrowDesktop className={cx({ [classes.svgColor]: currentPage === pages.size })} width="1rem" height="1.2rem" />
+      <button onClick={rightClick} className={cx(classes.resetButtonStyling, classes.svgContainer, classes.svgContainerRight)} data-testid="rightclick" aria-label="Scroll steps right" disabled={!scrollState.canScrollRight}>
+        <SvgStepBarArrowDesktop className={cx({ [classes.svgColor]: !scrollState.canScrollRight })} width="1rem" height="1.2rem" />
       </button>
     </div>
   ) : (
@@ -255,7 +191,7 @@ function StepBar(props) {
                       }}
                       index={index}
                       {...otherProps}
-                      ref={stepRefs[index]}
+                      ref={element => (stepRefs.current[index] = element)}
                     />
                   )
                 })}
@@ -276,19 +212,36 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   stepsContainer: {
     display: 'flex',
+    flex: '1 1 0%',
+    minWidth: 0,
     height: '5rem',
     alignItems: 'center',
-    overflow: 'hidden',
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    scrollBehavior: 'smooth',
+    scrollbarWidth: 'none',
     boxSizing: 'border-box',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+    '&::before, &::after': {
+      content: '""',
+      display: 'block',
+      flex: '0 0 33.333333%',
+    },
   },
 
   stepDiv: {
     display: 'flex',
+    flex: '0 0 33.333333%',
+    minWidth: 0,
+    padding: '0 0.25rem',
     boxSizing: 'border-box',
   },
 
   svgContainer: {
     display: 'flex',
+    flexShrink: 0,
     alignItems: 'center',
     padding: '0 1rem',
   },
@@ -319,6 +272,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
     '&:focus': {
       outline: theme.focusOutline,
+    },
+    '&:disabled': {
+      cursor: 'default',
+      opacity: 0.4,
     },
   },
 

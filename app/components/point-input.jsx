@@ -151,33 +151,43 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
   },
   sharedInputStyle: {
-    radius: '0.25rem',
+    borderRadius: '0.625rem',
     border: `0.0625rem solid ${theme.colors.inputBorder}`,
-    backgroundColor: `${theme.colors.cardOutline}`,
+    backgroundColor: theme.colors.white,
     outline: 'none',
     fontFamily: theme.font.fontFamily,
+    boxShadow: '0 0.125rem 0 rgba(6, 51, 92, 0.06), 0 0.35rem 0.8rem rgba(6, 51, 92, 0.1), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.9)',
+    transition: 'border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease',
+    '&:focus-visible': {
+      borderColor: theme.colors.primaryButtonBlue,
+      boxShadow: '0 0 0 0.2rem rgba(6, 51, 92, 0.14), 0 0.35rem 0.8rem rgba(6, 51, 92, 0.1)',
+    },
   },
   subject: {
-    padding: '0.9375rem',
-    height: '2.8125rem',
+    width: '100%',
+    minHeight: '3.5rem',
+    boxSizing: 'border-box',
+    padding: '0.875rem 1rem',
     '&::placeholder': {
       ...sharedPlaceholderStyle(theme),
     },
     '&[type="text"]': {
-      border: `0.0625rem solid ${theme.colors.inputBorder}`,
       color: theme.colors.title,
       fontSize: '1.25rem',
-      lineHeight: '1.5rem',
+      lineHeight: 1.4,
     },
     '&[type="text"]:hover': {
       ...sharedHoverStyle(theme),
     },
   },
   description: {
-    resize: 'none',
-    fontSize: '1rem',
-    marginTop: '0.9375rem',
-    padding: '0.9375rem 0.9375rem 1.25rem 0.9375rem',
+    width: '100%',
+    minHeight: '8rem',
+    boxSizing: 'border-box',
+    resize: 'vertical',
+    fontSize: '1.125rem',
+    lineHeight: 1.65,
+    padding: '1rem 1.125rem',
     '&::placeholder': {
       ...sharedPlaceholderStyle(theme),
     },
@@ -190,8 +200,12 @@ const useStyles = createUseStyles(theme => ({
     ...sharedWordCountStyle(theme),
   },
   errorInput: {
-    borderRadius: '0.25rem',
+    borderRadius: '0.625rem',
     ...sharedErrorStyle(theme),
+    '&:focus-visible': {
+      borderColor: theme.colors.inputErrorBorder,
+      boxShadow: '0 0 0 0.2rem rgba(191, 19, 0, 0.14), 0 0.35rem 0.8rem rgba(191, 19, 0, 0.1)',
+    },
     '&:hover': {
       ...sharedErrorStyle(theme),
     },
@@ -212,17 +226,17 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const sharedPlaceholderStyle = theme => ({
-  height: '1.5rem',
-  opacity: '50%',
-  font: theme.font.fontFamily,
-  weight: '400',
-  size: '1rem',
-  lineHeight: '1.5rem',
+  fontFamily: theme.font.fontFamily,
+  fontWeight: 400,
+  fontSize: '1rem',
+  lineHeight: 1.5,
   color: theme.colors.encivGray,
+  opacity: 0.8,
 })
 
 const sharedHoverStyle = theme => ({
-  backgroundColor: `${theme.colors.cardOutline}`,
+  borderColor: theme.colors.hoverGray,
+  boxShadow: '0 0.2rem 0 rgba(6, 51, 92, 0.08), 0 0.5rem 1rem rgba(6, 51, 92, 0.14)',
 })
 
 const sharedErrorStyle = theme => ({

@@ -246,31 +246,33 @@ export const StepSlider = props => {
           )}
         </div>
       )}
-      <div className={classes.outerWrapper} ref={outerRef}>
-        <div
-          ref={stepChildRapper}
-          data-transitioning={state.transitions ? 'true' : 'false'}
-          data-current-step={state.currentStep}
-          style={{
-            left: -outerRect.width * state.currentStep + 'px',
-            width: Math.max(outerRect.width, outerRect.clientWidth) * cachedChildren.length + 'px', // clientWidth is an integer and may get rounded up vs width in cases (desktop scaled monitor)
-            height: panelRefs.current[state.currentStep]?.offsetHeight + 'px',
-          }}
-          className={cx(classes.stepChildWrapper, state.transitions && classes.transitions)}
-        >
-          {outerRect.width &&
-            cachedChildren.map((child, i) => (
-              <div
-                key={i}
-                style={{
-                  width: outerRect.clientWidth + 'px',
-                }}
-                className={classes.panel}
-                ref={el => (panelRefs.current[i] = el)}
-              >
-                {child}
-              </div>
-            ))}
+      <div className={classes.contentSurface}>
+        <div className={classes.outerWrapper} ref={outerRef}>
+          <div
+            ref={stepChildRapper}
+            data-transitioning={state.transitions ? 'true' : 'false'}
+            data-current-step={state.currentStep}
+            style={{
+              left: -outerRect.width * state.currentStep + 'px',
+              width: Math.max(outerRect.width, outerRect.clientWidth) * cachedChildren.length + 'px', // clientWidth is an integer and may get rounded up vs width in cases (desktop scaled monitor)
+              height: panelRefs.current[state.currentStep]?.offsetHeight + 'px',
+            }}
+            className={cx(classes.stepChildWrapper, state.transitions && classes.transitions)}
+          >
+            {outerRect.width &&
+              cachedChildren.map((child, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: outerRect.clientWidth + 'px',
+                  }}
+                  className={classes.panel}
+                  ref={el => (panelRefs.current[i] = el)}
+                >
+                  {child}
+                </div>
+              ))}
+          </div>
         </div>
       </div>
       {steps && (
@@ -294,7 +296,15 @@ export const StepSlider = props => {
     </div>
   )
 }
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
+  contentSurface: {
+    width: '100%',
+    boxSizing: 'border-box',
+    padding: '1.5rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      padding: '0.75rem',
+    },
+  },
   panel: {
     display: 'inline-block',
     verticalAlign: 'top',
@@ -313,7 +323,7 @@ const useStyles = createUseStyles({
   },
   outerWrapper: {
     position: 'relative', // was absolute: so that clip will work
-    width: 'inherit',
+    width: '100%',
     overflow: 'hidden',
     height: 'auto',
     clip: 'rect(0,auto,auto,0)', // to make sure the fixed position NavBar in a child is also hidden
@@ -330,6 +340,6 @@ const useStyles = createUseStyles({
   transitions: {
     transition: 'all 0.5s linear',
   },
-})
+}))
 
 export default StepSlider

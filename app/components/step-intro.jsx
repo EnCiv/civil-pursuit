@@ -12,14 +12,14 @@ const StepIntro = props => {
   const classes = stepIntroStyles()
 
   const paragraphs = description.split('\\n').map((paragraph, index) => (
-    <p className={classes.paragraph} key={index}>
+    <p className={classes.secondaryText} key={index}>
       {paragraph}
     </p>
   ))
 
   return (
     <div className={cx(classes.stepIntro, className)} {...otherProps}>
-      <H className={classes.title}>{subject}</H>
+      <H className={classes.primaryText}>{subject}</H>
       {paragraphs}
     </div>
   )
@@ -32,7 +32,6 @@ const stepIntroStyles = createUseStyles(theme => ({
     fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontStyle: 'normal',
     paddingBottom: '3rem',
-    borderBottom: `1px solid ${theme.colors.secondaryDivider}`,
     animation: '$introRise 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       paddingBottom: '1.25rem',
@@ -42,25 +41,28 @@ const stepIntroStyles = createUseStyles(theme => ({
     },
   },
 
-  title: {
+  primaryText: {
+    width: 'fit-content',
+    maxWidth: '24ch',
     color: theme.colors.primaryButtonBlue,
     fontSize: '3rem',
-    fontWeight: 600,
+    fontWeight: 700,
     lineHeight: 1.12,
     fontFamily: `${theme.font.headingFontFamily}, Georgia, serif`,
     margin: '0 0 1rem',
+    textWrap: 'balance',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       fontSize: '2rem',
     },
   },
 
-  paragraph: {
-    color: theme.colors.title,
-    fontSize: '1.125rem',
+  secondaryText: {
+    color: theme.colors.encivGray,
+    fontSize: '1.25rem',
     fontWeight: 400,
-    lineHeight: 1.7,
+    lineHeight: 1.65,
     fontFamily: `${theme.font.fontFamily}, sans-serif`,
-    maxWidth: '68ch',
+    maxWidth: '66ch',
     margin: '0.75rem 0 0',
   },
 
