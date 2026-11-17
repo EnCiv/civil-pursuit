@@ -1155,7 +1155,7 @@ export const BatchUpsertInteractionTest = {
 
       // Wait for Next button to appear and be enabled
       const nextButton = await waitFor(() => {
-        const btn = canvas.queryByRole('button', { name: /Next/i })
+        const btn = canvas.queryByRole('button', { name: /^Next$/i })
         expect(btn).toBeInTheDocument()
         expect(btn).not.toBeDisabled()
         return btn

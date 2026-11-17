@@ -204,14 +204,21 @@ const TopNavBar = props => {
           </div>
 
           {/* Mobile menu toggle */}
-          <button className={cx(classes.menuToggle, classes.colors)} onClick={toggleMenu}>
+          <button
+            type="button"
+            className={cx(classes.menuToggle, classes.colors)}
+            onClick={toggleMenu}
+            aria-label={isExpanded ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={isExpanded}
+            aria-controls="top-nav-mobile-menu"
+          >
             &#8801;
           </button>
         </div>
 
         {/* This is the mobile menu */}
         {isExpanded ? (
-          <menu className={cx(classes.mobileMenuContainer)}>
+          <menu id="top-nav-mobile-menu" className={cx(classes.mobileMenuContainer)}>
             {UserOrSignInUp && (
               <div className={classes.mobileUserOrSignupContainer}>
                 <UserOrSignInUp />

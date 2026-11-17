@@ -66,7 +66,7 @@ export const onePointCanBeUsefulStartOverNotUseful = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const Useful = canvas.getByText('Useful')
+    const Useful = await waitFor(() => canvas.getByText('Useful'))
     await userEvent.click(Useful)
     await waitFor(() => {
       expect(args.onDone.mock.calls[0][0]).toMatchObject({
@@ -205,11 +205,11 @@ export const onDoneTest = {
         },
       })
     })
-    // Wait for the parks reason to be in the visible clickable button (not the disabled hidden
+    // Wait for the childcare reason to be in the visible clickable button (not the disabled hidden
     // transition container). asyncSleep(500) races with the component's own 500ms
     // transition timer; getByTitle only matches the <button title="Choose as more
-    // important: park-reason title, which only renders when idxRight=2 is committed.
-    const Point3 = await waitFor(() => canvas.getByTitle('Choose as more important: Clean parks bring neighbors together'))
+    // important: childcare-reason title, which only renders when idxRight=2 is committed.
+    const Point3 = await waitFor(() => canvas.getByTitle('Choose as more important: Affordable childcare keeps parents employed'))
     await userEvent.click(Point3)
     await waitFor(() => {
       const calls = args.onDone.mock.calls
@@ -224,8 +224,8 @@ export const onDoneTest = {
         },
       })
     })
-    // Same: wait for Point 4 to be in the clickable button position
-    const Point4 = await waitFor(() => canvas.getByTitle('Choose as more important: Point 4'))
+    // Same: wait for the library reason to be in the clickable button position
+    const Point4 = await waitFor(() => canvas.getByTitle('Choose as more important: Libraries support learning at every age'))
     /* don't await - there are two onDone updates in succession and if we await the user event we miss the first one */
     userEvent.click(Point4)
     await waitFor(() => {

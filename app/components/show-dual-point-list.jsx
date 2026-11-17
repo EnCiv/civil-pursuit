@@ -132,12 +132,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       '&:hover': {
         outline: 'none !important',
       },
-      '&:hover $defaultSubject': {
-        color: 'inherit !important',
-      },
-      '&:hover $defaultDescription': {
-        color: 'inherit !important',
-      },
     },
   },
   pointDescription: {

@@ -12,44 +12,44 @@ export default {
 
 const point0 = {
   _id: '0',
-  subject: 'Inequality',
-  description: 'Inequality can hinder economic growth and stability',
+  subject: 'Expand access to stable housing',
+  description: 'Affordable, secure homes help families stay near work, school, and community services.',
 }
 
 const point1 = {
   _id: '1',
-  subject: 'Equality is a human right',
-  description: 'Suspendisse eget tortor sit amet sapien facilisis dictum sed et nisl. Nam pellentesque dapibus sem id ullamcorper.',
+  subject: 'Protect tenants from unfair evictions',
+  description: 'Clear guidance and early legal support can help renters resolve disputes and keep stable housing.',
 }
 
 const point2 = {
   _id: '2',
-  subject: 'Income equality reduction',
-  description: 'Proin nec metus facilisis, dignissim erat a, scelerisque leo. Quisque a posuere arcu, sed luctus mi. Sed fermentum vel ante eget consequat.',
+  subject: 'Make job training easier to reach',
+  description: 'Practical classes near transit can help adults build skills for better-paying local jobs.',
 }
 
 const point3 = {
   _id: '3',
-  subject: 'Separation of wealth',
-  description: 'Fusce nibh quam, sollicitudin ut sodales id, molestie sit amet mi. Nunc nec augue odio.',
+  subject: 'Improve access to healthy groceries',
+  description: 'Affordable fresh food should be available without a long trip across town.',
 }
 
 const point4 = {
   _id: '4',
-  subject: 'Not a crucial issue',
-  description: 'Fusce nibh quam, sollicitudin ut sodales id, molestie sit amet mi. Nunc nec augue odio.',
+  subject: 'Keep neighborhood parks clean',
+  description: 'Regular maintenance gives residents a safer place to exercise, relax, and gather.',
 }
 
 const point5 = {
   _id: '5',
-  subject: 'Poverty',
-  description: 'Suspendisse eget tortor sit amet sapien facilisis dictum sed et nisl. Nam pellentesque dapibus sem id ullamcorper.',
+  subject: 'Run buses more often after work',
+  description: 'Reliable evening service helps shift workers get home without needing a car.',
 }
 
 const point6 = {
   _id: '6',
-  subject: 'Poverty increasing with time',
-  description: 'Proin nec metus facilisis, dignissim erat a, scelerisque leo. Quisque a posuere arcu, sed luctus mi. Sed fermentum vel ante eget consequat.',
+  subject: 'Add shade trees along busy streets',
+  description: 'Mature trees cool sidewalks and make walking routes more comfortable in summer.',
 }
 
 export const Empty = {

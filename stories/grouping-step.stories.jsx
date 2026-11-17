@@ -55,7 +55,14 @@ const pointItems = samplePoints.map(({ subject, description }, index) => createP
 
 const getPointGroupByLead = (canvas, subject) => within(canvas.getByRole('checkbox', { name: `Select point group: ${subject}` }))
 
+const showYourGroups = async canvas => {
+  const yourGroupsTab = canvas.getByRole('tab', { name: /groups/i })
+  if (yourGroupsTab.getAttribute('aria-selected') !== 'true') await userEvent.click(yourGroupsTab)
+  await waitFor(() => expect(yourGroupsTab).toHaveAttribute('aria-selected', 'true'))
+}
+
 const ungroupPoint = async (canvas, subject) => {
+  await showYourGroups(canvas)
   const groupedPoints = within(canvas.getByRole('group', { name: 'Your grouped responses' }))
   const card = groupedPoints.getByRole('checkbox', { name: `Select point group: ${subject}` })
   await userEvent.click(within(card).getByTitle('Ungroup'))
@@ -68,6 +75,7 @@ const selectAvailablePoint = async (canvas, subject) => {
 }
 
 const selectGroupedPoint = async (canvas, subject) => {
+  await showYourGroups(canvas)
   const groupedPoints = within(canvas.getByRole('group', { name: 'Your grouped responses' }))
   await userEvent.click(groupedPoints.getByRole('checkbox', { name: `Select point group: ${subject}` }))
 }

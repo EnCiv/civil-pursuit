@@ -19,43 +19,43 @@ const discussionId = '1001'
 
 const reducedPointList = [
   {
-    point: { _id: '1', subject: 'subject 1', description: 'description 1', parentId: discussionId },
+    point: { _id: '1', subject: 'Make school crossings safer', description: 'Slower traffic and visible crosswalks can protect students on their walk to class.', parentId: discussionId },
   },
   {
-    point: { _id: '2', subject: 'subject 2', description: 'description 2', parentId: discussionId },
+    point: { _id: '2', subject: 'Run buses later on weekdays', description: 'Evening service helps shift workers reach home without needing a car.', parentId: discussionId },
   },
   {
-    point: { _id: '3', subject: 'subject 3', description: 'description 3', parentId: discussionId },
+    point: { _id: '3', subject: 'Expand affordable childcare', description: 'More local childcare options help parents work while children receive consistent care.', parentId: discussionId },
   },
 ]
 
 const topWhysByCategoryByParentId = {
   most: {
     1: [
-      { _id: '11', subject: 'subject 1 most 1', description: 'description 1 most 1', category: 'most', parentId: '1' },
-      { _id: '12', subject: 'subject 1 most 2', description: 'description 1 most 2', category: 'most', parentId: '1' },
+      { _id: '11', subject: 'A safe crossing protects every student', description: 'Clear markings and slower traffic reduce the risk for children walking to school.', category: 'most', parentId: '1' },
+      { _id: '12', subject: 'Families need confidence at busy streets', description: 'A visible, well-designed crossing helps caregivers and students travel more safely.', category: 'most', parentId: '1' },
     ],
     2: [
-      { _id: '21', subject: 'subject 2 most 1', description: 'description 2 most 1', category: 'most', parentId: '2' },
-      { _id: '22', subject: 'subject 2 most 2', description: 'description 2 most 2', category: 'most', parentId: '2' },
+      { _id: '21', subject: 'Reliable transit keeps jobs reachable', description: 'Frequent evening buses connect workers to jobs and essential services.', category: 'most', parentId: '2' },
+      { _id: '22', subject: 'Late routes give workers more choices', description: 'People should not have to turn down a shift because the last bus leaves too early.', category: 'most', parentId: '2' },
     ],
     3: [
-      { _id: '31', subject: 'subject 3 most 1', description: 'description 3 most 1', category: 'most', parentId: '3' },
-      { _id: '32', subject: 'subject 3 most 2', description: 'description 3 most 2', category: 'most', parentId: '3' },
+      { _id: '31', subject: 'Affordable care supports working parents', description: 'Lower childcare costs make it easier for parents to keep steady work.', category: 'most', parentId: '3' },
+      { _id: '32', subject: 'Young children benefit from consistent care', description: 'Stable childcare gives children a safe place to learn and develop.', category: 'most', parentId: '3' },
     ],
   },
   least: {
     1: [
-      { _id: '13', subject: 'subject 1 least 1', description: 'description 1 least 1', category: 'least', parentId: '1' },
-      { _id: '14', subject: 'subject 1 least 2', description: 'description 1 least 2', category: 'least', parentId: '1' },
+      { _id: '13', subject: 'Decorative upgrades can wait', description: 'Basic repairs and safe routes should come before cosmetic changes.', category: 'least', parentId: '1' },
+      { _id: '14', subject: 'The current design already works for many', description: 'A small improvement may not be urgent compared with unmet community needs.', category: 'least', parentId: '1' },
     ],
     2: [
-      { _id: '23', subject: 'subject 2 least 1', description: 'description 2 least 1', category: 'least', parentId: '2' },
-      { _id: '24', subject: 'subject 1 least 2', description: 'description 1 least 2', category: 'least', parentId: '2' },
+      { _id: '23', subject: 'Weekend service may have low ridership', description: 'A pilot can measure demand before committing to a permanent schedule.', category: 'least', parentId: '2' },
+      { _id: '24', subject: 'Other routes need service first', description: 'Limited transit funds may be more useful on corridors with longer waits.', category: 'least', parentId: '2' },
     ],
     3: [
-      { _id: '33', subject: 'subject 3 least 1', description: 'description 3 least 1', category: 'least', parentId: '3' },
-      { _id: '34', subject: 'subject 3 least 2', description: 'description 3 least 2', category: 'least', parentId: '3' },
+      { _id: '33', subject: 'A subsidy alone may not lower costs', description: 'Affordability also depends on the number of available childcare spaces.', category: 'least', parentId: '3' },
+      { _id: '34', subject: 'Other family services may be more urgent', description: 'Families may need housing, healthcare, or food support alongside childcare.', category: 'least', parentId: '3' },
     ],
   },
 }

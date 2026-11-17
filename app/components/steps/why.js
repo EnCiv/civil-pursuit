@@ -89,7 +89,7 @@ export function Why(props) {
 
   const classes = useStylesFromThemeFunction()
   const [currentIndex, setCurrentIndex] = useState(0)
-  const reportedPointIds = useRef(null)
+  const reportedCompletionSignature = useRef(null)
 
   const [completedByPointId] = useState(() => {
     return (pointWhyList || []).reduce((completedByPointId, { point, why }) => {
@@ -145,9 +145,9 @@ export function Why(props) {
       onDone({ valid: true, value: 'skip' })
       return
     }
-    const pointIds = pointWhyList.map(({ point }) => point._id).join('|')
-    if (reportedPointIds.current === pointIds) return
-    reportedPointIds.current = pointIds
+    const completionSignature = pointWhyList.map(({ point }) => `${point._id}:${completedByPointId[point._id]?.completed}`).join('|')
+    if (reportedCompletionSignature.current === completionSignature) return
+    reportedCompletionSignature.current = completionSignature
     setCurrentIndex(index => Math.min(index, Math.max(pointWhyList.length - 1, 0)))
     const values = Object.values(completedByPointId)
     const numValid = values.filter(({ completed }) => completed).length

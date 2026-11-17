@@ -154,7 +154,7 @@ function PairCompare(props) {
       Object.values(newRanksByParentId).forEach(rank => (rank.category = undefined)) // reset the categories so we can start again
       setIdxRight(1)
       setIdxLeft(0)
-      onDone({ valid: false, value: null })
+      onDone({ valid: false, value: null, delta: Object.values(newRanksByParentId).map(rank => ({ ...rank, category: '' })) })
       return newRanksByParentId // force the rerender
     })
   }

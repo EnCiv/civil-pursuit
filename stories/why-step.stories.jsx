@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { userEvent, within, waitFor, expect } from 'storybook/test'
 import WhyStep from '../app/components/steps/why'
-import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator, asyncSleep } from './common'
+import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData, socketEmitDecorator } from './common'
 
 export default {
   component: WhyStep,
@@ -201,22 +201,15 @@ export const UserUpdatesExistingData = {
   decorators: [DeliberationContextDecorator],
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    await asyncSleep(1000)
     await waitFor(() => {
-      expect(args.onDone.mock.calls[0][0]).toMatchObject({
-        valid: true,
-        value: 1,
-      })
+      expect(canvas.getAllByDisplayValue('Late buses keep night workers connected').length).toBeGreaterThan(0)
+      expect(canvas.getAllByDisplayValue('Dependable evening routes help workers reach home safely after other transportation options stop running.').length).toBeGreaterThan(0)
+    }, { timeout: 3000 })
+
+    await waitFor(() => {
+      expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({ valid: true, value: 1 })
       expect(window.socket._socketEmitHandlerResults['upsert-why'].length).toBe(0)
     })
-
-    await waitFor(
-      () => {
-        expect(canvas.getAllByDisplayValue('Late buses keep night workers connected').length).toBeGreaterThan(0)
-        expect(canvas.getAllByDisplayValue('Dependable evening routes help workers reach home safely after other transportation options stop running.').length).toBeGreaterThan(0)
-      },
-      { timeout: 3000 }
-    )
 
     const subjectInputs = canvas.getAllByDisplayValue('Late buses keep night workers connected')
     const descriptionInputs = canvas.getAllByDisplayValue('Dependable evening routes help workers reach home safely after other transportation options stop running.')

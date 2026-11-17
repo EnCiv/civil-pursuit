@@ -17,12 +17,16 @@ export default function CompareWhysStep(props) {
   const { data, upsert } = useDeliberationContext()
   const storageAvailable = useLocalStorageIfAvailable()
   const fetchDemInfo = useFetchDemInfo()
+  const [isLoading, setIsLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const args = { ...derivePointWithWhyRankListListByCategory(data, category) }
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
-      upsert({ whyRankByParentId: { [delta.parentId]: delta } })
+      const rankDeltas = Array.isArray(delta) ? delta : [delta]
+      const whyRankByParentId = rankDeltas.reduce((ranks, rank) => ((ranks[rank.parentId] = rank), ranks), {})
+      upsert({ whyRankByParentId })
       if (!storageAvailable) {
-        window.socket.emit('upsert-rank', delta)
+        rankDeltas.forEach(rank => window.socket.emit('upsert-rank', rank))
       }
     }
     onDone({ valid, value })
@@ -30,6 +34,8 @@ export default function CompareWhysStep(props) {
   // fetch previous data
   useEffect(() => {
     // on the browser, do this once and only once when this component is first rendered
+    setIsLoading(true)
+    setLoadError(false)
     const { discussionId, preRankByParentId } = data
     const { mostIds, leastIds } = Object.values(preRankByParentId ?? {}).reduce(
       ({ mostIds, leastIds }, rank) => {
@@ -40,9 +46,16 @@ export default function CompareWhysStep(props) {
       },
       { mostIds: [], leastIds: [] }
     )
-    if (!mostIds.length && !leastIds.length) return
+    if (!mostIds.length && !leastIds.length) {
+      setIsLoading(false)
+      return
+    }
     window.socket.emit('get-why-ranks-and-points', discussionId, round, mostIds, leastIds, result => {
-      if (!result) return // there was an error
+      if (!result) {
+        setLoadError(true)
+        setIsLoading(false)
+        return // there was an error
+      }
       const { ranks, whys } = result
       //if (!ranks.length && !whys.length) return // nothing to do
       const whyRankByParentId = ranks.reduce((whyRankByParentId, rank) => ((whyRankByParentId[rank.parentId] = rank), whyRankByParentId), {})
@@ -52,14 +65,15 @@ export default function CompareWhysStep(props) {
       // Fetch dem-info for all why points
       const whyIds = whys.map(w => w._id)
       fetchDemInfo(whyIds)
+      setIsLoading(false)
     })
   }, [round, data.preRankByParentId])
-  return <CompareWhys {...props} {...args} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
+  return <CompareWhys {...props} {...args} isLoading={isLoading} loadError={loadError} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
 }
 
 // pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]
 export function CompareWhys(props) {
-  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round, stepIntro } = props
+  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round, stepIntro, isLoading = false, loadError = false } = props
   const classes = useStyles()
   const [completedByPointId, setCompletedByPointId] = useState(() =>
     (pointWithWhyRankListList || []).reduce((completedByPointId, pointWithWhyRankList) => {
@@ -67,11 +81,14 @@ export function CompareWhys(props) {
       return completedByPointId
     }, {})
   )
+  const completedByPointIdRef = useRef(completedByPointId)
+  const reportedCompletionByPointIdRef = useRef(null)
   const [currentIndex, setCurrentIndex] = useState(0)
   const currentPointIndex = Math.min(currentIndex, Math.max((pointWithWhyRankListList?.length || 1) - 1, 0))
   const currentPointWithWhyRankList = pointWithWhyRankListList?.[currentPointIndex]
 
   useEffect(() => {
+    if (isLoading || loadError) return
     // if new points get added, mark them as incomplete
     if (!pointWithWhyRankListList) {
       onDone({ valid: true, value: 'skip' })
@@ -84,24 +101,38 @@ export function CompareWhys(props) {
       },
       {}
     )
+    const previousReportedCompletion = reportedCompletionByPointIdRef.current
+    const completionChanged =
+      !previousReportedCompletion ||
+      Object.keys(updatedCompletedByPointId).length !== Object.keys(previousReportedCompletion).length ||
+      Object.keys(updatedCompletedByPointId).some(pointId => updatedCompletedByPointId[pointId] !== previousReportedCompletion[pointId])
+    completedByPointIdRef.current = updatedCompletedByPointId
     setCompletedByPointId(updatedCompletedByPointId)
+    reportedCompletionByPointIdRef.current = updatedCompletedByPointId
     setCurrentIndex(index => Math.min(index, Math.max(pointWithWhyRankListList.length - 1, 0)))
     const done = Object.values(updatedCompletedByPointId).filter(Boolean).length
     const total = pointWithWhyRankListList.length
-    onDone({ valid: done === total, value: total ? done / total : 1 })
-  }, [pointWithWhyRankListList])
+    if (completionChanged) onDone({ valid: done === total, value: total ? done / total : 1 })
+  }, [pointWithWhyRankListList, isLoading, loadError])
 
-  const handlePairCompare = ({ valid, value }, _id) => {
-    const updatedCompletedByPointId = { ...completedByPointId, [_id]: valid }
+  const handlePairCompare = ({ valid, value, delta }, _id) => {
+    if (value === undefined) return
+    const updatedCompletedByPointId = { ...completedByPointIdRef.current, [_id]: valid }
+    completedByPointIdRef.current = updatedCompletedByPointId
+    reportedCompletionByPointIdRef.current = updatedCompletedByPointId
     setCompletedByPointId(updatedCompletedByPointId)
     const done = Object.values(updatedCompletedByPointId).filter(Boolean).length
     const percentDone = pointWithWhyRankListList.length ? done / pointWithWhyRankListList.length : 1
-    onDone({ valid: percentDone >= 1, value: percentDone, delta: value })
+    onDone({ valid: percentDone >= 1, value: percentDone, delta: delta ?? value })
   }
   return (
     <div className={classes.container}>
       <StepIntro {...stepIntro} />
-      {!pointWithWhyRankListList?.length ? (
+      {isLoading ? (
+        <div className={classes.headlineTitle} aria-live="polite">Loading explanations...</div>
+      ) : loadError ? (
+        <div className={classes.headlineTitle} role="alert">Explanations could not be loaded.</div>
+      ) : !pointWithWhyRankListList?.length ? (
         <div className={classes.headlineTitle}>Nothing to do here, hit Next to continue</div>
       ) : (
         <>

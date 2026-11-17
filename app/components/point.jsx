@@ -28,10 +28,11 @@ const Point = forwardRef((props, ref) => {
 
   const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, {
+      const childProps = {
         className: cx(child.props.className, { isHovered: isHovered }),
-        vState: vState,
-      })
+      }
+      if (typeof child.type !== 'string' && child.type !== React.Fragment) childProps.vState = vState
+      return React.cloneElement(child, childProps)
     }
     return child
   })
@@ -119,15 +120,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       backgroundPosition: '30rem 0',
     },
   },
-  '@-webkit-keyframes loadingAnimation_keyframes': {
-    '0%': {
-      backgroundPosition: '-30rem 0',
-    },
-    '100%': {
-      backgroundPosition: '30rem 0',
-    },
-  },
-
   // border states
   defaultBorder: {
     outline: `1px solid ${theme.colors.borderGray}`,
