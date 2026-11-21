@@ -46,6 +46,46 @@ export const sixPointsRanked = {
   },
 }
 
+export const NeitherWithTwoCardsNoWinner = {
+  args: {
+    mainPoint: {
+      subject: 'Global Warming',
+      description: 'Climate change and global warming',
+    },
+    whyRankList: whyRankList.slice(0, 2),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByText('Neither'))
+    await waitFor(() => {
+      expect(canvas.getByText('No winner')).toBeInTheDocument()
+      expect(canvas.queryByText('Useful')).not.toBeInTheDocument()
+      expect(canvas.queryByText('Not useful')).not.toBeInTheDocument()
+      expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({ valid: false, value: null })
+    })
+  },
+}
+
+export const NoWinner = {
+  args: {
+    mainPoint: {
+      subject: 'Global Warming',
+      description: 'Climate change and global warming',
+    },
+    whyRankList: whyRankList.map((item, index) => ({
+      ...item,
+      rank: { _id: `neutral-${index}`, parentId: item.why._id, stage: 'why', category: 'neutral' },
+    })),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    await waitFor(() => {
+      expect(canvas.getByText('No winner')).toBeInTheDocument()
+      expect(args.onDone.mock.calls[0][0]).toMatchObject({ valid: false, value: null })
+    })
+  },
+}
+
 export const empty = {
   args: {
     mainPoint: {
@@ -176,6 +216,31 @@ export const UserChoosesNoPoint = {
           stage: 'why',
         },
       })
+    })
+  },
+}
+
+export const repeatedNeitherTest = {
+  args: {
+    mainPoint: {
+      subject: 'Global Warming',
+      description: 'Climate change and global warming',
+    },
+    whyRankList,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await userEvent.click(canvas.getByText('Neither'))
+    await waitFor(() => {
+      expect(canvas.getByTitle('Choose as more important: Affordable childcare keeps parents employed')).toBeInTheDocument()
+      expect(canvas.getByTitle('Choose as more important: Libraries support learning at every age')).toBeInTheDocument()
+    })
+
+    await userEvent.click(canvas.getByTitle('Choose as more important: Affordable childcare keeps parents employed'))
+    await waitFor(() => {
+      expect(canvas.getByTitle('Choose as more important: Libraries support learning at every age')).toBeInTheDocument()
+      expect(canvas.getByTitle('Choose as more important: Shade trees cool busy neighborhoods')).toBeInTheDocument()
     })
   },
 }

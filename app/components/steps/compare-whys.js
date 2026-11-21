@@ -14,7 +14,7 @@ import { useDeliberationContext, useLocalStorageIfAvailable } from '../deliberat
 import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 
 export default function CompareWhysStep(props) {
-  const { onDone, round, category } = props
+  const { onDone, round, category = 'most' } = props
   const { data, upsert } = useDeliberationContext()
   const storageAvailable = useLocalStorageIfAvailable()
   const fetchDemInfo = useFetchDemInfo()
