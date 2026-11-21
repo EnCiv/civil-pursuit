@@ -7,7 +7,6 @@ import Ranks from '../../models/ranks'
 import Jsforms from '../../models/jsforms'
 import { User } from 'civil-server'
 import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
 import * as dturn from '../../dturn/dturn'
 
@@ -35,22 +34,15 @@ const RANK1 = new ObjectId().toString()
 let MemoryServer
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 })
 
 afterAll(async () => {
-  Mongo.disconnect()
-  MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 beforeEach(async () => {
-  // Clear all collections before each test
-  await Points.deleteMany({})
-  await Ranks.deleteMany({})
-  await Jsforms.deleteMany({})
-  await User.deleteMany({})
+  await global.clearMongoCollections([Points, Ranks, Jsforms, User])
   // Reset mocks
   jest.clearAllMocks()
 

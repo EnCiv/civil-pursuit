@@ -1,8 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/385
 
 import getActivity from '../get-activity'
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Iota } from 'civil-server'
 import { ObjectId } from 'mongodb'
 
@@ -28,9 +26,7 @@ beforeEach(async () => {
 })
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 
   initDiscussion(DISCUSSION_ID, {
     group_size: 5,
@@ -46,15 +42,12 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await Iota.deleteMany({})
-  await Mongo.disconnect()
-  await MemoryServer.stop()
+  await global.clearMongoCollections([Iota])
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 afterEach(async () => {
-  await Iota.deleteMany({})
-  await Points.deleteMany({})
-  await Ranks.deleteMany({})
+  await global.clearMongoCollections([Iota, Points, Ranks])
 })
 test('Fail if discussionId not provided', async () => {
   await Iota.insertOne({

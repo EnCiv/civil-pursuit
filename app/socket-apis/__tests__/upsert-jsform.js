@@ -3,9 +3,7 @@
 import upsertJsform from '../upsert-jsform'
 import Jsforms from '../../models/jsforms'
 
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
-import { MongoClient, ObjectId } from 'mongodb'
+import { ObjectId } from 'mongodb'
 
 const parentId1 = '67f973a8cc0b14c4529a72d7'
 const userId1 = '67f973aacc0b44c4529a72d1'
@@ -38,14 +36,11 @@ const testFormObj2 = {
 let MemoryServer
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 })
 
 afterAll(async () => {
-  await Mongo.disconnect()
-  await MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 test('Upsert fails is not logged in.', async () => {

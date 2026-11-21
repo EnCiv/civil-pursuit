@@ -2,8 +2,6 @@
 
 import upsertWhy from '../upsert-why'
 import Points from '../../models/points'
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
 
 const USER1 = '6667d5a33da5d19ddc304a6b'
@@ -12,14 +10,11 @@ const POINT2 = new ObjectId('6667e4eea414d31b20dffb2f')
 let MemoryServer
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 })
 
 afterAll(async () => {
-  await Mongo.disconnect()
-  await MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 beforeEach(async () => {

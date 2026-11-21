@@ -3,8 +3,6 @@
 import getTopRankedWhysForPoint from '../get-top-ranked-whys-for-point'
 import Points from '../../models/points'
 import Ranks from '../../models/ranks'
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
 
 const USER1 = '6667d5a33da5d19ddc304a6b'
@@ -12,20 +10,16 @@ const POINT1 = '6667d688b20d8e339ca50020'
 let MemoryServer
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 })
 
 afterAll(async () => {
-  await Mongo.disconnect()
-  await MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 describe('getTopRankedWhysForPoint', () => {
   beforeEach(async () => {
-    await Points.deleteMany({})
-    await Ranks.deleteMany({})
+    await global.clearMongoCollections([Points, Ranks])
   })
 
   test('user is not logged in', async () => {

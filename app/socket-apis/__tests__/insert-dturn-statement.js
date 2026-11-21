@@ -4,8 +4,6 @@ import insertDturnStatement from '../insert-dturn-statement'
 
 import { initDiscussion, Discussions } from '../../dturn/dturn'
 
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 
 import Points from '../../models/points'
 
@@ -37,9 +35,7 @@ afterEach(async () => {
 })
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 
   await initDiscussion(existentDiscussionId, {
     updateUInfo: obj => {
@@ -49,8 +45,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  Mongo.disconnect()
-  MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 // Tests

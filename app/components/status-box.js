@@ -3,6 +3,7 @@
 import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
+import { getStatusPalette } from './status-badge'
 
 import SvgAlertTriangle from '../svgr/alert-triangle'
 import SvgCheckedCircle from '../svgr/checked-circle'
@@ -41,45 +42,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'inline-flex',
     boxShadow: theme.boxShadow,
     borderRadius: '0.5rem',
-    backgroundColor: (() => {
-      if (props.status === 'error') {
-        return theme.colors.statusBoxErrorBackground
-      }
-      if (props.status === 'done') {
-        return theme.colors.statusBoxDoneBackground
-      }
-      if (props.status === 'warn') {
-        return theme.colors.statusBoxWarnBackground
-      }
-      if (props.status === 'notice') {
-        return theme.colors.statusBoxNoticeBackground
-      } else {
-        return theme.colors.white
-      }
-    })(),
-    border: `0.125rem solid ${(() => {
-      if (props.status === 'error') {
-        return theme.colors.statusBoxErrorBorder
-      }
-      if (props.status === 'done') {
-        return theme.colors.statusBoxDoneBorder
-      }
-      if (props.status === 'warn') {
-        return theme.colors.statusBoxWarnBorder
-      }
-      if (props.status === 'notice') {
-        return theme.colors.statusBoxNoticeBorder
-      } else {
-        return theme.colors.borderGray
-      }
-    })()}`,
+    backgroundColor: getStatusPalette(theme, props.status).background,
+    border: `0.125rem solid ${getStatusPalette(theme, props.status).border}`,
   }),
-  message: {
+  message: props => ({
     ...theme.font,
     display: 'flex',
     alignItems: 'center',
-    color: theme.colors.title,
-  },
+    color: getStatusPalette(theme, props.status).color,
+  }),
   subject: {
     fontWeight: 'bold',
     padding: '0rem 1rem',

@@ -2,23 +2,18 @@
 
 import upsertPoint from '../upsert-point'
 import Points from '../../models/points'
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
-import { MongoClient, ObjectId } from 'mongodb'
+import { ObjectId } from 'mongodb'
 
 const USER1 = '6667d5a33da5d19ddc304a6b'
 const POINT1 = new ObjectId('6667d688b20d8e339ca50020')
 const POINT2 = new ObjectId('6667e4eea414d31b20dffb2f')
 let MemoryServer
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 })
 
 afterAll(async () => {
-  Mongo.disconnect()
-  MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 test('Upsert a new document', async () => {

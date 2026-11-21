@@ -2,8 +2,6 @@
 
 import getUserRanks from '../get-user-ranks'
 
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 
 import Ranks from '../../models/ranks'
 
@@ -24,14 +22,11 @@ afterEach(async () => {
 })
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 })
 
 afterAll(async () => {
-  Mongo.disconnect()
-  MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 // Tests

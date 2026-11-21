@@ -6,6 +6,67 @@ import React from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 
+export const getStatusPalette = (theme, status) => {
+  switch (status?.toLowerCase()) {
+    case 'error':
+      return {
+        border: theme.colors.statusBadgeErrorBorder,
+        background: theme.colors.statusBadgeErrorBackground,
+        color: theme.colors.statusBadgeErrorTextColor,
+      }
+    case 'complete':
+    case 'done':
+      return {
+        border: theme.colors.statusBadgeCompletedBorder,
+        background: theme.colors.statusBadgeCompletedBackground,
+        color: theme.colors.statusBadgeCompletedTextColor,
+      }
+    case 'progress':
+    case 'inprogress':
+      return {
+        border: theme.colors.statusBadgeProgressBorder,
+        background: theme.colors.statusBadgeProgressBackground,
+        color: theme.colors.statusBadgeProgressTextColor,
+      }
+    case 'inactive':
+      return {
+        border: theme.colors.statusBadgeInactiveBorder,
+        background: theme.colors.statusBadgeInactiveBackground,
+        color: theme.colors.encivGray,
+      }
+    case 'pending':
+      return {
+        border: theme.colors.secondaryDivider,
+        background: theme.colors.lightGray,
+        color: theme.colors.encivGray,
+      }
+    case 'response':
+      return {
+        border: 'transparent',
+        background: 'transparent',
+        color: theme.colors.statusBadgeResponseColor,
+      }
+    case 'warn':
+      return {
+        border: theme.colors.statusBoxWarnBorder,
+        background: theme.colors.statusBoxWarnBackground,
+        color: theme.colors.title,
+      }
+    case 'notice':
+      return {
+        border: theme.colors.statusBoxNoticeBorder,
+        background: theme.colors.statusBoxNoticeBackground,
+        color: theme.colors.title,
+      }
+    default:
+      return {
+        border: theme.colors.borderGray,
+        background: theme.colors.white,
+        color: theme.colors.title,
+      }
+  }
+}
+
 function StatusBadge(props) {
   const { style = {}, className = '', name = '', status = '', number = undefined, uniform = false, suppressHydrationWarning, ...otherProps } = props
   const classes = useStyles()
@@ -49,35 +110,35 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   progress: {
-    borderColor: theme.colors.statusBadgeProgressBorder,
-    backgroundColor: theme.colors.statusBadgeProgressBackground,
-    color: theme.colors.statusBadgeProgressTextColor,
+    borderColor: getStatusPalette(theme, 'progress').border,
+    backgroundColor: getStatusPalette(theme, 'progress').background,
+    color: getStatusPalette(theme, 'progress').color,
     fontWeight: '100',
   },
   complete: {
-    borderColor: theme.colors.statusBadgeCompletedBorder,
-    backgroundColor: theme.colors.statusBadgeCompletedBackground,
-    color: theme.colors.statusBadgeCompletedTextColor,
+    borderColor: getStatusPalette(theme, 'complete').border,
+    backgroundColor: getStatusPalette(theme, 'complete').background,
+    color: getStatusPalette(theme, 'complete').color,
     fontWeight: '100',
   },
   inactive: {
-    borderColor: theme.colors.statusBadgeInactiveBorder,
-    backgroundColor: theme.colors.statusBadgeInactiveBackground,
-    color: theme.colors.encivGray,
+    borderColor: getStatusPalette(theme, 'inactive').border,
+    backgroundColor: getStatusPalette(theme, 'inactive').background,
+    color: getStatusPalette(theme, 'inactive').color,
   },
   pending: {
-    borderColor: theme.colors.secondaryDivider,
-    backgroundColor: theme.colors.lightGray,
-    color: theme.colors.encivGray,
+    borderColor: getStatusPalette(theme, 'pending').border,
+    backgroundColor: getStatusPalette(theme, 'pending').background,
+    color: getStatusPalette(theme, 'pending').color,
   },
   response: {
     border: `none !important`,
-    color: theme.colors.statusBadgeResponseColor,
+    color: getStatusPalette(theme, 'response').color,
   },
   error: {
-    borderColor: theme.colors.statusBadgeErrorBorder,
-    backgroundColor: theme.colors.statusBadgeErrorBackground,
-    color: theme.colors.statusBadgeErrorTextColor,
+    borderColor: getStatusPalette(theme, 'error').border,
+    backgroundColor: getStatusPalette(theme, 'error').background,
+    color: getStatusPalette(theme, 'error').color,
     fontWeight: '100',
   },
 }))

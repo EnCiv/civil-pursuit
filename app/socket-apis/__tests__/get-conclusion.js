@@ -1,8 +1,6 @@
 // https://github.com/EnCiv/civil-pursuit/issues/305
 
 import getConclusion from '../get-conclusion'
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 
 import { initDiscussion, insertStatementId, Discussions } from '../../dturn/dturn'
 import upsertPoint from '../../socket-apis/upsert-point'
@@ -28,9 +26,7 @@ afterEach(async () => {
 })
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 
   initDiscussion(DISCUSSION_ID, {
     group_size: 5,
@@ -51,8 +47,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await Mongo.disconnect()
-  await MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 test('Fail if discussionId not provided', async () => {
