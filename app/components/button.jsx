@@ -18,6 +18,7 @@ function Button(props) {
     className = '', // may or may not be passed. Should be applied to the outer most tag, after local classNames
     onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
     title = '', // text to display on hover
+    tooltipDurationMs,
     disabled = false,
     tabIndex = 0,
     disableOnClick = false, // if true, the button gets disabled after click and stays disabled - prevents resubmission
@@ -27,7 +28,7 @@ function Button(props) {
     children,
     ...otherProps
   } = props
-  const displayTime = Math.max(8, 0.1 * title.length) * 1000
+  const displayTime = tooltipDurationMs ?? Math.max(8, 0.1 * title.length) * 1000
   const [isDisabled, setIsDisabled] = useState(disabled)
   const [isPortalOpen, setIsPortalOpen] = useState(false)
   const downTimeStampRef = useRef(0) // useRef not useState: must be readable synchronously in handleMouseUp immediately after handleMouseDown sets it
@@ -92,8 +93,9 @@ function Button(props) {
   }
 
   const handleKeyDown = e => {
-    if (e.keyCode === 32 || e.key === ' ') {
-      e.preventDefault() // Prevent page scroll on space
+    if (e.keyCode === 32 || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') {
+      // Prevent page scroll on space and normalize keyboard activation behavior.
+      e.preventDefault()
       e.stopPropagation()
       if (timeRef.current) clearTimeout(timeRef.current)
       timeRef.current = null
@@ -170,13 +172,29 @@ const buttonStyles = createUseStyles(theme => ({
     height: 'auto',
     borderRadius: '0.5rem',
     padding: '0.75rem 1.25rem',
-    fontFamily: 'Inter, sans-serif',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontWeight: 600,
     fontSize: '1rem',
     lineHeight: '1.5rem',
     textAlign: 'center',
-    '&:focus': {
+    transition: `transform ${theme.motion.fast} ${theme.motion.standardEase}, box-shadow ${theme.motion.fast} ${theme.motion.standardEase}, background-color ${theme.motion.fast} ${theme.motion.standardEase}`,
+    '&:focus-visible': {
       outline: `${theme.focusOutline}`,
+    },
+    '&:not([aria-disabled="true"]):hover': {
+      transform: 'translateY(-0.08rem)',
+    },
+    '&:active:not([aria-disabled="true"])': {
+      transform: 'translateY(0.04rem)',
+    },
+    '&[aria-disabled="true"]': {
+      transform: 'none',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+      '&:not([aria-disabled="true"]):hover, &:active:not([aria-disabled="true"])': {
+        transform: 'none',
+      },
     },
     // Add any other common styles here
   },
@@ -186,6 +204,7 @@ const buttonStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.white,
     color: theme.colors.primaryButtonBlue,
     border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+    boxShadow: '0 0.125rem 0 rgba(6, 51, 92, 0.14), 0 0.35rem 0.7rem rgba(6, 51, 92, 0.1)',
 
     '&[aria-disabled="true"]': {
       backgroundColor: theme.colors.white,
@@ -214,6 +233,7 @@ const buttonStyles = createUseStyles(theme => ({
       color: theme.colors.white,
       border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
       textDecoration: 'none',
+      boxShadow: 'inset 0 0.125rem 0.25rem rgba(0, 0, 0, 0.18)',
     },
 
     '&[aria-disabled="true"]:hover, &[aria-disabled="true"]:active': {
@@ -226,6 +246,7 @@ const buttonStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.white,
     color: theme.colors.textBrown,
     border: `0.125rem solid ${theme.colors.encivYellow}`,
+    boxShadow: '0 0.125rem 0 rgba(102, 68, 0, 0.14), 0 0.35rem 0.7rem rgba(102, 68, 0, 0.1)',
 
     '&:hover, &.hover': {
       textDecoration: 'underline',
@@ -247,6 +268,7 @@ const buttonStyles = createUseStyles(theme => ({
     backgroundColor: theme.colors.primaryButtonBlue,
     color: theme.colors.white,
     border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+    boxShadow: '0 0.125rem 0 rgba(1, 23, 44, 0.28), 0 0.35rem 0.7rem rgba(6, 51, 92, 0.2)',
 
     '&[aria-disabled="true"]': {
       backgroundColor: theme.colors.borderGray,
@@ -269,6 +291,7 @@ const buttonStyles = createUseStyles(theme => ({
       backgroundColor: theme.colors.mouseDownPrimeBlue,
       border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
       textDecoration: 'none',
+      boxShadow: 'inset 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2)',
     },
     '&[aria-disabled="true"]:hover, &[aria-disabled="true"]:active': {
       textDecoration: 'none',

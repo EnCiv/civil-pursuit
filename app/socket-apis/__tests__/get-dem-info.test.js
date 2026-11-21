@@ -38,24 +38,13 @@ describe('get-dem-info socket API', () => {
   })
 
   const createPoint = async (userId, parentId) => {
-    const point = {
-      _id: new ObjectId(),
-      userId,
-      parentId,
-      subject: 'Test Point',
-      description: 'Test description',
-    }
+    const point = global.makeTestPoint({ userId, parentId })
     await Points.insertOne(point)
     return point
   }
 
   const createJsform = async (userId, parentId, moreDetails) => {
-    const jsform = {
-      _id: new ObjectId(),
-      userId,
-      parentId,
-      moreDetails,
-    }
+    const jsform = global.makeTestJsform({ userId, parentId, moreDetails })
     await Jsforms.insertOne(jsform)
     return jsform
   }

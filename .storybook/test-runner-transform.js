@@ -14,6 +14,12 @@ const path = require('path')
 
 // Absolute path to the test-runner dist so the worker subprocess can require it
 const testRunnerDist = path.resolve('./node_modules/@storybook/test-runner/dist/index.js')
+const retryCondition = "err.toString().includes('Execution context was destroyed')"
+const retryConditionWithMissingTest = `${retryCondition} || err.toString().includes('__test is not defined')`
+
+function makeMissingTestRetryable(code) {
+  return code.replaceAll(retryCondition, retryConditionWithMissingTest)
+}
 
 // Inline worker code executed in a subprocess per-file.
 // Jest caches the transform output so this only runs once per story file.
@@ -26,7 +32,9 @@ process.stdin.on('end', function() {
   var transformPlaywright = require(${JSON.stringify(testRunnerDist)}).transformPlaywright
   transformPlaywright(payload.src, payload.filename)
     .then(function(code) {
-      process.stdout.write(JSON.stringify({ code: code || payload.src }))
+      var transformedCode = code || payload.src
+      transformedCode = transformedCode.replaceAll(${JSON.stringify(retryCondition)}, ${JSON.stringify(retryConditionWithMissingTest)})
+      process.stdout.write(JSON.stringify({ code: transformedCode }))
     })
     .catch(function() {
       process.stdout.write(JSON.stringify({ code: payload.src }))
@@ -60,6 +68,6 @@ module.exports = {
   async processAsync(src, filename) {
     var transformPlaywright = require(testRunnerDist).transformPlaywright
     var code = await transformPlaywright(src, filename)
-    return { code: code || src }
+    return { code: code ? makeMissingTestRetryable(code) : src }
   },
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import Ranking from '../app/components/ranking'
 import common, { onDoneDecorator } from './common'
-import { expect, userEvent, within } from 'storybook/test'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
 
 export default {
   component: Ranking,
@@ -216,6 +216,24 @@ const generateComponent = (numericalIdentifier, disabled = false, defaultValue =
 
 export const Empty = {
   args: {},
+}
+
+export const KeyboardActivationFiresOnce = {
+  args: {},
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    const least = await waitFor(() => canvas.getByRole('radio', { name: 'Least' }))
+    await userEvent.click(least)
+    await waitFor(() => expect(args.onDone.mock.calls).toHaveLength(1))
+    expect(args.onDone.mock.calls[0][0]).toMatchObject({ valid: true, value: 'Least' })
+
+    args.onDone.mockClear()
+    const neutral = canvas.getByRole('radio', { name: 'Neutral' })
+    neutral.focus()
+    await userEvent.keyboard('{Enter}')
+    await waitFor(() => expect(args.onDone.mock.calls).toHaveLength(1))
+    expect(args.onDone.mock.calls[0][0]).toMatchObject({ valid: true, value: 'Neutral' })
+  },
 }
 
 export const LeastOnDone = {

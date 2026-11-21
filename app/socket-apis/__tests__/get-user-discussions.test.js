@@ -1,7 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/385
 
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Iota } from 'civil-server'
 import { ObjectId } from 'mongodb'
 import Points from '../../models/points'
@@ -36,17 +34,12 @@ beforeEach(async () => {
 })
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 })
 
 afterAll(async () => {
-  await Iota.deleteMany({})
-  await Points.deleteMany({})
-  await Dturns.deleteMany({})
-  await Mongo.disconnect()
-  await MemoryServer.stop()
+  await global.clearMongoCollections([Iota, Points, Dturns])
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 afterEach(async () => {

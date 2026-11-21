@@ -18,13 +18,13 @@ const discussionId = '1001'
 
 const rankPoints = [
   {
-    point: { _id: '1', subject: 'subject 1', description: 'description 1', parentId: discussionId },
+    point: { _id: '1', subject: 'Safer school crossings', description: 'Clear crossings and slower traffic help students get to class safely.', parentId: discussionId },
   },
   {
-    point: { _id: '2', subject: 'subject 2', description: 'description 2', parentId: discussionId },
+    point: { _id: '2', subject: 'Reliable evening bus service', description: 'Later routes help shift workers reach home and essential services.', parentId: discussionId },
   },
   {
-    point: { _id: '3', subject: 'subject 3', description: 'description 3', parentId: discussionId },
+    point: { _id: '3', subject: 'Affordable childcare nearby', description: 'More local care options help parents work while children learn and grow.', parentId: discussionId },
   },
 ]
 const rank1preMost = {
@@ -162,6 +162,32 @@ export const onDoneIsCalledAfterUserChangesRank = {
         value: 0.3333333333333333,
         delta: { ...rank1preMost, category: 'neutral' },
       })
+    })
+  },
+}
+
+export const smallListCanUseMostAndLeast = {
+  args: {
+    reducedPointList: rankPoints.slice(0, 2),
+    preRankByParentId: {},
+    discussionId,
+    round,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+
+    await waitFor(() => {
+      expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({ valid: false, value: 0 })
+    })
+
+    await userEvent.click(within(canvas.getAllByRole('radiogroup')[0]).getByRole('radio', { name: 'Most' }))
+    await waitFor(() => {
+      expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({ valid: false, value: 0.5 })
+    })
+
+    await userEvent.click(within(canvas.getAllByRole('radiogroup')[1]).getByRole('radio', { name: 'Least' }))
+    await waitFor(() => {
+      expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({ valid: true, value: 1 })
     })
   },
 }

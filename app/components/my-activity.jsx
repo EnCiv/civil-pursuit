@@ -6,6 +6,7 @@ import cx from 'classnames'
 import ShowDualPointList from './show-dual-point-list'
 import HowYouRated from './how-you-rated'
 import StatusBadge from './status-badge'
+import { H, Level } from 'react-accessible-headings'
 
 function MyActivity(props) {
   const { className, data = {}, onBackToDiscussions, ...otherProps } = props
@@ -44,7 +45,9 @@ function MyActivity(props) {
     <div className={cx(className)} {...otherProps}>
       {/* Header Section */}
       <div className={classes.headerContainer}>
-        <h1 className={classes.pageHeader}>My Activity</h1>
+        <Level value={1}>
+          <H className={classes.pageHeader}>My Activity</H>
+        </Level>
         <div className={classes.breadcrumbs}>
           <a
             href="#"
@@ -68,14 +71,14 @@ function MyActivity(props) {
           <div className={classes.card}>
             {subject && (
               <div className={classes.subsection}>
-                <h2 className={classes.promptHeader}>Prompt</h2>
+                <H className={classes.promptHeader}>Prompt</H>
                 <p className={classes.promptText}>{subject}</p>
               </div>
             )}
 
             {userResponse && (
               <div className={classes.subsection}>
-                <h2 className={classes.promptHeader}>Your Response</h2>
+                <H className={classes.promptHeader}>Your Response</H>
                 <p className={classes.responseText}>{userResponse.description}</p>
               </div>
             )}
@@ -83,7 +86,9 @@ function MyActivity(props) {
             {/* How others rated your response */}
             {percentages && (
               <div className={classes.ratingsSection}>
-                <h3 className={classes.promptHeader}>How others rated your response</h3>
+                <Level>
+                  <H className={classes.promptHeader}>How others rated your response</H>
+                </Level>
                 <div className={classes.badgeContainer}>
                   <StatusBadge status="complete" name="Most Important" number={`${percentages.most}%`} />
                   <StatusBadge status="error" name="Least Important" number={`${percentages.least}%`} />
@@ -97,7 +102,7 @@ function MyActivity(props) {
         {/* Second section: Participant's response to statement */}
         {(processedRanks.mosts.length > 0 || processedRanks.leasts.length > 0) && (
           <div className={classes.section}>
-            <h2 className={classes.sectionHeader}>Participant's response to the statement</h2>
+            <H className={classes.sectionHeader}>Participant's response to the statement</H>
             <ShowDualPointList leftPoints={processedRanks.mosts} rightPoints={processedRanks.leasts} leftHeader="Why It's Most Important" rightHeader="Why It's Least Important" />
           </div>
         )}

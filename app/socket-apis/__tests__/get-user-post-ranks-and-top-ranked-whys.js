@@ -1,6 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/208
 
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import { Mongo } from '@enciv/mongo-collections'
 import { ObjectId } from 'mongodb'
 import Points from '../../models/points'
@@ -15,15 +14,12 @@ const USERID = '682b642bda43fdcd11975f45'
 const synuser = { synuser: { id: USERID } }
 
 beforeAll(async () => {
-  memoryServer = await MongoMemoryServer.create()
-  const uri = memoryServer.getUri()
-  await Mongo.connect(uri)
+  memoryServer = await global.startMongoTestServer()
   db = Mongo.db
 })
 
 afterAll(async () => {
-  await Mongo.disconnect()
-  await memoryServer.stop()
+  await global.stopMongoTestServer(memoryServer)
 })
 
 beforeEach(async () => {

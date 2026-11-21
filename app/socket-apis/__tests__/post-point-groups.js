@@ -4,8 +4,6 @@ import postPointGroups from '../post-point-groups'
 import insertDturnStatement from '../insert-dturn-statement'
 import { initDiscussion } from '../../dturn/dturn'
 
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 
 // Config
 process.env.JEST_TEST_ENV = true
@@ -28,9 +26,7 @@ afterEach(async () => {
 })
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 
   await initDiscussion(discussionId, {
     updateUInfo: obj => {
@@ -51,8 +47,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  Mongo.disconnect()
-  MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 // Tests

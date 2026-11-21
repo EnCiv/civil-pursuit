@@ -288,11 +288,11 @@ function PairWise({ children }) {
       <div className={classes.slot} ref={slotRef}>
         <div ref={placeholderRef} className={classes.placeholder} style={singleOverlay || isLastTwo ? { border: 'none', background: 'transparent' } : undefined} />
         {idx != null ? (
-          <div className={classes.itemWrapper} onClick={() => startReplace(side)}>
+          <button type="button" className={classes.itemWrapper} onClick={() => startReplace(side)} aria-label={`Replace ${side} point`}>
             <div data-pair-item="true" className={classes.item} style={(singleOverlay && singleOverlay.index === idx) || singleCentered ? { visibility: 'hidden' } : undefined}>
               {childArray[idx]}
             </div>
-          </div>
+          </button>
         ) : null}
       </div>
     )
@@ -305,7 +305,7 @@ function PairWise({ children }) {
     const finalChild = React.isValidElement(rawChild) ? React.cloneElement(rawChild, { style: { ...(rawChild.props && rawChild.props.style ? rawChild.props.style : {}), height: 'auto', minHeight: 0 } }) : rawChild
 
     return (
-      <div className={classes.container} ref={containerRef}>
+      <div className={classes.container} ref={containerRef} data-animating={animating || !!incoming || !!singleOverlay ? 'true' : 'false'}>
         <div className={classes.centerSingle}>
           <div style={{ width: '100%', boxSizing: 'border-box' }}>
             {/* keep placeholder vertical space so card sits at the same vertical position */}
@@ -326,7 +326,7 @@ function PairWise({ children }) {
     const finalChild = React.isValidElement(rawChild) ? React.cloneElement(rawChild, { style: { ...(rawChild.props && rawChild.props.style ? rawChild.props.style : {}), height: 'auto', minHeight: 0 } }) : rawChild
 
     return (
-      <div className={classes.container} ref={containerRef}>
+      <div className={classes.container} ref={containerRef} data-animating={animating || !!incoming || !!singleOverlay ? 'true' : 'false'}>
         <div className={classes.centerSingle}>
           <div style={{ width: '100%', boxSizing: 'border-box' }}>
             {/* keep placeholder vertical space so final card stays at same vertical position */}
@@ -350,7 +350,7 @@ function PairWise({ children }) {
   }
 
   return (
-    <div className={classes.container} ref={containerRef}>
+    <div className={classes.container} ref={containerRef} data-animating={animating || !!incoming || !!singleOverlay ? 'true' : 'false'}>
       <div className={classes.grid}>
         {renderSlot('left')}
         {renderSlot('right')}
@@ -403,6 +403,13 @@ const useStyles = createUseStyles(theme => ({
     background: '#fafafa',
   },
   itemWrapper: {
+    appearance: 'none',
+    border: 'none',
+    margin: 0,
+    padding: 0,
+    background: 'transparent',
+    font: 'inherit',
+    cursor: 'pointer',
     flex: 1,
     display: 'flex',
     minHeight: 0,

@@ -12,7 +12,7 @@ import StepBar from './step-bar'
 import StepFooter from './step-footer'
 
 export const StepSlider = props => {
-  const { children, onDone, steps, className, stepName, stepIntro, defaultStepName, ...otherProps } = props // stepName and stepIntro are not used but are passed to children
+  const { children, onDone, steps, className, stepName, stepIntro, defaultStepName, testSteps, defaultValue, preserveLocalStorage, ...otherProps } = props
   const classes = useStyles(props)
   const stepBarRef = useRef()
   const stepFooterRef = useRef()
@@ -74,7 +74,7 @@ export const StepSlider = props => {
         return { ...state, transitions: true }
       case 'moveTo':
         const newStepStatuses = state.stepStatuses?.map((stepStatus, i) => {
-          if (i > state.currentStep && i < action.to) return { ...stepStatus, skip: true }
+          if (i > state.currentStep && i < action.to && !stepStatus.seen && !stepStatus.complete && !stepStatus.skip) return { ...stepStatus, skip: true }
           else return stepStatus
         })
         return { ...state, transitions: false, stepStatuses: newStepStatuses, nextStep: action.to }
@@ -126,6 +126,15 @@ export const StepSlider = props => {
         } else {
           return state
         }
+      case 'markLoadedStepsComplete': {
+        let changed = false
+        const stepStatuses = state.stepStatuses.map((stepStatus, index) => {
+          if (!action.indices.includes(index) || stepStatus.complete) return stepStatus
+          changed = true
+          return { ...stepStatus, complete: true, seen: true, skip: false }
+        })
+        return changed ? { ...state, stepStatuses } : state
+      }
     }
   }
   // if the other props have changed, we need to rerender the children
@@ -143,9 +152,21 @@ export const StepSlider = props => {
   // Keep track of each step's seen/completion status
   // Populate statuses with initial values
   const defaultStepIndex = defaultStepName && typeof stepNameToIndex[defaultStepName] === 'number' ? stepNameToIndex[defaultStepName] : 0
-  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i <= defaultStepIndex, complete: false, skip: false })) : undefined
+  const initialStepStatuses = steps ? steps.map((step, i) => ({ ...step, seen: i <= defaultStepIndex || step.complete === true, complete: step.complete === true, skip: false })) : undefined
 
   const [state, dispatch] = useReducer(reducer, { currentStep: defaultStepIndex, nextStep: defaultStepIndex, transitions: false, stepStatuses: initialStepStatuses })
+  const appliedLoadedCompletions = useRef(new Set((steps || []).flatMap((step, index) => (step.complete === true ? [index] : []))))
+
+  useEffect(() => {
+    const indices = []
+    steps?.forEach((step, index) => {
+      if (step.complete === true && !appliedLoadedCompletions.current.has(index)) {
+        appliedLoadedCompletions.current.add(index)
+        indices.push(index)
+      }
+    })
+    if (indices.length) dispatch({ type: 'markLoadedStepsComplete', indices })
+  }, [steps])
 
   function cloneChild(currentStep) {
     return React.cloneElement(children[currentStep], {
@@ -246,31 +267,33 @@ export const StepSlider = props => {
           )}
         </div>
       )}
-      <div className={classes.outerWrapper} ref={outerRef}>
-        <div
-          ref={stepChildRapper}
-          data-transitioning={state.transitions ? 'true' : 'false'}
-          data-current-step={state.currentStep}
-          style={{
-            left: -outerRect.width * state.currentStep + 'px',
-            width: Math.max(outerRect.width, outerRect.clientWidth) * cachedChildren.length + 'px', // clientWidth is an integer and may get rounded up vs width in cases (desktop scaled monitor)
-            height: panelRefs.current[state.currentStep]?.offsetHeight + 'px',
-          }}
-          className={cx(classes.stepChildWrapper, state.transitions && classes.transitions)}
-        >
-          {outerRect.width &&
-            cachedChildren.map((child, i) => (
-              <div
-                key={i}
-                style={{
-                  width: outerRect.clientWidth + 'px',
-                }}
-                className={classes.panel}
-                ref={el => (panelRefs.current[i] = el)}
-              >
-                {child}
-              </div>
-            ))}
+      <div className={classes.contentSurface}>
+        <div className={classes.outerWrapper} ref={outerRef}>
+          <div
+            ref={stepChildRapper}
+            data-transitioning={state.transitions ? 'true' : 'false'}
+            data-current-step={state.currentStep}
+            style={{
+              left: -outerRect.width * state.currentStep + 'px',
+              width: Math.max(outerRect.width, outerRect.clientWidth) * cachedChildren.length + 'px', // clientWidth is an integer and may get rounded up vs width in cases (desktop scaled monitor)
+              height: panelRefs.current[state.currentStep]?.offsetHeight + 'px',
+            }}
+            className={cx(classes.stepChildWrapper, state.transitions && classes.transitions)}
+          >
+            {outerRect.width &&
+              cachedChildren.map((child, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: outerRect.clientWidth + 'px',
+                  }}
+                  className={classes.panel}
+                  ref={el => (panelRefs.current[i] = el)}
+                >
+                  {child}
+                </div>
+              ))}
+          </div>
         </div>
       </div>
       {steps && (
@@ -294,7 +317,15 @@ export const StepSlider = props => {
     </div>
   )
 }
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
+  contentSurface: {
+    width: '100%',
+    boxSizing: 'border-box',
+    padding: '2.25rem 1.5rem 1.5rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      padding: '1rem 0.75rem',
+    },
+  },
   panel: {
     display: 'inline-block',
     verticalAlign: 'top',
@@ -313,8 +344,8 @@ const useStyles = createUseStyles({
   },
   outerWrapper: {
     position: 'relative', // was absolute: so that clip will work
-    width: 'inherit',
-    overflow: 'hidden',
+    width: '100%',
+    overflow: 'clip',
     height: 'auto',
     clip: 'rect(0,auto,auto,0)', // to make sure the fixed position NavBar in a child is also hidden
     backgroundColor: 'inherit', // otherwise background is white
@@ -328,8 +359,11 @@ const useStyles = createUseStyles({
     position: 'relative',
   },
   transitions: {
-    transition: 'all 0.5s linear',
+    transition: 'left 500ms cubic-bezier(0.22, 0.61, 0.36, 1), height 300ms ease',
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
   },
-})
+}))
 
 export default StepSlider

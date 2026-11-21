@@ -36,16 +36,16 @@ function SubWrap(Component) {
 }
 
 function buildChildren(steps) {
-  return steps.map(step => {
+  return steps.map((step, index) => {
     const { webComponent, ...props } = step
 
     const LookupResult = WebComponents[webComponent]
     if (LookupResult) {
       // Pass all props from step obj except WebComponent
-      return <LookupResult {...props} />
+      return <LookupResult key={props.stepName ? `${props.stepName}-${index}` : props.name ? `${props.name}-${index}` : `${step.webComponent}-${index}`} {...props} />
     } else {
       console.error(`Couldn't render step - component '${webComponent}' was not found in WebComponents.`)
-      return <div>Couldn't render step - component '{webComponent}' was not found in WebComponents.</div>
+      return <div key={props.stepName ? `${props.stepName}-${index}` : props.name ? `${props.name}-${index}` : `${webComponent}-${index}`}>Couldn't render step - component '{webComponent}' was not found in WebComponents.</div>
     }
   })
 }

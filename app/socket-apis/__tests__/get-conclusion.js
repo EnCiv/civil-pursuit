@@ -1,15 +1,11 @@
 // https://github.com/EnCiv/civil-pursuit/issues/305
 
 import getConclusion from '../get-conclusion'
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 
 import { initDiscussion, insertStatementId, Discussions } from '../../dturn/dturn'
 import upsertPoint from '../../socket-apis/upsert-point'
 import upsertRank from '../../socket-apis/upsert-rank'
 import Points from '../../models/points'
-
-const ObjectID = require('bson-objectid')
 
 let MemoryServer
 
@@ -28,9 +24,7 @@ afterEach(async () => {
 })
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 
   initDiscussion(DISCUSSION_ID, {
     group_size: 5,
@@ -51,8 +45,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await Mongo.disconnect()
-  await MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 test('Fail if discussionId not provided', async () => {
@@ -67,12 +60,12 @@ test('Fail if discussionId not provided', async () => {
 test('Fail if conclusion not available/discussion not complete.', async () => {
   const cb = jest.fn()
 
-  const statement = {
-    _id: ObjectID().toString(),
+  const statement = global.makeTestPoint({
+    _id: global.makeTestId().toString(),
     subject: 'proxy random number',
     description: 'desc 1',
     userId: synuser.id,
-  }
+  })
 
   await insertStatementId(DISCUSSION_ID, synuser.id, statement._id)
 
@@ -127,7 +120,7 @@ test('Return data if discussion is complete.', async () => {
       const shownStatementIds = roundData['shownStatementIds']
       for (let statementId in shownStatementIds) {
         if (shownStatementIds[statementId]['rank'] == 1) {
-          const rankData = { parentId: statementId, stage: 'post', round: round, discussionId: DISCUSSION_ID2, category: 'most', userId: userId }
+          const rankData = global.makeTestRank({ parentId: statementId, round, discussionId: DISCUSSION_ID2, category: 'most', userId })
           await upsertRank.call({ synuser: { id: userId } }, rankData, res => {})
         }
       }

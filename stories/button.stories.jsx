@@ -328,22 +328,14 @@ export const DeferredClickAfterBlurKeyboard = {
     // Tab to the button (this triggers blur on input and should enable button)
     await userEvent.tab()
 
-    // At this point blur has fired and button should be becoming enabled
-    // But there might be a race condition with focus
-    // Wait a bit for state updates
-    await new Promise(resolve => setTimeout(resolve, 150))
-
-    // Button should now be enabled
-    expect(button.getAttribute('aria-disabled')).toEqual('false')
+    // Wait for the blur/state updates to enable the button
+    await waitFor(() => expect(button.getAttribute('aria-disabled')).toEqual('false'))
 
     // Press space to activate the button
     await userEvent.keyboard(' ')
 
     // Wait for the click handler to execute
-    await new Promise(resolve => setTimeout(resolve, 100))
-
-    // Click count should have incremented
-    expect(canvasElement.textContent).toMatch(/Click Count:\s*1/)
+    await waitFor(() => expect(canvasElement.textContent).toMatch(/Click Count:\s*1/))
   },
 }
 
@@ -375,8 +367,7 @@ export const DisabledButtonClickIgnoredInteractive = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    // Wait a moment for component to fully render
-    await new Promise(resolve => setTimeout(resolve, 50))
+    await waitFor(() => expect(canvas.getByRole('button', { name: /Disabled Button/i })).toBeInTheDocument())
 
     const button = canvas.getByRole('button', { name: /Disabled Button/i })
 
@@ -389,8 +380,7 @@ export const DisabledButtonClickIgnoredInteractive = {
     // Click the disabled button
     await userEvent.click(button)
 
-    // Wait a bit for any potential state updates
-    await new Promise(resolve => setTimeout(resolve, 100))
+    await waitFor(() => expect(canvasElement.textContent).toMatch(/Click Count:\s*0/))
 
     // Click count should still be 0 (click was ignored)
     expect(canvasElement.textContent).toMatch(/Click Count:\s*0/)

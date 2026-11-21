@@ -1,11 +1,12 @@
 // https://github.com/EnCiv/civil-pursuit/issues/49
 // https://github.com/EnCiv/civil-pursuit/issues/198
 // https://github.com/EnCiv/civil-pursuit/issues/249
+// https://github.com/EnCiv/civil-pursuit/issues/390
 
 // groupedPoints and pointList are both a list of pointObj
 // pointList is the original list of points, we set groupedPoints to pointList if it is empty
 'use strict'
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
 import { useDeliberationContext, deriveReducedPointList } from '../deliberation-context'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
@@ -68,6 +69,8 @@ export function GroupPoints(props) {
 
   const classes = useStylesFromThemeFunction(props)
   const delayedOnDone = value => setTimeout(() => onDone(value), 0)
+  const [activeTab, setActiveTab] = useState('points')
+  const groupingTabRefs = useRef([])
 
   // using an object for gs (grouping-state) makes it easier understand which variable in the code refers to the new value being generated, and which refers to the old
   // also reduces the number of different set-somethings that have to be called each time.
@@ -78,6 +81,88 @@ export function GroupPoints(props) {
     yourGroupsSelected: [], // points that have been grouped that have been selected again to be incorporated into a group
     selectLead: null, // the new point group, with no point but with a group for selecting the Lead
   })
+  const selectedPointIds = new Set(gs.selectedIds)
+  const selectedPointsCount = gs.pGsToGroup.filter(pointGroup => selectedPointIds.has(pointGroup.point._id)).length
+  const selectedGroupsCount = gs.yourGroups.filter(pointGroup => selectedPointIds.has(pointGroup.point._id)).length
+  const [selectLeadMounted, setSelectLeadMounted] = useState(false)
+  const [selectLeadPointGroup, setSelectLeadPointGroup] = useState(null)
+  const [returningPointIds, setReturningPointIds] = useState([])
+  const [departingPointGroups, setDepartingPointGroups] = useState([])
+  const groupsContainerRef = useRef(null)
+  const yourGroupsRef = useRef(null)
+  const previousGroupPositions = useRef(null)
+  const previousYourGroupsTop = useRef(null)
+
+  useEffect(() => {
+    if (!gs.yourGroups.length && activeTab === 'yourGroups') setActiveTab('points')
+  }, [gs.yourGroups.length, activeTab])
+
+  const handleTabKeyDown = (event, tabIndex) => {
+    let nextTabIndex
+    if (event.key === 'Home') nextTabIndex = 0
+    else if (event.key === 'End') nextTabIndex = gs.yourGroups.length ? 1 : 0
+    else if (event.key === 'ArrowRight' && tabIndex === 0 && gs.yourGroups.length) nextTabIndex = 1
+    else if (event.key === 'ArrowLeft' && tabIndex === 1) nextTabIndex = 0
+    if (nextTabIndex === undefined) return
+    event.preventDefault()
+    const nextTab = nextTabIndex === 0 ? 'points' : 'yourGroups'
+    setActiveTab(nextTab)
+    groupingTabRefs.current[nextTabIndex]?.focus()
+  }
+
+  useEffect(() => {
+    if (gs.selectLead) {
+      setSelectLeadPointGroup(gs.selectLead)
+      setSelectLeadMounted(true)
+    }
+  }, [gs.selectLead])
+
+  useLayoutEffect(() => {
+    const previousPositions = previousGroupPositions.current
+    previousGroupPositions.current = null
+    const container = groupsContainerRef.current
+    if (!previousPositions || !container || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+
+    for (const element of container.children) {
+      const pointId = element.dataset.pointId
+      const previousPosition = previousPositions.get(pointId)
+      if (!pointId || !previousPosition || typeof element.animate !== 'function') continue
+      const currentPosition = element.getBoundingClientRect()
+      const deltaX = previousPosition.left - currentPosition.left
+      const deltaY = previousPosition.top - currentPosition.top
+      if (!deltaX && !deltaY) continue
+      element.animate([{ transform: `translate(${deltaX}px, ${deltaY}px)` }, { transform: 'translate(0, 0)' }], {
+        duration: 420,
+        easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+      })
+    }
+  }, [gs.pGsToGroup])
+
+  useLayoutEffect(() => {
+    const wrapper = yourGroupsRef.current
+    if (!wrapper) {
+      previousYourGroupsTop.current = null
+      return
+    }
+
+    const currentTop = wrapper.getBoundingClientRect().top
+    const previousTop = previousYourGroupsTop.current
+    if (previousTop !== null && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+      const deltaY = previousTop - currentTop
+      if (deltaY && typeof wrapper.animate === 'function') {
+        wrapper.animate([{ transform: `translateY(${deltaY}px)` }, { transform: 'translateY(0)' }], {
+          duration: 420,
+          easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+        })
+      }
+    }
+    previousYourGroupsTop.current = currentTop
+
+    return () => {
+      const currentWrapper = yourGroupsRef.current
+      if (currentWrapper) previousYourGroupsTop.current = currentWrapper.getBoundingClientRect().top
+    }
+  }, [gs.pGsToGroup])
 
   // on original render, notify parent this is done (if it is)
   useEffect(() => {
@@ -113,6 +198,43 @@ export function GroupPoints(props) {
   }
 
   const handleCreateGroupClick = () => {
+    if (gs.selectedIds.length < 2) return
+    const container = groupsContainerRef.current
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    const availablePanelVisible = container?.getClientRects().length > 0
+    if (container && availablePanelVisible && !reducedMotion) {
+      const containerRect = container.getBoundingClientRect()
+      const previousPositions = new Map()
+      for (const element of container.children) {
+        if (!element.dataset.pointId) continue
+        const rect = element.getBoundingClientRect()
+        previousPositions.set(element.dataset.pointId, { left: rect.left, top: rect.top })
+      }
+      previousGroupPositions.current = previousPositions
+      const selectedIds = new Set(gs.selectedIds)
+      setDepartingPointGroups(
+        gs.pGsToGroup
+          .filter(pGD => selectedIds.has(pGD.point._id))
+          .map(pointGroup => {
+            const rect = container.querySelector(`[data-point-id="${pointGroup.point._id}"]`)?.getBoundingClientRect()
+            if (!rect) return null
+            return {
+              id: pointGroup.point._id,
+              pointGroup,
+              style: {
+                left: rect.left - containerRect.left,
+                top: rect.top - containerRect.top,
+                width: rect.width,
+                height: rect.height,
+              },
+            }
+          })
+          .filter(Boolean)
+      )
+    } else {
+      previousGroupPositions.current = null
+      setDepartingPointGroups([])
+    }
     setGs(oldGs => {
       if (oldGs.selectedIds.length < 2) {
         return oldGs
@@ -180,6 +302,10 @@ export function GroupPoints(props) {
 
   const onYourPointEdited = ({ valid, value }) => {
     if (!valid) return
+    const returnedPointIds = (value.removedPgs || []).map(pG => pG.point?._id).filter(Boolean)
+    if (returnedPointIds.length) {
+      setReturningPointIds(currentIds => [...new Set([...currentIds, ...returnedPointIds])])
+    }
     setGs(oldGs => {
       let index
       const pGsToGroup = [...oldGs.pGsToGroup]
@@ -232,8 +358,9 @@ export function GroupPoints(props) {
         </div>
         <div className={classes.buttons}>
           <div className={classes.primaryButton}>
-            <PrimaryButton disabled={gs.selectedIds.length < 2} className={`${classes.primaryButton} ${gs.selectedIds.length < 2 ? classes.createGroupDisabled : ''}`} onClick={handleCreateGroupClick}>
-              Create Group
+            <PrimaryButton disabled={gs.selectedIds.length < 2} className={`${classes.primaryButton} ${gs.selectedIds.length < 2 ? classes.createGroupDisabled : ''}`} onDone={handleCreateGroupClick}>
+              <span>Group Selected Responses</span>
+              <span className={classes.countBadge}>{gs.selectedIds.length}</span>
             </PrimaryButton>
           </div>
           {/* ui works without this but need design feedback
@@ -246,23 +373,100 @@ export function GroupPoints(props) {
           </SecondaryButton> */}
         </div>
       </div>
-      {gs.selectLead && (
-        <div className={classes.selectLead}>
-          <PointGroup pointGroup={gs.selectLead} vState={'selectLead'} onDone={onSelectLeadDone} />
+      {(gs.selectLead || selectLeadMounted) && (
+        <div
+          role="region"
+          aria-label="Select lead response"
+          className={cx(classes.selectLead, gs.selectLead ? classes.selectLeadOpening : classes.selectLeadClosing)}
+          onAnimationEnd={event => {
+            if (event.target === event.currentTarget && !gs.selectLead) {
+              setSelectLeadMounted(false)
+              setSelectLeadPointGroup(null)
+            }
+          }}
+        >
+          <PointGroup pointGroup={gs.selectLead || selectLeadPointGroup} vState={'selectLead'} onDone={onSelectLeadDone} />
         </div>
       )}
-      {
-        /*!gs.selectLead&& */ <div className={classes.groupsContainer}>
-          {gs.pGsToGroup.map(pGD => (
-            <PointGroup key={pGD.point._id} pointGroup={pGD} vState={gs.selectLead ? 'disabled' : 'view'} select={gs.selectedIds.some(id => id === pGD.point._id)} onClick={() => togglePointSelection(pGD.point._id)} />
+      <div className={classes.groupTabs} role="tablist" aria-label="Grouping sections">
+        <button
+          ref={element => (groupingTabRefs.current[0] = element)}
+          id="grouping-points-tab"
+          className={cx(classes.groupTab, activeTab === 'points' && classes.groupTabSelected)}
+          type="button"
+          role="tab"
+          aria-label={selectedPointsCount > 0 ? `Points, ${selectedPointsCount} selected` : `${gs.pGsToGroup.length} points`}
+          aria-selected={activeTab === 'points'}
+          aria-controls="grouping-points-panel"
+          tabIndex={activeTab === 'points' ? 0 : -1}
+          onClick={() => setActiveTab('points')}
+          onKeyDown={event => handleTabKeyDown(event, 0)}
+        >
+          <span>Points</span>
+          <span className={cx(classes.groupTabCount, selectedPointsCount > 0 && classes.groupTabCountSelected)}>
+            {selectedPointsCount > 0 ? selectedPointsCount : gs.pGsToGroup.length}
+          </span>
+        </button>
+        <button
+          ref={element => (groupingTabRefs.current[1] = element)}
+          id="grouping-your-groups-tab"
+          className={cx(classes.groupTab, activeTab === 'yourGroups' && classes.groupTabSelected)}
+          type="button"
+          role="tab"
+          aria-label={selectedGroupsCount > 0 ? `Your Groups, ${selectedGroupsCount} selected` : `${gs.yourGroups.length} groups`}
+          aria-selected={activeTab === 'yourGroups'}
+          aria-controls="grouping-your-groups-panel"
+          tabIndex={activeTab === 'yourGroups' ? 0 : -1}
+          disabled={!gs.yourGroups.length}
+          onClick={() => setActiveTab('yourGroups')}
+          onKeyDown={event => handleTabKeyDown(event, 1)}
+        >
+          <span>Your Groups</span>
+          <span className={cx(classes.groupTabCount, selectedGroupsCount > 0 && classes.groupTabCountSelected)}>
+            {selectedGroupsCount > 0 ? selectedGroupsCount : gs.yourGroups.length}
+          </span>
+        </button>
+      </div>
+      <div id="grouping-points-panel" className={classes.tabPanel} role="tabpanel" aria-labelledby="grouping-points-tab" tabIndex={0} hidden={activeTab !== 'points'}>
+        <div ref={groupsContainerRef} className={classes.groupsContainer} role="group" aria-label="Available responses to group">
+          {departingPointGroups.map(({ id, pointGroup, style }) => (
+            <div
+              key={`departing-${id}`}
+              className={classes.departingPoint}
+              style={style}
+              aria-hidden="true"
+              inert
+              onAnimationEnd={event => {
+                if (event.target === event.currentTarget) setDepartingPointGroups(current => current.filter(item => item.id !== id))
+              }}
+            >
+              <PointGroup pointGroup={pointGroup} vState="view" select onClick={() => {}} />
+            </div>
           ))}
+          {gs.pGsToGroup.map((pGD, index) => {
+            const pointId = pGD.point._id
+            const isReturning = returningPointIds.includes(pointId)
+            return (
+              <div
+                key={pointId}
+                data-point-id={pointId}
+                className={cx(isReturning && classes.returnedPoint)}
+                onAnimationEnd={event => {
+                  if (event.target === event.currentTarget && isReturning) {
+                    setReturningPointIds(currentIds => currentIds.filter(id => id !== pointId))
+                  }
+                }}
+              >
+                <PointGroup pointGroup={pGD} vState={gs.selectLead ? 'disabled' : 'view'} select={gs.selectedIds.some(id => id === pointId)} onClick={() => togglePointSelection(pointId)} />
+              </div>
+            )
+          })}
         </div>
-      }
-      {
-        /*!gs.selectLead && **/ !!gs.yourGroups.length && (
-          <div className={classes.yourGroupsWrapper}>
-            <div className={classes.yourGroupsTitle}>{'Your Groups'}</div>
-            <div className={classes.groupsContainer}>
+      </div>
+      <div id="grouping-your-groups-panel" className={classes.tabPanel} role="tabpanel" aria-labelledby="grouping-your-groups-tab" tabIndex={0} hidden={activeTab !== 'yourGroups'}>
+        {!!gs.yourGroups.length && (
+          <div ref={yourGroupsRef} className={classes.yourGroupsWrapper}>
+            <div className={classes.groupsContainer} role="group" aria-label="Your grouped responses">
               {gs.yourGroups.map(pointGroup => {
                 return (
                   pointGroup && (
@@ -280,8 +484,8 @@ export function GroupPoints(props) {
               })}
             </div>
           </div>
-        )
-      }
+        )}
+      </div>
     </div>
   )
 }
@@ -289,17 +493,107 @@ export function GroupPoints(props) {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   groupingStep: {
     marginBottom: '1rem', // for box shadow of children
+    containerType: 'inline-size',
+    containerName: 'groupingStep',
   },
   groupsContainer: {
+    position: 'relative',
     paddingLeft: '2rem',
     paddingRight: '2rem',
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridTemplateColumns: 'repeat(1, minmax(0, 1fr))',
     gap: '1.25rem',
+    '& > [data-point-id]': {
+      display: 'flex',
+      '& > div': {
+        flex: '1 1 auto',
+      },
+    },
+    '@container groupingStep (min-width: 40rem)': {
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+    },
+    '@container groupingStep (min-width: 70rem)': {
+      gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+    },
+    '@container groupingStep (min-width: 90rem)': {
+      gridTemplateColumns: 'repeat(4, minmax(0, 1fr))',
+    },
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      gridTemplateColumns: 'repeat(1, 1fr)',
       paddingLeft: '0.5rem',
       paddingRight: '0.5rem',
+      paddingBottom: '1.25rem',
+      rowGap: '1.25rem',
+    },
+  },
+  groupTabs: {
+    display: 'flex',
+    gap: '0.375rem',
+    margin: '1.5rem 2rem 0',
+    borderBottom: `1px solid ${theme.colors.secondaryDivider}`,
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      margin: '1rem 0.5rem 0',
+    },
+  },
+  groupTab: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.5rem',
+    minHeight: '2.75rem',
+    padding: '0.625rem 1rem',
+    border: '1px solid transparent',
+    borderBottom: 'none',
+    borderRadius: '0.5rem 0.5rem 0 0',
+    backgroundColor: 'transparent',
+    color: theme.colors.encivGray,
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
+    fontSize: '0.9375rem',
+    fontWeight: 600,
+    cursor: 'pointer',
+    '&:hover:not(:disabled)': {
+      backgroundColor: theme.colors.lightGray,
+      color: theme.colors.title,
+    },
+    '&:focus-visible': {
+      outline: theme.focusOutline,
+      outlineOffset: '-0.125rem',
+    },
+    '&:disabled': {
+      opacity: 0.55,
+      cursor: 'not-allowed',
+    },
+  },
+  groupTabSelected: {
+    borderColor: theme.colors.secondaryDivider,
+    backgroundColor: theme.colors.white,
+    color: theme.colors.primaryButtonBlue,
+    boxShadow: '0 -0.125rem 0 rgba(6, 51, 92, 0.08)',
+  },
+  groupTabCount: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: '1.5rem',
+    height: '1.5rem',
+    padding: '0 0.375rem',
+    borderRadius: '9999px',
+    backgroundColor: theme.colors.lightGray,
+    color: theme.colors.encivGray,
+    fontSize: '0.75rem',
+    lineHeight: 1,
+  },
+  groupTabCountSelected: {
+    backgroundColor: theme.colors.primaryButtonBlue,
+    color: theme.colors.white,
+  },
+  tabPanel: {
+    minWidth: 0,
+    paddingTop: '1rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      paddingTop: '0.5rem',
+    },
+    '&[hidden]': {
+      display: 'none',
     },
   },
   statusContainer: {
@@ -311,7 +605,16 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '0.875rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'column',
-      alignItems: 'center',
+      alignItems: 'stretch',
+      position: 'sticky',
+      top: 0,
+      zIndex: 20,
+      boxSizing: 'border-box',
+      padding: '0.625rem 0.75rem',
+      margin: 0,
+      gap: '0.5rem',
+      backgroundColor: theme.colors.white,
+      boxShadow: '0 0.25rem 0.75rem rgba(0, 0, 0, 0.12)',
     },
   },
   buttons: {
@@ -323,7 +626,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       flexDirection: 'column',
       width: '100%',
-      marginBottom: '1rem',
+      marginBottom: 0,
       order: -1,
       alignItems: 'stretch',
     },
@@ -334,14 +637,33 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '0.875rem',
     justifyContent: 'space-between',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      marginTop: '0',
-      gap: '0',
-      gap: '0.875rem',
-      flexDirection: 'column', // Make sure this is 'row' to keep badges on left and right
+      display: 'grid',
+      gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+      alignItems: 'center',
+      gap: '0.375rem',
       width: '100%',
+      '& > span': {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        boxSizing: 'border-box',
+        minWidth: 0,
+        padding: '0.25rem 0.375rem',
+        fontSize: '0.75rem',
+      },
+      '& > span > span:last-child': {
+        marginLeft: '0.25rem',
+      },
     },
   },
   primaryButton: {
+    transition: 'transform 120ms ease, box-shadow 120ms ease',
+    '&:active:not(:disabled)': {
+      transform: 'scale(0.97)',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+    },
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       width: '100%',
     },
@@ -357,27 +679,115 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     border: `0.125rem solid ${theme.colors.primaryButtonBlue} !important`,
     opacity: 0.3,
   },
+  returnedPoint: {
+    animation: '$pointReturns 360ms ease-out both',
+    '@media (prefers-reduced-motion: reduce)': {
+      animationDuration: '1ms',
+    },
+  },
+  departingPoint: {
+    position: 'absolute',
+    zIndex: 2,
+    pointerEvents: 'none',
+    animation: '$pointDeparts 320ms ease-in both',
+    '@media (prefers-reduced-motion: reduce)': {
+      animationDuration: '1ms',
+    },
+  },
+  '@keyframes pointDeparts': {
+    from: {
+      opacity: 1,
+      transform: 'translateY(0) scale(1)',
+    },
+    to: {
+      opacity: 0,
+      transform: 'translateY(-0.75rem) scale(0.96)',
+    },
+  },
+  '@keyframes pointReturns': {
+    from: {
+      opacity: 0,
+      transform: 'translateY(-1rem) scale(0.96)',
+    },
+    to: {
+      opacity: 1,
+      transform: 'translateY(0) scale(1)',
+    },
+  },
   selectLead: {
+    width: '100%',
     marginTop: '3.125rem',
     marginBottom: '3.125rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      width: '100%',
+      position: 'fixed',
+      inset: 0,
+      zIndex: 1090,
+      display: 'flex',
+      width: '100vw',
+      height: '100vh',
+      height: '100dvh',
+      margin: 0,
+      overflow: 'hidden',
+      backgroundColor: theme.colors.white,
+      '& > div': {
+        width: '100%',
+        height: '100%',
+        minHeight: 0,
+      },
+    },
+  },
+  selectLeadOpening: {
+    animation: `$selectLeadOpen ${theme.motion.entrance} ${theme.motion.enterEase} both`,
+    '@media (prefers-reduced-motion: reduce)': {
+      animationDuration: '1ms',
+    },
+  },
+  selectLeadClosing: {
+    animation: `$selectLeadClose ${theme.motion.short} ${theme.motion.exitEase} both`,
+    pointerEvents: 'none',
+    '@media (prefers-reduced-motion: reduce)': {
+      animationDuration: '1ms',
+    },
+  },
+  '@keyframes selectLeadOpen': {
+    from: {
+      opacity: 0,
+      transform: 'translateY(-0.75rem)',
+    },
+    to: {
+      opacity: 1,
+      transform: 'translateY(0)',
+    },
+  },
+  '@keyframes selectLeadClose': {
+    from: {
+      opacity: 1,
+      transform: 'translateY(0)',
+    },
+    to: {
+      opacity: 0,
+      transform: 'translateY(-0.5rem)',
     },
   },
   yourGroupsWrapper: {
-    marginTop: '2rem',
     width: '100%',
-    backgroundColor: theme.colors.lightGray,
-    paddingBottom: '2rem',
-  },
-  yourGroupsTitle: {
-    marginLeft: '2rem',
-    paddingTop: '.5rem',
-    paddingBottom: '1rem',
-    fontSize: '2rem',
-    lineHeight: '2.625rem',
   },
   yourGroupsPoint: {
     backgroundColor: 'white',
+  },
+
+  countBadge: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: '1.5rem',
+    height: '1.5rem',
+    padding: '0 0.5rem',
+    marginLeft: '0.5rem',
+    fontSize: '0.875rem',
+    fontWeight: '600',
+    borderRadius: '0.75rem',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    color: 'inherit',
   },
 }))

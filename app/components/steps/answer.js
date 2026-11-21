@@ -179,11 +179,10 @@ export function Answer(props) {
           <WhyInput point={question} value={_myAnswer} maxWordCount={maxWordCount} maxCharCount={maxCharCount} onDone={updateResponse('myAnswer')} />
         </div>
         <div key="why">
-          <hr className={classes.pointsHr} />
           <WhyInput point={{ description: '', subject: whyQuestion, _id: _myAnswer?._id }} value={_myWhy} maxWordCount={maxWordCount} maxCharCount={maxCharCount} onDone={updateResponse('myWhy')} />
         </div>
         {showTerms && (
-          <div key="terms" className={classes.termsContainer}>
+          <div key="terms">
             <TermsAgreement state={state} methods={methods} onDone={handleTermsChange} />
           </div>
         )}
@@ -214,28 +213,13 @@ export function deriveMyAnswerAndMyWhy(data) {
 // Styles
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   wrapper: {
-    background: theme.colorPrimary,
+    background: theme.colors.white,
   },
   answersContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '3rem',
     fontSize: '1.25rem',
     paddingTop: '4.325rem',
-  },
-  pointsHr: {
-    color: theme.colors.secondaryDivider,
-    margin: '4rem 0',
-  },
-  termsContainer: {
-    marginTop: '2rem',
-    paddingTop: '2rem',
-    borderTop: `1px solid ${theme.colors.secondaryDivider || '#ccc'}`,
-  },
-  [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-    pointsHr: {
-      margin: '2rem 1.875rem',
-    },
-    termsContainer: {
-      marginTop: '1.5rem',
-      paddingTop: '1.5rem',
-    },
   },
 }))

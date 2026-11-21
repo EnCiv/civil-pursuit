@@ -58,30 +58,38 @@ export default TermsAgreement
 const useStyles = createUseStyles(theme => ({
   termsAgreement: {
     width: '100%',
-    padding: '1rem 0',
+    padding: '1.25rem',
     boxSizing: 'border-box',
+    backgroundColor: theme.colors.white,
+    border: `0.0625rem solid ${theme.colors.borderGray || theme.colors.inputBorder}`,
+    borderRadius: '0.5rem',
+    boxShadow: '0 0.25rem 0.75rem rgba(6, 51, 92, 0.08)',
   },
   checkTermContainer: {
     display: 'flex',
-    alignItems: 'flex-start',
-    gap: '0.5rem',
+    alignItems: 'center',
+    gap: '0.75rem',
   },
   checkbox: {
-    marginTop: '0.25rem',
+    width: '1.25rem',
+    height: '1.25rem',
+    margin: 0,
     flexShrink: 0,
     cursor: 'pointer',
   },
   label: {
-    fontSize: '0.875rem',
+    flex: 1,
+    fontSize: '1rem',
     lineHeight: '1.5',
     color: theme.colors.textPrimary || '#000',
     cursor: 'pointer',
   },
   link: {
-    color: theme.colors.encivYellow || '#FFC315',
-    textDecoration: 'none',
+    color: theme.colors.primaryButtonBlue,
+    textDecoration: 'underline',
+    textUnderlineOffset: '0.125rem',
     '&:hover': {
-      textDecoration: 'underline',
+      color: theme.colors.mouseDownPrimeBlue,
     },
   },
   statusBox: {

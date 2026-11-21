@@ -2,8 +2,75 @@
 
 import React, { useState, useCallback, useContext } from 'react'
 import { DeliberationContext, DeliberationContextProvider } from '../app/components/deliberation-context'
-import { fn } from 'storybook/test'
+import { fn, userEvent, waitFor, expect, within } from 'storybook/test'
 import { Level } from 'react-accessible-headings'
+
+export const resetTournamentStoryState = testState => {
+  window.setUserInfoCalls = []
+  window.batchUpsertCalls = []
+  if (testState) testState.authFlowUserSet = false
+  if (window.socket?._socketEmitHandlerResults) {
+    Object.keys(window.socket._socketEmitHandlerResults).forEach(key => {
+      window.socket._socketEmitHandlerResults[key] = []
+    })
+  }
+}
+
+export const getTournamentNextButton = async (canvas, requireEnabled = false) => {
+  return waitFor(() => {
+    const button = canvas.queryByRole('button', { name: /^Next$/i })
+    expect(button).toBeInTheDocument()
+    if (requireEnabled) expect(button).not.toBeDisabled()
+    return button
+  })
+}
+
+export const clickTournamentNext = async canvas => {
+  const button = await getTournamentNextButton(canvas)
+  await userEvent.click(button)
+  return button
+}
+
+export const fillTournamentAnswer = async (canvas, { answerSubject, answerDescription, whySubject, whyDescription }) => {
+  const subjectInputs = canvas.getAllByPlaceholderText(/type some thing here/i)
+  const descriptionInputs = canvas.getAllByPlaceholderText(/description/i)
+  await userEvent.type(subjectInputs[0], answerSubject)
+  await userEvent.tab()
+  await userEvent.type(descriptionInputs[0], answerDescription)
+  await userEvent.tab()
+  await userEvent.type(subjectInputs[1], whySubject)
+  await userEvent.tab()
+  await userEvent.type(descriptionInputs[1], whyDescription)
+  await userEvent.tab()
+}
+
+export const rankTournamentResponses = async (canvas, { firstCategory = 'Neutral', lastCategory = 'Neutral' } = {}) => {
+  const mostRadios = await waitFor(() => {
+    const radios = canvas.getAllByRole('radio', { name: 'Most' })
+    expect(radios.length).toBeGreaterThan(0)
+    return radios
+  })
+  const neutralRadios = canvas.getAllByRole('radio', { name: 'Neutral' })
+  const leastRadios = canvas.getAllByRole('radio', { name: 'Least' })
+
+  for (let index = 0; index < mostRadios.length; index++) {
+    const category = index === 0 ? firstCategory : index === mostRadios.length - 1 ? lastCategory : 'Neutral'
+    const radio = category === 'Most' ? mostRadios[index] : category === 'Least' ? leastRadios[index] : neutralRadios[index]
+    await userEvent.click(radio)
+  }
+}
+
+export const openTournamentMobileStepBar = async canvas => {
+  const mobileStepBar = canvas.queryByTestId('mobile-select-bar')
+  if (mobileStepBar && mobileStepBar.getAttribute('aria-expanded') !== 'true') {
+    await userEvent.click(mobileStepBar)
+  }
+}
+
+export const getTournamentStepBarItem = (canvas, name) => {
+  const options = canvas.queryByTestId('mobile-step-options')
+  return (options ? within(options) : canvas).getAllByTestId('testClick').find(step => step.textContent.includes(name))
+}
 
 // usage: {decorators: [buildApiDecorator('handle', result)]}
 // where handle is the name of the socket emit handler and result is the result to return
@@ -283,6 +350,9 @@ export function outerSetup() {
 }
 
 export function asyncSleep(mSec) {
+  if (mSec >= 2000) {
+    console.warn(`[Storybook long wait] asyncSleep(${mSec}ms)`, new Error().stack)
+  }
   return new Promise((ok, ko) => setTimeout(() => ok(), mSec))
 }
 

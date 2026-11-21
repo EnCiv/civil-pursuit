@@ -1,6 +1,4 @@
 // https://github.com/EnCiv/civil-pursuit/issues/203
-import { MongoMemoryServer } from 'mongodb-memory-server'
-import { Mongo } from '@enciv/mongo-collections'
 import { ObjectId } from 'mongodb'
 import Points from '../../models/points'
 import getPointsOfIds from '../get-points-of-ids'
@@ -11,15 +9,12 @@ let memoryServer
 const synuser = { synuser: { id: '1234567890abcdef12345678' } }
 
 beforeAll(async () => {
-  memoryServer = await MongoMemoryServer.create()
-  const uri = memoryServer.getUri()
-  await Mongo.connect(uri)
+  memoryServer = await global.startMongoTestServer()
   Points.setCollectionProps()
 })
 
 afterAll(async () => {
-  await Mongo.disconnect()
-  await memoryServer.stop()
+  await global.stopMongoTestServer(memoryServer)
 })
 
 beforeEach(async () => {
@@ -45,15 +40,12 @@ test('Points found, but no whypoints', async () => {
   const POINT_ID_1 = new ObjectId().toString()
   const POINT_ID_2 = new ObjectId().toString()
 
-  await Points.insertMany([
-    { _id: new ObjectId(POINT_ID_1), subject: 'Point 1', description: 'Description 1', userId: synuser.synuser.id },
-    {
-      _id: new ObjectId(POINT_ID_2),
-      subject: 'Point 2',
-      description: 'Description 2',
-      userId: 'abcdefabcdefabcdefabcdef',
-    }, // Different user
-  ])
+  await Points.insertMany(global.makeTestPoints(2, index => ({
+    _id: new ObjectId(index === 0 ? POINT_ID_1 : POINT_ID_2),
+    subject: `Point ${index + 1}`,
+    description: `Description ${index + 1}`,
+    userId: index === 0 ? synuser.synuser.id : 'abcdefabcdefabcdefabcdef',
+  })))
 
   const callback = jest.fn()
 
@@ -75,25 +67,25 @@ test('Points and whypoints found', async () => {
   const WHYPOINT_ID_1 = new ObjectId().toString()
 
   await Points.insertMany([
-    {
+    global.makeTestPoint({
       _id: new ObjectId(POINT_ID_1),
       subject: 'Unique Point 1',
       description: 'Description 1',
       userId: synuser.synuser.id,
-    },
-    {
+    }),
+    global.makeTestPoint({
       _id: new ObjectId(POINT_ID_2),
       subject: 'Unique Point 2',
       description: 'Description 2',
       userId: 'abcdefabcdefabcdefabcdef',
-    }, // Different user
-    {
+    }), // Different user
+    global.makeTestPoint({
       _id: new ObjectId(WHYPOINT_ID_1),
       parentId: POINT_ID_1,
       subject: 'Why Point 1',
       description: 'Why Description 1',
       userId: synuser.synuser.id, // Created by the current user
-    },
+    }),
   ])
 
   const callback = jest.fn()

@@ -1,7 +1,5 @@
 import rankWhy from '../rank-why'
 import Ranks from '../../models/ranks'
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
 
 const USER1 = '6667d5a33da5d19ddc304a6b'
@@ -10,14 +8,12 @@ const RANK2 = new ObjectId('6667e4eea414d31b20dffb2f')
 let MemoryServer
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 })
 
 beforeEach(async () => {
   // Clear the collection
-  await Ranks.deleteMany({})
+  await global.clearMongoCollections([Ranks])
   jest.spyOn(console, 'error').mockImplementation(() => {})
 })
 
@@ -26,8 +22,7 @@ afterEach(async () => {
 })
 
 afterAll(async () => {
-  await Mongo.disconnect()
-  await MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 test('Insert a new rank document', async () => {

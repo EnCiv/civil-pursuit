@@ -1,7 +1,5 @@
 // https://github.com/EnCiv/civil-pursuit/issues/362
 
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
 import { Iota, User, BrevoGetTemplateId, BrevoSendTransacEmail } from 'civil-server'
 import { initDiscussion, insertStatementId, getUsersToInviteBack, getStatementIds } from '../../dturn/dturn'
@@ -35,25 +33,18 @@ function setupSilentLogger() {
 }
 
 beforeAll(async () => {
-  // Set Jest environment for dturn so things are not randomized
   process.env.JEST_TEST_ENV = 'true'
   process.env.INVITE_USERS_BACK_JOB = 'true'
 
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 })
 
 afterAll(async () => {
-  await Mongo.disconnect()
-  await MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 beforeEach(async () => {
-  // Clear collections
-  await Iota.deleteMany({})
-  await User.deleteMany({})
-  await InviteLog.deleteMany({})
+  await global.clearMongoCollections([Iota, User, InviteLog])
 
   // Reset mocks completely
   jest.clearAllMocks()

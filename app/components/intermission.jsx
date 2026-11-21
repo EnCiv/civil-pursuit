@@ -12,6 +12,7 @@ import { useDeliberationContext, useLocalStorageIfAvailable } from './deliberati
 import * as LocalStorageManager from '../lib/local-storage-manager'
 import { authenticateSocketIo } from 'civil-client/dist/components/use-auth'
 import LinkedInSignInButton from './linkedin-sign-in-button'
+import { H, Level } from 'react-accessible-headings'
 
 // needs to be static because it used as a dependency in useEffect
 const goToEnCiv = () => (location.href = 'https://enciv.org/')
@@ -459,63 +460,115 @@ const Intermission = props => {
     onDone({ valid, value: 'continue', onNext })
   }, [valid, onNext])
   return (
-    <div className={cx(classes.intermission, className)}>
-      <div className={classes.iconContainer}>
+    <section className={cx(classes.intermission, classes.messageCard, className)} aria-labelledby="intermission-heading">
+      <div className={classes.cardHeader}>
         <Intermission_Icon className={classes.icon} />
+        <Level value={2}>
+          <H id="intermission-heading" className={classes.cardTitle}>Round Complete</H>
+        </Level>
       </div>
-      {conditionalResponse}
-      {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
-      {validationError && <StatusBox className={classes.errorMessage} status="error" subject={validationError} />}
-    </div>
+      <div className={classes.messageContent}>
+        {conditionalResponse}
+        {successMessage && <StatusBox className={classes.successMessage} status="done" subject={successMessage} />}
+        {validationError && <StatusBox className={classes.errorMessage} status="error" subject={validationError} />}
+      </div>
+    </section>
   )
 }
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
-  iconContainer: {
-    width: '100%',
+  cardHeader: {
     display: 'flex',
-    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: '1rem',
+    paddingBottom: '1rem',
+    borderBottom: `0.0625rem solid ${theme.colors.borderGray}`,
+  },
+  cardTitle: {
+    margin: 0,
+    fontFamily: `${theme.font.headingFontFamily}, Georgia, serif`,
+    fontWeight: 600,
+    fontSize: '1.75rem',
+    lineHeight: 1.2,
+    color: theme.colors.primaryButtonBlue,
   },
   icon: {
-    width: '3.125rem',
-    height: '2.89rem',
+    flex: '0 0 auto',
+    width: '2.5rem',
+    height: '2.3125rem',
   },
   intermission: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: '2rem',
+    width: '100%',
+    margin: '0 auto',
+  },
+  messageCard: {
+    boxSizing: 'border-box',
+    width: '100%',
+    maxWidth: '56rem',
+    padding: '1.75rem',
+    backgroundColor: theme.colors.white,
+    border: `0.0625rem solid ${theme.colors.borderGray}`,
+    borderTop: `0.25rem solid ${theme.colors.encivYellow}`,
+    borderRadius: '0.5rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      gap: '6rem',
-      width: '100%',
+      padding: '1.25rem',
+    },
+  },
+  messageContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '1.25rem',
+    paddingTop: '1.25rem',
+    '& $infoMessage, & $successMessage, & $errorMessage': {
+      boxShadow: 'none',
     },
   },
   headline: {
-    fontFamily: 'Inter',
-    fontWeight: 300,
-    fontSize: '2.25rem',
-    lineHeight: '2.9375rem',
+    fontFamily: `${theme.font.headingFontFamily}, Georgia, serif`,
+    fontWeight: 600,
+    fontSize: '2.5rem',
+    lineHeight: 1.15,
     color: theme.colors.primaryButtonBlue,
     textAlign: 'left',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      fontSize: '2rem',
+    },
   },
   headlineSmall: {
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontWeight: 400,
-    fontSize: '1.25rem',
-    lineHeight: '1.875rem',
+    fontSize: '1.125rem',
+    lineHeight: '1.75rem',
     color: theme.colors.disableTextBlack,
     textAlign: 'left !important',
+    margin: 0,
   },
   thresholdMessage: {
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
     textAlign: 'left',
+    fontSize: '1.0625rem',
+    lineHeight: '1.7',
+    color: theme.colors.disableTextBlack,
+    '& p': {
+      margin: 0,
+    },
+    '& p + p': {
+      marginTop: '1rem',
+    },
+    '& strong': {
+      color: theme.colors.primaryButtonBlue,
+      fontWeight: 700,
+    },
   },
   input: {
     width: '100%',
-    maxWidth: theme.colors.condensedWidthBreakPoint,
+    maxWidth: theme.condensedWidthBreakPoint,
     padding: '0.5rem',
     fontSize: '1rem',
     borderRadius: '0.25rem',
@@ -524,7 +577,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   text: {
     fontWeight: '400',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontSize: '1rem',
     lineHeight: '1.5rem',
     color: theme.colors.title,
@@ -538,13 +591,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginTop: '1.5rem',
   },
   infoMessage: {
-    marginTop: '1rem',
+    marginTop: 0,
   },
   successMessage: {
-    marginTop: '1rem',
+    marginTop: 0,
   },
   errorMessage: {
-    marginTop: '1rem',
+    marginTop: 0,
   },
   linkedInButton: {
     width: '100%',

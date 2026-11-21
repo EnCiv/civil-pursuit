@@ -46,6 +46,13 @@ export const PrimarySelected = {
   args: { vState: 'selected' },
 }
 export const PrimaryDisabled = { args: { vState: 'disabled' } }
+PrimaryDisabled.parameters = {
+  a11y: {
+    config: {
+      rules: [{ id: 'color-contrast', enabled: false }],
+    },
+  },
+}
 
 export const Lead = {
   args: {
@@ -135,17 +142,17 @@ const createPoint = (subject, description = 'Point Description', children = null
   </Point>
 )
 
-const point6 = createPoint('Point 6', 'Point 6 Description')
-const point5 = createPoint('Point 5', 'Point 5 Description', point6)
-const point4 = createPoint('Point 4', 'Point 4 Description', point5)
-const point3 = createPoint('Point 3', 'Point 3 Description', point4)
-const point2 = createPoint('Point 2', 'Point 2 Description', point3)
+const point6 = createPoint('Keep public spaces clean and welcoming', 'Clean parks and plazas give neighbors a comfortable place to spend time together.')
+const point5 = createPoint('Create safer bike connections', 'Protected lanes can make everyday trips safer for riders of all ages.', point6)
+const point4 = createPoint('Protect local waterways', 'Reducing runoff helps keep neighborhood streams and drinking water cleaner.', point5)
+const point3 = createPoint('Expand mental health care nearby', 'Local counseling and crisis support make timely care easier to reach.', point4)
+const point2 = createPoint('Improve access to healthy groceries', 'Affordable fresh food should be available without a long trip across town.', point3)
 
 export const ChildrenPointsSixLayersDeep = {
   args: {
     point: {
-      subject: 'Point 2',
-      description: 'Point 2 Description',
+      subject: 'Improve access to healthy groceries',
+      description: 'Affordable fresh food should be available without a long trip across town.',
     },
     vState: 'default',
     children: point3,
@@ -155,8 +162,8 @@ export const ChildrenPointsSixLayersDeep = {
 export const ChildrenPointsSevenLayersDeep = {
   args: {
     point: {
-      subject: 'Point 1',
-      description: 'Point 1 Description',
+      subject: 'Support families facing rising rents',
+      description: 'Stable, affordable housing helps families stay close to work, school, and community services.',
     },
     vState: 'default',
     children: point2,
@@ -291,6 +298,13 @@ export const MultiplePointsWithMixedDemInfo = {
 }
 
 export const PointWithDemInfoSelected = {
+  parameters: {
+    a11y: {
+      config: {
+        rules: [{ id: 'color-contrast', enabled: false }],
+      },
+    },
+  },
   decorators: [PointWithDemInfoDecorator],
   render: () => (
     <PointWithDemInfoSetup

@@ -15,19 +15,13 @@ function parseUISchemaOrder(uischema) {
     .filter(Boolean)
 }
 
-export default function DemInfo({ pointId, className }) {
+export default function DemInfo({ pointId, demInfo: suppliedDemInfo, className }) {
   const classes = useStyles()
   const context = useDemInfoContext()
 
-  // Handle case where context isn't available (e.g., in isolated stories)
-  if (!context) return null
-  if (!pointId) return null
-
-  const { data } = context
-  if (!data) return null
-
-  const demInfo = data.demInfoById?.[pointId]
-  const uischema = data.uischema
+  const data = context?.data
+  const demInfo = suppliedDemInfo ?? (pointId ? data?.demInfoById?.[pointId] : undefined)
+  const uischema = data?.uischema
 
   if (!demInfo) return null
   if (typeof demInfo !== 'object') return null
@@ -50,14 +44,27 @@ export default function DemInfo({ pointId, className }) {
   }
   if (!values.length) return null
 
-  return <div className={cx(classes.demInfo, className)}>{values.join(' • ')}</div>
+  return (
+    <span className={cx(classes.demInfo, className)} role="note" aria-label={`Demographic information: ${values.join(', ')}`}>
+      {values.join(' • ')}
+    </span>
+  )
 }
 
-const useStyles = createUseStyles({
+const useStyles = createUseStyles(theme => ({
   demInfo: {
-    color: 'inherit', // Inherit color from parent
-    opacity: 0.6, // Make it lighter than the parent color
-    fontSize: '0.85em',
-    display: 'inline-block',
+    boxSizing: 'border-box',
+    display: 'inline-flex',
+    alignItems: 'center',
+    maxWidth: '100%',
+    padding: '0.2rem 0.55rem',
+    border: `0.0625rem solid ${theme.colors.secondaryDivider}`,
+    borderRadius: '9999px',
+    backgroundColor: theme.colors.white,
+    color: theme.colors.primaryButtonBlue,
+    fontSize: '0.75rem',
+    fontWeight: 600,
+    lineHeight: 1.4,
+    overflowWrap: 'anywhere',
   },
-})
+}))

@@ -3,7 +3,7 @@
 
 import React from 'react'
 import Tournament from '../app/components/tournament'
-import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator, mockBatchUpsertDeliberationDataRoute } from './common'
+import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator, mockBatchUpsertDeliberationDataRoute, resetTournamentStoryState, getTournamentNextButton, fillTournamentAnswer } from './common'
 import { userEvent, within, waitFor, expect } from 'storybook/test'
 import { authFlowDecorators, withAuthTestState } from './mocks/auth-flow'
 import { tournamentSteps, demInfoDecorator, tournamentDefaultValueMinimal } from './tournament.stories'
@@ -68,14 +68,7 @@ export const NewUserNotEnoughParticipants = {
     const { testState } = args
 
     // Reset global state for test isolation
-    window.setUserInfoCalls = []
-    testState.authFlowUserSet = false
-    // Reset socket emit handler results to avoid cross-test pollution
-    if (window.socket?._socketEmitHandlerResults) {
-      Object.keys(window.socket._socketEmitHandlerResults).forEach(key => {
-        window.socket._socketEmitHandlerResults[key] = []
-      })
-    }
+    resetTournamentStoryState(testState)
 
     console.log('🧪 NewUserNotEnoughParticipants test starting...')
 
@@ -88,17 +81,12 @@ export const NewUserNotEnoughParticipants = {
     })
 
     // Fill in the answer fields
-    const subjectInputs = canvas.getAllByPlaceholderText(/type some thing here/i)
-    const descriptionInputs = canvas.getAllByPlaceholderText(/description/i)
-
-    await userEvent.type(subjectInputs[0], 'My Early User Issue')
-    await userEvent.tab()
-    await userEvent.type(descriptionInputs[0], 'This is my description of the early user issue')
-    await userEvent.tab()
-    await userEvent.type(subjectInputs[1], 'Why this matters')
-    await userEvent.tab()
-    await userEvent.type(descriptionInputs[1], 'Because it affects everyone')
-    await userEvent.tab()
+    await fillTournamentAnswer(canvas, {
+      answerSubject: 'My Early User Issue',
+      answerDescription: 'This is my description of the early user issue',
+      whySubject: 'Why this matters',
+      whyDescription: 'Because it affects everyone',
+    })
     console.log('  ✓ Filled in answer and why fields')
 
     // Check Terms checkbox
@@ -107,12 +95,7 @@ export const NewUserNotEnoughParticipants = {
     console.log('  ✓ Checked Terms checkbox')
 
     // Click Next
-    const nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
-      expect(btn).toBeInTheDocument()
-      expect(btn).not.toBeDisabled()
-      return btn
-    })
+    const nextButton = await getTournamentNextButton(canvas, true)
     await userEvent.click(nextButton)
     console.log('  ✓ Clicked Next')
 

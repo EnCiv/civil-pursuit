@@ -5,8 +5,6 @@ import getPointsForRound from '../get-points-for-round'
 import { initDiscussion, Discussions } from '../../dturn/dturn'
 import insertDturnStatement from '../insert-dturn-statement'
 
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import { ObjectId } from 'mongodb'
 import { expect } from '@jest/globals'
 
@@ -17,11 +15,11 @@ const userId = '6667d5a33da5d19ddc304a6b'
 
 const synuser = { synuser: { id: userId } }
 
-const pointObj1 = {
+const pointObj1 = global.makeTestPoint({
   _id: '6667d688b20d8e339ca50020',
   subject: 'Point1',
   description: 'Point1',
-}
+})
 
 let MemoryServer
 
@@ -36,14 +34,11 @@ afterEach(async () => {
 })
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 })
 
 afterAll(async () => {
-  Mongo.disconnect()
-  MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 
 // Tests

@@ -6,17 +6,23 @@ import theme from './theme'
 
 const responseOptions = ['Most', 'Neutral', 'Least']
 
-const selectedOption = (
+const optionColors = {
+  Most: '#71947A',
+  Neutral: theme.colors.primaryButtonBlue,
+  Least: '#B77973',
+}
+
+const selectedOption = color => (
   <>
-    <rect x="1" y="1" width="22" height="22" rx="11" stroke={theme.colors.radioButtonSelected} strokeWidth="2" />
-    <rect x="6" y="6" width="12" height="12" rx="6" fill={theme.colors.radioButtonSelected} />
+    <rect x="1" y="1" width="22" height="22" rx="11" stroke={color} strokeWidth="2" />
+    <rect x="6" y="6" width="12" height="12" rx="6" fill={color} />
   </>
 )
 
 const unselectedOption = <rect x="1" y="1" width="22" height="22" rx="11" stroke={theme.colors.radioButtonUnselected} strokeWidth="2" />
 
 export default function Ranking(props) {
-  const { disabled, defaultValue, className, onDone, ...otherProps } = props
+  const { disabled, defaultValue, vState, className, onDone, ...otherProps } = props
   const [response, setResponse] = useState(responseOptions.includes(defaultValue) ? defaultValue : '')
 
   useEffect(() => {
@@ -38,34 +44,44 @@ export default function Ranking(props) {
     onDone?.({ valid: true, value })
   }
 
-  // handler for Space or Enter to select
-  const onKeyDown = (e, option) => {
+  const handleArrowKey = (event, option) => {
     if (disabled) return
-    if (e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault()
-      handleSelect(option)
-    }
+    const index = responseOptions.indexOf(option)
+    let nextIndex
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+      nextIndex = (index + 1) % responseOptions.length
+    } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+      nextIndex = (index - 1 + responseOptions.length) % responseOptions.length
+    } else return
+
+    event.preventDefault()
+    const nextOption = responseOptions[nextIndex]
+    handleSelect(nextOption)
+    event.currentTarget.parentElement?.querySelectorAll('[role="radio"]')[nextIndex]?.focus()
   }
 
   return (
     <div role="radiogroup" aria-disabled={disabled || undefined} data-value={response} className={cx(className, styleClasses.group, disabled && styleClasses.disabled)} {...otherProps}>
       {responseOptions.map(option => {
         const isSelected = response === option
+        const optionStyle = option.toLowerCase()
         return (
-          <div
+          <button
+            type="button"
             key={option}
             role="radio"
             aria-checked={isSelected}
-            tabIndex={disabled ? -1 : 0} // each one is tab‑focusable
+            tabIndex={disabled ? -1 : isSelected || (!response && option === responseOptions[0]) ? 0 : -1}
+            disabled={disabled}
             onClick={() => handleSelect(option)}
-            onKeyDown={e => onKeyDown(e, option)}
-            className={cx(styleClasses.radioOption, isSelected && styleClasses.selected)}
+            onKeyDown={event => handleArrowKey(event, option)}
+            className={cx(styleClasses.radioOption, isSelected && styleClasses.selected, isSelected && styleClasses[`${optionStyle}Selected`])}
           >
             <svg className={styleClasses.optionIcon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {isSelected ? selectedOption : unselectedOption}
+              {isSelected ? selectedOption(optionColors[option]) : unselectedOption}
             </svg>
             <span className={styleClasses.labelText}>{option}</span>
-          </div>
+          </button>
         )
       })}
     </div>
@@ -74,45 +90,93 @@ export default function Ranking(props) {
 
 const rankingStyleClasses = createUseStyles(theme => ({
   optionIcon: {
-    height: '1.5rem',
-    width: '1.5rem',
-    marginRight: '0.5rem',
+    height: '1.25rem',
+    width: '1.25rem',
     flexShrink: 0,
   },
   labelText: {
-    lineHeight: '1.5rem',
-    fontWeight: '300',
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    color: 'inherit',
+    lineHeight: 1.25,
+    fontSize: '0.9375rem',
+    fontWeight: 600,
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
   },
   group: {
     display: 'flex',
-    gap: '1.4375rem',
+    flexWrap: 'wrap',
+    width: '100%',
+    gap: '0.625rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      '& > [role="radio"]': {
+        flex: '1 1 calc(50% - 0.3125rem)',
+      },
+      '& > [role="radio"]:nth-child(1)': { order: 1 },
+      '& > [role="radio"]:nth-child(2)': { order: 3 },
+      '& > [role="radio"]:nth-child(3)': { order: 2 },
+    },
   },
   disabled: {
-    opacity: '30%',
+    opacity: 0.55,
+    pointerEvents: 'none',
   },
 
   radioOption: {
+    appearance: 'none',
+    background: 'transparent',
+    font: 'inherit',
+    cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
+    flex: '1 1 7rem',
+    minWidth: 0,
+    minHeight: '3.25rem',
+    boxSizing: 'border-box',
+    gap: '0.5rem',
+    padding: '0.625rem 0.75rem',
+    border: `0.0625rem solid ${theme.colors.secondaryDivider}`,
+    borderRadius: '9999px',
+    backgroundColor: theme.colors.white,
+    color: theme.colors.title,
+    boxShadow: '0 0.125rem 0 rgba(26, 26, 26, 0.06), 0 0.3rem 0.65rem rgba(6, 51, 92, 0.08), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.8)',
     cursor: 'pointer',
     outline: 'none',
-
-    '&:focus': {
-      position: 'relative',
-      '&::before': {
-        content: '""',
-        position: 'absolute',
-        width: '2.5rem',
-        height: '2.5rem',
-        top: 0,
-        left: 0,
-        borderRadius: '50%',
-        transform: 'translate(-20%, -20%)',
-        backgroundColor: theme.colors.focusRing,
-        pointerEvents: 'none',
-        zIndex: 1,
+    transition: `transform ${theme.motion.fast} ${theme.motion.standardEase}, box-shadow ${theme.motion.fast} ${theme.motion.standardEase}, background-color ${theme.motion.fast} ${theme.motion.standardEase}, border-color ${theme.motion.fast} ${theme.motion.standardEase}`,
+    '&:hover:not([aria-checked="true"])': {
+      borderColor: theme.colors.primaryButtonBlue,
+      transform: 'translateY(-0.0625rem)',
+      boxShadow: '0 0.2rem 0 rgba(26, 26, 26, 0.06), 0 0.45rem 0.8rem rgba(6, 51, 92, 0.12)',
+    },
+    '&:active': {
+      transform: 'translateY(0.0625rem)',
+    },
+    '&:focus-visible': {
+      outline: theme.focusOutline,
+      outlineOffset: '0.125rem',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+      '&:hover, &:active': {
+        transform: 'none',
       },
     },
+  },
+  selected: {
+    boxShadow: '0 0.125rem 0 rgba(26, 26, 26, 0.08), 0 0.4rem 0.8rem rgba(6, 51, 92, 0.12), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.55)',
+  },
+  mostSelected: {
+    borderColor: '#D5E2D7',
+    backgroundColor: '#F5F9F5',
+    color: '#4E7056',
+  },
+  neutralSelected: {
+    borderColor: theme.colors.primaryButtonBlue,
+    backgroundColor: theme.colors.lightBlueBackground,
+    color: theme.colors.primaryButtonBlue,
+  },
+  leastSelected: {
+    borderColor: '#EBD5D2',
+    backgroundColor: '#FCF6F5',
+    color: '#925C57',
   },
 }))

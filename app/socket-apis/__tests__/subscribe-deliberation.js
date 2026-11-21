@@ -4,8 +4,6 @@
  * @jest-environment jsdom
  */
 
-import { Mongo } from '@enciv/mongo-collections'
-import { MongoMemoryServer } from 'mongodb-memory-server'
 import { MongoClient, ObjectId } from 'mongodb'
 import { Iota, serverEvents } from 'civil-server'
 import jestSocketApiSetup, { jestSocketApiTeardown } from 'civil-server/dist/server/util/jest-socket-api-setup'
@@ -66,14 +64,11 @@ afterEach(async () => {
 })
 
 beforeAll(async () => {
-  MemoryServer = await MongoMemoryServer.create()
-  const uri = MemoryServer.getUri()
-  await Mongo.connect(uri)
+  MemoryServer = await global.startMongoTestServer()
 })
 
 afterAll(async () => {
-  Mongo.disconnect()
-  MemoryServer.stop()
+  await global.stopMongoTestServer(MemoryServer)
 })
 let updateHandlerDone
 function updateHandler(data) {

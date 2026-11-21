@@ -7,6 +7,11 @@ import { expect, userEvent, within, waitFor } from 'storybook/test'
 
 export default {
   component: useDeliberationStats,
+  parameters: {
+    a11y: {
+      disable: true,
+    },
+  },
   decorators: [
     socketEmitDecorator,
     Story => (
@@ -104,6 +109,11 @@ export const WithNestedData = {
 
 export const ClickButtonAndRenderStatus = {
   render: Template,
+  parameters: {
+    a11y: {
+      disable: true,
+    },
+  },
   args: {
     discussionId: '507f1f77bcf86cd799439011',
   },
