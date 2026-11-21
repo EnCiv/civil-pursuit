@@ -17,7 +17,7 @@ afterAll(async () => {
 })
 
 test('Upsert a new document', async () => {
-  const pointObj = { _id: POINT1, subject: 'Point 1', description: 'Description 1' }
+  const pointObj = global.makeTestPoint({ _id: POINT1, subject: 'Point 1', description: 'Description 1' })
   const user = { id: USER1 }
 
   const cb = jest.fn()
@@ -30,7 +30,7 @@ test('Upsert a new document', async () => {
 })
 
 test('Upsert changes to an existing document', async () => {
-  const pointObj = { _id: POINT1, subject: 'Updated Point 1', description: 'Updated Description 1' }
+  const pointObj = global.makeTestPoint({ _id: POINT1, subject: 'Updated Point 1', description: 'Updated Description 1' })
   const user = { id: USER1 }
 
   const cb = jest.fn()
@@ -43,7 +43,7 @@ test('Upsert changes to an existing document', async () => {
 })
 
 test('User not logged in, not allowed to upsert a document', async () => {
-  const pointObj = { _id: POINT2, subject: 'Point 2', description: 'Description 2' }
+  const pointObj = global.makeTestPoint({ _id: POINT2, subject: 'Point 2', description: 'Description 2' })
   const cb = jest.fn()
 
   await upsertPoint.call({}, pointObj, cb)

@@ -7,8 +7,6 @@ import upsertPoint from '../../socket-apis/upsert-point'
 import upsertRank from '../../socket-apis/upsert-rank'
 import Points from '../../models/points'
 
-const ObjectID = require('bson-objectid')
-
 let MemoryServer
 
 const DISCUSSION_ID = '101'
@@ -62,12 +60,12 @@ test('Fail if discussionId not provided', async () => {
 test('Fail if conclusion not available/discussion not complete.', async () => {
   const cb = jest.fn()
 
-  const statement = {
-    _id: ObjectID().toString(),
+  const statement = global.makeTestPoint({
+    _id: global.makeTestId().toString(),
     subject: 'proxy random number',
     description: 'desc 1',
     userId: synuser.id,
-  }
+  })
 
   await insertStatementId(DISCUSSION_ID, synuser.id, statement._id)
 
@@ -122,7 +120,7 @@ test('Return data if discussion is complete.', async () => {
       const shownStatementIds = roundData['shownStatementIds']
       for (let statementId in shownStatementIds) {
         if (shownStatementIds[statementId]['rank'] == 1) {
-          const rankData = { parentId: statementId, stage: 'post', round: round, discussionId: DISCUSSION_ID2, category: 'most', userId: userId }
+          const rankData = global.makeTestRank({ parentId: statementId, round, discussionId: DISCUSSION_ID2, category: 'most', userId })
           await upsertRank.call({ synuser: { id: userId } }, rankData, res => {})
         }
       }

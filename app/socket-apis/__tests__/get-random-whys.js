@@ -58,53 +58,14 @@ test('Case where there are 0 matching whys', async () => {
 })
 
 test('Case where there are 5 matching whys and qty is 5', async () => {
-  const whys = [
-    {
-      _id: new ObjectId(),
-      subject: 'Why 1',
-      description: 'Description 1',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why 2',
-      description: 'Description 2',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why 3',
-      description: 'Description 3',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why 4',
-      description: 'Description 4',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why 5',
-      description: 'Description 5',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-  ]
+  const whys = global.makeTestPoints(5, index => ({
+    subject: `Why ${index + 1}`,
+    description: `Description ${index + 1}`,
+    round: 1,
+    parentId: POINT1.toString(),
+    userId: USER1,
+    category: 'most',
+  }))
   await Points.insertMany(whys)
 
   const user = { id: USER1 }
@@ -123,98 +84,14 @@ test('Case where there are 5 matching whys and qty is 5', async () => {
 })
 
 test('Case where there are 10 matching whys and qty is 5', async () => {
-  const whys = [
-    {
-      _id: new ObjectId(),
-      subject: 'Why1',
-      description: 'Description 1',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why2',
-      description: 'Description 2',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why3',
-      description: 'Description 3',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why4',
-      description: 'Description 4',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why5',
-      description: 'Description 5',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why6',
-      description: 'Description 6',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why7',
-      description: 'Description 7',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why8',
-      description: 'Description 8',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why9',
-      description: 'Description 9',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-    {
-      _id: new ObjectId(),
-      subject: 'Why10',
-      description: 'Description 10',
-      round: 1,
-      parentId: POINT1.toString(),
-      userId: USER1,
-      category: 'most',
-    },
-  ]
+  const whys = global.makeTestPoints(10, index => ({
+    subject: `Why${index + 1}`,
+    description: `Description ${index + 1}`,
+    round: 1,
+    parentId: POINT1.toString(),
+    userId: USER1,
+    category: 'most',
+  }))
   await Points.insertMany(whys)
 
   const user = { id: USER1 }

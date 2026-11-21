@@ -26,13 +26,7 @@ afterEach(async () => {
 })
 
 test('Insert a new document with no id set', async () => {
-  const pointObj = {
-    subject: 'Test Subject',
-    description: 'Test Description',
-    round: 1,
-    parentId: 'parent-id',
-    category: 'most',
-  }
+  const pointObj = global.makeTestPoint({ subject: 'Test Subject', description: 'Test Description', round: 1, parentId: 'parent-id', category: 'most' })
   const user = { id: USER1 }
 
   const cb = jest.fn()
@@ -45,25 +39,10 @@ test('Insert a new document with no id set', async () => {
 })
 
 test('Upsert changes to an existing document with its id set', async () => {
-  const existingPoint = {
-    _id: POINT1,
-    subject: 'Existing Subject',
-    description: 'Existing Description',
-    round: 1,
-    parentId: 'parent-id',
-    userId: USER1,
-    category: 'most',
-  }
+  const existingPoint = global.makeTestPoint({ _id: POINT1, subject: 'Existing Subject', description: 'Existing Description', round: 1, parentId: 'parent-id', userId: USER1, category: 'most' })
   await Points.insertOne(existingPoint)
 
-  const updatedPointObj = {
-    _id: POINT1,
-    subject: 'Updated Subject',
-    description: 'Updated Description',
-    round: 1,
-    parentId: 'parent-id',
-    category: 'most',
-  }
+  const updatedPointObj = global.makeTestPoint({ _id: POINT1, subject: 'Updated Subject', description: 'Updated Description', round: 1, parentId: 'parent-id', category: 'most' })
   const user = { id: USER1 }
 
   const cb = jest.fn()
@@ -76,14 +55,7 @@ test('Upsert changes to an existing document with its id set', async () => {
 })
 
 test('User not logged in, not allowed to upsert a document', async () => {
-  const pointObj = {
-    _id: POINT2,
-    subject: 'Test Subject',
-    description: 'Test Description',
-    round: 1,
-    parentId: 'parent-id',
-    category: 'most',
-  }
+  const pointObj = global.makeTestPoint({ _id: POINT2, subject: 'Test Subject', description: 'Test Description', round: 1, parentId: 'parent-id', category: 'most' })
 
   const cb = jest.fn()
 

@@ -15,11 +15,11 @@ const userId = '6667d5a33da5d19ddc304a6b'
 
 const synuser = { synuser: { id: userId } }
 
-const pointObj1 = {
+const pointObj1 = global.makeTestPoint({
   _id: '6667d688b20d8e339ca50020',
   subject: 'Point1',
   description: 'Point1',
-}
+})
 
 let MemoryServer
 

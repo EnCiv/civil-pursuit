@@ -100,15 +100,7 @@ test('Return data from in-progress discussion.', async () => {
     },
   })
 
-  const userPoint = {
-    _id: new ObjectId(),
-    subject: 'User Point',
-    description: 'User point description',
-    round: 1,
-    parentId: DISCUSSION_ID2,
-    userId: userId,
-    category: 'most',
-  }
+  const userPoint = global.makeTestPoint({ subject: 'User Point', description: 'User point description', round: 1, parentId: DISCUSSION_ID2, userId, category: 'most' })
 
   const cb2 = jest.fn()
   await upsertPoint.call({ synuser: { id: userId } }, userPoint, cb2)
@@ -120,22 +112,15 @@ test('Return data from in-progress discussion.', async () => {
   expect(insertedPoint).toBeDefined()
   expect(insertedPoint.subject).toBe('User Point')
 
-  const ranks = Array.from({ length: 20 }, (_, rankIndex) => {
-    let category
-    if (rankIndex < 8) category = 'most'
-    else if (rankIndex < 15) category = 'least'
-    else category = 'neutral'
-
-    return {
-      _id: new ObjectId(),
-      parentId: insertedPoint._id.toString(),
-      userId: new ObjectId().toString(),
-      round: 1,
-      stage: 'post',
-      category: category,
-      discussionId: DISCUSSION_ID2,
-    }
-  })
+  const ranks = global.makeTestRanks(20, rankIndex => ({
+    _id: new ObjectId(),
+    parentId: insertedPoint._id.toString(),
+    userId: new ObjectId().toString(),
+    round: 1,
+    stage: 'post',
+    category: rankIndex < 8 ? 'most' : rankIndex < 15 ? 'least' : 'neutral',
+    discussionId: DISCUSSION_ID2,
+  }))
   await Ranks.insertMany(ranks)
 
   // Verify ranks were successfully inserted
@@ -151,49 +136,26 @@ test('Return data from in-progress discussion.', async () => {
   expect(neutralRanks).toHaveLength(5)
 
   // Create additional points and user ranks to test userRanks functionality
-  const testPoint1 = {
-    _id: new ObjectId(),
-    subject: 'Test Point 1',
-    description: 'Test point for ranking',
+  const [testPoint1, testPoint2] = global.makeTestPoints(2, index => ({
+    subject: `Test Point ${index + 1}`,
+    description: index === 0 ? 'Test point for ranking' : 'Another test point for ranking',
     parentId: DISCUSSION_ID2,
     userId: new ObjectId().toString(),
     category: 'support',
     round: 1,
-  }
-
-  const testPoint2 = {
-    _id: new ObjectId(),
-    subject: 'Test Point 2',
-    description: 'Another test point for ranking',
-    parentId: DISCUSSION_ID2,
-    userId: new ObjectId().toString(),
-    category: 'support',
-    round: 1,
-  }
+  }))
 
   await Points.insertMany([testPoint1, testPoint2])
 
   // Create points for round 2 to test multi-round functionality
-  const testPoint3 = {
-    _id: new ObjectId(),
-    subject: 'Test Point 3 Round 2',
-    description: 'Round 2 test point for ranking',
+  const [testPoint3, testPoint4] = global.makeTestPoints(2, index => ({
+    subject: `Test Point ${index + 3} Round 2`,
+    description: index === 0 ? 'Round 2 test point for ranking' : 'Another round 2 test point',
     parentId: DISCUSSION_ID2,
     userId: new ObjectId().toString(),
     category: 'support',
     round: 2,
-  }
-
-  const testPoint4 = {
-    _id: new ObjectId(),
-    subject: 'Test Point 4 Round 2',
-    description: 'Another round 2 test point',
-    parentId: DISCUSSION_ID2,
-    userId: new ObjectId().toString(),
-    category: 'support',
-    round: 2,
-  }
-
+  }))
   await Points.insertMany([testPoint3, testPoint4])
 
   // Create user ranks for these points (both round 1 and round 2)

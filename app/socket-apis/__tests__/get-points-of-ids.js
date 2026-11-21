@@ -40,15 +40,12 @@ test('Points found, but no whypoints', async () => {
   const POINT_ID_1 = new ObjectId().toString()
   const POINT_ID_2 = new ObjectId().toString()
 
-  await Points.insertMany([
-    { _id: new ObjectId(POINT_ID_1), subject: 'Point 1', description: 'Description 1', userId: synuser.synuser.id },
-    {
-      _id: new ObjectId(POINT_ID_2),
-      subject: 'Point 2',
-      description: 'Description 2',
-      userId: 'abcdefabcdefabcdefabcdef',
-    }, // Different user
-  ])
+  await Points.insertMany(global.makeTestPoints(2, index => ({
+    _id: new ObjectId(index === 0 ? POINT_ID_1 : POINT_ID_2),
+    subject: `Point ${index + 1}`,
+    description: `Description ${index + 1}`,
+    userId: index === 0 ? synuser.synuser.id : 'abcdefabcdefabcdefabcdef',
+  })))
 
   const callback = jest.fn()
 
@@ -70,25 +67,25 @@ test('Points and whypoints found', async () => {
   const WHYPOINT_ID_1 = new ObjectId().toString()
 
   await Points.insertMany([
-    {
+    global.makeTestPoint({
       _id: new ObjectId(POINT_ID_1),
       subject: 'Unique Point 1',
       description: 'Description 1',
       userId: synuser.synuser.id,
-    },
-    {
+    }),
+    global.makeTestPoint({
       _id: new ObjectId(POINT_ID_2),
       subject: 'Unique Point 2',
       description: 'Description 2',
       userId: 'abcdefabcdefabcdefabcdef',
-    }, // Different user
-    {
+    }), // Different user
+    global.makeTestPoint({
       _id: new ObjectId(WHYPOINT_ID_1),
       parentId: POINT_ID_1,
       subject: 'Why Point 1',
       description: 'Why Description 1',
       userId: synuser.synuser.id, // Created by the current user
-    },
+    }),
   ])
 
   const callback = jest.fn()

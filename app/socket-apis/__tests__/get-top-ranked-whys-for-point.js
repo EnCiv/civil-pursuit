@@ -63,10 +63,9 @@ describe('getTopRankedWhysForPoint', () => {
   test('five whys for the point, different ranks, pageSize is 5', async () => {
     const user = { id: USER1 }
     const cb = jest.fn()
-    const whys = Array.from({ length: 5 }, (_, i) => ({
-      _id: new ObjectId(),
-      subject: `Why ${i + 1}`,
-      description: `Description ${i + 1}`,
+    const whys = global.makeTestPoints(5, index => ({
+      subject: `Why ${index + 1}`,
+      description: `Description ${index + 1}`,
       round: 1,
       parentId: POINT1,
       userId: USER1,
@@ -97,10 +96,9 @@ describe('getTopRankedWhysForPoint', () => {
   test('eleven whys for the point, different ranks, pageSize is 5', async () => {
     const user = { id: USER1 }
     const cb = jest.fn()
-    const whys = Array.from({ length: 11 }, (_, i) => ({
-      _id: new ObjectId(),
-      subject: `Why ${i + 1}`,
-      description: `Description ${i + 1}`,
+    const whys = global.makeTestPoints(11, index => ({
+      subject: `Why ${index + 1}`,
+      description: `Description ${index + 1}`,
       round: 1,
       parentId: POINT1,
       userId: USER1,
@@ -131,10 +129,9 @@ describe('getTopRankedWhysForPoint', () => {
   test('eleven whys for the point, different ranks, start is 5, pageSize is 5', async () => {
     const user = { id: USER1 }
     const cb = jest.fn()
-    const whys = Array.from({ length: 11 }, (_, i) => ({
-      _id: new ObjectId(),
-      subject: `Why ${i + 1}`,
-      description: `Description ${i + 1}`,
+    const whys = global.makeTestPoints(11, index => ({
+      subject: `Why ${index + 1}`,
+      description: `Description ${index + 1}`,
       round: 1,
       parentId: POINT1,
       userId: USER1,
@@ -165,10 +162,9 @@ describe('getTopRankedWhysForPoint', () => {
   test('eleven whys for the point, different ranks, start is 10, pageSize is 5', async () => {
     const user = { id: USER1 }
     const cb = jest.fn()
-    const whys = Array.from({ length: 11 }, (_, i) => ({
-      _id: new ObjectId(),
-      subject: `Why ${i + 1}`,
-      description: `Description ${i + 1}`,
+    const whys = global.makeTestPoints(11, index => ({
+      subject: `Why ${index + 1}`,
+      description: `Description ${index + 1}`,
       round: 1,
       parentId: POINT1,
       userId: USER1,
@@ -199,10 +195,9 @@ describe('getTopRankedWhysForPoint', () => {
   test('eleven whys for the point, different ranks, start is 15, pageSize is 5', async () => {
     const user = { id: USER1 }
     const cb = jest.fn()
-    const whys = Array.from({ length: 11 }, (_, i) => ({
-      _id: new ObjectId(),
-      subject: `Why ${i + 1}`,
-      description: `Description ${i + 1}`,
+    const whys = global.makeTestPoints(11, index => ({
+      subject: `Why ${index + 1}`,
+      description: `Description ${index + 1}`,
       round: 1,
       parentId: POINT1,
       userId: USER1,

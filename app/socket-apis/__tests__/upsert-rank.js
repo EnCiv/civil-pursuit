@@ -27,14 +27,7 @@ afterAll(async () => {
 })
 
 test('Insert a new rank document', async () => {
-  const rankObj = {
-    _id: RANK2.toString(),
-    parentId: 'parent-id-1',
-    round: 1,
-    stage: 'pre',
-    category: 'most',
-    discussionId: discussion1,
-  }
+  const rankObj = global.makeTestRank({ _id: RANK2.toString(), parentId: 'parent-id-1', round: 1, stage: 'pre', discussionId: discussion1 })
 
   const cb = jest.fn()
 
@@ -47,14 +40,7 @@ test('Insert a new rank document', async () => {
 })
 
 test('Update an existing rank document with a different category', async () => {
-  const initialRankObj = {
-    _id: RANK1.toString(),
-    parentId: 'parent-id-1',
-    round: 1,
-    stage: 'pre',
-    category: 'least', // different initial category
-    discussionId: discussion1,
-  }
+  const initialRankObj = global.makeTestRank({ _id: RANK1.toString(), parentId: 'parent-id-1', round: 1, stage: 'pre', category: 'least', discussionId: discussion1 })
 
   const cb = jest.fn()
   await upsertRank.call({ synuser: { id: USER1 } }, initialRankObj, cb)
@@ -62,14 +48,7 @@ test('Update an existing rank document with a different category', async () => {
   // const inserted = await Ranks.findOne({ _id: RANK1 }) // make sure the insertion is sucessful
   // console.log('Inserted document:', inserted)
 
-  const rankObj = {
-    _id: RANK1.toString(),
-    parentId: 'parent-id-1',
-    round: 1,
-    stage: 'pre',
-    category: 'most',
-    discussionId: discussion1,
-  }
+  const rankObj = global.makeTestRank({ _id: RANK1.toString(), parentId: 'parent-id-1', round: 1, stage: 'pre', discussionId: discussion1 })
 
   await upsertRank.call({ synuser: { id: USER1 } }, rankObj, cb)
 
@@ -80,7 +59,7 @@ test('Update an existing rank document with a different category', async () => {
 })
 
 test('Fail if the user is not logged in', async () => {
-  const rankObj = { parentId: 'parent-id-2', round: 1, stage: 'pre', category: 'most', discussionId: 'discussion-2' }
+  const rankObj = global.makeTestRank({ parentId: 'parent-id-2', round: 1, stage: 'pre', discussionId: 'discussion-2' })
   const cb = jest.fn()
 
   await upsertRank.call({}, rankObj, cb)
@@ -91,7 +70,7 @@ test('Fail if the user is not logged in', async () => {
 })
 
 test('Fail if one of the required parameters is missing', async () => {
-  const invalidRankObj = { round: 1, category: 'most', stage: 'pre' } // Missing parentId and discussionId
+  const invalidRankObj = global.makeTestRank({ parentId: undefined, discussionId: undefined, round: 1, stage: 'pre' })
   const user = { id: USER1 }
 
   const cb = jest.fn()
