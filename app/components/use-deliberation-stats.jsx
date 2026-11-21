@@ -58,6 +58,14 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginBottom: '0.5rem',
   },
   invisibleButtonInUpperRight: {
+    appearance: 'none',
+    border: 0,
+    padding: 0,
+    font: 'inherit',
+    '&:focus-visible': {
+      outline: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+      outlineOffset: '0.125rem',
+    },
     width: '1rem',
     height: '1rem',
     position: 'absolute',

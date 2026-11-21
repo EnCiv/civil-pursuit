@@ -82,10 +82,10 @@ const Step = forwardRef((props, ref) => {
     >
       <span onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
         <TooltipPortal isOpen={isPortalOpen} portalContent={<span>{title}</span>}>
-          <div className={textStyle}>
+          <span className={textStyle}>
             <span className={cx(classes.stepName, active && classes.currentStepName)}>{displayName}</span>
             <span className={stepNumberStyle}>Step {stepIndex}</span>
-          </div>
+          </span>
         </TooltipPortal>
       </span>
     </button>

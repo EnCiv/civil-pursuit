@@ -163,15 +163,20 @@ function getStepArgsFrom(pointWithWhyRankListList) {
 // sets up the socket api mocks and renders the component
 const StepTemplate = args => {
   // topWhyById and preRankByParentId are taken from args to uses by the api call
-  const { defaultValue, apiResult, fetchDelay = 0, fetchFailure = false, ...otherArgs } = args
+  const { defaultValue, apiResult, supersededApiResult = apiResult, fetchDelay = 0, fetchFailure = false, supersedeFetch = false, ...otherArgs } = args
   useState(() => {
     // execute this code once, before the component is initally rendered
     // the api call will provide the new data for this step
     let failureDelivered = false
+    let requestCount = 0
+    window.supersededFetchCallbacks = []
     window.socket._socketEmitHandlers['get-why-ranks-and-points'] = (discussionId, round, mostIds, leastIds, cb) => {
+      requestCount++
       window.socket._socketEmitHandlerResults['get-why-ranks-and-points'].push([discussionId, round, mostIds, leastIds])
       setTimeout(() => {
-        if (fetchFailure && !failureDelivered) {
+        if (supersedeFetch && requestCount === 1) {
+          window.supersededFetchCallbacks.push({ cb, supersededApiResult })
+        } else if (fetchFailure && !failureDelivered) {
           failureDelivered = true
           cb(null)
         } else {
@@ -224,6 +229,40 @@ export const FetchFailureCanRetry = {
     await waitFor(() => {
       expect(canvas.queryByRole('alert')).not.toBeInTheDocument()
       expect(canvas.queryByText('Loading explanations...')).not.toBeInTheDocument()
+    })
+  },
+}
+
+export const SupersededRequestIsIgnored = {
+  args: {
+    ...getStepArgsFrom(pointWithWhyRankListList),
+    category: 'most',
+    round: 1,
+    supersedeFetch: true,
+    supersededApiResult: {
+      ranks: [],
+      whys: [{ _id: 'stale-why', subject: 'STALE SUPERSEDED RESPONSE', description: 'This must not render', parentId: '1', category: 'most' }],
+    },
+  },
+  decorators: [DeliberationContextDecorator, socketEmitDecorator],
+  render: props => <StepTemplate {...props} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await waitFor(() => expect(window.supersededFetchCallbacks).toHaveLength(1))
+
+    window.supersededFetchCallbacks[0].cb(null)
+    const retry = await waitFor(() => canvas.getByRole('button', { name: 'Retry loading explanations' }))
+    await userEvent.click(retry)
+
+    await waitFor(() => {
+      expect(canvas.queryByRole('alert')).not.toBeInTheDocument()
+      expect(window.socket._socketEmitHandlerResults['get-why-ranks-and-points'].length).toBeGreaterThanOrEqual(2)
+    })
+
+    window.supersededFetchCallbacks[0].cb(window.supersededFetchCallbacks[0].supersededApiResult)
+    await waitFor(() => {
+      expect(canvas.queryByText('STALE SUPERSEDED RESPONSE')).not.toBeInTheDocument()
+      expect(canvas.queryByRole('alert')).not.toBeInTheDocument()
     })
   },
 }

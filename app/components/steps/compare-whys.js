@@ -41,6 +41,7 @@ export default function CompareWhysStep(props) {
   }
   // fetch previous data
   useEffect(() => {
+    let active = true
     // on the browser, do this once and only once when this component is first rendered
     setIsLoading(true)
     setLoadError(false)
@@ -59,6 +60,7 @@ export default function CompareWhysStep(props) {
       return
     }
     window.socket.emit('get-why-ranks-and-points', discussionId, round, mostIds, leastIds, result => {
+      if (!active) return
       if (!result) {
         setLoadError(true)
         setIsLoading(false)
@@ -84,6 +86,9 @@ export default function CompareWhysStep(props) {
       fetchDemInfo(whyIds)
       setIsLoading(false)
     })
+    return () => {
+      active = false
+    }
   }, [round, data.preRankByParentId, retryCount])
   return <CompareWhys {...props} {...args} category={category} isLoading={isLoading} loadError={loadError} onRetry={handleRetry} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
 }

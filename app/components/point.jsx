@@ -47,8 +47,8 @@ const Point = forwardRef((props, ref) => {
           </div>
         )}
         <div className={classes.informationGrid}>
-          {subject && (
-            <H className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'], isInvalid ? classes.invalidText : undefined)}>{subject}</H>
+          {(isLoading || subject) && (
+            <H className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'], isLoading && classes.loadingAnimationSubject, isInvalid ? classes.invalidText : undefined)}>{isLoading ? '' : subject}</H>
           )}
           {(isLoading || description) && (
             <p className={isLoading ? cx(classes.loadingAnimation, classes.loadingAnimationDescription) : cx(classes.sharedDescriptionStyle, classes[vState + 'Description'], isInvalid ? classes.invalidText : undefined)}>
