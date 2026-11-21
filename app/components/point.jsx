@@ -12,7 +12,7 @@ import { H, Level } from 'react-accessible-headings'
 import DemInfo from './dem-info'
 
 const Point = forwardRef((props, ref) => {
-  const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, topRow, demInfoTopRight = false, ...otherProps } = props
+  const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, topRow, demInfoTopRight = false, demInfoClassName, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
 
@@ -55,7 +55,7 @@ const Point = forwardRef((props, ref) => {
               {isLoading ? '' : description}
             </p>
           )}
-          {!demInfoTopRight && <DemInfo className={cx(classes[vState + 'DemInfo'])} pointId={_id} />}
+          {!demInfoTopRight && <DemInfo className={cx(classes[vState + 'DemInfo'], demInfoClassName)} pointId={_id} />}
           <Level>{childrenWithProps}</Level>
         </div>
       </div>

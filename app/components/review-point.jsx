@@ -28,7 +28,7 @@ function ReviewPoint(props) {
   const classes = useStylesFromThemeFunction()
 
   const handleRankingDone = ({ valid, value }) => {
-    setVState('enabled')
+    setVState(previous => previous === 'open' ? 'open' : 'enabled')
     setIsRanked(valid)
     if (!(isRanked && rank === value)) {
       onDone({ valid, value })
@@ -36,7 +36,7 @@ function ReviewPoint(props) {
   }
 
   useEffect(() => {
-    if (rank) setVState('enabled')
+    if (rank) setVState(previous => previous === 'open' ? 'open' : 'enabled')
     if (isRanked) setIsRanked(false) // not ranked until validated from child
   }, [rank])
 
@@ -50,6 +50,12 @@ function ReviewPoint(props) {
     setTimeout(() => onDone({ valid: !!rank }), 0)
   }
 
+  const handleCardClick = event => {
+    if (event.target.closest(`.${classes.rankingPlacement}, button, a, input, select, textarea, [role="button"], [role="radio"]`)) return
+    if (vState === 'open') handleClose()
+    else handleOpen()
+  }
+
   const topRow = (
     <div className={classes.topRowContent}>
       <span className={vState !== 'disabled' ? classes.statusBadgeComplete : classes.statusBadge}>{vState !== 'disabled' ? 'Read' : 'Unread'}</span>
@@ -59,13 +65,13 @@ function ReviewPoint(props) {
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
       <div className={classes.pointContainer}>
-        <Point point={point} vState={vState === 'disabled' ? 'disabled' : 'default'} topRow={topRow} className={classes.reviewPoint}>
+        <Point point={point} vState={vState === 'disabled' ? 'disabled' : 'default'} topRow={topRow} className={classes.reviewPoint} onClick={handleCardClick}>
           {(leftPointList.length > 0 || rightPointList.length > 0) && (
             <div className={cx(classes.showDualPointListDisclosure, vState === 'open' && classes.showDualPointListExpanded)} aria-hidden={vState !== 'open'}>
               <div className={classes.showDualPointListInner}>
                 <div className={classes.showDualPointListContainer}>
                   <Level>
-                    <ShowDualPointList className={classes.showDualPointList} leftHeader="Why It's Most Important" rightHeader="Why It's Least Important" leftPoints={leftPointList} rightPoints={rightPointList} vState={'expanded'} />
+                    <ShowDualPointList className={classes.showDualPointList} leftHeader="Why It's Most Important" rightHeader="Why It's Least Important" leftPoints={leftPointList} rightPoints={rightPointList} vState={'expanded'} showToggle={false} />
                   </Level>
                 </div>
               </div>
@@ -77,13 +83,13 @@ function ReviewPoint(props) {
         </Point>
         <div className={classes.SvgContainer}>
           {vState === 'open' ? (
-            <TextButton onClick={handleClose} title="close" tabIndex={0} style={{ padding: 0 }}>
+            <TextButton onDone={handleClose} title="close" aria-expanded={true} tabIndex={0} style={{ padding: 0 }}>
               <span className={classes.chevronButton}>
                 <SvgChevronUp width={'2rem'} height={'auto'} />
               </span>
             </TextButton>
           ) : (
-            <TextButton onClick={handleOpen} title="open" tabIndex={0} style={{ padding: 0 }}>
+            <TextButton onDone={handleOpen} title="open" aria-expanded={false} tabIndex={0} style={{ padding: 0 }}>
               <span className={classes.chevronButton}>
                 <SvgChevronDown width={'2rem'} height={'auto'} />
               </span>
@@ -97,7 +103,13 @@ function ReviewPoint(props) {
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   reviewPoint: {
-    // Don't override Point's border styles - let Point handle borders
+    cursor: 'pointer',
+    '& > div > div > :is(h1, h2, h3, h4, h5, h6)': {
+      fontSize: '1.75rem',
+    },
+    '& > div > div > p': {
+      fontSize: '1.125rem',
+    },
   },
 
   pointContainer: {
@@ -133,6 +145,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   rankingPlacement: {
     display: 'flex',
+    cursor: 'default',
     justifyContent: 'flex-end',
     width: '100%',
     marginTop: '1.25rem',

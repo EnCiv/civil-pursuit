@@ -3,7 +3,7 @@
 import React from 'react'
 import ReviewPoint from '../app/components/review-point'
 import { onDoneDecorator } from './common'
-import { within, userEvent, expect } from 'storybook/test'
+import { within, userEvent, expect, waitFor } from 'storybook/test'
 
 export default {
   component: ReviewPoint,
@@ -95,15 +95,33 @@ export const ReviewOnDone = {
   decorators: [onDoneDecorator],
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    // Click to open the why lists
-    await userEvent.click(canvas.getByTitle('open'))
-    await userEvent.click(canvas.getByText('Collapse Table'))
-    await userEvent.click(canvas.getByText('Expand Table'))
-    // Select the "Most" ranking option using role="radio" to avoid ambiguity with header text
+    const expectTableTypography = () => {
+      const mainFontSize = parseFloat(getComputedStyle(canvas.getByText(point0.subject)).fontSize)
+      const tableTexts = [
+        canvas.getByText("Why It's Most Important"),
+        canvas.getByText("Why It's Least Important"),
+        canvas.getByText(point1.subject),
+        canvas.getByText(point1.description),
+      ]
+      tableTexts.forEach(element => expect(parseFloat(getComputedStyle(element).fontSize)).toBeLessThanOrEqual(mainFontSize * 0.8))
+      expect(getComputedStyle(tableTexts[0]).fontFamily).toContain('sans-serif')
+      expect(getComputedStyle(tableTexts[0]).textAlign).toBe('center')
+      expect(getComputedStyle(tableTexts[1]).textAlign).toBe('center')
+    }
+    await userEvent.click(canvas.getByText(point0.subject))
+    await waitFor(() => expect(canvas.getByTitle('close')).toHaveAttribute('aria-expanded', 'true'))
+    expectTableTypography()
+    expect(canvas.queryByRole('button', { name: /(?:Collapse|Expand) Table/ })).not.toBeInTheDocument()
     await userEvent.click(canvas.getByRole('radio', { name: 'Most' }))
     expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({
       valid: true,
       value: 'Most',
     })
+    expect(canvas.getByTitle('close')).toHaveAttribute('aria-expanded', 'true')
+    await userEvent.click(canvas.getByText(point1.subject))
+    await waitFor(() => expect(canvas.getByTitle('open')).toHaveAttribute('aria-expanded', 'false'))
+    canvas.getByTitle('open').focus()
+    await userEvent.keyboard('{Enter}')
+    await waitFor(() => expect(canvas.getByTitle('close')).toHaveAttribute('aria-expanded', 'true'))
   },
 }

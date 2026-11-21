@@ -21,7 +21,6 @@ function StepBar(props) {
   const stepContainerRef = useRef(null)
   const selectRef = useRef(null)
   const optionsContainerRef = useRef(null)
-  const selectItemsContainerRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [isMobileLayout, setIsMobileLayout] = useState(isMobile)
   const stepsWithIds = useMemo(() => steps.map((step, i) => ({ ...step, id: i + 1 })), [steps])
@@ -174,14 +173,27 @@ function StepBar(props) {
   ) : (
     // MOBILE view
     <div className={classes.mobileContainer}>
-      <div className={classes.goTo}>Go To</div>
-      <div className={cx(classes.resetButtonStyling, classes.selectInput)} ref={selectRef} tabIndex={0} data-testid="mobile-select-bar">
-        <div className={classes.selectItemsContainer} ref={selectItemsContainerRef}>
-          <div className={classes.selectText}>{current + ': ' + steps[current - 1].name}</div>
-          {isOpen ? <SvgStepBarArrowMobile style={{ transform: 'rotate(180deg)', flexShrink: '0' }} width="13" height="13" /> : <SvgStepBarArrowMobile width="13" height="13" style={{ flexShrink: '0' }} />}
+      <div className={cx(classes.resetButtonStyling, classes.selectInput)} ref={selectRef} data-testid="mobile-select-bar" aria-expanded={isOpen}>
+        <div className={classes.selectItemsContainer}>
+          <Step
+            className={classes.selectItemsContainerStep}
+            style={{ paddingRight: '2.5rem' }}
+            name={steps[current - 1].name}
+            title={steps[current - 1].title}
+            stepIndex={current}
+            complete={steps[current - 1].complete}
+            active
+            unlocked
+            skip={steps[current - 1].skip}
+            onDone={() => setIsOpen(true)}
+            index={current - 1}
+            {...otherProps}
+          />
+          <span className={classes.selectCaret} aria-hidden="true">
+            {isOpen ? <SvgStepBarArrowMobile style={{ transform: 'rotate(180deg)' }} width="13" height="13" /> : <SvgStepBarArrowMobile width="13" height="13" />}
+          </span>
         </div>
-        {isOpen && (
-          <div className={cx(classes.dropdownContainer, classes.customScrollbar)} ref={optionsContainerRef} style={{ width: selectItemsContainerRef.current ? `calc( ${selectItemsContainerRef.current.clientWidth}px - 3rem )` : 'auto' }}>
+        <div className={cx(classes.dropdownContainer, classes.customScrollbar, { [classes.dropdownOpen]: isOpen })} ref={optionsContainerRef} aria-hidden={!isOpen} data-testid="mobile-step-options">
             <div className={classes.dropdownContent}>
               <div className={classes.stepsContainerMobile}>
                 {stepsWithIds.map((step, index) => {
@@ -208,8 +220,7 @@ function StepBar(props) {
                 })}
               </div>
             </div>
-          </div>
-        )}
+        </div>
       </div>
       <div className={classes.breakStyle} />
     </div>
@@ -306,29 +317,31 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexDirection: 'column',
     background: theme.colors.white,
   },
-  goTo: {
-    marginLeft: '1.56rem',
-  },
   selectInput: {
     margin: '0.44rem 1.56rem 0rem',
     display: 'flex',
-    borderRadius: '0.25rem',
-    border: '0.125rem solid #EBEBEB',
-    background: theme.colors.white,
+    position: 'relative',
+    borderRadius: '0.625rem',
+    background: 'transparent',
   },
   selectItemsContainer: {
-    display: 'inline-flex',
+    display: 'flex',
+    position: 'relative',
     width: '100%',
-    padding: '0.3125rem 0.625rem 0.3125rem 0.9375rem',
-    justifyContent: 'space-between',
+    minWidth: 0,
     alignItems: 'center',
   },
-  selectText: {
-    color: theme.colors.encivGray,
-    ...theme.font,
-    fontSize: '1rem',
-    fontWeight: '400',
-    lineHeight: '1.5rem',
+  selectItemsContainerStep: {
+    flex: '1 1 auto',
+    minWidth: 0,
+  },
+  selectCaret: {
+    position: 'absolute',
+    top: '50%',
+    right: '0.9375rem',
+    display: 'flex',
+    transform: 'translateY(-50%)',
+    pointerEvents: 'none',
   },
   breakStyle: {
     background: theme.colors.inactiveGray,
@@ -336,16 +349,35 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginTop: '0.94rem',
   },
   dropdownContainer: {
-    display: 'flex',
-    padding: '0.5rem',
-    alignItems: 'flex-start',
-    borderRadius: '0rem 0rem 0.25rem 0.25rem',
-    border: '0.125rem solid #EBEBEB',
+    boxSizing: 'border-box',
+    width: '100%',
+    maxHeight: 0,
+    padding: '0 0.5rem',
+    overflow: 'hidden',
+    opacity: 0,
+    transform: 'translateY(-0.4rem)',
+    visibility: 'hidden',
+    pointerEvents: 'none',
+    border: `0.0625rem solid ${theme.colors.secondaryDivider}`,
+    borderTop: '0',
+    borderRadius: '0 0 0.625rem 0.625rem',
     background: theme.colors.white,
-    margin: '0rem 1.56rem',
     position: 'absolute',
     left: '0',
+    top: '100%',
     zIndex: '1000',
+    boxShadow: '0 0.5rem 1rem rgba(26, 26, 26, 0.16)',
+    transition: 'max-height 260ms ease, opacity 180ms ease, transform 260ms ease, padding 260ms ease, visibility 260ms',
+    '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+  },
+  dropdownOpen: {
+    maxHeight: '60vh',
+    padding: '0.5rem',
+    overflowY: 'auto',
+    opacity: 1,
+    transform: 'translateY(0)',
+    visibility: 'visible',
+    pointerEvents: 'auto',
   },
   dropdownContent: {
     display: 'flex',

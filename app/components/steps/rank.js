@@ -288,6 +288,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     gap: '1.25rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      flexDirection: 'column',
+      alignItems: 'stretch',
+    },
   },
   leftButtons: {
     display: 'flex',
@@ -295,7 +299,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '1rem',
     flexGrow: 1,
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      justifyContent: 'space-around',
+      flexDirection: 'column',
+      alignItems: 'center',
+      width: '100%',
     },
   },
   rightButtons: {
@@ -303,10 +309,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexGrow: 1,
     justifyContent: 'flex-end',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '100%',
+      flexGrow: 0,
       '& button': {
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        flexGrow: 0.8,
+        width: '100%',
       },
     },
   },
@@ -314,10 +320,25 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
     gap: '2rem',
+    '& > div': {
+      display: 'flex',
+      flexDirection: 'column',
+      '& > div': {
+        flex: '1 1 auto',
+        '& > div': {
+          flex: '1 1 auto',
+        },
+      },
+    },
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       display: 'block',
       '& > div': {
         marginBottom: '2rem',
+        boxShadow: 'none',
+        '&:hover': {
+          boxShadow: 'none',
+          transform: 'none',
+        },
       },
       '& > div:last-child': {
         marginBottom: 0,
@@ -326,6 +347,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   rank: {
     paddingTop: '1rem',
+    marginTop: 'auto',
   },
   invalidBackground: {
     backgroundColor: theme.colors.inputErrorContainer,

@@ -97,6 +97,14 @@ const rankingStyleClasses = createUseStyles(theme => ({
     flexWrap: 'wrap',
     width: '100%',
     gap: '0.625rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      '& > [role="radio"]': {
+        flex: '1 1 calc(50% - 0.3125rem)',
+      },
+      '& > [role="radio"]:nth-child(1)': { order: 1 },
+      '& > [role="radio"]:nth-child(2)': { order: 3 },
+      '& > [role="radio"]:nth-child(3)': { order: 2 },
+    },
   },
   disabled: {
     opacity: 0.55,

@@ -12,7 +12,7 @@ import cx from 'classnames'
 
 const blankPoint = { subject: '     ', description: '     ' } // used to reset the next point when transitioning
 function PairCompare(props) {
-  const { whyRankList = [], onDone = () => {}, mainPoint = { subject: '', description: '' }, discussionId, round, ...otherProps } = props
+  const { whyRankList = [], onDone = () => {}, mainPoint = { subject: '', description: '' }, progressHeading, discussionId, round, ...otherProps } = props
 
   const [nextLeftPoint, setNextLeftPoint] = useState(blankPoint)
   const [nextRightPoint, setNextRightPoint] = useState(blankPoint)
@@ -188,14 +188,23 @@ function PairCompare(props) {
 
   const pointsIdxCounter = Math.max(idxLeft, idxRight)
   const isSelectionComplete = pointsIdxCounter >= whyRankList.length
+  const progressBadge = <span className={isSelectionComplete ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length} out of ${whyRankList.length}`}</span>
   return (
     <div className={classes.container} {...otherProps}>
-      <div className={classes.mainPointContainer}>
-        <div className={classes.mainPointSubject}>{mainPoint.subject}</div>
-        <div className={classes.mainPointDescription}>{mainPoint.description}</div>
-      </div>
-
-      <span className={isSelectionComplete ? classes.statusBadgeComplete : classes.statusBadge}>{`${pointsIdxCounter <= whyRankList.length ? pointsIdxCounter : whyRankList.length} out of ${whyRankList.length}`}</span>
+      {progressHeading ? (
+        <div className={classes.progressHeader}>
+          {progressHeading}
+          {progressBadge}
+        </div>
+      ) : (
+        <>
+          <div className={classes.mainPointContainer}>
+            <div className={classes.mainPointSubject}>{mainPoint.subject}</div>
+            <div className={classes.mainPointDescription}>{mainPoint.description}</div>
+          </div>
+          {progressBadge}
+        </>
+      )}
       <div className={classes.lowerContainer}>
         <div className={classes.hiddenPointContainer}>
           <Point vState="disabled" className={cx(classes.hiddenPoint, pointsIdxCounter >= whyRankList.length - 1 && classes.hidden, isRightTransitioning && classes.transitioningDown)} point={nextLeftPoint} />
@@ -243,6 +252,16 @@ const useStyles = createUseStyles(theme => ({
   container: {
     fontFamily: theme.font.fontFamily,
     overflowX: 'hidden',
+  },
+  progressHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '1rem',
+    '& > span': {
+      flexShrink: 0,
+      whiteSpace: 'nowrap',
+    },
   },
   statusBadge: {
     backgroundColor: theme.colors.statusBadgeProgressBackground,

@@ -79,6 +79,27 @@ export const Desktop = {
   },
 }
 
+export const RankingKeepsReviewOpen = {
+  args: {
+    reducedPointList,
+    topWhysByCategoryByParentId,
+    discussionId,
+    round,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const firstCard = canvas.getByText(reducedPointList[0].point.subject).closest('div[class*="pointContainer"]')
+    const card = within(firstCard)
+    await waitFor(() => expect(card.getByTitle('close')).toHaveAttribute('aria-expanded', 'true'))
+    await userEvent.click(card.getByRole('radio', { name: 'Most' }))
+    await waitFor(() => expect(card.getByTitle('close')).toHaveAttribute('aria-expanded', 'true'))
+    const secondCard = within(canvas.getByText(reducedPointList[1].point.subject).closest('div[class*="pointContainer"]'))
+    await waitFor(() => expect(secondCard.getByRole('radio', { name: 'Most' })).toHaveAttribute('tabindex', '0'))
+    await userEvent.click(card.getByText(reducedPointList[0].point.subject))
+    await waitFor(() => expect(card.getByTitle('open')).toHaveAttribute('aria-expanded', 'false'))
+  },
+}
+
 // Desktop with DemInfo data for all points
 const DemInfoDecorator = ({ children }) => {
   const { upsert } = React.useContext(DemInfoContext)

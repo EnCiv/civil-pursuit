@@ -44,7 +44,16 @@ const a11yConfig: TestRunnerConfig = {
 module.exports = a11yConfig
 */
 
+
 const config: TestRunnerConfig = {
+  async prepare({ page, browserContext, testRunnerConfig }) {
+    await page.route('**/__webpack_hmr**', route => route.fulfill({ status: 204 }))
+    const iframeURL = new URL('iframe.html', process.env.TARGET_URL).toString()
+    if (testRunnerConfig.getHttpHeaders) {
+      await browserContext.setExtraHTTPHeaders(await testRunnerConfig.getHttpHeaders(iframeURL))
+    }
+    await page.goto(iframeURL, { waitUntil: 'load' })
+  },
   async preVisit(page) {
     const hasTestRunner = await page.evaluate(() => typeof (window as any).__test === 'function').catch(() => false)
     if (!hasTestRunner) await setupPage(page, page.context())

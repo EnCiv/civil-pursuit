@@ -180,10 +180,10 @@ export function Rerank(props) {
       let newPointUpdated = false
       for (const pG of reducedPointList) {
         if (pG.point._id === point._id) {
-          newVStateByPointId[pG.point._id] = result.valid ? 'enabled' : newVStateByPointId[pG.point._id] === 'open' ? 'disabled' : 'open'
+          newVStateByPointId[pG.point._id] = result.valid ? (result.value && prev[pG.point._id] === 'open' ? 'open' : 'enabled') : newVStateByPointId[pG.point._id] === 'open' ? 'disabled' : 'open'
           pointUpdated = true
           updated = newVStateByPointId[pG.point._id] !== prev[pG.point._id] ? true : updated
-          newPointUpdated = newVStateByPointId[pG.point._id] === 'open' ? true : newPointUpdated
+          newPointUpdated = !result.valid && newVStateByPointId[pG.point._id] === 'open' ? true : newPointUpdated
         } else if (pointUpdated && !newPointUpdated && prev[pG.point._id] && !rankByParentId[pG.point._id]?.category) {
           newVStateByPointId[pG.point._id] = 'open'
           updated = true

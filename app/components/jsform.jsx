@@ -137,8 +137,10 @@ const JsForm = props => {
   }, [data])
 
   useEffect(() => {
+    if (!discussionId || !name) return
+    let active = true
     window.socket.emit('get-jsform', discussionId, data => {
-      if (data && data[name] !== undefined) {
+      if (active && data && data[name] !== undefined) {
         const moreDetails = data[name]
         setData(moreDetails)
         if (handleIsValid(moreDetails, schema, errors)) {
@@ -146,7 +148,8 @@ const JsForm = props => {
         }
       }
     })
-  }, [])
+    return () => { active = false }
+  }, [discussionId, name])
 
   useEffect(() => {
     if (submitOnNext) {

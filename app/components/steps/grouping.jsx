@@ -502,6 +502,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(1, minmax(0, 1fr))',
     gap: '1.25rem',
+    '& > [data-point-id]': {
+      display: 'flex',
+      '& > div': {
+        flex: '1 1 auto',
+      },
+    },
     '@container groupingStep (min-width: 40rem)': {
       gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
     },

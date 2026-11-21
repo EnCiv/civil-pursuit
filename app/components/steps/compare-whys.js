@@ -155,12 +155,12 @@ export function CompareWhys(props) {
             className={cx(classes.headlinePoint, navigationDirection > 0 ? classes.slideInFromRight : classes.slideInFromLeft)}
           >
             <H className={classes.headlineTitle}>Please choose the most convincing explanation for...</H>
-            <H className={classes.headlineSubject}>{currentPointWithWhyRankList.point.subject}</H>
             <Level>
               <PairCompare
                 round={round}
                 discussionId={discussionId}
                 className={classes.pairCompare}
+                progressHeading={<H className={classes.headlineSubject}>{currentPointWithWhyRankList.point.subject}</H>}
                 whyRankList={currentPointWithWhyRankList.whyRankList}
                 onDone={value => handlePairCompare(value, currentPointWithWhyRankList.point._id)}
               />
@@ -282,9 +282,14 @@ const useStyles = createUseStyles(theme => ({
     lineHeight: '2rem',
   },
   headlineSubject: {
-    fontWeight: '300',
-    fontSize: '2.25rem',
-    lineHeight: '2.9375rem',
+    minWidth: 0,
+    margin: 0,
+    color: theme.colors.encivGray,
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
+    fontWeight: 600,
+    fontSize: '1.5rem',
+    lineHeight: 1.3,
+    overflowWrap: 'anywhere',
   },
   pairCompare: {
     marginTop: '1rem',

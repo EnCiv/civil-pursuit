@@ -53,8 +53,6 @@ const createPointDoc = (
 
 const pointItems = samplePoints.map(({ subject, description }, index) => createPointDoc(index, subject, description))
 
-const getPointGroupByLead = (canvas, subject) => within(canvas.getByRole('checkbox', { name: `Select point group: ${subject}` }))
-
 const showYourGroups = async canvas => {
   const yourGroupsTab = canvas.getByRole('tab', { name: /groups/i })
   if (yourGroupsTab.getAttribute('aria-selected') !== 'true') await userEvent.click(yourGroupsTab)
@@ -403,8 +401,8 @@ export const canRemoveOnePointFromAGroup = {
     await selectGroupedPoint(canvas, pointSubject(1))
     await userEvent.click(canvas.getByRole('button', { name: /Group Selected Responses/ }))
     await finishSelectingLead(canvas, pointSubject(1))
-    await userEvent.click(getPointGroupByLead(canvas, pointSubject(1)).getByTitle('Edit Lead Point'))
-    await userEvent.click(getPointGroupByLead(canvas, pointSubject(1)).getByTitle(`Remove from Group: ${pointSubject(2)}`))
+    await userEvent.click(canvas.getByTitle('Edit Lead Point'))
+    await userEvent.click(canvas.getByTitle(`Remove from Group: ${pointSubject(2)}`))
     await waitFor(() => expect(onDoneResult(canvas)).toMatchObject({
       onDoneResult: {
         valid: true,

@@ -59,6 +59,7 @@ export const NewUserFullFlow = {
     }),
     ...authFlowDecorators,
     buildApiDecorator('get-jsform', (discussionId, cb) => cb({})),
+    buildApiDecorator('upsert-jsform', () => {}),
     buildApiDecorator('set-user-info', (email, cb) => {
       console.log('⚠️ set-user-info called - this should NOT happen for temp user completing full round')
       cb({ error: 'Test mock - set-user-info should not be called' })
@@ -97,10 +98,13 @@ export const NewUserFullFlow = {
       expect(element).toBeInTheDocument()
     })
 
-    const getStepBarItem = name => canvas.getAllByTestId('testClick').find(step => step.textContent.includes(name))
+    const getStepBarItem = name => {
+      const options = canvas.queryByTestId('mobile-step-options')
+      return (options ? within(options) : canvas).getAllByTestId('testClick').find(step => step.textContent.includes(name))
+    }
     const openMobileStepBar = async () => {
       const mobileStepBar = canvas.queryByTestId('mobile-select-bar')
-      if (mobileStepBar && !canvas.queryByTestId('testClick')) await userEvent.click(mobileStepBar)
+      if (mobileStepBar && mobileStepBar.getAttribute('aria-expanded') !== 'true') await userEvent.click(mobileStepBar)
     }
     await openMobileStepBar()
     const getGroupingStepBarItem = () => getStepBarItem('Group')
@@ -129,12 +133,10 @@ export const NewUserFullFlow = {
 
     await waitFor(() => expect(getGroupingStepBarItem()).toHaveAttribute('tabindex', '0'))
 
-    // The completed answer unlocks Group in the StepBar.
-    await waitFor(() => expect(getGroupingStepBarItem()).toHaveAttribute('tabindex', '0'))
-    await userEvent.click(getGroupingStepBarItem())
+    await userEvent.click(canvas.getByRole('button', { name: /^Next$/i }))
     await waitFor(() => expect(canvasElement.querySelector('[data-current-step]')).toHaveAttribute('data-current-step', '1'))
     await waitForStepSlider(canvasElement)
-    console.log('  ✓ Opened Group from the StepBar after completing Answer')
+    console.log('  ✓ Opened Group after completing Answer')
 
     // Wait for step slider transition to complete
     await waitForStepSlider(canvasElement)
@@ -148,11 +150,17 @@ export const NewUserFullFlow = {
       expect(heading).toBeInTheDocument()
     })
     console.log('  ✓ Grouping step loaded')
+    const availableResponses = await waitFor(() => canvas.getByRole('group', { name: 'Available responses to group' }))
+    const responseToGroup = await waitFor(() => within(availableResponses).getAllByRole('checkbox')[0])
+    await userEvent.click(responseToGroup)
     await openMobileStepBar()
     await waitFor(() => expect(getStepBarItem('Rank')).toHaveAttribute('tabindex', '-1'))
+    await userEvent.click(responseToGroup)
+    await openMobileStepBar()
+    await waitFor(() => expect(getStepBarItem('Rank')).toHaveAttribute('tabindex', '0'))
 
     // Click Next to proceed
-    nextButton = await waitFor(() => {
+    let nextButton = await waitFor(() => {
       const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
       return btn
@@ -443,7 +451,7 @@ export const NewUserFullFlow = {
     // Click Submit button to complete the form
     const submitButton = await waitFor(() => {
       const btn = canvas.getByRole('button', { name: /Submit/i })
-      expect(btn).toBeInTheDocument()
+      expect(btn).toHaveAttribute('aria-disabled', 'false')
       return btn
     })
     await userEvent.click(submitButton)
@@ -453,7 +461,7 @@ export const NewUserFullFlow = {
     nextButton = await waitFor(() => {
       const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
-      expect(btn).not.toBeDisabled()
+      expect(btn).toHaveAttribute('aria-disabled', 'false')
       return btn
     })
     await userEvent.click(nextButton)
