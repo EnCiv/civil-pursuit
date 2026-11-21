@@ -333,7 +333,7 @@ const useStyles = createUseStyles(theme => ({
       props.mode === 'dark'
         ? '0 0.125rem 0 rgba(0, 0, 0, 0.32), 0 0.4rem 0.8rem rgba(0, 0, 0, 0.18), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.06)'
         : '0 0.125rem 0 rgba(6, 51, 92, 0.08), 0 0.35rem 0.8rem rgba(6, 51, 92, 0.1), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.8)',
-    transition: 'border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease',
+    transition: `border-color ${theme.motion.form} ${theme.motion.standardEase}, box-shadow ${theme.motion.form} ${theme.motion.standardEase}, background-color ${theme.motion.form} ${theme.motion.standardEase}`,
     '&:hover:not(:focus-visible):not(:disabled)': {
       borderColor: `${theme.colors.primaryButtonBlue} !important`,
     },

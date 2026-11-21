@@ -737,13 +737,13 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
   selectLeadOpening: {
-    animation: '$selectLeadOpen 280ms ease-out both',
+    animation: `$selectLeadOpen ${theme.motion.entrance} ${theme.motion.enterEase} both`,
     '@media (prefers-reduced-motion: reduce)': {
       animationDuration: '1ms',
     },
   },
   selectLeadClosing: {
-    animation: '$selectLeadClose 220ms ease-in both',
+    animation: `$selectLeadClose ${theme.motion.short} ${theme.motion.exitEase} both`,
     pointerEvents: 'none',
     '@media (prefers-reduced-motion: reduce)': {
       animationDuration: '1ms',

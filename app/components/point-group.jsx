@@ -438,7 +438,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
   pointGroupExiting: {
-    animation: '$pointGroupExit 220ms ease-in both',
+    animation: `$pointGroupExit ${theme.motion.short} ${theme.motion.exitEase} both`,
     pointerEvents: 'none',
     '@media (prefers-reduced-motion: reduce)': {
       animationDuration: '1ms',

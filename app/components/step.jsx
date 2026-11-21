@@ -102,7 +102,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     boxSizing: 'border-box',
     overflow: 'hidden',
     cursor: 'default',
-    transition: 'background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease',
+    transition: `background-color ${theme.motion.short} ${theme.motion.standardEase}, border-color ${theme.motion.short} ${theme.motion.standardEase}, box-shadow ${theme.motion.short} ${theme.motion.standardEase}, transform ${theme.motion.short} ${theme.motion.standardEase}`,
     '@media (prefers-reduced-motion: reduce)': {
       transition: 'none',
     },

@@ -54,7 +54,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       if (props.status === 'notice') {
         return theme.colors.statusBoxNoticeBackground
       } else {
-        return theme.colors.colorPrimary
+        return theme.colors.white
       }
     })(),
     border: `0.125rem solid ${(() => {
@@ -70,7 +70,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       if (props.status === 'notice') {
         return theme.colors.statusBoxNoticeBorder
       } else {
-        return ''
+        return theme.colors.borderGray
       }
     })()}`,
   }),
@@ -78,6 +78,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     ...theme.font,
     display: 'flex',
     alignItems: 'center',
+    color: theme.colors.title,
   },
   subject: {
     fontWeight: 'bold',

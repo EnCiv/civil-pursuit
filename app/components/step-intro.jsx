@@ -36,7 +36,7 @@ const stepIntroStyles = createUseStyles(theme => ({
     fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontStyle: 'normal',
     paddingBottom: '3rem',
-    animation: '$introRise 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both',
+    animation: `$introRise ${theme.motion.intro} ${theme.motion.introEase} both`,
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       paddingBottom: '1.25rem',
     },

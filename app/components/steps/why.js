@@ -268,7 +268,7 @@ export function derivePointWhyListByCategory(data, category) {
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   wrapper: {
-    background: theme.colorPrimary,
+    background: theme.colors.white,
   },
   introContainer: {
     textAlign: 'left',
@@ -295,11 +295,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     willChange: 'transform, opacity',
   },
   slideInFromRight: {
-    animation: '$whyCarouselSlideInFromRight 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    animation: `$whyCarouselSlideInFromRight ${theme.motion.carousel} ${theme.motion.carouselEase} both`,
     '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
   },
   slideInFromLeft: {
-    animation: '$whyCarouselSlideInFromLeft 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    animation: `$whyCarouselSlideInFromLeft ${theme.motion.carousel} ${theme.motion.carouselEase} both`,
     '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
   },
   '@keyframes whyCarouselSlideInFromRight': {

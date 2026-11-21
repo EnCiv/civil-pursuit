@@ -204,7 +204,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     borderRadius: '0.75rem',
     boxShadow: '0 0.125rem 0 rgba(26, 26, 26, 0.05), 0 0.5rem 1rem rgba(6, 51, 92, 0.1)',
     paddingBottom: '0.5rem',
-    transition: 'box-shadow 180ms ease, transform 180ms ease',
+    transition: `box-shadow ${theme.motion.form} ${theme.motion.standardEase}, transform ${theme.motion.form} ${theme.motion.standardEase}`,
     '&:hover': {
       boxShadow: '0 0.2rem 0 rgba(26, 26, 26, 0.06), 0 0.75rem 1.25rem rgba(6, 51, 92, 0.14)',
       transform: 'translateY(-0.08rem)',

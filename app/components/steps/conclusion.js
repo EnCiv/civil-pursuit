@@ -80,7 +80,7 @@ export default function Conclusion(props) {
 
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   conclusion: {
-    background: theme.colorPrimary,
+    background: theme.colors.white,
     padding: '1rem',
   },
   subject: {

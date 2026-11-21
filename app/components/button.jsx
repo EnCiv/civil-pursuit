@@ -177,7 +177,7 @@ const buttonStyles = createUseStyles(theme => ({
     fontSize: '1rem',
     lineHeight: '1.5rem',
     textAlign: 'center',
-    transition: 'transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease',
+    transition: `transform ${theme.motion.fast} ${theme.motion.standardEase}, box-shadow ${theme.motion.fast} ${theme.motion.standardEase}, background-color ${theme.motion.fast} ${theme.motion.standardEase}`,
     '&:focus-visible': {
       outline: `${theme.focusOutline}`,
     },

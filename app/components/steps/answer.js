@@ -213,7 +213,7 @@ export function deriveMyAnswerAndMyWhy(data) {
 // Styles
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   wrapper: {
-    background: theme.colorPrimary,
+    background: theme.colors.white,
   },
   answersContainer: {
     display: 'flex',

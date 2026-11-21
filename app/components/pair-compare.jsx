@@ -467,7 +467,7 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   revealedCard: {
-    animation: '$cardReveal 280ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    animation: `$cardReveal ${theme.motion.entrance} ${theme.motion.carouselEase} both`,
     '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
   },
   visiblePoint: {
@@ -540,7 +540,7 @@ const useStyles = createUseStyles(theme => ({
     fontSize: '0.9375rem',
     lineHeight: '1.25rem',
     fontWeight: 500,
-    color: theme.colors.disableGray,
+    color: theme.colors.title,
     textDecoration: 'underline',
     textUnderlineOffset: '0.125rem',
   },

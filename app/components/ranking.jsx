@@ -141,7 +141,7 @@ const rankingStyleClasses = createUseStyles(theme => ({
     boxShadow: '0 0.125rem 0 rgba(26, 26, 26, 0.06), 0 0.3rem 0.65rem rgba(6, 51, 92, 0.08), inset 0 0.0625rem 0 rgba(255, 255, 255, 0.8)',
     cursor: 'pointer',
     outline: 'none',
-    transition: 'transform 150ms ease, box-shadow 150ms ease, background-color 150ms ease, border-color 150ms ease',
+    transition: `transform ${theme.motion.fast} ${theme.motion.standardEase}, box-shadow ${theme.motion.fast} ${theme.motion.standardEase}, background-color ${theme.motion.fast} ${theme.motion.standardEase}, border-color ${theme.motion.fast} ${theme.motion.standardEase}`,
     '&:hover:not([aria-checked="true"])': {
       borderColor: theme.colors.primaryButtonBlue,
       transform: 'translateY(-0.0625rem)',

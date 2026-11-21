@@ -175,7 +175,7 @@ const useStyles = createUseStyles(theme => ({
     outline: 'none',
     fontFamily: theme.font.fontFamily,
     boxShadow: 'inset 0 0.125rem 0.35rem rgba(26, 26, 26, 0.07), inset 0 0.0625rem 0.125rem rgba(6, 51, 92, 0.04)',
-    transition: 'border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease',
+    transition: `border-color ${theme.motion.form} ${theme.motion.standardEase}, box-shadow ${theme.motion.form} ${theme.motion.standardEase}, background-color ${theme.motion.form} ${theme.motion.standardEase}`,
     '&:focus-visible': {
       borderColor: theme.colors.primaryButtonBlue,
       boxShadow: 'inset 0 0.125rem 0.35rem rgba(26, 26, 26, 0.07), 0 0 0 0.15rem rgba(6, 51, 92, 0.12)',

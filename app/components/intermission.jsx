@@ -568,7 +568,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   input: {
     width: '100%',
-    maxWidth: theme.colors.condensedWidthBreakPoint,
+    maxWidth: theme.condensedWidthBreakPoint,
     padding: '0.5rem',
     fontSize: '1rem',
     borderRadius: '0.25rem',

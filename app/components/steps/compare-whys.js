@@ -244,7 +244,7 @@ const useStyles = createUseStyles(theme => ({
     border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
     borderRadius: '0.5rem',
     cursor: 'pointer',
-    transition: 'transform 160ms ease',
+    transition: `transform ${theme.motion.fast} ${theme.motion.standardEase}`,
     '&:hover:not(:disabled)': {
       transform: 'translateY(-0.08rem)',
     },
@@ -283,11 +283,11 @@ const useStyles = createUseStyles(theme => ({
     willChange: 'transform, opacity',
   },
   slideInFromRight: {
-    animation: '$compareReasonsSlideInFromRight 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    animation: `$compareReasonsSlideInFromRight ${theme.motion.carousel} ${theme.motion.carouselEase} both`,
     '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
   },
   slideInFromLeft: {
-    animation: '$compareReasonsSlideInFromLeft 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    animation: `$compareReasonsSlideInFromLeft ${theme.motion.carousel} ${theme.motion.carouselEase} both`,
     '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
   },
   '@keyframes compareReasonsSlideInFromRight': {

@@ -47,7 +47,7 @@ const useStyles = createUseStyles({
       WebkitTapHighlightColor: 'transparent',
     },
     'input:not([type="checkbox"]):not([type="radio"]), textarea, select': {
-      transition: 'border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease',
+      transition: `border-color ${theme.motion.form} ${theme.motion.standardEase}, box-shadow ${theme.motion.form} ${theme.motion.standardEase}, background-color ${theme.motion.form} ${theme.motion.standardEase}`,
     },
     'input:not([type="checkbox"]):not([type="radio"]):focus-visible, textarea:focus-visible, select:focus-visible': {
       outline: 'none',

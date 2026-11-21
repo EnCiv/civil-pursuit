@@ -41,7 +41,7 @@ function StepFooter(props) {
 }
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   wrapper: {
-    background: theme.colorPrimary,
+    background: theme.colors.white,
     padding: '1rem',
     marginTop: '4rem',
   },
