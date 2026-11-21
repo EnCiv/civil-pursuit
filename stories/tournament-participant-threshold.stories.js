@@ -3,7 +3,7 @@
 
 import React from 'react'
 import Tournament from '../app/components/tournament'
-import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator, mockBatchUpsertDeliberationDataRoute, clearGlobalStateDecorator } from './common'
+import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator, mockBatchUpsertDeliberationDataRoute, clearGlobalStateDecorator, resetTournamentStoryState, getTournamentNextButton, fillTournamentAnswer } from './common'
 import { userEvent, within, waitFor, expect } from 'storybook/test'
 import { authFlowDecorators, withAuthTestState } from './mocks/auth-flow'
 import { tournamentSteps, demInfoDecorator, tournamentDefaultValueMinimal, samplePoints, sampleWhys } from './tournament.stories'
@@ -63,14 +63,7 @@ export const ThresholdBlocksProgression = {
     const canvas = within(canvasElement)
     const { testState } = args
 
-    // Reset global state
-    window.setUserInfoCalls = []
-    testState.authFlowUserSet = false
-    if (window.socket?._socketEmitHandlerResults) {
-      Object.keys(window.socket._socketEmitHandlerResults).forEach(key => {
-        window.socket._socketEmitHandlerResults[key] = []
-      })
-    }
+    resetTournamentStoryState(testState)
 
     console.log('🧪 Testing threshold blocks progression (10 < 20)...')
 
@@ -81,30 +74,19 @@ export const ThresholdBlocksProgression = {
     })
     console.log('  ✓ Answer step is visible')
 
-    // Fill in answer and why
-    const subjectInputs = canvas.getAllByPlaceholderText(/type some thing here/i)
-    const descriptionInputs = canvas.getAllByPlaceholderText(/description/i)
-
-    await userEvent.type(subjectInputs[0], 'Threshold Test Issue')
-    await userEvent.tab()
-    await userEvent.type(descriptionInputs[0], 'Testing threshold blocking')
-    await userEvent.tab()
-    await userEvent.type(subjectInputs[1], 'Why it matters')
-    await userEvent.tab()
-    await userEvent.type(descriptionInputs[1], 'Because thresholds work')
-    await userEvent.tab()
+    await fillTournamentAnswer(canvas, {
+      answerSubject: 'Threshold Test Issue',
+      answerDescription: 'Testing threshold blocking',
+      whySubject: 'Why it matters',
+      whyDescription: 'Because thresholds work',
+    })
 
     // Check Terms
     const termsCheckbox = canvas.getByRole('checkbox')
     await userEvent.click(termsCheckbox)
 
     // Click Next
-    const nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /^Next$/i })
-      expect(btn).toBeInTheDocument()
-      expect(btn).not.toBeDisabled()
-      return btn
-    })
+    const nextButton = await getTournamentNextButton(canvas, true)
     await userEvent.click(nextButton)
     console.log('  ✓ Clicked Next from Answer step')
 
@@ -223,14 +205,7 @@ export const ThresholdAllowsProgression = {
     const canvas = within(canvasElement)
     const { testState } = args
 
-    // Reset global state
-    window.setUserInfoCalls = []
-    testState.authFlowUserSet = false
-    if (window.socket?._socketEmitHandlerResults) {
-      Object.keys(window.socket._socketEmitHandlerResults).forEach(key => {
-        window.socket._socketEmitHandlerResults[key] = []
-      })
-    }
+    resetTournamentStoryState(testState)
 
     console.log('🧪 Testing threshold allows progression (20 >= 20)...')
 
@@ -241,30 +216,19 @@ export const ThresholdAllowsProgression = {
     })
     console.log('  ✓ Answer step is visible')
 
-    // Fill in answer and why
-    const subjectInputs = canvas.getAllByPlaceholderText(/type some thing here/i)
-    const descriptionInputs = canvas.getAllByPlaceholderText(/description/i)
-
-    await userEvent.type(subjectInputs[0], 'Threshold Met Test')
-    await userEvent.tab()
-    await userEvent.type(descriptionInputs[0], 'Testing when threshold is met')
-    await userEvent.tab()
-    await userEvent.type(subjectInputs[1], 'Why threshold met')
-    await userEvent.tab()
-    await userEvent.type(descriptionInputs[1], 'Full progression available')
-    await userEvent.tab()
+    await fillTournamentAnswer(canvas, {
+      answerSubject: 'Threshold Met Test',
+      answerDescription: 'Testing when threshold is met',
+      whySubject: 'Why threshold met',
+      whyDescription: 'Full progression available',
+    })
 
     // Check Terms
     const termsCheckbox = canvas.getByRole('checkbox')
     await userEvent.click(termsCheckbox)
 
     // Click Next - should go to Grouping step (not Intermission with threshold block)
-    const nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /^Next$/i })
-      expect(btn).toBeInTheDocument()
-      expect(btn).not.toBeDisabled()
-      return btn
-    })
+    const nextButton = await getTournamentNextButton(canvas, true)
     await userEvent.click(nextButton)
     console.log('  ✓ Clicked Next from Answer step')
 
@@ -342,14 +306,7 @@ export const DefaultThresholdBehavior = {
     const canvas = within(canvasElement)
     const { testState } = args
 
-    // Reset global state
-    window.setUserInfoCalls = []
-    testState.authFlowUserSet = false
-    if (window.socket?._socketEmitHandlerResults) {
-      Object.keys(window.socket._socketEmitHandlerResults).forEach(key => {
-        window.socket._socketEmitHandlerResults[key] = []
-      })
-    }
+    resetTournamentStoryState(testState)
 
     console.log('🧪 Testing default threshold behavior (8 < 9)...')
 
@@ -360,30 +317,19 @@ export const DefaultThresholdBehavior = {
     })
     console.log('  ✓ Answer step is visible')
 
-    // Fill in answer and why
-    const subjectInputs = canvas.getAllByPlaceholderText(/type some thing here/i)
-    const descriptionInputs = canvas.getAllByPlaceholderText(/description/i)
-
-    await userEvent.type(subjectInputs[0], 'Default Threshold Test')
-    await userEvent.tab()
-    await userEvent.type(descriptionInputs[0], 'Testing default threshold')
-    await userEvent.tab()
-    await userEvent.type(subjectInputs[1], 'Why default')
-    await userEvent.tab()
-    await userEvent.type(descriptionInputs[1], 'Default calculation works')
-    await userEvent.tab()
+    await fillTournamentAnswer(canvas, {
+      answerSubject: 'Default Threshold Test',
+      answerDescription: 'Testing default threshold',
+      whySubject: 'Why default',
+      whyDescription: 'Default calculation works',
+    })
 
     // Check Terms
     const termsCheckbox = canvas.getByRole('checkbox')
     await userEvent.click(termsCheckbox)
 
     // Click Next
-    const nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /^Next$/i })
-      expect(btn).toBeInTheDocument()
-      expect(btn).not.toBeDisabled()
-      return btn
-    })
+    const nextButton = await getTournamentNextButton(canvas, true)
     await userEvent.click(nextButton)
     console.log('  ✓ Clicked Next from Answer step')
 

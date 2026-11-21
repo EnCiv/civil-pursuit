@@ -4,7 +4,7 @@
 
 import React from 'react'
 import Tournament from '../app/components/tournament'
-import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator } from './common'
+import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator, resetTournamentStoryState, getTournamentNextButton, rankTournamentResponses } from './common'
 import { userEvent, within, waitFor, expect } from 'storybook/test'
 import { tournamentSteps, demInfoDecorator, samplePoints, sampleWhys } from './tournament.stories'
 import { waitForStepSlider } from './step-slider.stories'
@@ -122,8 +122,7 @@ export const ReturningUserCompleteFlow = {
     const canvas = within(canvasElement)
 
     // Reset global state for test isolation
-    window.batchUpsertCalls = []
-    window.setUserInfoCalls = []
+    resetTournamentStoryState()
 
     console.log('🧪 ReturningUserCompleteFlow test starting...')
     console.log('  Returning user with email - should see Answer step with pre-filled data')
@@ -140,12 +139,7 @@ export const ReturningUserCompleteFlow = {
 
     // User already has email, so no Terms checkbox needed
     // Just click Next to proceed
-    let nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /^Next$/i })
-      expect(btn).toBeInTheDocument()
-      expect(btn).not.toBeDisabled()
-      return btn
-    })
+    let nextButton = await getTournamentNextButton(canvas, true)
     await userEvent.click(nextButton)
     console.log('  ✓ Clicked Next on Answer step')
 
@@ -184,28 +178,7 @@ export const ReturningUserCompleteFlow = {
     console.log('  ✓ Ranking step loaded')
 
     // Rank points
-    const allMostRadios = await waitFor(() => {
-      const radios = canvas.getAllByRole('radio', { name: 'Most' })
-      expect(radios.length).toBeGreaterThan(0)
-      return radios
-    })
-    const allNeutralRadios = canvas.getAllByRole('radio', { name: 'Neutral' })
-    const allLeastRadios = canvas.getAllByRole('radio', { name: 'Least' })
-    console.log(`  Found ${allMostRadios.length} points to rank`)
-
-    // First point -> Least, Last point -> Most, rest -> Neutral
-    for (let i = 0; i < allMostRadios.length; i++) {
-      if (i === 0) {
-        await userEvent.click(allLeastRadios[i])
-        console.log(`  ✓ Ranked point ${i + 1} as Least`)
-      } else if (i === allMostRadios.length - 1) {
-        await userEvent.click(allMostRadios[i])
-        console.log(`  ✓ Ranked point ${i + 1} as Most`)
-      } else {
-        await userEvent.click(allNeutralRadios[i])
-        console.log(`  ✓ Ranked point ${i + 1} as Neutral`)
-      }
-    }
+    await rankTournamentResponses(canvas, { firstCategory: 'Least', lastCategory: 'Most' })
 
     nextButton = await waitFor(() => {
       const btn = canvas.queryByRole('button', { name: /^Next$/i })

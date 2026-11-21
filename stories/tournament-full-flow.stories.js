@@ -3,7 +3,7 @@
 
 import React from 'react'
 import Tournament from '../app/components/tournament'
-import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator, mockBatchUpsertDeliberationDataRoute } from './common'
+import { DeliberationContextDecorator, socketEmitDecorator, buildApiDecorator, mockBatchUpsertDeliberationDataRoute, resetTournamentStoryState, openTournamentMobileStepBar, getTournamentStepBarItem, fillTournamentAnswer, rankTournamentResponses, getTournamentNextButton } from './common'
 import { userEvent, within, waitFor, expect } from 'storybook/test'
 import { authFlowDecorators, withAuthTestState } from './mocks/auth-flow'
 import { tournamentSteps, demInfoDecorator, tournamentDefaultValueMinimal, samplePoints, sampleWhys } from './tournament.stories'
@@ -79,14 +79,7 @@ export const NewUserFullFlow = {
     const { testState } = args
 
     // Reset global state for test isolation
-    window.setUserInfoCalls = []
-    testState.authFlowUserSet = false
-    // Reset socket emit handler results to avoid cross-test pollution
-    if (window.socket?._socketEmitHandlerResults) {
-      Object.keys(window.socket._socketEmitHandlerResults).forEach(key => {
-        window.socket._socketEmitHandlerResults[key] = []
-      })
-    }
+    resetTournamentStoryState(testState)
 
     console.log('🧪 NewUserFullFlow test starting...')
 
@@ -98,32 +91,19 @@ export const NewUserFullFlow = {
       expect(element).toBeInTheDocument()
     })
 
-    const getStepBarItem = name => {
-      const options = canvas.queryByTestId('mobile-step-options')
-      return (options ? within(options) : canvas).getAllByTestId('testClick').find(step => step.textContent.includes(name))
-    }
-    const openMobileStepBar = async () => {
-      const mobileStepBar = canvas.queryByTestId('mobile-select-bar')
-      if (mobileStepBar && mobileStepBar.getAttribute('aria-expanded') !== 'true') await userEvent.click(mobileStepBar)
-    }
-    await openMobileStepBar()
-    const getGroupingStepBarItem = () => getStepBarItem('Group')
+    await openTournamentMobileStepBar(canvas)
+    const getGroupingStepBarItem = () => getTournamentStepBarItem(canvas, 'Group')
     await waitFor(() => expect(getGroupingStepBarItem()).toHaveAttribute('tabindex', '-1'))
     await userEvent.click(getGroupingStepBarItem())
     expect(canvasElement.querySelector('[data-current-step]')).toHaveAttribute('data-current-step', '0')
 
     // Fill in the answer fields
-    const subjectInputs = canvas.getAllByPlaceholderText(/type some thing here/i)
-    const descriptionInputs = canvas.getAllByPlaceholderText(/description/i)
-
-    await userEvent.type(subjectInputs[0], 'My Full Flow Issue')
-    await userEvent.tab()
-    await userEvent.type(descriptionInputs[0], 'This is my description of the full flow issue')
-    await userEvent.tab()
-    await userEvent.type(subjectInputs[1], 'Why this matters for full flow')
-    await userEvent.tab()
-    await userEvent.type(descriptionInputs[1], 'Because it affects everyone in the full flow')
-    await userEvent.tab()
+    await fillTournamentAnswer(canvas, {
+      answerSubject: 'My Full Flow Issue',
+      answerDescription: 'This is my description of the full flow issue',
+      whySubject: 'Why this matters for full flow',
+      whyDescription: 'Because it affects everyone in the full flow',
+    })
     console.log('  ✓ Filled in answer and why fields')
 
     // Check Terms checkbox
@@ -153,25 +133,21 @@ export const NewUserFullFlow = {
     const availableResponses = await waitFor(() => canvas.getByRole('group', { name: 'Available responses to group' }))
     const responseToGroup = await waitFor(() => within(availableResponses).getAllByRole('checkbox')[0])
     await userEvent.click(responseToGroup)
-    await openMobileStepBar()
-    await waitFor(() => expect(getStepBarItem('Rank')).toHaveAttribute('tabindex', '-1'))
+    await openTournamentMobileStepBar(canvas)
+    await waitFor(() => expect(getTournamentStepBarItem(canvas, 'Rank')).toHaveAttribute('tabindex', '-1'))
     await userEvent.click(responseToGroup)
-    await openMobileStepBar()
-    await waitFor(() => expect(getStepBarItem('Rank')).toHaveAttribute('tabindex', '0'))
+    await openTournamentMobileStepBar(canvas)
+    await waitFor(() => expect(getTournamentStepBarItem(canvas, 'Rank')).toHaveAttribute('tabindex', '0'))
 
     // Click Next to proceed
-    let nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /^Next$/i })
-      expect(btn).toBeInTheDocument()
-      return btn
-    })
+    let nextButton = await getTournamentNextButton(canvas)
     await userEvent.click(nextButton)
     console.log('  ✓ Clicked Next on Grouping step')
 
     // Wait for step slider transition to complete
     await waitForStepSlider(canvasElement)
-    await openMobileStepBar()
-    await waitFor(() => expect(getStepBarItem('Rank')).toHaveAttribute('tabindex', '0'))
+    await openTournamentMobileStepBar(canvas)
+    await waitFor(() => expect(getTournamentStepBarItem(canvas, 'Rank')).toHaveAttribute('tabindex', '0'))
 
     // ========== STEP 3: Ranking step ==========
     console.log('Step 3: Ranking step - ranking points')
@@ -186,32 +162,7 @@ export const NewUserFullFlow = {
     // Rank each point directly using the radio buttons
     // The ranking radio buttons are directly available - no need to "open" each point
     // Get all Most, Neutral, and Least radio buttons
-    const allMostRadios = await waitFor(() => {
-      const radios = canvas.getAllByRole('radio', { name: 'Most' })
-      expect(radios.length).toBeGreaterThan(0)
-      return radios
-    })
-    const allNeutralRadios = canvas.getAllByRole('radio', { name: 'Neutral' })
-    const allLeastRadios = canvas.getAllByRole('radio', { name: 'Least' })
-    console.log(`  Found ${allMostRadios.length} points to rank`)
-
-    // First point (user's answer) -> Most
-    // Last point -> Least
-    // All others -> Neutral
-    for (let i = 0; i < allMostRadios.length; i++) {
-      if (i === 0) {
-        await userEvent.click(allLeastRadios[i])
-        console.log(`  ✓ Ranked point ${i + 1} as Most`)
-      } else if (i === allMostRadios.length - 1) {
-        // Last point (user's answer) -> Most
-        await userEvent.click(allMostRadios[i])
-        console.log(`  ✓ Ranked point ${i + 1} as Least`)
-      } else {
-        // Middle points -> Neutral
-        await userEvent.click(allNeutralRadios[i])
-        console.log(`  ✓ Ranked point ${i + 1} as Neutral`)
-      }
-    }
+    await rankTournamentResponses(canvas, { firstCategory: 'Least', lastCategory: 'Most' })
 
     // Now Next button should be enabled
     nextButton = await waitFor(() => {
