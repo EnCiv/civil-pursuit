@@ -56,9 +56,9 @@ export const NeitherWithTwoCardsNoWinner = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    await userEvent.click(canvas.getByText('Neither'))
+    await userEvent.click(await waitFor(() => canvas.getByRole('button', { name: 'Neither' })))
     await waitFor(() => {
-      expect(canvas.getByText('No winner')).toBeInTheDocument()
+      expect(canvas.getByRole('status')).toHaveTextContent('No winner')
       expect(canvas.queryByText('Useful')).not.toBeInTheDocument()
       expect(canvas.queryByText('Not useful')).not.toBeInTheDocument()
       expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({ valid: false, value: null })
@@ -80,7 +80,7 @@ export const NoWinner = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await waitFor(() => {
-      expect(canvas.getByText('No winner')).toBeInTheDocument()
+      expect(canvas.getByRole('status')).toHaveTextContent('No winner')
       expect(args.onDone.mock.calls[0][0]).toMatchObject({ valid: false, value: null })
     })
   },
@@ -106,7 +106,7 @@ export const onePointCanBeUsefulStartOverNotUseful = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const Useful = await waitFor(() => canvas.getByText('Useful'))
+    const Useful = await waitFor(() => canvas.getByRole('button', { name: 'Useful' }))
     await userEvent.click(Useful)
     await waitFor(() => {
       expect(args.onDone.mock.calls[0][0]).toMatchObject({
@@ -119,7 +119,7 @@ export const onePointCanBeUsefulStartOverNotUseful = {
         },
       })
     })
-    const StartOver = canvas.getByText('Start Over')
+    const StartOver = canvas.getByRole('button', { name: 'Start Over' })
     await userEvent.click(StartOver)
     await waitFor(() => {
       expect(args.onDone.mock.calls[1][0]).toMatchObject({
@@ -127,7 +127,7 @@ export const onePointCanBeUsefulStartOverNotUseful = {
         value: null,
       })
     })
-    const NotUseful = canvas.getByText('Not useful')
+    const NotUseful = await waitFor(() => canvas.getByRole('button', { name: 'Not useful' }))
     await userEvent.click(NotUseful)
     await waitFor(() => {
       expect(args.onDone.mock.calls[2][0]).toMatchObject({
@@ -179,7 +179,7 @@ export const UserChoosesNoPoint = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const Neither = canvas.getByText('Neither')
+    const Neither = await waitFor(() => canvas.getByRole('button', { name: 'Neither' }))
     // don't await users event so not to miss the onDone calls from the same event
     userEvent.click(Neither)
     await waitFor(() => {
@@ -204,7 +204,7 @@ export const UserChoosesNoPoint = {
         },
       })
     })
-    const NotUseful = canvas.getByText('Not useful')
+    const NotUseful = await waitFor(() => canvas.getByRole('button', { name: 'Not useful' }))
     await userEvent.click(NotUseful)
     await waitFor(() => {
       expect(args.onDone.mock.calls[2][0]).toMatchObject({
@@ -231,16 +231,16 @@ export const repeatedNeitherTest = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    await userEvent.click(canvas.getByText('Neither'))
+    await userEvent.click(await waitFor(() => canvas.getByRole('button', { name: 'Neither' })))
     await waitFor(() => {
-      expect(canvas.getByTitle('Choose as more important: Affordable childcare keeps parents employed')).toBeInTheDocument()
-      expect(canvas.getByTitle('Choose as more important: Libraries support learning at every age')).toBeInTheDocument()
+      expect(canvas.getByTitle('Choose as more important: Affordable childcare keeps parents employed')).toBeVisible()
+      expect(canvas.getByTitle('Choose as more important: Libraries support learning at every age')).toBeVisible()
     })
 
-    await userEvent.click(canvas.getByTitle('Choose as more important: Affordable childcare keeps parents employed'))
+    await userEvent.click(await waitFor(() => canvas.getByTitle('Choose as more important: Affordable childcare keeps parents employed')))
     await waitFor(() => {
-      expect(canvas.getByTitle('Choose as more important: Libraries support learning at every age')).toBeInTheDocument()
-      expect(canvas.getByTitle('Choose as more important: Shade trees cool busy neighborhoods')).toBeInTheDocument()
+      expect(canvas.getByTitle('Choose as more important: Affordable childcare keeps parents employed')).toBeVisible()
+      expect(canvas.getByTitle('Choose as more important: Shade trees cool busy neighborhoods')).toBeVisible()
     })
   },
 }
@@ -255,7 +255,7 @@ export const onDoneTest = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    const Point1 = await waitFor(() => canvas.getByText('Reliable buses connect residents to work'))
+    const Point1 = await waitFor(() => canvas.getByTitle('Choose as more important: Reliable buses connect residents to work'))
     await userEvent.click(Point1)
     await waitFor(() => {
       const calls = args.onDone.mock.calls
@@ -333,7 +333,7 @@ export const OnePointRankedInitially = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await waitFor(() => {
-      canvas.getByText('Start Over')
+      expect(canvas.getByRole('button', { name: 'Start Over' })).toBeVisible()
       expect(args.onDone.mock.calls[0][0]).toMatchObject({
         valid: true,
       })
@@ -351,20 +351,21 @@ export const OnePointRankedAfterFirstRendered = {
   },
   decorators: [
     (Story, context) => {
-      const [updated, setUpdated] = useState(false)
-      // after it's rendered without a rank, add the rank - as if fetched from the db
-      setTimeout(() => {
+      const [, setUpdated] = useState(false)
+
+      React.useEffect(() => {
         context.args.whyRankList[0].rank = { _id: '11', parentId: '1', stage: 'why', category: 'most' }
-        context.args.whyRankList = [...context.args.whyRankList] // make it different to force it to rerender
+        context.args.whyRankList = [...context.args.whyRankList]
         setUpdated(true)
-      }, 100)
+      }, [])
+
       return <Story />
     },
   ],
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
     await waitFor(() => {
-      canvas.getByText('Start Over')
+      expect(canvas.getByRole('button', { name: 'Start Over' })).toBeVisible()
       expect(args.onDone.mock.calls[0][0]).toMatchObject({
         valid: true,
       })

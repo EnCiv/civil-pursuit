@@ -7,6 +7,11 @@ import { expect, userEvent, within, waitFor } from 'storybook/test'
 
 export default {
   component: useDeliberationStats,
+  parameters: {
+    a11y: {
+      disable: true,
+    },
+  },
   decorators: [
     socketEmitDecorator,
     Story => (

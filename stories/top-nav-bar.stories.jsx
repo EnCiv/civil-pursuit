@@ -228,15 +228,15 @@ export const ClickMenuItem = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await openMobileMenu(canvas)
-    const homeButton = canvas.getByText('Home')
+    const homeButton = getVisibleText(canvas, 'Home')
     await userEvent.click(homeButton)
 
     // expect the home button to be selected
     await waitFor(() => expect(homeButton.className).toContain('selectedItem'))
     // expect the other buttons to not have bottom border
-    const discussionPortalButton = canvas.getByText('Discussion Portal')
+    const discussionPortalButton = getVisibleText(canvas, 'Discussion Portal')
     expect(discussionPortalButton.className).not.toContain('selectedItem')
-    const blogButton = canvas.getByText('Blog')
+    const blogButton = getVisibleText(canvas, 'Blog')
     expect(blogButton.className).not.toContain('selectedItem')
 
     // click the discussion portal button

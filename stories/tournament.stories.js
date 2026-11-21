@@ -1160,9 +1160,46 @@ export const BatchUpsertInteractionTest = {
           const nextButton = canvas.queryByRole('button', { name: /^Next$/i })
           if (nextButton && !nextButton.hasAttribute('disabled') && nextButton.getAttribute('aria-disabled') !== 'true') break
 
-          const choice = canvas.queryAllByTitle(/^Choose as more important:/i)[0]
-          if (!choice) break
-          await userEvent.click(choice)
+          if (currentStep === 'compare-most') {
+            const usefulButton = canvas.queryByTitle('Recommend for further consideration')
+            if (usefulButton) {
+              await userEvent.click(usefulButton)
+              await waitFor(() => {
+                const enabledNext = canvas.queryByRole('button', { name: /^Next$/i })
+                if (!enabledNext || enabledNext.hasAttribute('disabled') || enabledNext.getAttribute('aria-disabled') === 'true') {
+                  throw new Error('compare-most Next button is not enabled after Useful')
+                }
+              })
+              break
+            }
+          }
+
+          const choices = canvas.queryAllByTitle(/^Choose as more important:/i)
+          if (!choices.length) {
+            const nextReason = canvas.queryByTitle('Next reason')
+            if (nextReason && !nextReason.hasAttribute('disabled') && nextReason.getAttribute('aria-disabled') !== 'true') {
+              await userEvent.click(nextReason)
+              await waitFor(() => {
+                const pairChoice = canvas.queryAllByTitle(/^Choose as more important:/i)[0]
+                if (!pairChoice) throw new Error('Next reason comparison has not rendered yet')
+              })
+              continue
+            }
+            break
+          }
+
+          const beforeTitles = choices.map(choice => choice.title).sort().join('|')
+          await userEvent.click(choices[0])
+          await waitFor(() => {
+            const enabledNext = canvas.queryByRole('button', { name: /^Next$/i })
+            if (enabledNext && !enabledNext.hasAttribute('disabled') && enabledNext.getAttribute('aria-disabled') !== 'true') return
+
+            const afterChoices = canvas.queryAllByTitle(/^Choose as more important:/i)
+            const afterTitles = afterChoices.map(choice => choice.title).sort().join('|')
+            if (afterTitles !== beforeTitles) return
+
+            throw new Error('compare-least card transition is not complete')
+          })
         }
       }
 

@@ -448,16 +448,9 @@ export const NewUserFullFlow = {
     await userEvent.type(improvementsTextarea, 'Great tool, would love to see more features.')
     console.log('  ✓ Filled in improvements')
 
-    // Click Submit button to complete the form
-    const submitButton = await waitFor(() => {
-      const btn = canvas.getByRole('button', { name: /Submit/i })
-      expect(btn).toHaveAttribute('aria-disabled', 'false')
-      return btn
-    })
-    await userEvent.click(submitButton)
-    console.log('  ✓ Clicked Submit on Feedback step')
+    // submitOnNext completes the form as fields become valid
 
-    // Wait for Next button to become active after submit
+    // Wait for Next button to become active after the form updates
     nextButton = await waitFor(() => {
       const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()

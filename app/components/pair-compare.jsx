@@ -115,26 +115,27 @@ function PairCompare(props) {
   // to trigger the final UI update. See docs/bidirectional-data-pattern.md.
   // Note: the setTimeout(() => onDone(...)) fires promptly (~<50ms) from inside the
   // updater — returning the same reference does NOT delay the callback.
-  function rankIdxCategory(idx, category) {
-    if (idx >= whyRankList.length) return // if only one to rank, this could be out of bounds
-    setRanksByParentId(ranksByParentId => {
-      const value = ranksByParentId[whyRankList[idx].why._id]
-        ? { ...ranksByParentId[whyRankList[idx].why._id], category }
-        : {
-            _id: new ObjectId().toString(),
-            category,
-            parentId: whyRankList[idx].why._id,
-            stage: 'why',
-            discussionId,
-            round,
-          }
-      ranksByParentId[value.parentId] = value
-      const valid = isAllRanked(ranksByParentId)
-      const winner = Object.values(ranksByParentId).some(rank => rank.category === 'most')
-      setTimeout(() => onDone(valid && winner ? { valid: true, value } : valid ? { valid: false, value: null } : { valid, value }))
-      if (valid) return { ...ranksByParentId } // new obj to force a rerender
-      else return ranksByParentId // no need for a rerender
-    })
+  function rankIdxCategory(idx, category, baseRanks = ranksByParentId) {
+    if (idx >= whyRankList.length) return baseRanks // if only one to rank, this could be out of bounds
+
+    const parentId = whyRankList[idx].why._id
+    const value = baseRanks[parentId]
+      ? { ...baseRanks[parentId], category }
+      : {
+          _id: new ObjectId().toString(),
+          category,
+          parentId,
+          stage: 'why',
+          discussionId,
+          round,
+        }
+    const nextRanks = { ...baseRanks, [parentId]: value }
+    const valid = isAllRanked(nextRanks)
+    const winner = Object.values(nextRanks).some(rank => rank.category === 'most')
+
+    setRanksByParentId(valid ? nextRanks : { ...nextRanks })
+    setTimeout(() => onDone(valid && winner ? { valid: true, value } : valid ? { valid: false, value: null } : { valid, value }))
+    return nextRanks
   }
 
   const handleLeftPointClick = () => {
@@ -143,10 +144,10 @@ function PairCompare(props) {
     setIsRightTransitioning(false)
     setRevealedLeftCard(null)
     setRevealedRightCard(null)
-    rankIdxCategory(idxRight, 'neutral')
+    let nextRanks = rankIdxCategory(idxRight, 'neutral')
     if (Math.max(idxLeft, idxRight) + 1 >= whyRankList.length) {
       // they've all been ranked
-      rankIdxCategory(idxLeft, 'most')
+      rankIdxCategory(idxLeft, 'most', nextRanks)
       setFinalMostIndex(idxLeft)
       setIdxLeft(idxLeft)
       setIdxRight(whyRankList.length)
@@ -170,10 +171,10 @@ function PairCompare(props) {
     setIsLeftTransitioning(false)
     setRevealedLeftCard(null)
     setRevealedRightCard(null)
-    rankIdxCategory(idxLeft, 'neutral')
+    let nextRanks = rankIdxCategory(idxLeft, 'neutral')
     if (Math.max(idxLeft, idxRight) + 1 >= whyRankList.length) {
       // they've all been ranked
-      rankIdxCategory(idxRight, 'most')
+      rankIdxCategory(idxRight, 'most', nextRanks)
       setFinalMostIndex(idxRight)
       setIdxLeft(idxRight)
       setIdxRight(whyRankList.length)
@@ -197,8 +198,8 @@ function PairCompare(props) {
     setIsRightTransitioning(false)
     setRevealedLeftCard(null)
     setRevealedRightCard(null)
-    rankIdxCategory(idxLeft, 'neutral')
-    rankIdxCategory(idxRight, 'neutral')
+    let nextRanks = rankIdxCategory(idxLeft, 'neutral')
+    rankIdxCategory(idxRight, 'neutral', nextRanks)
 
     setIsNeitherTransitioning(true)
 
@@ -252,7 +253,6 @@ function PairCompare(props) {
 
     const nextRanks = { ...ranksByParentId, [why._id]: rank }
     const allRanked = isAllRanked(nextRanks)
-    const winner = Object.values(nextRanks).some(existingRank => existingRank.category === 'most')
 
     setRanksByParentId(nextRanks)
     setIdxLeft(selectedIndex)
@@ -260,9 +260,7 @@ function PairCompare(props) {
     if (category === 'most') setFinalMostIndex(selectedIndex)
 
     if (allRanked) {
-      setTimeout(() => onDone(winner
-        ? { valid: true, value: rank }
-        : { valid: false, value: null }))
+      setTimeout(() => onDone({ valid: true, value: rank }))
     } else {
       setTimeout(() => onDone({ valid: false, value: rank }))
     }
