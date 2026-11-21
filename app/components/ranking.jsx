@@ -22,7 +22,7 @@ const selectedOption = color => (
 const unselectedOption = <rect x="1" y="1" width="22" height="22" rx="11" stroke={theme.colors.radioButtonUnselected} strokeWidth="2" />
 
 export default function Ranking(props) {
-  const { disabled, defaultValue, className, onDone, ...otherProps } = props
+  const { disabled, defaultValue, vState, className, onDone, ...otherProps } = props
   const [response, setResponse] = useState(responseOptions.includes(defaultValue) ? defaultValue : '')
 
   useEffect(() => {
@@ -59,11 +59,13 @@ export default function Ranking(props) {
         const isSelected = response === option
         const optionStyle = option.toLowerCase()
         return (
-          <div
+          <button
+            type="button"
             key={option}
             role="radio"
             aria-checked={isSelected}
-            tabIndex={disabled ? -1 : 0} // each one is tab‑focusable
+            tabIndex={disabled ? -1 : 0}
+            disabled={disabled}
             onClick={() => handleSelect(option)}
             onKeyDown={e => onKeyDown(e, option)}
             className={cx(styleClasses.radioOption, isSelected && styleClasses.selected, isSelected && styleClasses[`${optionStyle}Selected`])}
@@ -72,7 +74,7 @@ export default function Ranking(props) {
               {isSelected ? selectedOption(optionColors[option]) : unselectedOption}
             </svg>
             <span className={styleClasses.labelText}>{option}</span>
-          </div>
+          </button>
         )
       })}
     </div>
@@ -112,6 +114,10 @@ const rankingStyleClasses = createUseStyles(theme => ({
   },
 
   radioOption: {
+    appearance: 'none',
+    background: 'transparent',
+    font: 'inherit',
+    cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

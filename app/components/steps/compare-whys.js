@@ -77,12 +77,12 @@ export default function CompareWhysStep(props) {
       setIsLoading(false)
     })
   }, [round, data.preRankByParentId])
-  return <CompareWhys {...props} {...args} isLoading={isLoading} loadError={loadError} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
+  return <CompareWhys {...props} {...args} category={category} isLoading={isLoading} loadError={loadError} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
 }
 
 // pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]
 export function CompareWhys(props) {
-  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round, stepIntro, isLoading = false, loadError = false } = props
+  const { pointWithWhyRankListList, side = '', category = 'most', onDone = () => {}, className, discussionId, round, stepIntro, isLoading = false, loadError = false } = props
   const classes = useStyles()
   const [completedByPointId, setCompletedByPointId] = useState(() =>
     (pointWithWhyRankListList || []).reduce((completedByPointId, pointWithWhyRankList) => {
@@ -143,18 +143,18 @@ export function CompareWhys(props) {
     <div className={classes.container}>
       <StepIntro {...stepIntro} />
       {isLoading ? (
-        <div className={classes.headlineTitle} aria-live="polite">Loading explanations...</div>
+        <p className={classes.headlineTitle} aria-live="polite">Loading explanations...</p>
       ) : loadError ? (
-        <div className={classes.headlineTitle} role="alert">Explanations could not be loaded.</div>
+        <p className={classes.headlineTitle} role="alert">Explanations could not be loaded.</p>
       ) : !pointWithWhyRankListList?.length ? (
-        <div className={classes.headlineTitle}>Nothing to do here, hit Next to continue</div>
+        <p className={classes.headlineTitle}>Nothing to do here, hit Next to continue</p>
       ) : (
         <>
           <div
             key={currentPointWithWhyRankList.point._id}
             className={cx(classes.headlinePoint, navigationDirection > 0 ? classes.slideInFromRight : classes.slideInFromLeft)}
           >
-            <H className={classes.headlineTitle}>Please choose the most convincing explanation for...</H>
+            <H className={classes.headlineTitle}>Please choose the {category === 'least' ? 'least' : 'most'} convincing explanation for...</H>
             <Level>
               <PairCompare
                 round={round}

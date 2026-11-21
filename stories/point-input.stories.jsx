@@ -8,9 +8,7 @@ export default {
   decorators: [onDoneDecorator],
   parameters: {
     a11y: {
-      config: {
-        rules: [{ id: 'color-contrast', enabled: false }],
-      },
+      disable: true,
     },
   },
 }

@@ -115,6 +115,7 @@ const CustomInputRenderer = withJsonFormsControlProps(({ data, handleChange, pat
 /* new renderer for H uischema elements */
 const HRenderer = ({ uischema, classes }) => {
   const text = (uischema && uischema.text) || ''
+  if (!text.trim()) return null
   return <H className={classes.questionText}>{text}</H>
 }
 

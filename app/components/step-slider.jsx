@@ -12,7 +12,7 @@ import StepBar from './step-bar'
 import StepFooter from './step-footer'
 
 export const StepSlider = props => {
-  const { children, onDone, steps, className, stepName, stepIntro, defaultStepName, ...otherProps } = props // stepName and stepIntro are not used but are passed to children
+  const { children, onDone, steps, className, stepName, stepIntro, defaultStepName, testSteps, defaultValue, preserveLocalStorage, ...otherProps } = props
   const classes = useStyles(props)
   const stepBarRef = useRef()
   const stepFooterRef = useRef()

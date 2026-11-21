@@ -95,9 +95,11 @@ const QuestionBox = props => {
       <div className={classes.topic}>
         {ogImage && <img src={ogImage} alt="" className={classes.ogImage} />}
         {tagline && <div className={classes.fixedText}>{tagline}</div>}
-        <Level value={1}>
-          <H className={classes.subject}>{subject}</H>
-        </Level>
+        {subject && (
+          <Level value={1}>
+            <H className={classes.subject}>{subject}</H>
+          </Level>
+        )}
         <div>
           <div ref={descriptionRef} className={cx(classes.description, { [classes.collapsed]: !isExpanded })}>
             <Markdown>{description}</Markdown>

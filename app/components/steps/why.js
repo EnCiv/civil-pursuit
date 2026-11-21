@@ -157,7 +157,7 @@ export function Why(props) {
   }, [pointWhyList])
 
   if (!pointWhyList?.length) {
-    return <div className={cx(classes.wrapper, className)}>Nothing to do here. Hit Next to continue.</div>
+    return <p className={cx(classes.wrapper, className)}>Nothing to do here. Hit Next to continue.</p>
   }
   const currentPointIndex = Math.min(currentIndex, pointWhyList.length - 1)
   const navigateToPoint = direction => {

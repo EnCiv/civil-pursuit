@@ -73,8 +73,11 @@ const Step = forwardRef((props, ref) => {
   }, [isPortalOpen, title.length])
 
   return (
-    <div
+    <button
+      type="button"
       className={containerStyle}
+      disabled={!isStepEnabled}
+      aria-disabled={!isStepEnabled}
       onMouseUp={e => {
         e.stopPropagation()
         if (!skip && (complete || active || unlocked)) onDone(index)
@@ -95,7 +98,7 @@ const Step = forwardRef((props, ref) => {
           </div>
         </TooltipPortal>
       </span>
-    </div>
+    </button>
   )
 })
 

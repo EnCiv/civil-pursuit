@@ -38,7 +38,7 @@ export const useDeliberationStats = discussionId => {
 
   const InvisibleButton = props => {
     const { className = '', ...otherProps } = props
-    return <div className={cx(classes.invisibleButtonInUpperRight, className)} onClick={detectStatus} {...otherProps} />
+    return <button type="button" aria-label="Fetch deliberation status" className={cx(classes.invisibleButtonInUpperRight, className)} onClick={detectStatus} {...otherProps} />
   }
 
   const Stats = props => <DeliberationStats status={status} {...props} />

@@ -288,11 +288,11 @@ function PairWise({ children }) {
       <div className={classes.slot} ref={slotRef}>
         <div ref={placeholderRef} className={classes.placeholder} style={singleOverlay || isLastTwo ? { border: 'none', background: 'transparent' } : undefined} />
         {idx != null ? (
-          <div className={classes.itemWrapper} onClick={() => startReplace(side)}>
+          <button type="button" className={classes.itemWrapper} onClick={() => startReplace(side)} aria-label={`Replace ${side} point`}>
             <div data-pair-item="true" className={classes.item} style={(singleOverlay && singleOverlay.index === idx) || singleCentered ? { visibility: 'hidden' } : undefined}>
               {childArray[idx]}
             </div>
-          </div>
+          </button>
         ) : null}
       </div>
     )
@@ -403,6 +403,13 @@ const useStyles = createUseStyles(theme => ({
     background: '#fafafa',
   },
   itemWrapper: {
+    appearance: 'none',
+    border: 'none',
+    margin: 0,
+    padding: 0,
+    background: 'transparent',
+    font: 'inherit',
+    cursor: 'pointer',
     flex: 1,
     display: 'flex',
     minHeight: 0,

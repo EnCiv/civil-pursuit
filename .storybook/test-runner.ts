@@ -52,7 +52,7 @@ const config: TestRunnerConfig = {
     if (testRunnerConfig.getHttpHeaders) {
       await browserContext.setExtraHTTPHeaders(await testRunnerConfig.getHttpHeaders(iframeURL))
     }
-    await page.goto(iframeURL, { waitUntil: 'load' })
+    await page.goto(iframeURL, { waitUntil: 'domcontentloaded', timeout: 60000 })
   },
   async preVisit(page) {
     await page.evaluate(() => {

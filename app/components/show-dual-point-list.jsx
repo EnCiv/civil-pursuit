@@ -20,10 +20,12 @@ export default function ShowDualPointList({ className, leftPoints = [], leftHead
   return (
     <div className={cx(classes.sharedBorderStyle, className)} {...otherProps}>
       <div className={classes.contentContainer}>
-        <div className={classes.headerContainer}>
-          <H className={classes.leftHeader}>{leftHeader}</H>
-          <H className={classes.rightHeader}>{rightHeader}</H>
-        </div>
+        {(leftHeader || rightHeader) && (
+          <div className={classes.headerContainer}>
+            {leftHeader && <H className={classes.leftHeader}>{leftHeader}</H>}
+            {rightHeader && <H className={classes.rightHeader}>{rightHeader}</H>}
+          </div>
+        )}
 
         <div className={classes.pointGrid}>
           <Level>

@@ -235,7 +235,7 @@ function reducer(state, action) {
 }
 
 function Tournament(props) {
-  const { className, steps = [], onDone, ...otherProps } = props
+  const { className, steps = [], onDone, testSteps, defaultValue, preserveLocalStorage, ...otherProps } = props
   const returnFromLinkedIn = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('n') === '1'
   const classes = useStylesFromThemeFunction(props)
   const { data, upsert } = useDeliberationContext()

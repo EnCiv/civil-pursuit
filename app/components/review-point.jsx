@@ -14,16 +14,16 @@ import SvgChevronDown from '../svgr/chevron-down'
 import { Level } from 'react-accessible-headings'
 
 function ReviewPoint(props) {
-  const { point = {}, leftPointList = [], rightPointList = [], rank = '', onDone = () => {}, className = '', ...otherProps } = props
+  const { point = {}, leftPointList = [], rightPointList = [], rank = '', vState: incomingVState, onDone = () => {}, className = '', ...otherProps } = props
   const [isRanked, setIsRanked] = useState(false)
 
   // disabled: can't select yet, collapsed, has not been read
   // open: point is open and visible, can select a ranking, has been read
   // enabled: point is collapsed, but you can still select a ranking, has been read
-  const [vState, setVState] = useState(props.vState || (rank ? 'enabled' : 'disabled'))
+  const [vState, setVState] = useState(incomingVState || (rank ? 'enabled' : 'disabled'))
   useEffect(() => {
-    if (props.vState) setVState(props.vState)
-  }, [props.vState])
+    if (incomingVState) setVState(incomingVState)
+  }, [incomingVState])
 
   const classes = useStylesFromThemeFunction()
 
@@ -83,13 +83,13 @@ function ReviewPoint(props) {
         </Point>
         <div className={classes.SvgContainer}>
           {vState === 'open' ? (
-            <TextButton onDone={handleClose} title="close" aria-expanded={true} tabIndex={0} style={{ padding: 0 }}>
+            <TextButton onDone={handleClose} title="close" aria-label="Close point review" aria-expanded={true} tabIndex={0} style={{ padding: 0 }}>
               <span className={classes.chevronButton}>
                 <SvgChevronUp width={'2rem'} height={'auto'} />
               </span>
             </TextButton>
           ) : (
-            <TextButton onDone={handleOpen} title="open" aria-expanded={false} tabIndex={0} style={{ padding: 0 }}>
+            <TextButton onDone={handleOpen} title="open" aria-label="Open point review" aria-expanded={false} tabIndex={0} style={{ padding: 0 }}>
               <span className={classes.chevronButton}>
                 <SvgChevronDown width={'2rem'} height={'auto'} />
               </span>

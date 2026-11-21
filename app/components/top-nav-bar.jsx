@@ -113,7 +113,8 @@ const TopNavBar = props => {
         {menu &&
           menu.map((item, index) => (
             <li className={classes.menuList} key={item.name || index}>
-              <div
+              <button
+                type="button"
                 key={item.name}
                 tabIndex={tabIndex}
                 onKeyDown={e => handleKeyDown(e, 'menu', index)}
@@ -125,7 +126,7 @@ const TopNavBar = props => {
                 onClick={() => handleMenuItemClick(item)}
               >
                 {item.name}
-              </div>
+              </button>
             </li>
           ))}
       </menu>
@@ -261,7 +262,8 @@ const TopNavBar = props => {
                   </li>
                 ) : (
                   <li className={classes.menuList}>
-                    <div
+                    <button
+                      type="button"
                       key={item.name}
                       className={cx(classes.mobileMenuItem, classes.colors, {
                         [classes.selectedItem]: selectedItem === item.name,
@@ -269,7 +271,7 @@ const TopNavBar = props => {
                       onClick={() => handleMenuItemClick(item)}
                     >
                       {item.name}
-                    </div>
+                    </button>
                   </li>
                 )
               )}

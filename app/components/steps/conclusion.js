@@ -41,9 +41,11 @@ export default function Conclusion(props) {
           data.topPointAndWhys.map(d => (
             <React.Fragment key={d.point?._id || d.point?.subject}>
               <div>
-                <div className={cx(classes.subject)}>
-                  <H>{d.point?.subject}</H>
-                </div>
+                {d.point?.subject && (
+                  <div className={cx(classes.subject)}>
+                    <H>{d.point.subject}</H>
+                  </div>
+                )}
                 <div className={cx(classes.description)}>
                   <text>{d.point?.description}</text>
                 </div>

@@ -61,21 +61,21 @@ const TransparentPage = props => {
       <TopNavBar {...props} />
       <main style={{ boxSizing: 'border-box', maxWidth: '75rem', margin: '0 auto', padding: '8rem 2rem 4rem' }}>
         <p style={{ fontSize: '0.875rem', fontWeight: 700 }}>CIVIC PARTICIPATION</p>
-        <h1 style={{ maxWidth: '48rem', fontSize: '3rem', lineHeight: 1.05 }}>A better future starts with listening.</h1>
+        <h1 style={{ maxWidth: '48rem', fontSize: '3rem', lineHeight: 1.05, color }}>A better future starts with listening.</h1>
         <p style={{ maxWidth: '40rem', fontSize: '1.25rem', lineHeight: 1.6 }}>
           Bring your perspective to the conversations shaping our communities. Explore ideas, hear from neighbors, and help move good work forward.
         </p>
         <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(12rem, 1fr))', gap: '2rem', marginTop: '6rem', paddingTop: '2rem', borderTop: `1px solid ${color}66` }}>
           <div>
-            <h2>Listen</h2>
+            <h2 style={{ color }}>Listen</h2>
             <p>Understand the experiences and priorities people bring to the table.</p>
           </div>
           <div>
-            <h2>Connect</h2>
+            <h2 style={{ color }}>Connect</h2>
             <p>Find common ground through thoughtful, respectf  ul discussion.</p>
           </div>
           <div>
-            <h2>Make progress</h2>
+            <h2 style={{ color }}>Make progress</h2>
             <p>Turn shared understanding into practical next steps.</p>
           </div>
         </section>

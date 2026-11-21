@@ -9,6 +9,7 @@ import ReviewPoint from '../review-point'
 import { useDeliberationContext, useLocalStorageIfAvailable } from '../deliberation-context'
 import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 import StepIntro from '../step-intro'
+import { Level } from 'react-accessible-headings'
 import { useRankByParentId } from './rank'
 
 export default function RerankStep(props) {
@@ -218,18 +219,20 @@ export function Rerank(props) {
   return (
     <div className={classes.reviewPointsContainer}>
       <StepIntro {...stepIntro} />
-      {reducedPointList.map(({ point, group }) => (
-        <div key={point._id} className={classes.reviewPoint}>
-          <ReviewPoint
-            point={point}
-            leftPointList={topWhysByCategoryByParentId['most']?.[point._id] || []}
-            rightPointList={topWhysByCategoryByParentId['least']?.[point._id] || []}
-            rank={toRankString[rankByParentId[point._id]?.category]}
-            onDone={result => handleRankAndVState(point, result)}
-            vState={vStateByPointId[point._id]}
-          />
-        </div>
-      ))}
+      <Level value={2}>
+        {reducedPointList.map(({ point, group }) => (
+          <div key={point._id} className={classes.reviewPoint}>
+            <ReviewPoint
+              point={point}
+              leftPointList={topWhysByCategoryByParentId['most']?.[point._id] || []}
+              rightPointList={topWhysByCategoryByParentId['least']?.[point._id] || []}
+              rank={toRankString[rankByParentId[point._id]?.category]}
+              onDone={result => handleRankAndVState(point, result)}
+              vState={vStateByPointId[point._id]}
+            />
+          </div>
+        ))}
+      </Level>
     </div>
   )
 }

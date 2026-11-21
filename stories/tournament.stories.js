@@ -1124,10 +1124,10 @@ export const BatchUpsertInteractionTest = {
       answer: { type: 'text', pattern: /provide a title and short description/i },
       grouping: { type: 'text', pattern: /Group Responses/i },
       rank: { type: 'text', pattern: /Rank Responses/i },
-      whyMost: { type: 'text', pattern: /Why it's Most Important/i },
-      whyLeast: { type: 'text', pattern: /Why it's Least Important/i },
-      compareMost: { type: 'text', pattern: /Please choose the most convincing explanation for.../i },
-      compareLeast: { type: 'text', pattern: /Please choose the least convincing explanation for.../i },
+      'why-most': { type: 'text', pattern: /Why it's Most Important/i },
+      'why-least': { type: 'text', pattern: /Why it's Least Important/i },
+      'compare-most': { type: 'role', role: 'heading', pattern: /Compare Reasons Why It's Most Important/i },
+      'compare-least': { type: 'role', role: 'heading', pattern: /Compare Reasons Why It's Least Important/i },
       review: { type: 'role', role: 'radio' },
       jsform: { type: 'text', pattern: /Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters./i },
       intermission: { type: 'text', pattern: /Great you've completed Round.*/i },
@@ -1145,7 +1145,7 @@ export const BatchUpsertInteractionTest = {
           if (marker.type === 'text') {
             element = canvas.queryByText(marker.pattern)
           } else if (marker.type === 'role') {
-            element = canvas.queryAllByRole(marker.role)[0]
+            element = canvas.queryAllByRole(marker.role, marker.pattern ? { name: marker.pattern } : undefined)[0]
           } else if (marker.type === 'placeholder') {
             element = canvas.queryByPlaceholderText(marker.pattern)
           }
@@ -1156,6 +1156,20 @@ export const BatchUpsertInteractionTest = {
       }
 
       if (currentStep === 'compare-most' || currentStep === 'compare-least') {
+        const finalChoiceTitle = currentStep === 'compare-most'
+          ? 'Recommend for further consideration'
+          : 'Not recommended for further consideration'
+        const finalChoice = canvas.queryByTitle(finalChoiceTitle)
+        if (finalChoice) {
+          await userEvent.click(finalChoice)
+          await waitFor(() => {
+            const enabledNext = canvas.queryByRole('button', { name: /^Next$/i })
+            if (!enabledNext || enabledNext.hasAttribute('disabled') || enabledNext.getAttribute('aria-disabled') === 'true') {
+              throw new Error(`${currentStep} Next button is not enabled after final choice`)
+            }
+          })
+        }
+
         for (let index = 0; index < 12; index++) {
           const nextButton = canvas.queryByRole('button', { name: /^Next$/i })
           if (nextButton && !nextButton.hasAttribute('disabled') && nextButton.getAttribute('aria-disabled') !== 'true') break
@@ -1176,8 +1190,9 @@ export const BatchUpsertInteractionTest = {
 
           const choices = canvas.queryAllByTitle(/^Choose as more important:/i)
           if (!choices.length) {
-            const nextReason = canvas.queryByTitle('Next reason')
-            if (nextReason && !nextReason.hasAttribute('disabled') && nextReason.getAttribute('aria-disabled') !== 'true') {
+            const nextReasons = canvas.getAllByRole('button', { name: 'Next reason' }).filter(button => button.getClientRects().length > 0)
+            const nextReason = nextReasons.find(button => !button.disabled && button.getAttribute('aria-disabled') !== 'true')
+            if (nextReason) {
               await userEvent.click(nextReason)
               await waitFor(() => {
                 const pairChoice = canvas.queryAllByTitle(/^Choose as more important:/i)[0]
@@ -1191,12 +1206,13 @@ export const BatchUpsertInteractionTest = {
           const beforeTitles = choices.map(choice => choice.title).sort().join('|')
           await userEvent.click(choices[0])
           await waitFor(() => {
+            const nextReason = canvas.getAllByRole('button', { name: 'Next reason' }).find(button => button.getClientRects().length > 0)
             const enabledNext = canvas.queryByRole('button', { name: /^Next$/i })
             if (enabledNext && !enabledNext.hasAttribute('disabled') && enabledNext.getAttribute('aria-disabled') !== 'true') return
 
             const afterChoices = canvas.queryAllByTitle(/^Choose as more important:/i)
             const afterTitles = afterChoices.map(choice => choice.title).sort().join('|')
-            if (afterTitles !== beforeTitles) return
+            if (afterTitles !== beforeTitles || (nextReason && !nextReason.hasAttribute('disabled'))) return
 
             throw new Error('compare-least card transition is not complete')
           })
