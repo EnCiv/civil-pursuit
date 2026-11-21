@@ -42,10 +42,10 @@ function buildChildren(steps) {
     const LookupResult = WebComponents[webComponent]
     if (LookupResult) {
       // Pass all props from step obj except WebComponent
-      return <LookupResult key={props.stepName || props.name || step.webComponent || index} {...props} />
+      return <LookupResult key={props.stepName ? `${props.stepName}-${index}` : props.name ? `${props.name}-${index}` : `${step.webComponent}-${index}`} {...props} />
     } else {
       console.error(`Couldn't render step - component '${webComponent}' was not found in WebComponents.`)
-      return <div key={props.stepName || props.name || webComponent || index}>Couldn't render step - component '{webComponent}' was not found in WebComponents.</div>
+      return <div key={props.stepName ? `${props.stepName}-${index}` : props.name ? `${props.name}-${index}` : `${webComponent}-${index}`}>Couldn't render step - component '{webComponent}' was not found in WebComponents.</div>
     }
   })
 }

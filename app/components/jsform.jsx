@@ -204,9 +204,13 @@ const JsForm = props => {
       if (!props[key]) return false
 
       if (props[key].type === 'object' && props[key].properties) {
-        return Object.keys(props[key].properties).every(prop => !!(data[key] && data[key][prop]))
+        return Object.keys(props[key].properties).every(prop => {
+          const value = data[key]?.[prop]
+          return value !== undefined && value !== null && (typeof value !== 'string' || value.trim().length > 0)
+        })
       }
-      return !!data[key]
+      const value = data[key]
+      return value !== undefined && value !== null && (typeof value !== 'string' || value.trim().length > 0)
     })
   }
 

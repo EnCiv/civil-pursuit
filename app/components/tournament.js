@@ -107,6 +107,8 @@ export function getLoadedStepComplete(step, data, round) {
 
   switch (step.webComponent) {
     case 'Answer': {
+      // Unknown-user lookup is intentionally left unchanged: temporary users may share
+      // the 'unknown' placeholder until a real session/temp ID is established.
       const userId = data.userId || data.user?.id
       if (!userId) return false
       const answer = Object.values(data.pointById || {}).find(point => point.userId === userId)
@@ -150,8 +152,14 @@ export function getLoadedStepComplete(step, data, round) {
       return (step.schema?.required || []).every(key => {
         const property = step.schema?.properties?.[key]
         if (!property) return false
-        if (property.type === 'object' && property.properties) return Object.keys(property.properties).every(propertyKey => !!formData[key]?.[propertyKey])
-        return !!formData[key]
+        const value = formData[key]
+        if (property.type === 'object' && property.properties) {
+          return Object.keys(property.properties).every(propertyKey => {
+            const nestedValue = value?.[propertyKey]
+            return nestedValue !== undefined && nestedValue !== null && (typeof nestedValue !== 'string' || nestedValue.trim().length > 0)
+          })
+        }
+        return value !== undefined && value !== null && (typeof value !== 'string' || value.trim().length > 0)
       })
     }
     default:
@@ -165,10 +173,10 @@ function buildChildren(steps, round) {
     const LookupResult = WebComponents[webComponent]
     if (LookupResult) {
       // Pass all props from step obj except WebComponent, plus round
-      return <LookupResult key={props.stepName || props.name || step.webComponent || index} {...props} round={round} />
+      return <LookupResult key={props.stepName ? `${props.stepName}-${index}` : props.name ? `${props.name}-${index}` : `${step.webComponent}-${index}`} {...props} round={round} />
     } else {
       console.error(`Couldn't render step - component '${webComponent}' was not found in WebComponents.`)
-      return <div key={props.stepName || props.name || webComponent || index}>Couldn't render step - component '{webComponent}' was not found in WebComponents.</div>
+      return <div key={props.stepName ? `${props.stepName}-${index}` : props.name ? `${props.name}-${index}` : `${webComponent}-${index}`}>Couldn't render step - component '{webComponent}' was not found in WebComponents.</div>
     }
   })
 }

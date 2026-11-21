@@ -131,7 +131,7 @@ export const StepSlider = props => {
         const stepStatuses = state.stepStatuses.map((stepStatus, index) => {
           if (!action.indices.includes(index) || stepStatus.complete) return stepStatus
           changed = true
-          return { ...stepStatus, complete: true, seen: true }
+          return { ...stepStatus, complete: true, seen: true, skip: false }
         })
         return changed ? { ...state, stepStatuses } : state
       }
