@@ -12,6 +12,7 @@ import { useDeliberationContext, useLocalStorageIfAvailable } from './deliberati
 import * as LocalStorageManager from '../lib/local-storage-manager'
 import { authenticateSocketIo } from 'civil-client/dist/components/use-auth'
 import LinkedInSignInButton from './linkedin-sign-in-button'
+import { H, Level } from 'react-accessible-headings'
 
 // needs to be static because it used as a dependency in useEffect
 const goToEnCiv = () => (location.href = 'https://enciv.org/')
@@ -462,7 +463,9 @@ const Intermission = props => {
     <section className={cx(classes.intermission, classes.messageCard, className)} aria-labelledby="intermission-heading">
       <div className={classes.cardHeader}>
         <Intermission_Icon className={classes.icon} />
-        <h2 id="intermission-heading" className={classes.cardTitle}>Round Complete</h2>
+        <Level value={2}>
+          <H id="intermission-heading" className={classes.cardTitle}>Round Complete</H>
+        </Level>
       </div>
       <div className={classes.messageContent}>
         {conditionalResponse}

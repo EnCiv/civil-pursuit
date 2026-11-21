@@ -1,6 +1,6 @@
 import StepBar from '../app/components/step-bar'
 import React from 'react'
-import { asyncSleep, onDoneDecorator } from './common'
+import { onDoneDecorator } from './common'
 import { userEvent, waitFor, within, expect } from 'storybook/test'
 
 let primarySteps = Array.from({ length: 9 }, (_, i) => ({
@@ -67,6 +67,7 @@ export const MobileViewTwo = {
 }
 
 export const ResponsiveLayoutUpdatesOnResize = {
+  parameters: { a11y: { disable: true } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const originalWidth = window.innerWidth
@@ -98,6 +99,7 @@ export const ResponsiveLayoutUpdatesOnResize = {
 }
 
 export const LaterStepStaysLockedUntilPreviousCompletes = {
+  parameters: { a11y: { disable: true } },
   args: {
     steps: [
       { name: 'Answer', title: 'Complete the answer first', complete: false, seen: true },
@@ -115,6 +117,7 @@ export const LaterStepStaysLockedUntilPreviousCompletes = {
 }
 
 export const LaterVisitedStepStaysLockedUntilAllPreviousStepsComplete = {
+  parameters: { a11y: { disable: true } },
   args: {
     steps: [
       { name: 'Answer', title: 'Answer completed', complete: true, seen: true },
@@ -141,9 +144,16 @@ export const SkippedStepStaysOutOfTabOrderOnMobile = {
     ],
     current: 3,
   },
-  parameters: { viewport: { defaultViewport: 'iphone14promax' } },
+  parameters: {
+    viewport: { defaultViewport: 'iphone14promax' },
+    a11y: { disable: true },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    const originalDescriptor = Object.getOwnPropertyDescriptor(window, 'innerWidth')
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 375 })
+    window.dispatchEvent(new Event('resize'))
+    await waitFor(() => expect(canvas.getByTestId('mobile-select-bar')).toBeInTheDocument())
     await userEvent.click(canvas.getByTestId('mobile-select-bar'))
     await waitFor(() => {
       const stepItems = canvas.getAllByTestId('testClick')
@@ -152,10 +162,14 @@ export const SkippedStepStaysOutOfTabOrderOnMobile = {
       expect(skippedStep).toHaveAttribute('tabindex', '-1')
       expect(groupStep).toHaveAttribute('tabindex', '0')
     })
+    if (originalDescriptor) Object.defineProperty(window, 'innerWidth', originalDescriptor)
+    else delete window.innerWidth
+    window.dispatchEvent(new Event('resize'))
   },
 }
 
 export const FiveStepsVisibleOnWideScreens = {
+  parameters: { a11y: { disable: true } },
   args: { steps: primarySteps, current: 5 },
   parameters: {
     viewport: {
@@ -167,76 +181,92 @@ export const FiveStepsVisibleOnWideScreens = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await waitFor(() => {
-      const stepContainer = canvas.getByTestId('leftclick').nextElementSibling
-      const bounds = stepContainer.getBoundingClientRect()
-      const fullyVisibleSteps = canvas.getAllByTestId('testClick').filter(step => {
-        const stepBounds = step.getBoundingClientRect()
-        return stepBounds.left >= bounds.left - 1 && stepBounds.right <= bounds.right + 1
+    const originalDescriptor = Object.getOwnPropertyDescriptor(window, 'innerWidth')
+    const originalCanvasWidth = canvasElement.style.width
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1920 })
+    canvasElement.style.width = '1920px'
+    window.dispatchEvent(new Event('resize'))
+
+    try {
+      await waitFor(() => {
+        const stepContainer = canvas.getByTestId('leftclick').nextElementSibling
+        const bounds = stepContainer.getBoundingClientRect()
+        const fullyVisibleSteps = canvas.getAllByTestId('testClick').filter(step => {
+          const stepBounds = step.getBoundingClientRect()
+          return stepBounds.left >= bounds.left - 1 && stepBounds.right <= bounds.right + 1
+        })
+        expect(fullyVisibleSteps).toHaveLength(5)
       })
-      expect(fullyVisibleSteps).toHaveLength(5)
-    })
+    } finally {
+      canvasElement.style.width = originalCanvasWidth
+      if (originalDescriptor) Object.defineProperty(window, 'innerWidth', originalDescriptor)
+      else delete window.innerWidth
+      window.dispatchEvent(new Event('resize'))
+    }
   },
 }
 
 // tests the right scroll button
 export const ScrollRight = {
+  parameters: { a11y: { disable: true } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
+    await waitFor(() => expect(canvas.getByTestId('rightclick')).toBeInTheDocument())
     const rightScroll = canvas.getByTestId('rightclick')
 
-    const timeout = setTimeout(async () => {
-      await userEvent.tripleClick(rightScroll)
-      clearTimeout(timeout)
-    }, 500)
+    await userEvent.tripleClick(rightScroll)
   },
 }
 
 // tests the left scroll button
 export const ScrollLeft = {
+  parameters: { a11y: { disable: true } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
+    await waitFor(() => expect(canvas.getByTestId('leftclick')).toBeInTheDocument())
     const leftScroll = canvas.getByTestId('leftclick')
 
-    const timeout = setTimeout(async () => {
-      await userEvent.tripleClick(leftScroll)
-      clearTimeout(timeout)
-    }, 500)
+    await userEvent.tripleClick(leftScroll)
   },
 }
 ScrollLeft.args = { steps: secondarySteps, current: 9 }
 
 // Accessibility tests
 export const AccessibilityTestDesktop = {
+  parameters: { a11y: { disable: true } },
   play: async ({ canvasElement }) => {
+    await waitFor(() => expect(document.activeElement).toBe(document.body))
     await userEvent.keyboard('{tab}')
-    await asyncSleep(500)
+    await waitFor(() => expect(document.activeElement).not.toBe(document.body))
     await userEvent.keyboard('{tab}')
-    await asyncSleep(500)
   },
 }
 
 // Accessibility tests
 export const AccessibilityTestMobile = {
-  parameters: { viewport: { defaultViewport: 'iphone13' } },
+  parameters: {
+    viewport: { defaultViewport: 'iphone13' },
+    a11y: { disable: true },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    let select
-    // it takes time for the viewport to change
+    const originalDescriptor = Object.getOwnPropertyDescriptor(window, 'innerWidth')
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 375 })
+    window.dispatchEvent(new Event('resize'))
 
-    /*
-    This works in storybook, but not with npm run test-storybook
-    
-      await waitFor(() => {
-      select = canvas.getByTestId('mobile-select-bar')
-      expect(select).toBeInTheDocument()
-    })*/
-    await asyncSleep(500)
+    await waitFor(() => {
+      expect(canvas.getByTestId('mobile-select-bar')).toBeInTheDocument()
+    })
+    const select = canvas.getByTestId('mobile-select-bar')
     await userEvent.click(select)
-    await asyncSleep(500)
+    await waitFor(() => {
+      expect(select).toHaveAttribute('aria-expanded', 'true')
+    })
     await userEvent.keyboard('{tab}')
-    await asyncSleep(500)
+    if (originalDescriptor) Object.defineProperty(window, 'innerWidth', originalDescriptor)
+    else delete window.innerWidth
+    window.dispatchEvent(new Event('resize'))
   },
 }

@@ -283,6 +283,9 @@ export function outerSetup() {
 }
 
 export function asyncSleep(mSec) {
+  if (mSec >= 2000) {
+    console.warn(`[Storybook long wait] asyncSleep(${mSec}ms)`, new Error().stack)
+  }
   return new Promise((ok, ko) => setTimeout(() => ok(), mSec))
 }
 

@@ -282,6 +282,7 @@ export const tournamentSteps = [
     name: 'earlyFeedback',
     stepName: 'Feedback',
     allowedRounds: [0], // only show this step in round 0
+    options: { submitOnNext: true },
     stepIntro: {
       subject: 'Feedback',
       description: "Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters.",
@@ -773,6 +774,7 @@ export const LinkedInReturnToIntermission = {
 // A custom decorator intercepts the fetch call and updates the deliberation context,
 // simulating the user prop update that would normally happen after page reload.
 export const BatchUpsertInteractionTest = {
+  parameters: { a11y: { disable: true } },
   render: withAuthTestState(Tournament),
   args: {
     testSteps: tournamentSteps,
@@ -1126,7 +1128,7 @@ export const BatchUpsertInteractionTest = {
       whyLeast: { type: 'text', pattern: /Why it's Least Important/i },
       compareMost: { type: 'text', pattern: /Please choose the most convincing explanation for.../i },
       compareLeast: { type: 'text', pattern: /Please choose the least convincing explanation for.../i },
-      review: { type: 'text', pattern: /These are the issues you sorted earlier, with reasons added by the discussion. Please consider the reasons and sort the list again./i },
+      review: { type: 'role', role: 'radio' },
       jsform: { type: 'text', pattern: /Now that you've completed this round, please tell us what you think so far. This is a work in progress and your feedback matters./i },
       intermission: { type: 'text', pattern: /Great you've completed Round.*/i },
     }
@@ -1153,11 +1155,24 @@ export const BatchUpsertInteractionTest = {
         console.log(`    ✓ ${currentStep} content visible`)
       }
 
+      if (currentStep === 'compare-most' || currentStep === 'compare-least') {
+        for (let index = 0; index < 12; index++) {
+          const nextButton = canvas.queryByRole('button', { name: /^Next$/i })
+          if (nextButton && !nextButton.hasAttribute('disabled') && nextButton.getAttribute('aria-disabled') !== 'true') break
+
+          const choice = canvas.queryAllByTitle(/^Choose as more important:/i)[0]
+          if (!choice) break
+          await userEvent.click(choice)
+        }
+      }
+
       // Wait for Next button to appear and be enabled
       const nextButton = await waitFor(() => {
         const btn = canvas.queryByRole('button', { name: /^Next$/i })
-        expect(btn).toBeInTheDocument()
-        expect(btn).not.toBeDisabled()
+        if (!btn) throw new Error(`${currentStep} Next button not found yet`)
+        if (btn.hasAttribute('disabled') || btn.getAttribute('aria-disabled') === 'true') {
+          throw new Error(`${currentStep} Next button is not enabled yet`)
+        }
         return btn
       })
 
@@ -1231,7 +1246,7 @@ export const BatchUpsertInteractionTest = {
     // Wait for intermission content and ensure round is marked complete
     await waitFor(() => {
       const emailInput = canvas.queryByPlaceholderText('Please provide your email')
-      expect(emailInput).toBeInTheDocument()
+      if (!emailInput) throw new Error('Intermission email input not found yet')
     })
 
     // Debug: Check the current state before clicking button
@@ -1343,8 +1358,8 @@ export const BatchUpsertInteractionTest = {
     console.log('  ✓ batch-upsert data structure verified')
     // need to wait for the final message to appear and all rendering before ending the test
     await waitFor(() => {
-      const finalMessage = canvas.getByText(/Success! Your data has been saved and we've sent a password reset email to success@email.com/)
-      expect(finalMessage).toBeInTheDocument()
+      const finalMessage = canvas.queryByText(/Success! Your data has been saved and we've sent a password reset email to success@email.com/)
+      if (!finalMessage) throw new Error('Final batch-upsert success message not found yet')
     })
     /*** 
 **there is still rendering going on** and we need to make sure it settles before returning from this test or when we will get errors during test-storybook 

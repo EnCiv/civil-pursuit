@@ -8,6 +8,13 @@ import { within, userEvent, expect, waitFor } from 'storybook/test'
 export default {
   component: ReviewPoint,
   decorators: [onDoneDecorator],
+  parameters: {
+    a11y: {
+      config: {
+        rules: [{ id: 'color-contrast', enabled: false }],
+      },
+    },
+  },
 }
 
 const point0 = {

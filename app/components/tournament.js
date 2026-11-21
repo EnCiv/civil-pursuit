@@ -160,15 +160,15 @@ export function getLoadedStepComplete(step, data, round) {
 }
 
 function buildChildren(steps, round) {
-  return steps.map(step => {
+  return steps.map((step, index) => {
     const { webComponent, ...props } = step
     const LookupResult = WebComponents[webComponent]
     if (LookupResult) {
       // Pass all props from step obj except WebComponent, plus round
-      return <LookupResult {...props} round={round} />
+      return <LookupResult key={props.stepName || props.name || step.webComponent || index} {...props} round={round} />
     } else {
       console.error(`Couldn't render step - component '${webComponent}' was not found in WebComponents.`)
-      return <div>Couldn't render step - component '{webComponent}' was not found in WebComponents.</div>
+      return <div key={props.stepName || props.name || webComponent || index}>Couldn't render step - component '{webComponent}' was not found in WebComponents.</div>
     }
   })
 }

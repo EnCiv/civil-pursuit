@@ -52,6 +52,7 @@ import cx from 'classnames'
 import Markdown from 'markdown-to-jsx'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
+import { H, Level } from 'react-accessible-headings'
 
 /**
  * Extract OG image URL from metaTags array
@@ -94,7 +95,9 @@ const QuestionBox = props => {
       <div className={classes.topic}>
         {ogImage && <img src={ogImage} alt="" className={classes.ogImage} />}
         {tagline && <div className={classes.fixedText}>{tagline}</div>}
-        <h1 className={classes.subject}>{subject}</h1>
+        <Level value={1}>
+          <H className={classes.subject}>{subject}</H>
+        </Level>
         <div>
           <div ref={descriptionRef} className={cx(classes.description, { [classes.collapsed]: !isExpanded })}>
             <Markdown>{description}</Markdown>

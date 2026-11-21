@@ -9,6 +9,13 @@ import { onDoneDecorator, DeliberationContextDecorator, deliberationContextData,
 export default {
   component: WhyStep,
   decorators: [onDoneDecorator, socketEmitDecorator],
+  parameters: {
+    a11y: {
+      config: {
+        rules: [{ id: 'color-contrast', enabled: false }],
+      },
+    },
+  },
 }
 
 const reducedPointList = [

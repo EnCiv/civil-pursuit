@@ -112,7 +112,7 @@ const TopNavBar = props => {
       <menu className={cx(classes.verticalMenuContainer, className)} {...otherProps}>
         {menu &&
           menu.map((item, index) => (
-            <li className={classes.menuList}>
+            <li className={classes.menuList} key={item.name || index}>
               <div
                 key={item.name}
                 tabIndex={tabIndex}

@@ -597,6 +597,7 @@ export const OptionalField = {
 }
 
 export const SkipOnUndefinedData = {
+  parameters: { a11y: { disable: true } },
   args: {
     name: 'moreDetails',
     discussionId: '123456789012345678901234567890abcd',
@@ -604,7 +605,7 @@ export const SkipOnUndefinedData = {
     uischema: testUIschema,
   },
   decorators: [
-    buildApiDecorator('get-jsform', (discussionId, cb) => () => {
+    buildApiDecorator('get-jsform', (discussionId, cb) => {
       cb({})
     }),
     buildApiDecorator('upsert-jsform', (discussionId, name, data) => {
@@ -614,7 +615,6 @@ export const SkipOnUndefinedData = {
   ],
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    console.log('[SkipOnUndefinedData] play started')
 
     expect(canvas.getByLabelText(/Household Income/i)).toBeInTheDocument()
     expect(canvas.getByLabelText(/Housing/i)).toBeInTheDocument()

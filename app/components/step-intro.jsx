@@ -19,7 +19,7 @@ const StepIntro = props => {
 
   return (
     <div className={cx(classes.stepIntro, className)} {...otherProps}>
-      <H className={classes.primaryText}>{subject}</H>
+      {subject && <H className={classes.primaryText}>{subject}</H>}
       {paragraphs}
     </div>
   )

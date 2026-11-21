@@ -1,6 +1,6 @@
 import React from 'react'
 import Step from '../app/components/step'
-import { onDoneDecorator } from './common'
+import { asyncSleep, onDoneDecorator } from './common'
 import { userEvent, within } from 'storybook/test'
 
 export default {
@@ -31,9 +31,8 @@ export const ClickActiveDesktop = {
 
     const step = canvas.getByTestId('testClick')
 
-    setTimeout(async () => {
-      await userEvent.click(step)
-    }, 500)
+    await asyncSleep(500)
+    await userEvent.click(step)
   },
 }
 
@@ -45,9 +44,8 @@ export const ClickCompleteDesktop = {
 
     const step = canvas.getByTestId('testClick')
 
-    setTimeout(async () => {
-      await userEvent.click(step)
-    }, 500)
+    await asyncSleep(500)
+    await userEvent.click(step)
   },
 }
 
@@ -59,8 +57,7 @@ export const ClickIncompleteDesktop = {
 
     const step = canvas.getByTestId('testClick')
 
-    setTimeout(async () => {
-      await userEvent.click(step)
-    }, 500)
+    await asyncSleep(500)
+    await userEvent.click(step)
   },
 }

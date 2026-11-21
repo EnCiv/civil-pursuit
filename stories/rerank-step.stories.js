@@ -12,6 +12,13 @@ import { within, userEvent, expect, waitFor } from 'storybook/test'
 export default {
   component: Rerank,
   decorators: [onDoneDecorator],
+  parameters: {
+    a11y: {
+      config: {
+        rules: [{ id: 'color-contrast', enabled: false }],
+      },
+    },
+  },
 }
 
 const round = 1

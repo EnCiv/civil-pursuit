@@ -55,8 +55,46 @@ const config: TestRunnerConfig = {
     await page.goto(iframeURL, { waitUntil: 'load' })
   },
   async preVisit(page) {
+    await page.evaluate(() => {
+      const testWindow = window as any
+      const nativeSetTimeout = window.setTimeout.bind(window)
+      testWindow.setTimeout = (handler: TimerHandler, timeout = 0, ...args: any[]) => {
+        if (timeout >= 2000) {
+          console.warn(`[Storybook long wait] setTimeout(${timeout}ms)`, new Error().stack)
+        }
+        return nativeSetTimeout(handler, timeout, ...args)
+      }
+      const nativeSetInterval = window.setInterval.bind(window)
+      testWindow.setInterval = (handler: TimerHandler, timeout = 0, ...args: any[]) => {
+        if (timeout >= 2000) {
+          console.warn(`[Storybook long wait] setInterval(${timeout}ms)`, new Error().stack)
+        }
+        return nativeSetInterval(handler, timeout, ...args)
+      }
+      testWindow.__storyTestErrors = []
+      testWindow.__storyTestErrorHandler = (event: ErrorEvent) => {
+        testWindow.__storyTestErrors.push(event.error?.stack || event.message)
+      }
+      testWindow.__storyTestRejectionHandler = (event: PromiseRejectionEvent) => {
+        const reason = event.reason
+        testWindow.__storyTestErrors.push(reason?.stack || String(reason))
+      }
+      window.addEventListener('error', testWindow.__storyTestErrorHandler)
+      window.addEventListener('unhandledrejection', testWindow.__storyTestRejectionHandler)
+    })
     const hasTestRunner = await page.evaluate(() => typeof (window as any).__test === 'function').catch(() => false)
     if (!hasTestRunner) await setupPage(page, page.context())
+  },
+  async postVisit(page, context) {
+    const errors = await page.evaluate(() => {
+      const testWindow = window as any
+      const captured = testWindow.__storyTestErrors || []
+      testWindow.__storyTestErrors = []
+      return captured
+    }).catch(() => [])
+    if (errors.length) {
+      throw new Error(`Story page error in ${context.title}/${context.name}:\n${errors.join('\n')}`)
+    }
   },
 }
 

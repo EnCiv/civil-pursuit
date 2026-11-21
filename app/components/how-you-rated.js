@@ -3,12 +3,14 @@
 import React, { useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
+import { H, Level } from 'react-accessible-headings'
 import PointMatrix from './point-matrix'
 
 function HowYouRated(props) {
   const { className, entries = [], defaultSelectedRound = 0, onRoundChange, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [selectedRound, setSelectedRound] = useState(defaultSelectedRound)
+  const roundSelectId = `how-you-rated-round-${React.useId().replace(/:/g, '')}`
 
   // Derive rounds from entries - assume entries is array of rounds
   const rounds = Array.isArray(entries) ? entries : []
@@ -21,13 +23,14 @@ function HowYouRated(props) {
 
   return (
     <div className={cx(classes.wrapper, className)} {...otherProps}>
-      <div className={classes.titleRow}>
-        <h2 className={classes.title}>How you rated other participant's response</h2>
-      </div>
+      <Level>
+        <div className={classes.titleRow}>
+          <H className={classes.title}>How you rated other participant's response</H>
+        </div>
 
       <div className={classes.controlRow}>
-        <span className={classes.viewLabel}>View</span>
-        <select className={classes.roundDropdown} value={selectedRound} onChange={e => handleRoundChange(parseInt(e.target.value))}>
+        <label className={classes.viewLabel} htmlFor={roundSelectId}>View</label>
+        <select id={roundSelectId} className={classes.roundDropdown} value={selectedRound} onChange={e => handleRoundChange(parseInt(e.target.value))}>
           {rounds.map((round, idx) => (
             <option key={idx} value={idx}>
               Round {idx + 1}
@@ -36,7 +39,8 @@ function HowYouRated(props) {
         </select>
       </div>
 
-      {currentRoundEntries.length > 0 ? <PointMatrix entries={currentRoundEntries} /> : <div className={classes.emptyState}>No responses to display</div>}
+        {currentRoundEntries.length > 0 ? <PointMatrix entries={currentRoundEntries} /> : <div className={classes.emptyState}>No responses to display</div>}
+      </Level>
     </div>
   )
 }

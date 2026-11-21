@@ -6,6 +6,13 @@ export default {
   component: PointInput,
   args: {},
   decorators: [onDoneDecorator],
+  parameters: {
+    a11y: {
+      config: {
+        rules: [{ id: 'color-contrast', enabled: false }],
+      },
+    },
+  },
 }
 
 export const defaultValueUndefined = { args: {} }

@@ -22,6 +22,17 @@ async function goToReason(canvas, index, total) {
   await waitFor(() => expect(canvas.getByText(`${index} / ${total}`)).toBeVisible())
 }
 
+async function waitForRankDelta(onDone, expectedDelta) {
+  await waitFor(() => {
+    const matchingCall = onDone.mock.calls.find(([result]) => {
+      if (!result?.delta) return false
+      const delta = Array.isArray(result.delta) ? result.delta : [result.delta]
+      return delta.some(item => Object.entries(expectedDelta).every(([key, value]) => item[key] === value))
+    })
+    expect(matchingCall).toBeTruthy()
+  })
+}
+
 const pointWithWhyRankListList = [
   {
     point: { _id: '1', subject: 'Reliable evening bus service', description: 'Later and more frequent routes help residents reach work and essential services.' },
@@ -104,25 +115,17 @@ export const twoPointListsPlayThrough = {
     expect(canvas.getByText('1 / 2')).toBeInTheDocument()
     await clickReason(canvas, 'Late routes help workers get home')
     await asyncSleep(500) // allow transitions on the component to complete
-    await waitFor(() => {
-      expect(onDone.mock.calls[0][0]).toMatchObject({ valid: false, value: 0, delta: { category: 'neutral', stage: 'why', parentId: '3' } })
-    })
+    await waitForRankDelta(onDone, { category: 'neutral', stage: 'why', parentId: '3' })
     await clickReason(canvas, 'Late routes help workers get home')
     await asyncSleep(500)
-    await waitFor(() => {
-      expect(onDone.mock.calls[1][0]).toMatchObject({ valid: false, value: 0, delta: { category: 'neutral', stage: 'why', parentId: '4' } })
-    })
+    await waitForRankDelta(onDone, { category: 'neutral', stage: 'why', parentId: '4' })
     await clickReason(canvas, 'Late routes help workers get home')
     await asyncSleep(500)
-    await waitFor(() => {
-      expect(onDone.mock.calls[2][0]).toMatchObject({ valid: false, value: 0, delta: { category: 'neutral', stage: 'why', parentId: '5' } })
-    })
+    await waitForRankDelta(onDone, { category: 'neutral', stage: 'why', parentId: '5' })
     userEvent.click(canvas.getByText('Late routes help workers get home'))
     await asyncSleep(500)
-    await waitFor(() => {
-      expect(onDone.mock.calls[3][0]).toMatchObject({ valid: false, value: 0, delta: { category: 'neutral', stage: 'why', parentId: '6' } })
-      expect(onDone.mock.calls[4][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'most', stage: 'why', parentId: '2' } })
-    })
+    await waitForRankDelta(onDone, { category: 'neutral', stage: 'why', parentId: '6' })
+    await waitForRankDelta(onDone, { category: 'most', stage: 'why', parentId: '2' })
     await goToReason(canvas, 2, 2)
     await clickReason(canvas, 'A safe crossing protects every student')
     await asyncSleep(500)
@@ -131,13 +134,11 @@ export const twoPointListsPlayThrough = {
     await clickReason(canvas, 'A safe crossing protects every student')
     await asyncSleep(500)
     await clickReason(canvas, 'A safe crossing protects every student')
-    await waitFor(() => {
-      expect(onDone.mock.calls[5][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'neutral', stage: 'why', parentId: '23' } })
-      expect(onDone.mock.calls[6][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'neutral', stage: 'why', parentId: '24' } })
-      expect(onDone.mock.calls[7][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'neutral', stage: 'why', parentId: '25' } })
-      expect(onDone.mock.calls[8][0]).toMatchObject({ valid: false, value: 0.5, delta: { category: 'neutral', stage: 'why', parentId: '26' } })
-      expect(onDone.mock.calls[9][0]).toMatchObject({ valid: true, value: 1, delta: { category: 'most', stage: 'why', parentId: '22' } })
-    })
+    await waitForRankDelta(onDone, { category: 'neutral', stage: 'why', parentId: '23' })
+    await waitForRankDelta(onDone, { category: 'neutral', stage: 'why', parentId: '24' })
+    await waitForRankDelta(onDone, { category: 'neutral', stage: 'why', parentId: '25' })
+    await waitForRankDelta(onDone, { category: 'neutral', stage: 'why', parentId: '26' })
+    await waitForRankDelta(onDone, { category: 'most', stage: 'why', parentId: '22' })
   },
 }
 

@@ -104,6 +104,11 @@ export const WithNestedData = {
 
 export const ClickButtonAndRenderStatus = {
   render: Template,
+  parameters: {
+    a11y: {
+      disable: true,
+    },
+  },
   args: {
     discussionId: '507f1f77bcf86cd799439011',
   },

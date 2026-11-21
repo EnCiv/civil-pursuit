@@ -15,8 +15,8 @@ export default function Metadata(props) {
         <tr>
           <td className={cx(classes.title, className)}>{title}</td>
         </tr>
-        {data?.map(field => (
-          <tr>
+        {data?.map((field, index) => (
+          <tr key={field.label || index}>
             <td className={cx(classes.label, className)}>{field.label}</td>
             <td className={cx(classes.value, className)}>{field.value}</td>
           </tr>

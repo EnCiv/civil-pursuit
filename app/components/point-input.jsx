@@ -197,6 +197,7 @@ const useStyles = createUseStyles(theme => ({
   },
   wordCount: {
     color: theme.colors.inputWordCount,
+    opacity: 0.75,
     ...sharedWordCountStyle(theme),
   },
   errorInput: {
@@ -248,10 +249,10 @@ const sharedErrorStyle = theme => ({
 const sharedWordCountStyle = theme => ({
   textAlign: 'right',
   fontFamily: theme.font.fontFamily,
-  fontSize: '0.875rem',
+  fontSize: '0.75rem',
   fontStyle: 'normal',
   fontWeight: '300',
-  lineHeight: '1.125rem',
+  lineHeight: '1rem',
 })
 
 export default PointInput

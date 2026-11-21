@@ -235,9 +235,13 @@ const PointGroup = props => {
               <div className={cx(classes.radioIndicator, select && classes.checkedIndicator)} aria-hidden="true" />
             </div>
           )}
+          {demInfo && (
+            <div className={classes.pointTopRow}>
+              <DemInfo {...demInfo} />
+            </div>
+          )}
           {subject && <H className={cx(classes.subjectStyle, vState === 'disabled' && classes.disabledSubject)}>{subject}</H>}
           {description && <div className={cx(classes.descriptionStyle, vState === 'disabled' && classes.disabledDescription)}>{description}</div>}
-          {demInfo && <DemInfo {...demInfo} />}
           {childrenWithProps}
           {vs === 'edit' && expanded && vState === 'editable' && (
             <div className={cx(classes.SvgContainer, classes.mobileEditClose)}>
@@ -270,7 +274,7 @@ const PointGroup = props => {
                       return newPg
                     }
                         return (
-                          <div key={pD._id} className={classes.selectPoints}>
+                          <div key={pD._id} className={cx(classes.selectPoints, classes.leadSelectableCard)}>
                         <Point
                           point={pD}
                           demInfoTopRight
@@ -281,8 +285,6 @@ const PointGroup = props => {
                           aria-label={`Select ${pD.subject} as Lead`}
                           title={`Select as Lead: ${pD.subject}`}
                           onClick={event => {
-                            const interactive = event.target.closest('button, a, input, label, select, textarea, [role="button"], [role="link"], [role="radio"], [role="checkbox"], [role="switch"]')
-                            if (interactive && interactive !== event.currentTarget) return
                             doSelectLead()
                           }}
                           onKeyDown={event => {
@@ -292,29 +294,26 @@ const PointGroup = props => {
                               doSelectLead()
                             }
                           }}
-                        >
+                        />
                           <div className={classes.pointBottomButtons}>
-                            <div className={classes.pointWidthButton}>
-                              <TextButton
-                                className={classes.pointWidthButton}
-                                title={`Remove from Group: ${pD.subject}`}
-                                children="Remove from Group"
-                                onDone={() => {
-                                  const newPg = {
-                                    point,
-                                    group: group.filter((e, i) => i !== leadIndex),
-                                  }
+                            <TextButton
+                              className={classes.pointWidthButton}
+                              title={`Remove from Group: ${pD.subject}`}
+                              children="Remove from Group"
+                              onDone={() => {
+                                const newPg = {
+                                  point,
+                                  group: group.filter((e, i) => i !== leadIndex),
+                                }
 
-                                  setPg(newPg)
-                                  onDone({
-                                    valid: true,
-                                    value: { pointGroup: newPg, removedPgs: [{ point: pD, group: [] }] },
-                                  })
-                                }}
-                              />
-                            </div>
+                                setPg(newPg)
+                                onDone({
+                                  valid: true,
+                                  value: { pointGroup: newPg, removedPgs: [{ point: pD, group: [] }] },
+                                })
+                              }}
+                            />
                           </div>
-                        </Point>
                           </div>
                         )
                         })}
@@ -495,6 +494,15 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     '& $contentContainer': {
       padding: '1.25rem',
     },
+  },
+
+  pointTopRow: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
+    paddingRight: '2.5rem',
+    boxSizing: 'border-box',
   },
 
   subjectStyle: {
@@ -792,6 +800,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   pointBottomButtons: {
     width: '100%',
+    marginTop: 'auto',
+    padding: '0.5rem',
+    boxSizing: 'border-box',
     textAlign: 'center',
   },
 
@@ -861,12 +872,19 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     height: '100%',
   },
 
+  leadSelectableCard: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
   leadSelectablePoint: {
     cursor: 'pointer',
+    flex: '1 1 auto',
   },
 
   pointWidthButton: {
-    margin: '.5rem',
+    width: '100%',
+    boxSizing: 'border-box',
   },
 
   leadSelectedLabel: {

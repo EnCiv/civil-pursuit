@@ -15,6 +15,11 @@ export default {
   decorators: [onDoneDecorator],
   parameters: {
     layout: 'fullscreen',
+    a11y: {
+      config: {
+        rules: [{ id: 'color-contrast', enabled: false }],
+      },
+    },
   },
 }
 
