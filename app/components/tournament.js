@@ -107,7 +107,7 @@ export function getLoadedStepComplete(step, data, round) {
 
   switch (step.webComponent) {
     case 'Answer': {
-      const userId = data.user?.id
+      const userId = data.userId || data.user?.id
       if (!userId) return false
       const answer = Object.values(data.pointById || {}).find(point => point.userId === userId)
       const why = data.myWhyByCategoryByParentId?.most?.[answer?._id]

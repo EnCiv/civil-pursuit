@@ -53,15 +53,6 @@ const Step = forwardRef((props, ref) => {
     setTimeout(() => setIsPortalOpen(false), displayTime)
   }
 
-  const handleKeyDown = e => {
-    if (e.keyCode === 32) {
-      e.stopPropagation()
-      if (timeRef.current) clearTimeout(timeRef.current)
-      timeRef.current = null
-      if (!skip && (complete || active || unlocked)) onDone(index)
-    }
-  }
-
   useEffect(() => {
     // Set the timeout for the portal whenver it is opened.
     if (isPortalOpen) {
@@ -78,11 +69,10 @@ const Step = forwardRef((props, ref) => {
       className={containerStyle}
       disabled={!isStepEnabled}
       aria-disabled={!isStepEnabled}
-      onMouseUp={e => {
+      onClick={e => {
         e.stopPropagation()
         if (!skip && (complete || active || unlocked)) onDone(index)
       }}
-      onKeyDown={handleKeyDown}
       title={`${title}`}
       tabIndex={isStepEnabled ? 0 : -1}
       aria-current={active ? 'step' : undefined}

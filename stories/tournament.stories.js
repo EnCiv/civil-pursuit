@@ -81,7 +81,7 @@
  */
 
 import React, { useState } from 'react'
-import Tournament from '../app/components/tournament'
+import Tournament, { getLoadedStepComplete } from '../app/components/tournament'
 import { DeliberationContextDecorator, onDoneDecorator, socketEmitDecorator, buildApiDecorator, deliberationContextData, mockBatchUpsertDeliberationDataRoute } from './common'
 import { DemInfoProvider, DemInfoContext } from '../app/components/dem-info-context'
 import { userEvent, within, waitFor, expect } from 'storybook/test'
@@ -727,6 +727,29 @@ export const LocalStoragePreserved = {
 // Here we pass defaultStepName directly so the story is URL-independent.
 // defaultStepName flows through Tournament's otherProps spread to StepSlider where it
 // overrides the returnFromLinkedIn-derived value (because the spread comes last in JSX).
+export const RestoredAnswerUsesCanonicalUserId = {
+  render: () => {
+    const data = {
+      userId: 'restored-user',
+      pointById: {
+        answer: { _id: 'answer', subject: 'Restored answer', description: 'Restored description', userId: 'restored-user' },
+      },
+      myWhyByCategoryByParentId: {
+        most: {
+          answer: { subject: 'Restored why', description: 'Why it matters', parentId: 'answer', category: 'most' },
+        },
+      },
+    }
+    const complete = getLoadedStepComplete({ webComponent: 'Answer' }, data, 0)
+    return <output data-testid="restored-answer-status">{complete ? 'complete' : 'incomplete'}</output>
+  },
+  play: async ({ canvasElement }) => {
+    await waitFor(() => {
+      expect(within(canvasElement).getByTestId('restored-answer-status')).toHaveTextContent('complete')
+    })
+  },
+}
+
 export const LinkedInReturnToIntermission = {
   args: {
     defaultValue: {

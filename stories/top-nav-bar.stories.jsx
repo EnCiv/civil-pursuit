@@ -72,7 +72,7 @@ const TransparentPage = props => {
           </div>
           <div>
             <h2 style={{ color }}>Connect</h2>
-            <p>Find common ground through thoughtful, respectf  ul discussion.</p>
+            <p>Find common ground through thoughtful, respectful discussion.</p>
           </div>
           <div>
             <h2 style={{ color }}>Make progress</h2>

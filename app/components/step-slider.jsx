@@ -345,8 +345,7 @@ const useStyles = createUseStyles(theme => ({
   outerWrapper: {
     position: 'relative', // was absolute: so that clip will work
     width: '100%',
-    overflowX: 'clip',
-    overflowY: 'visible',
+    overflow: 'clip',
     height: 'auto',
     clip: 'rect(0,auto,auto,0)', // to make sure the fixed position NavBar in a child is also hidden
     backgroundColor: 'inherit', // otherwise background is white

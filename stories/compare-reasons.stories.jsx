@@ -163,14 +163,20 @@ function getStepArgsFrom(pointWithWhyRankListList) {
 // sets up the socket api mocks and renders the component
 const StepTemplate = args => {
   // topWhyById and preRankByParentId are taken from args to uses by the api call
-  const { defaultValue, apiResult, fetchDelay = 0, ...otherArgs } = args
+  const { defaultValue, apiResult, fetchDelay = 0, fetchFailure = false, ...otherArgs } = args
   useState(() => {
     // execute this code once, before the component is initally rendered
     // the api call will provide the new data for this step
+    let failureDelivered = false
     window.socket._socketEmitHandlers['get-why-ranks-and-points'] = (discussionId, round, mostIds, leastIds, cb) => {
       window.socket._socketEmitHandlerResults['get-why-ranks-and-points'].push([discussionId, round, mostIds, leastIds])
       setTimeout(() => {
-        cb(apiResult)
+        if (fetchFailure && !failureDelivered) {
+          failureDelivered = true
+          cb(null)
+        } else {
+          cb(apiResult)
+        }
       }, fetchDelay)
     }
     window.socket._socketEmitHandlerResults['get-why-ranks-and-points'] = []
@@ -200,6 +206,26 @@ export const BeginStepMost = {
   args: { ...getStepArgsFrom(pointWithWhyRankListList), category: 'most', round: 1 },
   decorators: [DeliberationContextDecorator, socketEmitDecorator],
   render: props => <StepTemplate {...props} />,
+}
+
+export const FetchFailureCanRetry = {
+  args: { ...getStepArgsFrom(pointWithWhyRankListList), category: 'most', round: 1, fetchFailure: true },
+  decorators: [DeliberationContextDecorator, socketEmitDecorator],
+  render: props => <StepTemplate {...props} />,
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement)
+    await waitFor(() => {
+      expect(canvas.getByRole('alert')).toHaveTextContent('Explanations could not be loaded.')
+      expect(args.onDone.mock.calls.at(-1)?.[0]).toMatchObject({ valid: false, value: 0 })
+    })
+
+    const retry = await waitFor(() => canvas.getByRole('button', { name: 'Retry loading explanations' }))
+    await userEvent.click(retry)
+    await waitFor(() => {
+      expect(canvas.queryByRole('alert')).not.toBeInTheDocument()
+      expect(canvas.queryByText('Loading explanations...')).not.toBeInTheDocument()
+    })
+  },
 }
 
 export const BeginStepLeast = {

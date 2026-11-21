@@ -512,7 +512,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     border: `0.0625rem solid ${theme.colors.borderGray}`,
     borderTop: `0.25rem solid ${theme.colors.encivYellow}`,
     borderRadius: '0.5rem',
-    boxShadow: '0 0.5rem 0.75rem -0.5rem rgba(6, 51, 92, 0.28)',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       padding: '1.25rem',
     },

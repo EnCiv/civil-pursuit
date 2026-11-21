@@ -44,13 +44,20 @@ export default function Ranking(props) {
     onDone?.({ valid: true, value })
   }
 
-  // handler for Space or Enter to select
-  const onKeyDown = (e, option) => {
+  const handleArrowKey = (event, option) => {
     if (disabled) return
-    if (e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault()
-      handleSelect(option)
-    }
+    const index = responseOptions.indexOf(option)
+    let nextIndex
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+      nextIndex = (index + 1) % responseOptions.length
+    } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+      nextIndex = (index - 1 + responseOptions.length) % responseOptions.length
+    } else return
+
+    event.preventDefault()
+    const nextOption = responseOptions[nextIndex]
+    handleSelect(nextOption)
+    event.currentTarget.parentElement?.querySelectorAll('[role="radio"]')[nextIndex]?.focus()
   }
 
   return (
@@ -64,10 +71,10 @@ export default function Ranking(props) {
             key={option}
             role="radio"
             aria-checked={isSelected}
-            tabIndex={disabled ? -1 : 0}
+            tabIndex={disabled ? -1 : isSelected || (!response && option === responseOptions[0]) ? 0 : -1}
             disabled={disabled}
             onClick={() => handleSelect(option)}
-            onKeyDown={e => onKeyDown(e, option)}
+            onKeyDown={event => handleArrowKey(event, option)}
             className={cx(styleClasses.radioOption, isSelected && styleClasses.selected, isSelected && styleClasses[`${optionStyle}Selected`])}
           >
             <svg className={styleClasses.optionIcon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -9,6 +9,7 @@ import PairCompare from '../pair-compare'
 import { ChevronDown } from '../../svgr'
 import { H, Level } from 'react-accessible-headings'
 import StepIntro from '../step-intro'
+import { SecondaryButton } from '../button'
 
 import { useDeliberationContext, useLocalStorageIfAvailable } from '../deliberation-context'
 import useFetchDemInfo from '../hooks/use-fetch-dem-info'
@@ -20,6 +21,12 @@ export default function CompareWhysStep(props) {
   const fetchDemInfo = useFetchDemInfo()
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
+  const handleRetry = () => {
+    setLoadError(false)
+    setIsLoading(true)
+    setRetryCount(count => count + 1)
+  }
   const args = { ...derivePointWithWhyRankListListByCategory(data, category) }
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
@@ -55,6 +62,7 @@ export default function CompareWhysStep(props) {
       if (!result) {
         setLoadError(true)
         setIsLoading(false)
+        onDone({ valid: false, value: 0 })
         return // there was an error
       }
       const { ranks, whys } = result
@@ -76,13 +84,13 @@ export default function CompareWhysStep(props) {
       fetchDemInfo(whyIds)
       setIsLoading(false)
     })
-  }, [round, data.preRankByParentId])
-  return <CompareWhys {...props} {...args} category={category} isLoading={isLoading} loadError={loadError} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
+  }, [round, data.preRankByParentId, retryCount])
+  return <CompareWhys {...props} {...args} category={category} isLoading={isLoading} loadError={loadError} onRetry={handleRetry} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
 }
 
 // pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]
 export function CompareWhys(props) {
-  const { pointWithWhyRankListList, side = '', category = 'most', onDone = () => {}, className, discussionId, round, stepIntro, isLoading = false, loadError = false } = props
+  const { pointWithWhyRankListList, side = '', category = 'most', onDone = () => {}, onRetry = () => {}, className, discussionId, round, stepIntro, isLoading = false, loadError = false } = props
   const classes = useStyles()
   const [completedByPointId, setCompletedByPointId] = useState(() =>
     (pointWithWhyRankListList || []).reduce((completedByPointId, pointWithWhyRankList) => {
@@ -145,7 +153,16 @@ export function CompareWhys(props) {
       {isLoading ? (
         <p className={classes.headlineTitle} aria-live="polite">Loading explanations...</p>
       ) : loadError ? (
-        <p className={classes.headlineTitle} role="alert">Explanations could not be loaded.</p>
+        <div className={classes.errorState} role="alert">
+          <p className={classes.headlineTitle}>Explanations could not be loaded.</p>
+          <SecondaryButton
+            title="Retry loading explanations"
+            aria-label="Retry loading explanations"
+            onDone={onRetry}
+          >
+            Retry
+          </SecondaryButton>
+        </div>
       ) : !pointWithWhyRankListList?.length ? (
         <p className={classes.headlineTitle}>Nothing to do here, hit Next to continue</p>
       ) : (
@@ -275,6 +292,12 @@ const useStyles = createUseStyles(theme => ({
   '@keyframes compareReasonsSlideInFromLeft': {
     from: { opacity: 0, transform: 'translateX(-1.5rem)' },
     to: { opacity: 1, transform: 'translateX(0)' },
+  },
+  errorState: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '1rem',
   },
   headlineTitle: {
     fontWeight: '600',

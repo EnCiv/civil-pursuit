@@ -169,9 +169,9 @@ export const SkippedStepStaysOutOfTabOrderOnMobile = {
 }
 
 export const FiveStepsVisibleOnWideScreens = {
-  parameters: { a11y: { disable: true } },
   args: { steps: primarySteps, current: 5 },
   parameters: {
+    a11y: { disable: true },
     viewport: {
       viewports: {
         wideDesktop: { name: 'Wide desktop', styles: { width: '1920px', height: '1080px' } },
