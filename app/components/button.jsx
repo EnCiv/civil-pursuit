@@ -18,6 +18,7 @@ function Button(props) {
     className = '', // may or may not be passed. Should be applied to the outer most tag, after local classNames
     onDone = () => {}, // a function that is called when the button is clicked.  - if it exists
     title = '', // text to display on hover
+    tooltipDurationMs,
     disabled = false,
     tabIndex = 0,
     disableOnClick = false, // if true, the button gets disabled after click and stays disabled - prevents resubmission
@@ -27,7 +28,7 @@ function Button(props) {
     children,
     ...otherProps
   } = props
-  const displayTime = Math.max(8, 0.1 * title.length) * 1000
+  const displayTime = tooltipDurationMs ?? Math.max(8, 0.1 * title.length) * 1000
   const [isDisabled, setIsDisabled] = useState(disabled)
   const [isPortalOpen, setIsPortalOpen] = useState(false)
   const downTimeStampRef = useRef(0) // useRef not useState: must be readable synchronously in handleMouseUp immediately after handleMouseDown sets it

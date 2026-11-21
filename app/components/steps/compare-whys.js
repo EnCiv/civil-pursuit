@@ -188,7 +188,7 @@ export function CompareWhys(props) {
               />
             </Level>
           </div>
-          <nav className={classes.navigation} aria-label="Compare reasons navigation">
+          <nav className={classes.navigation} aria-label={`Compare reasons navigation: ${category} for ${currentPointWithWhyRankList.point.subject}`}>
             <button
               type="button"
               className={classes.navigationButton}

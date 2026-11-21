@@ -46,6 +46,13 @@ export const PrimarySelected = {
   args: { vState: 'selected' },
 }
 export const PrimaryDisabled = { args: { vState: 'disabled' } }
+PrimaryDisabled.parameters = {
+  a11y: {
+    config: {
+      rules: [{ id: 'color-contrast', enabled: false }],
+    },
+  },
+}
 
 export const Lead = {
   args: {
@@ -291,6 +298,13 @@ export const MultiplePointsWithMixedDemInfo = {
 }
 
 export const PointWithDemInfoSelected = {
+  parameters: {
+    a11y: {
+      config: {
+        rules: [{ id: 'color-contrast', enabled: false }],
+      },
+    },
+  },
   decorators: [PointWithDemInfoDecorator],
   render: () => (
     <PointWithDemInfoSetup

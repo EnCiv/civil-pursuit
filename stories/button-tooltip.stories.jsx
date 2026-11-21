@@ -128,6 +128,7 @@ export const TooltipRendersInPortal = {
 export const TooltipAutoDismisses = {
   args: {
     title: 'I will disappear',
+    tooltipDurationMs: 800,
     children: 'Hold then wait',
   },
   play: async ({ canvasElement }) => {
@@ -141,12 +142,12 @@ export const TooltipAutoDismisses = {
       expect(document.querySelector('[role="tooltip"]')).not.toBeNull()
     })
 
-    // Wait for auto-dismiss (displayTime = 8000 ms); allow up to 12 s
+    // Wait for the test-specific short auto-dismiss duration
     await waitFor(
       () => {
         expect(document.querySelector('[role="tooltip"]')).toBeNull()
       },
-      { timeout: 12000 }
+      { timeout: 2000 }
     )
   },
 }

@@ -184,7 +184,7 @@ export function Why(props) {
           </div>
         </div>
       </Level>
-      <nav className={classes.navigation} aria-label={`Why ${category} navigation`}>
+      <nav className={classes.navigation} aria-label={`Why ${category} navigation: ${pointWhyList[currentPointIndex].point.subject || 'current point'}`}>
         <button type="button" className={classes.navigationButton} onClick={() => navigateToPoint(-1)} disabled={currentIndex === 0} title="Previous reason" aria-label="Previous reason">
           <ChevronDown className={classes.previousIcon} />
         </button>

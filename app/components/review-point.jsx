@@ -11,7 +11,6 @@ import Ranking from './ranking'
 import Point from './point'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
-import { Level } from 'react-accessible-headings'
 
 function ReviewPoint(props) {
   const { point = {}, leftPointList = [], rightPointList = [], rank = '', vState: incomingVState, onDone = () => {}, className = '', ...otherProps } = props
@@ -70,9 +69,7 @@ function ReviewPoint(props) {
             <div className={cx(classes.showDualPointListDisclosure, vState === 'open' && classes.showDualPointListExpanded)} aria-hidden={vState !== 'open'}>
               <div className={classes.showDualPointListInner}>
                 <div className={classes.showDualPointListContainer}>
-                  <Level>
-                    <ShowDualPointList className={classes.showDualPointList} leftHeader="Why It's Most Important" rightHeader="Why It's Least Important" leftPoints={leftPointList} rightPoints={rightPointList} vState={'expanded'} showToggle={false} />
-                  </Level>
+                  <ShowDualPointList className={classes.showDualPointList} leftHeader="Why It's Most Important" rightHeader="Why It's Least Important" leftPoints={leftPointList} rightPoints={rightPointList} vState={'expanded'} showToggle={false} />
                 </div>
               </div>
             </div>

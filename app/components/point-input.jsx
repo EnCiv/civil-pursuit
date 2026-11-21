@@ -2,7 +2,7 @@
 // https://github.com/EnCiv/civil-pursuit/issues/288
 
 'use strict'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useId, useRef, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import cx from 'classnames'
 import autosize from 'autosize'
@@ -11,6 +11,11 @@ import ObjectId from 'bson-objectid'
 function PointInput(props) {
   const { style = {}, className = '', maxWordCount = 30, maxCharCount = 100, value, onDone = () => {}, ...otherProps } = props
   const classes = useStyles()
+  const instanceId = useId()
+  const subjectId = `${instanceId}-subject`
+  const characterCountId = `${instanceId}-character-count`
+  const descriptionId = `${instanceId}-description`
+  const wordCountId = `${instanceId}-word-count`
   // inputState is for bidirectional state - we will use setInputState to change state values, but sometimers we will just change the value
   // in the object, without returning a new object so we don't cause a rerender
   const [inputState, setInputState] = useState({ subject: value?.subject ?? '', description: value?.description ?? '' })
@@ -102,15 +107,18 @@ function PointInput(props) {
 
   return (
     <div className={cx(classes.container, className)} {...otherProps}>
+      <label className={classes.fieldLabel} htmlFor={subjectId}>Response title</label>
       <input
+        id={subjectId}
         type="text"
         placeholder="Type some thing here"
         value={inputState.subject}
         onChange={e => handleSubjectChange(e.target.value)}
         onBlur={handleOnBlur}
         className={cx(classes.subject, classes.sharedInputStyle, subjCharCount > maxCharCount && classes.errorInput)}
+        aria-describedby={characterCountId}
       ></input>
-      <span className={cx(subjCharCount > maxCharCount ? classes.errorWordCount : classes.wordCount)}>
+      <span id={characterCountId} aria-live="polite" className={cx(subjCharCount > maxCharCount ? classes.errorWordCount : classes.wordCount)}>
         Character count{' '}
         <span
           className={cx({
@@ -121,15 +129,18 @@ function PointInput(props) {
         </span>
       </span>
 
+      <label className={classes.fieldLabel} htmlFor={descriptionId}>Response description</label>
       <textarea
+        id={descriptionId}
         ref={textareaRef}
         placeholder="Description"
         value={inputState.description}
         onChange={e => handleDescriptionChange(e.target.value)}
         onBlur={handleOnBlur}
         className={cx(classes.description, classes.sharedInputStyle, descWordCount > maxWordCount && classes.errorInput)}
+        aria-describedby={wordCountId}
       ></textarea>
-      <span className={cx(descWordCount > maxWordCount ? classes.errorWordCount : classes.wordCount)}>
+      <span id={wordCountId} aria-live="polite" className={cx(descWordCount > maxWordCount ? classes.errorWordCount : classes.wordCount)}>
         Word count{' '}
         <span
           className={cx({
@@ -149,6 +160,13 @@ const useStyles = createUseStyles(theme => ({
     flexDirection: 'column',
     gap: '0.625rem',
     width: '100%',
+  },
+  fieldLabel: {
+    color: theme.colors.title,
+    fontFamily: theme.font.fontFamily,
+    fontSize: '0.875rem',
+    fontWeight: 600,
+    lineHeight: 1.25,
   },
   sharedInputStyle: {
     borderRadius: '0.625rem',
@@ -196,8 +214,8 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   wordCount: {
-    color: theme.colors.inputWordCount,
-    opacity: 0.75,
+    color: theme.colors.primaryButtonBlue,
+    opacity: 1,
     ...sharedWordCountStyle(theme),
   },
   errorInput: {

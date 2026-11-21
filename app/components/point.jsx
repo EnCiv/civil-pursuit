@@ -47,9 +47,11 @@ const Point = forwardRef((props, ref) => {
           </div>
         )}
         <div className={classes.informationGrid}>
-          {(isLoading || subject) && (
-            <H className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'], isLoading && classes.loadingAnimationSubject, isInvalid ? classes.invalidText : undefined)}>{isLoading ? '' : subject}</H>
-          )}
+          {isLoading ? (
+            <div aria-hidden="true" className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'], classes.loadingAnimation, classes.loadingAnimationSubject)} />
+          ) : subject ? (
+            <H className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'], isInvalid ? classes.invalidText : undefined)}>{subject}</H>
+          ) : null}
           {(isLoading || description) && (
             <p className={isLoading ? cx(classes.loadingAnimation, classes.loadingAnimationDescription) : cx(classes.sharedDescriptionStyle, classes[vState + 'Description'], isInvalid ? classes.invalidText : undefined)}>
               {isLoading ? '' : description}
@@ -192,15 +194,6 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   // demInfo states
-  defaultDemInfo: {
-    color: theme.colors.title,
-  },
-  selectedDemInfo: {
-    color: theme.colors.success,
-  },
-  disabledDemInfo: {
-    color: theme.colors.title,
-  },
   collapsedDemInfo: {
     display: 'none',
   },

@@ -435,6 +435,7 @@ export function GroupPoints(props) {
               className={classes.departingPoint}
               style={style}
               aria-hidden="true"
+              inert
               onAnimationEnd={event => {
                 if (event.target === event.currentTarget) setDepartingPointGroups(current => current.filter(item => item.id !== id))
               }}

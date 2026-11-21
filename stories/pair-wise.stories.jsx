@@ -2,10 +2,11 @@ import React from 'react'
 import PairWise from '../app/components/pair-wise'
 import { expect, within, userEvent, waitFor } from 'storybook/test'
 
-export default { title: 'Components/PairWise' }
+export default { title: 'Components/PairWise', component: PairWise }
 
-export const Default = () => (
-  <PairWise>
+export const Default = {
+  render: () => (
+    <PairWise>
     <div style={{ height: '6rem', padding: '0.5rem' }}>
       Tall card A<br />
       extra line
@@ -30,11 +31,13 @@ export const Default = () => (
       Line 9<br />
       Line 10
     </div>
-  </PairWise>
-)
+    </PairWise>
+  ),
+}
 
-export const DefaultInteraction = () => (
-  <PairWise>
+export const DefaultInteraction = {
+  render: () => (
+    <PairWise>
     <div style={{ height: '6rem', padding: '0.5rem' }}>
       Tall card A<br />
       extra line
@@ -59,10 +62,9 @@ export const DefaultInteraction = () => (
       Line 9<br />
       Line 10
     </div>
-  </PairWise>
-)
-
-DefaultInteraction.play = async ({ canvasElement }) => {
+    </PairWise>
+  ),
+  play: async ({ canvasElement }) => {
   const canvas = within(canvasElement)
 
   // initial items visible (use regex to handle <br/> splitting)
@@ -73,27 +75,24 @@ DefaultInteraction.play = async ({ canvasElement }) => {
   await userEvent.click(canvas.getByText(/Tall card A/i))
   await waitFor(() => {
     const el = canvas.getByText(/Medium card C/i)
-    const pe = window.getComputedStyle(el).pointerEvents
-    if (pe === 'none') throw new Error('Medium card C not yet clickable')
-    return true
+    expect(el).toBeVisible()
+    expect(window.getComputedStyle(el).pointerEvents).not.toBe('none')
   })
 
   // 2) click the new left card (Medium card C) -> should be replaced by Tall card D
   await userEvent.click(canvas.getByText(/Medium card C/i))
   await waitFor(() => {
     const el = canvas.getByText(/Tall card D/i)
-    const pe = window.getComputedStyle(el).pointerEvents
-    if (pe === 'none') throw new Error('Tall card D not yet clickable')
-    return true
+    expect(el).toBeVisible()
+    expect(window.getComputedStyle(el).pointerEvents).not.toBe('none')
   })
 
   // 3) click the new left card (Tall card D) -> should be replaced by the verbose last card (search for its text)
   await userEvent.click(canvas.getByText(/Tall card D/i))
   await waitFor(() => {
     const el = canvas.getByText(/Line 1/i)
-    const pe = window.getComputedStyle(el).pointerEvents
-    if (pe === 'none') throw new Error('Line 1 not yet clickable')
-    return true
+    expect(el).toBeVisible()
+    expect(window.getComputedStyle(el).pointerEvents).not.toBe('none')
   })
 
   // 4) final click when no next item remains: click the left verbose card -> final single should be Short card B
@@ -102,12 +101,15 @@ DefaultInteraction.play = async ({ canvasElement }) => {
 
   // final assertion: single card is visible
   expect(canvas.getByText('Short card B')).toBeTruthy()
+  },
 }
 
-export const Single = () => (
-  <PairWise>
+export const Single = {
+  render: () => (
+    <PairWise>
     <div style={{ height: '6rem', padding: '0.5rem' }}>Only one</div>
   </PairWise>
-)
+  ),
+}
 
 // Single story intentionally has no interactive test here

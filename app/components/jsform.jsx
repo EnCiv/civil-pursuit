@@ -292,6 +292,14 @@ const useStyles = createUseStyles(theme => ({
     marginBottom: '1rem',
     lineHeight: '2.25rem',
     marginTop: /feedback/i.test(props.name || '') ? '1.5rem' : '4rem',
+    '& > div[style*="color: red"]': {
+      padding: '0.75rem 1rem',
+      border: `0.0625rem solid ${theme.colors.inputErrorBorder}`,
+      borderRadius: '0.5rem',
+      backgroundColor: theme.colors.inputErrorContainer,
+      color: `${theme.colors.inputErrorWordCount} !important`,
+      lineHeight: 1.5,
+    },
   }),
   field: {
     position: 'relative',

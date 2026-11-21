@@ -305,7 +305,7 @@ function PairWise({ children }) {
     const finalChild = React.isValidElement(rawChild) ? React.cloneElement(rawChild, { style: { ...(rawChild.props && rawChild.props.style ? rawChild.props.style : {}), height: 'auto', minHeight: 0 } }) : rawChild
 
     return (
-      <div className={classes.container} ref={containerRef}>
+      <div className={classes.container} ref={containerRef} data-animating={animating || !!incoming || !!singleOverlay ? 'true' : 'false'}>
         <div className={classes.centerSingle}>
           <div style={{ width: '100%', boxSizing: 'border-box' }}>
             {/* keep placeholder vertical space so card sits at the same vertical position */}
@@ -326,7 +326,7 @@ function PairWise({ children }) {
     const finalChild = React.isValidElement(rawChild) ? React.cloneElement(rawChild, { style: { ...(rawChild.props && rawChild.props.style ? rawChild.props.style : {}), height: 'auto', minHeight: 0 } }) : rawChild
 
     return (
-      <div className={classes.container} ref={containerRef}>
+      <div className={classes.container} ref={containerRef} data-animating={animating || !!incoming || !!singleOverlay ? 'true' : 'false'}>
         <div className={classes.centerSingle}>
           <div style={{ width: '100%', boxSizing: 'border-box' }}>
             {/* keep placeholder vertical space so final card stays at same vertical position */}
@@ -350,7 +350,7 @@ function PairWise({ children }) {
   }
 
   return (
-    <div className={classes.container} ref={containerRef}>
+    <div className={classes.container} ref={containerRef} data-animating={animating || !!incoming || !!singleOverlay ? 'true' : 'false'}>
       <div className={classes.grid}>
         {renderSlot('left')}
         {renderSlot('right')}

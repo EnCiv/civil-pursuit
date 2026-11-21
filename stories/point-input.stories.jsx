@@ -6,11 +6,6 @@ export default {
   component: PointInput,
   args: {},
   decorators: [onDoneDecorator],
-  parameters: {
-    a11y: {
-      disable: true,
-    },
-  },
 }
 
 export const defaultValueUndefined = { args: {} }
