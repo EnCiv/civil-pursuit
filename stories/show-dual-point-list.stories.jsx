@@ -2,6 +2,8 @@
 
 import React from 'react'
 import ShowDualPointList from '../app/components/show-dual-point-list'
+import { DemInfoProvider } from '../app/components/dem-info-context'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
 
 export default {
   component: ShowDualPointList,
@@ -121,6 +123,36 @@ export const MobileExpandedChart = {
   },
 }
 
+export const ExpandedWithDemInfo = {
+  args: {
+    leftPoints: [{ ...point1, subject: 'A longer response title that wraps onto several lines on smaller screens' }],
+    rightPoints: [point4],
+    vState: 'expanded',
+  },
+  decorators: [Story => (
+    <DemInfoProvider demInfoProviderDefault={{ demInfoById: { 1: { state: 'NY', party: 'Independent' }, 4: { state: 'CA' } } }}>
+      <Story />
+    </DemInfoProvider>
+  )],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const leftTitle = canvas.getByText('A longer response title that wraps onto several lines on smaller screens')
+    const rightTitle = canvas.getByText(point4.subject)
+    const leftDescription = canvas.getByText(point1.description)
+    const rightDescription = canvas.getByText(point4.description)
+    const badge = canvas.getByText('Independent • NY')
+    await waitFor(() => {
+      expect(leftDescription.getBoundingClientRect().top).toBeCloseTo(rightDescription.getBoundingClientRect().top, 0)
+      expect(leftTitle.getBoundingClientRect().top).toBeCloseTo(rightTitle.getBoundingClientRect().top, 0)
+      expect(getComputedStyle(badge).borderStyle).toBe('solid')
+    })
+    await userEvent.click(canvas.getByRole('button', { name: 'Collapse Table' }))
+    await waitFor(() => expect(badge).not.toBeVisible())
+    await userEvent.click(canvas.getByRole('button', { name: 'Expand Table' }))
+    await waitFor(() => expect(badge).toBeVisible())
+  },
+}
+
 // cases when story data include some pointGroups
 const createPointObj = (
   _id,
@@ -142,11 +174,11 @@ const createPointObj = (
   }
 }
 
-const point7 = createPointObj('7', 'Point 7', 'Point 7 Description', [])
+const point7 = createPointObj('7', 'Clear litter from creek corridors', 'Regular cleanups protect wildlife and keep trash from reaching neighborhood waterways.', [])
 const point8 = createPointObj(
   '8',
-  'Point 8',
-  'Point 8 Description, Point 8 Description, Point 8 Description, Point 8 Description, Point 8 Description, Point 8 Description, Point 8 Description, ',
+  'Light neighborhood walking paths',
+  'Well-placed lights can make popular paths feel safer after sunset. Residents who work late should be able to walk to transit and home with confidence. Fixtures should direct light downward to limit glare for nearby homes.',
   [],
   {
     dob: '1980-10-20T00:00:00.000Z',
@@ -154,14 +186,14 @@ const point8 = createPointObj(
     party: 'Independent',
   }
 )
-const point9 = createPointObj('9', 'Point 9', 'Point 9 Description', [], {
+const point9 = createPointObj('9', 'Offer evening adult classes', 'Flexible class times help working adults earn credentials and build new skills.', [], {
   dob: '1995-10-20T00:00:00.000Z',
   state: 'CA',
   party: 'Independent',
 })
-const point10 = createPointObj('10', 'Point 10', 'Point 10 Description')
-const point11 = createPointObj('11', 'Point 11', 'Point 11 Description', [point7, point8, point9, point10])
-const point12 = createPointObj('12', 'Point 12', 'Point 12 Description')
+const point10 = createPointObj('10', 'Improve access to public restrooms', 'Clean, accessible facilities make downtown and park visits easier for everyone.')
+const point11 = createPointObj('11', 'Create safer crossings near parks', 'Visible crosswalks and slower traffic help families reach nearby recreation areas.', [point7, point8, point9, point10])
+const point12 = createPointObj('12', 'Repair playground equipment promptly', 'Routine inspections can prevent injuries and keep play areas open for children.')
 
 // Case when the chart is collapsed:
 export const CollapsedChartWithGroups = {

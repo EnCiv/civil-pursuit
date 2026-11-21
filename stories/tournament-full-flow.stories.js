@@ -59,6 +59,7 @@ export const NewUserFullFlow = {
     }),
     ...authFlowDecorators,
     buildApiDecorator('get-jsform', (discussionId, cb) => cb({})),
+    buildApiDecorator('upsert-jsform', () => {}),
     buildApiDecorator('set-user-info', (email, cb) => {
       console.log('⚠️ set-user-info called - this should NOT happen for temp user completing full round')
       cb({ error: 'Test mock - set-user-info should not be called' })
@@ -97,6 +98,20 @@ export const NewUserFullFlow = {
       expect(element).toBeInTheDocument()
     })
 
+    const getStepBarItem = name => {
+      const options = canvas.queryByTestId('mobile-step-options')
+      return (options ? within(options) : canvas).getAllByTestId('testClick').find(step => step.textContent.includes(name))
+    }
+    const openMobileStepBar = async () => {
+      const mobileStepBar = canvas.queryByTestId('mobile-select-bar')
+      if (mobileStepBar && mobileStepBar.getAttribute('aria-expanded') !== 'true') await userEvent.click(mobileStepBar)
+    }
+    await openMobileStepBar()
+    const getGroupingStepBarItem = () => getStepBarItem('Group')
+    await waitFor(() => expect(getGroupingStepBarItem()).toHaveAttribute('tabindex', '-1'))
+    await userEvent.click(getGroupingStepBarItem())
+    expect(canvasElement.querySelector('[data-current-step]')).toHaveAttribute('data-current-step', '0')
+
     // Fill in the answer fields
     const subjectInputs = canvas.getAllByPlaceholderText(/type some thing here/i)
     const descriptionInputs = canvas.getAllByPlaceholderText(/description/i)
@@ -116,15 +131,12 @@ export const NewUserFullFlow = {
     await userEvent.click(termsCheckbox)
     console.log('  ✓ Checked Terms checkbox')
 
-    // Click Next to proceed to grouping
-    let nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
-      expect(btn).toBeInTheDocument()
-      expect(btn).not.toBeDisabled()
-      return btn
-    })
-    await userEvent.click(nextButton)
-    console.log('  ✓ Clicked Next')
+    await waitFor(() => expect(getGroupingStepBarItem()).toHaveAttribute('tabindex', '0'))
+
+    await userEvent.click(canvas.getByRole('button', { name: /^Next$/i }))
+    await waitFor(() => expect(canvasElement.querySelector('[data-current-step]')).toHaveAttribute('data-current-step', '1'))
+    await waitForStepSlider(canvasElement)
+    console.log('  ✓ Opened Group after completing Answer')
 
     // Wait for step slider transition to complete
     await waitForStepSlider(canvasElement)
@@ -138,10 +150,18 @@ export const NewUserFullFlow = {
       expect(heading).toBeInTheDocument()
     })
     console.log('  ✓ Grouping step loaded')
+    const availableResponses = await waitFor(() => canvas.getByRole('group', { name: 'Available responses to group' }))
+    const responseToGroup = await waitFor(() => within(availableResponses).getAllByRole('checkbox')[0])
+    await userEvent.click(responseToGroup)
+    await openMobileStepBar()
+    await waitFor(() => expect(getStepBarItem('Rank')).toHaveAttribute('tabindex', '-1'))
+    await userEvent.click(responseToGroup)
+    await openMobileStepBar()
+    await waitFor(() => expect(getStepBarItem('Rank')).toHaveAttribute('tabindex', '0'))
 
     // Click Next to proceed
-    nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
+    let nextButton = await waitFor(() => {
+      const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
       return btn
     })
@@ -150,6 +170,8 @@ export const NewUserFullFlow = {
 
     // Wait for step slider transition to complete
     await waitForStepSlider(canvasElement)
+    await openMobileStepBar()
+    await waitFor(() => expect(getStepBarItem('Rank')).toHaveAttribute('tabindex', '0'))
 
     // ========== STEP 3: Ranking step ==========
     console.log('Step 3: Ranking step - ranking points')
@@ -193,7 +215,7 @@ export const NewUserFullFlow = {
 
     // Now Next button should be enabled
     nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
+      const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
       expect(btn).not.toBeDisabled()
       return btn
@@ -212,7 +234,7 @@ export const NewUserFullFlow = {
 
     // Click Next to proceed - should be active since our answer is already complete
     nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
+      const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
       expect(btn).not.toBeDisabled()
       return btn
@@ -251,7 +273,7 @@ export const NewUserFullFlow = {
 
     // Click Next to proceed
     nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
+      const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
       expect(btn).not.toBeDisabled()
       return btn
@@ -285,7 +307,7 @@ export const NewUserFullFlow = {
 
     // Wait for Next button to become active and click it
     nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
+      const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
       expect(btn).not.toBeDisabled()
       return btn
@@ -309,7 +331,7 @@ export const NewUserFullFlow = {
     // Wait for user's why and first sample why to be visible
     await waitFor(() => {
       const userWhy = canvas.queryByText('This is why I ranked it least')
-      const sampleWhy1 = canvas.queryByText('First reason for least important')
+      const sampleWhy1 = canvas.queryByText('Decorative upgrades can wait')
       expect(userWhy).toBeInTheDocument()
       expect(sampleWhy1).toBeInTheDocument()
     })
@@ -323,7 +345,7 @@ export const NewUserFullFlow = {
     // Wait for second sample why to appear in visible container (after animation)
     // The point buttons have title attributes we can check
     await waitFor(() => {
-      const sampleWhy2Button = canvas.queryByTitle('Choose as more important: Second reason for least important')
+      const sampleWhy2Button = canvas.queryByTitle('Choose as more important: The benefit reaches few residents')
       expect(sampleWhy2Button).toBeInTheDocument()
     })
     console.log('  ✓ Second sample why visible in comparison')
@@ -335,7 +357,7 @@ export const NewUserFullFlow = {
 
     // Wait for Next button to become active
     nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
+      const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
       expect(btn).not.toBeDisabled()
       return btn
@@ -348,11 +370,6 @@ export const NewUserFullFlow = {
 
     // ========== STEP 8: Rerank step ==========
     console.log('Step 8: Rerank step - reranking after seeing whys')
-    function contains(elements, text) {
-      return Array.prototype.filter.call(elements, function (element) {
-        return RegExp(text).test(element.textContent)
-      })
-    }
     // Wait for rerank step - look for heading
     let rerankHeading
     await waitFor(() => {
@@ -364,10 +381,10 @@ export const NewUserFullFlow = {
 
     // Get all the radio button groups - need to rank again
     // Rank first as Least, last as Most, others Neutral
-    // there are actually 2 sets of radio buttons rendered, one for desktop and one for mobile. toRowContent is for desktop
-    const rerankMostButtons = contains(rerankWrapper.querySelectorAll('[class^="topRowContent"] div[role="radio"]'), 'Most')
-    const rerankNeutralButtons = contains(rerankWrapper.querySelectorAll('[class^="topRowContent"] div[role="radio"]'), 'Neutral')
-    const rerankLeastButtons = contains(rerankWrapper.querySelectorAll('[class^="topRowContent"] div[role="radio"]'), 'Least')
+    const rerankCanvas = within(rerankWrapper)
+    const rerankMostButtons = rerankCanvas.getAllByRole('radio', { name: 'Most' })
+    const rerankNeutralButtons = rerankCanvas.getAllByRole('radio', { name: 'Neutral' })
+    const rerankLeastButtons = rerankCanvas.getAllByRole('radio', { name: 'Least' })
 
     console.log(`  Found ${rerankMostButtons.length} points to rerank`)
 
@@ -387,7 +404,7 @@ export const NewUserFullFlow = {
 
     // Wait for Next button to become active after reranking
     nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
+      const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
       expect(btn).not.toBeDisabled()
       return btn
@@ -431,20 +448,13 @@ export const NewUserFullFlow = {
     await userEvent.type(improvementsTextarea, 'Great tool, would love to see more features.')
     console.log('  ✓ Filled in improvements')
 
-    // Click Submit button to complete the form
-    const submitButton = await waitFor(() => {
-      const btn = canvas.getByRole('button', { name: /Submit/i })
-      expect(btn).toBeInTheDocument()
-      return btn
-    })
-    await userEvent.click(submitButton)
-    console.log('  ✓ Clicked Submit on Feedback step')
+    // submitOnNext completes the form as fields become valid
 
-    // Wait for Next button to become active after submit
+    // Wait for Next button to become active after the form updates
     nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
+      const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
-      expect(btn).not.toBeDisabled()
+      expect(btn).toHaveAttribute('aria-disabled', 'false')
       return btn
     })
     await userEvent.click(nextButton)

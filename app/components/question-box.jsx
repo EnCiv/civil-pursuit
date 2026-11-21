@@ -52,6 +52,7 @@ import cx from 'classnames'
 import Markdown from 'markdown-to-jsx'
 import SvgChevronUp from '../svgr/chevron-up'
 import SvgChevronDown from '../svgr/chevron-down'
+import { H, Level } from 'react-accessible-headings'
 
 /**
  * Extract OG image URL from metaTags array
@@ -94,7 +95,11 @@ const QuestionBox = props => {
       <div className={classes.topic}>
         {ogImage && <img src={ogImage} alt="" className={classes.ogImage} />}
         {tagline && <div className={classes.fixedText}>{tagline}</div>}
-        <h1 className={classes.subject}>{subject}</h1>
+        {subject && (
+          <Level value={1}>
+            <H className={classes.subject}>{subject}</H>
+          </Level>
+        )}
         <div>
           <div ref={descriptionRef} className={cx(classes.description, { [classes.collapsed]: !isExpanded })}>
             <Markdown>{description}</Markdown>
@@ -149,7 +154,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   fixedText: {
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontWeight: 600,
     fontSize: '1.0625rem',
     lineHeight: '1.5625rem',
@@ -162,11 +167,11 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   subject: {
     marginBlockStart: '0',
     marginBlockEnd: '0',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.headingFontFamily}, Georgia, serif`,
     fontWeight: 700,
     fontSize: props => (props.compact ? '2rem' : '3.75rem'),
     lineHeight: props => (props.compact ? '2.5rem' : '4.125rem'),
-    letterSpacing: '-0.03em',
+    letterSpacing: 0,
     color: theme.colors.primaryButtonBlue,
     textAlign: props => props.contentAlign,
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
@@ -176,7 +181,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
 
   description: {
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontWeight: 400,
     fontSize: '1rem',
     lineHeight: '1.5rem',

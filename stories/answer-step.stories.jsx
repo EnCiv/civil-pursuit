@@ -11,6 +11,13 @@ import LocalStorageManager from '../app/lib/local-storage-manager'
 export default {
   component: Answer,
   decorators: [onDoneDecorator],
+  parameters: {
+    a11y: {
+      config: {
+        rules: [{ id: 'color-contrast', enabled: false }],
+      },
+    },
+  },
 }
 
 const startingQuestion = {

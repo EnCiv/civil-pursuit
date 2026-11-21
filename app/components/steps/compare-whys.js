@@ -4,24 +4,37 @@
 'use strict'
 import React, { useEffect, useState, useRef } from 'react'
 import { createUseStyles } from 'react-jss'
+import cx from 'classnames'
 import PairCompare from '../pair-compare'
+import { ChevronDown } from '../../svgr'
 import { H, Level } from 'react-accessible-headings'
 import StepIntro from '../step-intro'
+import { SecondaryButton } from '../button'
 
 import { useDeliberationContext, useLocalStorageIfAvailable } from '../deliberation-context'
 import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 
 export default function CompareWhysStep(props) {
-  const { onDone, round, category } = props
+  const { onDone, round, category = 'most' } = props
   const { data, upsert } = useDeliberationContext()
   const storageAvailable = useLocalStorageIfAvailable()
   const fetchDemInfo = useFetchDemInfo()
+  const [isLoading, setIsLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
+  const handleRetry = () => {
+    setLoadError(false)
+    setIsLoading(true)
+    setRetryCount(count => count + 1)
+  }
   const args = { ...derivePointWithWhyRankListListByCategory(data, category) }
   const handleOnDone = ({ valid, value, delta }) => {
     if (delta) {
-      upsert({ whyRankByParentId: { [delta.parentId]: delta } })
+      const rankDeltas = Array.isArray(delta) ? delta : [delta]
+      const whyRankByParentId = rankDeltas.reduce((ranks, rank) => ((ranks[rank.parentId] = rank), ranks), {})
+      upsert({ whyRankByParentId })
       if (!storageAvailable) {
-        window.socket.emit('upsert-rank', delta)
+        rankDeltas.forEach(rank => window.socket.emit('upsert-rank', rank))
       }
     }
     onDone({ valid, value })
@@ -29,100 +42,262 @@ export default function CompareWhysStep(props) {
   // fetch previous data
   useEffect(() => {
     // on the browser, do this once and only once when this component is first rendered
+    setIsLoading(true)
+    setLoadError(false)
     const { discussionId, preRankByParentId } = data
     const { mostIds, leastIds } = Object.values(preRankByParentId ?? {}).reduce(
       ({ mostIds, leastIds }, rank) => {
-        if (Object.values(data.randomWhyById || {}).some(why => why.parentId === rank.parentId)) return { mostIds, leastIds } // already have this why
+        if (Object.values(data.randomWhyById || {}).some(why => why.parentId === rank.parentId && why.category === rank.category)) return { mostIds, leastIds } // already have this why
         if (rank.category === 'most') mostIds.push(rank.parentId)
         else if (rank.category === 'least') leastIds.push(rank.parentId)
         return { mostIds, leastIds }
       },
       { mostIds: [], leastIds: [] }
     )
-    if (!mostIds.length && !leastIds.length) return
+    if (!mostIds.length && !leastIds.length) {
+      setIsLoading(false)
+      return
+    }
     window.socket.emit('get-why-ranks-and-points', discussionId, round, mostIds, leastIds, result => {
-      if (!result) return // there was an error
+      if (!result) {
+        setLoadError(true)
+        setIsLoading(false)
+        onDone({ valid: false, value: 0 })
+        return // there was an error
+      }
       const { ranks, whys } = result
       //if (!ranks.length && !whys.length) return // nothing to do
       const whyRankByParentId = ranks.reduce((whyRankByParentId, rank) => ((whyRankByParentId[rank.parentId] = rank), whyRankByParentId), {})
       const randomWhyById = whys.reduce((randomWhyById, point) => ((randomWhyById[point._id] = point), randomWhyById), {})
-      upsert({ whyRankByParentId, randomWhyById })
+      const requestedParentIds = [...mostIds, ...leastIds]
+      const whyDataLoadedByParentIdByRound = {
+        ...data.whyDataLoadedByParentIdByRound,
+        [round]: {
+          ...data.whyDataLoadedByParentIdByRound?.[round],
+          ...Object.fromEntries(requestedParentIds.map(parentId => [parentId, true])),
+        },
+      }
+      upsert({ whyRankByParentId, randomWhyById, whyDataLoadedByParentIdByRound })
 
       // Fetch dem-info for all why points
       const whyIds = whys.map(w => w._id)
       fetchDemInfo(whyIds)
+      setIsLoading(false)
     })
-  }, [round, data.preRankByParentId])
-  return <CompareWhys {...props} {...args} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
+  }, [round, data.preRankByParentId, retryCount])
+  return <CompareWhys {...props} {...args} category={category} isLoading={isLoading} loadError={loadError} onRetry={handleRetry} round={round} discussionId={data.discussionId} onDone={handleOnDone} />
 }
 
 // pointWithWhyRankListList = [{point: {}, whyRankList: [why:{}, rank:{}]]
 export function CompareWhys(props) {
-  const { pointWithWhyRankListList, side = '', onDone = () => {}, className, discussionId, round, stepIntro } = props
+  const { pointWithWhyRankListList, side = '', category = 'most', onDone = () => {}, onRetry = () => {}, className, discussionId, round, stepIntro, isLoading = false, loadError = false } = props
   const classes = useStyles()
-  // completedByPointId does not effect rendering, so no need to set state, just mutate.
-  const [completedByPointId] = useState(
+  const [completedByPointId, setCompletedByPointId] = useState(() =>
     (pointWithWhyRankListList || []).reduce((completedByPointId, pointWithWhyRankList) => {
-      completedByPointId[pointWithWhyRankList.point._id] = false
+      completedByPointId[pointWithWhyRankList.point._id] = isWhyListComplete(pointWithWhyRankList.whyRankList)
       return completedByPointId
     }, {})
   )
+  const completedByPointIdRef = useRef(completedByPointId)
+  const reportedCompletionByPointIdRef = useRef(null)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [navigationDirection, setNavigationDirection] = useState(1)
+  const currentPointIndex = Math.min(currentIndex, Math.max((pointWithWhyRankListList?.length || 1) - 1, 0))
+  const currentPointWithWhyRankList = pointWithWhyRankListList?.[currentPointIndex]
+  const navigateToPoint = direction => {
+    setNavigationDirection(direction)
+    setCurrentIndex(index => Math.max(0, Math.min(pointWithWhyRankListList.length - 1, index + direction)))
+  }
 
   useEffect(() => {
+    if (isLoading || loadError) return
     // if new points get added, mark them as incomplete
     if (!pointWithWhyRankListList) {
       onDone({ valid: true, value: 'skip' })
       return
     }
-    for (const pointWithWhyRankList of pointWithWhyRankListList) {
-      if (typeof completedByPointId[pointWithWhyRankList.point._id] === 'undefined') completedByPointId[pointWithWhyRankList.point._id] = false
-    }
-  }, [pointWithWhyRankListList])
-
-  const handlePairCompare = ({ valid, value }, _id) => {
-    if (valid) completedByPointId[_id] = true
-    else completedByPointId[_id] = false
-    const [done, total] = Object.values(completedByPointId).reduce(
-      ([done, total], completed) => {
-        if (completed) done++
-        total++
-        return [done, total]
+    const updatedCompletedByPointId = pointWithWhyRankListList.reduce(
+      (updated, pointWithWhyRankList) => {
+        updated[pointWithWhyRankList.point._id] = isWhyListComplete(pointWithWhyRankList.whyRankList)
+        return updated
       },
-      [0, 0]
+      {}
     )
-    const percentDone = done / total
-    onDone({ valid: percentDone >= 1, value: percentDone, delta: value })
+    const previousReportedCompletion = reportedCompletionByPointIdRef.current
+    const completionChanged =
+      !previousReportedCompletion ||
+      Object.keys(updatedCompletedByPointId).length !== Object.keys(previousReportedCompletion).length ||
+      Object.keys(updatedCompletedByPointId).some(pointId => updatedCompletedByPointId[pointId] !== previousReportedCompletion[pointId])
+    completedByPointIdRef.current = updatedCompletedByPointId
+    setCompletedByPointId(updatedCompletedByPointId)
+    reportedCompletionByPointIdRef.current = updatedCompletedByPointId
+    setCurrentIndex(index => Math.min(index, Math.max(pointWithWhyRankListList.length - 1, 0)))
+    const done = Object.values(updatedCompletedByPointId).filter(Boolean).length
+    const total = pointWithWhyRankListList.length
+    if (completionChanged) onDone({ valid: done === total, value: total ? done / total : 1 })
+  }, [pointWithWhyRankListList, isLoading, loadError])
+
+  const handlePairCompare = ({ valid, value, delta }, _id) => {
+    if (value === undefined) return
+    const updatedCompletedByPointId = { ...completedByPointIdRef.current, [_id]: valid }
+    completedByPointIdRef.current = updatedCompletedByPointId
+    reportedCompletionByPointIdRef.current = updatedCompletedByPointId
+    setCompletedByPointId(updatedCompletedByPointId)
+    const done = Object.values(updatedCompletedByPointId).filter(Boolean).length
+    const percentDone = pointWithWhyRankListList.length ? done / pointWithWhyRankListList.length : 1
+    onDone({ valid: percentDone >= 1, value: percentDone, delta: delta ?? value })
   }
   return (
     <div className={classes.container}>
       <StepIntro {...stepIntro} />
-      {!pointWithWhyRankListList ? (
-        <div className={classes.headlineTitle}>Nothing to do here, hit Next to continue</div>
+      {isLoading ? (
+        <p className={classes.headlineTitle} aria-live="polite">Loading explanations...</p>
+      ) : loadError ? (
+        <div className={classes.errorState} role="alert">
+          <p className={classes.headlineTitle}>Explanations could not be loaded.</p>
+          <SecondaryButton
+            title="Retry loading explanations"
+            aria-label="Retry loading explanations"
+            onDone={onRetry}
+          >
+            Retry
+          </SecondaryButton>
+        </div>
+      ) : !pointWithWhyRankListList?.length ? (
+        <p className={classes.headlineTitle}>Nothing to do here, hit Next to continue</p>
       ) : (
-        pointWithWhyRankListList.map(({ point, whyRankList }) => (
-          <div key={point._id} className={classes.headlinePoint}>
-            <H className={classes.headlineTitle}>Please choose the most convincing explanation for...</H>
-            <H className={classes.headlineSubject}>{point.subject}</H>
+        <>
+          <div
+            key={currentPointWithWhyRankList.point._id}
+            className={cx(classes.headlinePoint, navigationDirection > 0 ? classes.slideInFromRight : classes.slideInFromLeft)}
+          >
+            <H className={classes.headlineTitle}>Please choose the {category === 'least' ? 'least' : 'most'} convincing explanation for...</H>
             <Level>
-              <PairCompare round={round} discussionId={discussionId} className={classes.pairCompare} whyRankList={whyRankList} onDone={value => handlePairCompare(value, point._id)} />
+              <PairCompare
+                round={round}
+                discussionId={discussionId}
+                className={classes.pairCompare}
+                progressHeading={<H className={classes.headlineSubject}>{currentPointWithWhyRankList.point.subject}</H>}
+                whyRankList={currentPointWithWhyRankList.whyRankList}
+                onDone={value => handlePairCompare(value, currentPointWithWhyRankList.point._id)}
+              />
             </Level>
           </div>
-        ))
+          <nav className={classes.navigation} aria-label="Compare reasons navigation">
+            <button
+              type="button"
+              className={classes.navigationButton}
+              onClick={() => navigateToPoint(-1)}
+              disabled={currentPointIndex === 0}
+              title="Previous reason"
+              aria-label="Previous reason"
+            >
+              <ChevronDown className={classes.previousIcon} />
+            </button>
+            <span className={classes.counter} aria-live="polite">{currentPointIndex + 1} / {pointWithWhyRankListList.length}</span>
+            <button
+              type="button"
+              className={classes.navigationButton}
+              onClick={() => navigateToPoint(1)}
+              disabled={currentPointIndex === pointWithWhyRankListList.length - 1}
+              title="Next reason"
+              aria-label="Next reason"
+            >
+              <ChevronDown className={classes.nextIcon} />
+            </button>
+          </nav>
+        </>
       )}
     </div>
   )
+}
+
+function isWhyListComplete(whyRankList = []) {
+  return whyRankList.length === 0 || whyRankList.every(({ rank }) => !!rank?.category)
 }
 
 const useStyles = createUseStyles(theme => ({
   container: {
     fontFamily: theme.font.fontFamily,
   },
-  headlinePoint: {
-    borderTop: '0.0625rem solid #000000',
-    paddingTop: '2rem',
-    '&:first-child': {
-      borderTop: 'none',
+  navigation: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '1rem',
+    marginTop: '1.5rem',
+  },
+  navigationButton: {
+    width: '2.75rem',
+    height: '2.75rem',
+    padding: '0.5rem',
+    display: 'inline-flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: theme.colors.primaryButtonBlue,
+    backgroundColor: theme.colors.white,
+    border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+    borderRadius: '0.5rem',
+    cursor: 'pointer',
+    transition: 'transform 160ms ease',
+    '&:hover:not(:disabled)': {
+      transform: 'translateY(-0.08rem)',
     },
+    '&:active:not(:disabled)': {
+      transform: 'translateY(0.04rem)',
+    },
+    '&:focus-visible': {
+      outline: `${theme.focusOutline}`,
+    },
+    '&:disabled': {
+      color: theme.colors.disableGray,
+      borderColor: theme.colors.disableSecBorderGray,
+      cursor: 'not-allowed',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+      '&:hover, &:active': {
+        transform: 'none',
+      },
+    },
+  },
+  previousIcon: {
+    transform: 'rotate(90deg)',
+  },
+  nextIcon: {
+    transform: 'rotate(-90deg)',
+  },
+  counter: {
+    minWidth: '3rem',
+    textAlign: 'center',
+    fontWeight: 600,
+    fontVariantNumeric: 'tabular-nums',
+  },
+  headlinePoint: {
+    width: '100%',
+    willChange: 'transform, opacity',
+  },
+  slideInFromRight: {
+    animation: '$compareReasonsSlideInFromRight 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+  },
+  slideInFromLeft: {
+    animation: '$compareReasonsSlideInFromLeft 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+  },
+  '@keyframes compareReasonsSlideInFromRight': {
+    from: { opacity: 0, transform: 'translateX(1.5rem)' },
+    to: { opacity: 1, transform: 'translateX(0)' },
+  },
+  '@keyframes compareReasonsSlideInFromLeft': {
+    from: { opacity: 0, transform: 'translateX(-1.5rem)' },
+    to: { opacity: 1, transform: 'translateX(0)' },
+  },
+  errorState: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: '1rem',
   },
   headlineTitle: {
     fontWeight: '600',
@@ -130,9 +305,14 @@ const useStyles = createUseStyles(theme => ({
     lineHeight: '2rem',
   },
   headlineSubject: {
-    fontWeight: '300',
-    fontSize: '2.25rem',
-    lineHeight: '2.9375rem',
+    minWidth: 0,
+    margin: 0,
+    color: theme.colors.encivGray,
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
+    fontWeight: 600,
+    fontSize: '1.5rem',
+    lineHeight: 1.3,
+    overflowWrap: 'anywhere',
   },
   pairCompare: {
     marginTop: '1rem',

@@ -78,10 +78,11 @@ const useStyles = createUseStyles(theme => ({
     cursor: 'pointer',
   },
   link: {
-    color: theme.colors.encivYellow || '#FFC315',
-    textDecoration: 'none',
+    color: theme.colors.primaryButtonBlue,
+    textDecoration: 'underline',
+    textUnderlineOffset: '0.125rem',
     '&:hover': {
-      textDecoration: 'underline',
+      color: theme.colors.mouseDownPrimeBlue,
     },
   },
   statusBox: {

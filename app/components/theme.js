@@ -73,6 +73,7 @@ const Theme = {
   },
   font: {
     fontFamily: 'Inter',
+    headingFontFamily: 'Newsreader',
     fontStyle: 'normal',
     darkModeFont: '#FFFFFF',
   },

@@ -158,12 +158,12 @@ export const DiscussionFinished = {
       cb({
         point: { _id: '123', subject: 'Conclusion Point', description: 'This is the conclusion of the discussion.' },
         mosts: [
-          { _id: '1', text: 'Most Why 1' },
-          { _id: '2', text: 'Most Why 2' },
+          { _id: '1', text: 'Reliable transit keeps jobs within reach' },
+          { _id: '2', text: 'Safe routes give students more independence' },
         ],
         leasts: [
-          { _id: '3', text: 'Least Why 1' },
-          { _id: '4', text: 'Least Why 2' },
+          { _id: '3', text: 'Cosmetic upgrades can wait behind basic repairs' },
+          { _id: '4', text: 'A narrow benefit should not displace urgent needs' },
         ],
       })
     }),

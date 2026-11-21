@@ -38,7 +38,7 @@ export const useDeliberationStats = discussionId => {
 
   const InvisibleButton = props => {
     const { className = '', ...otherProps } = props
-    return <div className={cx(classes.invisibleButtonInUpperRight, className)} onClick={detectStatus} {...otherProps} />
+    return <button type="button" aria-label="Fetch deliberation status" className={cx(classes.invisibleButtonInUpperRight, className)} onClick={detectStatus} {...otherProps} />
   }
 
   const Stats = props => <DeliberationStats status={status} {...props} />
@@ -49,7 +49,7 @@ export const useDeliberationStats = discussionId => {
 const useStylesFromThemeFunction = createUseStyles(theme => ({
   status: {
     marginTop: '2rem',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontSize: '0.875rem',
     lineHeight: '1.25rem',
     color: theme.colors.primaryButtonBlue,

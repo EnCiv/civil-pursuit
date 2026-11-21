@@ -9,6 +9,7 @@ import ReviewPoint from '../review-point'
 import { useDeliberationContext, useLocalStorageIfAvailable } from '../deliberation-context'
 import useFetchDemInfo from '../hooks/use-fetch-dem-info'
 import StepIntro from '../step-intro'
+import { Level } from 'react-accessible-headings'
 import { useRankByParentId } from './rank'
 
 export default function RerankStep(props) {
@@ -180,10 +181,10 @@ export function Rerank(props) {
       let newPointUpdated = false
       for (const pG of reducedPointList) {
         if (pG.point._id === point._id) {
-          newVStateByPointId[pG.point._id] = result.valid ? 'enabled' : newVStateByPointId[pG.point._id] === 'open' ? 'disabled' : 'open'
+          newVStateByPointId[pG.point._id] = result.valid ? (result.value && prev[pG.point._id] === 'open' ? 'open' : 'enabled') : newVStateByPointId[pG.point._id] === 'open' ? 'disabled' : 'open'
           pointUpdated = true
           updated = newVStateByPointId[pG.point._id] !== prev[pG.point._id] ? true : updated
-          newPointUpdated = newVStateByPointId[pG.point._id] === 'open' ? true : newPointUpdated
+          newPointUpdated = !result.valid && newVStateByPointId[pG.point._id] === 'open' ? true : newPointUpdated
         } else if (pointUpdated && !newPointUpdated && prev[pG.point._id] && !rankByParentId[pG.point._id]?.category) {
           newVStateByPointId[pG.point._id] = 'open'
           updated = true
@@ -218,18 +219,20 @@ export function Rerank(props) {
   return (
     <div className={classes.reviewPointsContainer}>
       <StepIntro {...stepIntro} />
-      {reducedPointList.map(({ point, group }) => (
-        <div key={point._id} className={classes.reviewPoint}>
-          <ReviewPoint
-            point={point}
-            leftPointList={topWhysByCategoryByParentId['most']?.[point._id] || []}
-            rightPointList={topWhysByCategoryByParentId['least']?.[point._id] || []}
-            rank={toRankString[rankByParentId[point._id]?.category]}
-            onDone={result => handleRankAndVState(point, result)}
-            vState={vStateByPointId[point._id]}
-          />
-        </div>
-      ))}
+      <Level value={2}>
+        {reducedPointList.map(({ point, group }) => (
+          <div key={point._id} className={classes.reviewPoint}>
+            <ReviewPoint
+              point={point}
+              leftPointList={topWhysByCategoryByParentId['most']?.[point._id] || []}
+              rightPointList={topWhysByCategoryByParentId['least']?.[point._id] || []}
+              rank={toRankString[rankByParentId[point._id]?.category]}
+              onDone={result => handleRankAndVState(point, result)}
+              vState={vStateByPointId[point._id]}
+            />
+          </div>
+        ))}
+      </Level>
     </div>
   )
 }
@@ -238,7 +241,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   reviewPointsContainer: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1rem',
+    gap: '2rem',
     paddingLeft: '0.2rem', // room for the shadow around the points
     paddingRight: '0.8rem',
     marginBottom: '1rem', // for box shadow of children

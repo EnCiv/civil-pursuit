@@ -1,6 +1,7 @@
 
 // chromatic generated
 build-storybook.log
+storybook-static/
 
 /.history/*
 

@@ -27,8 +27,9 @@ export default {
 const Template = props => {
   const { data = {}, upsert } = useContext(DeliberationContext)
   useEffect(() => {
-    setTimeout(() => upsert(props.obj), 2000)
-  })
+    const timeout = setTimeout(() => upsert(props.obj), 2000)
+    return () => clearTimeout(timeout)
+  }, [props.obj, upsert])
   return (
     <div>
       upsert will be called after 2 seconds. data:

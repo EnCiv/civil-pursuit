@@ -39,11 +39,13 @@ export default function Conclusion(props) {
         <StepIntro {...stepIntro} />
         {data?.topPointAndWhys &&
           data.topPointAndWhys.map(d => (
-            <>
+            <React.Fragment key={d.point?._id || d.point?.subject}>
               <div>
-                <div className={cx(classes.subject)}>
-                  <H>{d.point?.subject}</H>
-                </div>
+                {d.point?.subject && (
+                  <div className={cx(classes.subject)}>
+                    <H>{d.point.subject}</H>
+                  </div>
+                )}
                 <div className={cx(classes.description)}>
                   <text>{d.point?.description}</text>
                 </div>
@@ -64,7 +66,7 @@ export default function Conclusion(props) {
                   />
                 </div>
               </div>
-            </>
+            </React.Fragment>
           ))}
         {data?.topPointAndWhys && (
           <div className={cx(classes.howDoYouFeelWrapper)}>

@@ -74,6 +74,7 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
       // Only render visible rounds
       if (visibleRounds.includes(index)) {
         const badgeInfo = statusToBadge[status.toLowerCase()]
+        const isCurrentRound = status.toLowerCase() === 'inprogress'
 
         const metaIndex = visibleRounds.indexOf(index)
 
@@ -91,9 +92,9 @@ const RoundTracker = ({ roundsStatus = [], className, ...otherProps }) => {
           <React.Fragment key={index}>
             <div className={classes.roundContainer}>
               <div className={classes.roundHeader}>
-                <div className={classes.roundNumber}>Round {index + 1}</div>
+                <div className={cx(classes.roundNumber, isCurrentRound && classes.currentRoundNumber)}>Round {index + 1}</div>
               </div>
-              <StatusBadge name={badgeInfo.name} status={badgeInfo.status} className={classes.badge} />
+              <StatusBadge name={badgeInfo.name} status={badgeInfo.status} uniform className={cx(isCurrentRound && classes.currentBadge)} />
             </div>
             {nextRound > 0 && <div className={cx(classes.lineBase, lineType)} />}
           </React.Fragment>
@@ -119,9 +120,7 @@ const useStyles = createUseStyles(theme => ({
     height: '100%',
   },
   roundTrackerWrapper: {
-    backgroundColor: theme.colors.roundTrackerBackground,
-    borderRadius: '0.5rem',
-    border: `${theme.border.width.thin} solid ${theme.colors.borderGray}`,
+    backgroundColor: 'transparent',
   },
   roundTracker: {
     display: 'flex',
@@ -139,6 +138,8 @@ const useStyles = createUseStyles(theme => ({
     },
   },
   roundContainer: {
+    position: 'relative',
+    zIndex: 1,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -153,13 +154,26 @@ const useStyles = createUseStyles(theme => ({
     alignItems: 'center',
   },
   roundNumber: {
-    fontWeight: 'bold',
+    position: 'relative',
+    zIndex: 2,
+    color: theme.colors.title,
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
+    fontSize: '1rem',
+    fontWeight: 600,
+    lineHeight: 1.25,
     textAlign: 'center',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       marginBottom: '0.25rem',
     },
   },
+  currentRoundNumber: {
+    color: theme.colors.primaryButtonBlue,
+    fontWeight: 700,
+  },
   lineBase: {
+    position: 'relative',
+    zIndex: 0,
+    transform: 'translateY(0.875rem)',
     width: '3.375rem',
     height: '0rem',
     borderBottomWidth: '0.125rem',
@@ -168,6 +182,7 @@ const useStyles = createUseStyles(theme => ({
     margin: '-3.75rem',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       margin: '-1.5rem',
+      transform: 'translateY(1rem)',
     },
   },
 
@@ -182,9 +197,11 @@ const useStyles = createUseStyles(theme => ({
     borderBottomColor: 'transparent',
   },
 
-  badge: {
-    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      margin: '0 0.25rem',
+  currentBadge: {
+    boxShadow: '0 0.125rem 0 rgba(6, 51, 92, 0.12), 0 0.3rem 0.65rem rgba(6, 51, 92, 0.16)',
+    transform: 'translateY(-0.0625rem)',
+    '@media (prefers-reduced-motion: reduce)': {
+      transform: 'none',
     },
   },
 

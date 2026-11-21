@@ -10,6 +10,7 @@ import cx from 'classnames'
 import { createUseStyles } from 'react-jss'
 import { isEqual } from 'lodash'
 import StepIntro from '../step-intro'
+import { ChevronDown } from '../../svgr'
 
 export default function WhyStep(props) {
   const { data, upsert } = useDeliberationContext()
@@ -87,12 +88,13 @@ export function Why(props) {
   } = props
 
   const classes = useStylesFromThemeFunction()
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [navigationDirection, setNavigationDirection] = useState(1)
+  const reportedCompletionSignature = useRef(null)
 
-  // for every point, we need to keep track of whether the user has completed the why input, and the ref of the input so we can mark it as incomplete if it changes from above.
-  // we only know it's completed it valid is passed up by onDone
   const [completedByPointId] = useState(() => {
     return (pointWhyList || []).reduce((completedByPointId, { point, why }) => {
-      completedByPointId[point._id] = { completed: false, why }
+      completedByPointId[point._id] = { completed: isWhyComplete(why), why }
       return completedByPointId
     }, {})
   })
@@ -106,7 +108,7 @@ export function Why(props) {
     const oldIds = new Set(Object.keys(completedByPointId).map(id => id + '')) // convert to string because some tests (incorrectly) pass a number but when used as a key to an object it's a string. But set doesn't convert numbers to strings
     for (const { point, why } of pointWhyList || []) {
       if (!completedByPointId[point._id] || completedByPointId[point._id].why !== why) {
-        const completed = completedByPointId[point._id]?.completed && isEqual(completedByPointId[point._id].why, why) // happens when subject or description is changed by user - context returns and updated object
+        const completed = (completedByPointId[point._id]?.completed && isEqual(completedByPointId[point._id].why, why)) || isWhyComplete(why)
         completedByPointId[point._id] = { completed, why }
       }
       oldIds.delete(point._id)
@@ -144,10 +146,23 @@ export function Why(props) {
       onDone({ valid: true, value: 'skip' })
       return
     }
+    const completionSignature = pointWhyList.map(({ point }) => `${point._id}:${completedByPointId[point._id]?.completed}`).join('|')
+    if (reportedCompletionSignature.current === completionSignature) return
+    reportedCompletionSignature.current = completionSignature
+    setCurrentIndex(index => Math.min(index, Math.max(pointWhyList.length - 1, 0)))
+    const values = Object.values(completedByPointId)
+    const numValid = values.filter(({ completed }) => completed).length
+    const total = values.length
+    onDone({ valid: numValid === total, value: total ? numValid / total : 1 })
   }, [pointWhyList])
 
   if (!pointWhyList?.length) {
-    return <div className={cx(classes.wrapper, className)}>Nothing to do here. Hit Next to continue.</div>
+    return <p className={cx(classes.wrapper, className)}>Nothing to do here. Hit Next to continue.</p>
+  }
+  const currentPointIndex = Math.min(currentIndex, pointWhyList.length - 1)
+  const navigateToPoint = direction => {
+    setNavigationDirection(direction)
+    setCurrentIndex(index => Math.max(0, Math.min(pointWhyList.length - 1, index + direction)))
   }
 
   return (
@@ -155,16 +170,35 @@ export function Why(props) {
       <StepIntro {...stepIntro} />
       <Level>
         <div className={classes.pointsContainer}>
-          {pointWhyList.map(({ point, why }, i) => (
-            <div key={point._id}>
-              {i > 0 && <hr className={classes.pointsHr}></hr>}
-              <WhyInput point={point} value={why} onDone={handleOnDone} maxWordCount={maxWordCount} maxCharCount={maxCharCount} />
-            </div>
-          ))}
+          <div
+            key={pointWhyList[currentPointIndex].point._id}
+            className={cx(classes.carouselItem, navigationDirection > 0 ? classes.slideInFromRight : classes.slideInFromLeft)}
+          >
+            <WhyInput
+              point={pointWhyList[currentPointIndex].point}
+              value={pointWhyList[currentPointIndex].why}
+              onDone={handleOnDone}
+              maxWordCount={maxWordCount}
+              maxCharCount={maxCharCount}
+            />
+          </div>
         </div>
       </Level>
+      <nav className={classes.navigation} aria-label={`Why ${category} navigation`}>
+        <button type="button" className={classes.navigationButton} onClick={() => navigateToPoint(-1)} disabled={currentIndex === 0} title="Previous reason" aria-label="Previous reason">
+          <ChevronDown className={classes.previousIcon} />
+        </button>
+        <span className={classes.counter} aria-live="polite">{currentPointIndex + 1} / {pointWhyList.length}</span>
+        <button type="button" className={classes.navigationButton} onClick={() => navigateToPoint(1)} disabled={currentIndex === pointWhyList.length - 1} title="Next reason" aria-label="Next reason">
+          <ChevronDown className={classes.nextIcon} />
+        </button>
+      </nav>
     </div>
   )
+}
+
+function isWhyComplete(why) {
+  return !!(why?.subject?.trim() && why?.description?.trim())
 }
 
 export function derivePointWhyListByCategory(data, category) {
@@ -248,10 +282,72 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontSize: '1.25rem',
   },
   pointsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0',
+    width: '100%',
     fontSize: '1.25rem',
+    overflow: 'hidden',
   },
-  pointsHr: {
-    color: '#D9D9D9',
-    margin: '4rem 0',
+  carouselItem: {
+    width: '100%',
+    minWidth: 0,
+    willChange: 'transform, opacity',
+  },
+  slideInFromRight: {
+    animation: '$whyCarouselSlideInFromRight 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+  },
+  slideInFromLeft: {
+    animation: '$whyCarouselSlideInFromLeft 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both',
+    '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
+  },
+  '@keyframes whyCarouselSlideInFromRight': {
+    from: { opacity: 0, transform: 'translateX(1.5rem)' },
+    to: { opacity: 1, transform: 'translateX(0)' },
+  },
+  '@keyframes whyCarouselSlideInFromLeft': {
+    from: { opacity: 0, transform: 'translateX(-1.5rem)' },
+    to: { opacity: 1, transform: 'translateX(0)' },
+  },
+  navigation: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '1rem',
+    marginTop: '1.5rem',
+  },
+  navigationButton: {
+    width: '2.75rem',
+    height: '2.75rem',
+    padding: '0.5rem',
+    display: 'inline-flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: theme.colors.primaryButtonBlue,
+    backgroundColor: theme.colors.white,
+    border: `0.125rem solid ${theme.colors.primaryButtonBlue}`,
+    borderRadius: '0.5rem',
+    cursor: 'pointer',
+    '&:focus-visible': {
+      outline: theme.focusOutline,
+    },
+    '&:disabled': {
+      color: theme.colors.disableGray,
+      borderColor: theme.colors.disableSecBorderGray,
+      cursor: 'not-allowed',
+    },
+  },
+  previousIcon: {
+    transform: 'rotate(90deg)',
+  },
+  nextIcon: {
+    transform: 'rotate(-90deg)',
+  },
+  counter: {
+    minWidth: '3rem',
+    textAlign: 'center',
+    fontWeight: 600,
+    fontVariantNumeric: 'tabular-nums',
   },
 }))

@@ -151,33 +151,43 @@ const useStyles = createUseStyles(theme => ({
     width: '100%',
   },
   sharedInputStyle: {
-    radius: '0.25rem',
+    borderRadius: '0.625rem',
     border: `0.0625rem solid ${theme.colors.inputBorder}`,
-    backgroundColor: `${theme.colors.cardOutline}`,
+    backgroundColor: theme.colors.white,
     outline: 'none',
     fontFamily: theme.font.fontFamily,
+    boxShadow: 'inset 0 0.125rem 0.35rem rgba(26, 26, 26, 0.07), inset 0 0.0625rem 0.125rem rgba(6, 51, 92, 0.04)',
+    transition: 'border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease',
+    '&:focus-visible': {
+      borderColor: theme.colors.primaryButtonBlue,
+      boxShadow: 'inset 0 0.125rem 0.35rem rgba(26, 26, 26, 0.07), 0 0 0 0.15rem rgba(6, 51, 92, 0.12)',
+    },
   },
   subject: {
-    padding: '0.9375rem',
-    height: '2.8125rem',
+    width: '100%',
+    minHeight: '3.5rem',
+    boxSizing: 'border-box',
+    padding: '0.875rem 1rem',
     '&::placeholder': {
       ...sharedPlaceholderStyle(theme),
     },
     '&[type="text"]': {
-      border: `0.0625rem solid ${theme.colors.inputBorder}`,
       color: theme.colors.title,
       fontSize: '1.25rem',
-      lineHeight: '1.5rem',
+      lineHeight: 1.4,
     },
     '&[type="text"]:hover': {
       ...sharedHoverStyle(theme),
     },
   },
   description: {
-    resize: 'none',
-    fontSize: '1rem',
-    marginTop: '0.9375rem',
-    padding: '0.9375rem 0.9375rem 1.25rem 0.9375rem',
+    width: '100%',
+    minHeight: '8rem',
+    boxSizing: 'border-box',
+    resize: 'vertical',
+    fontSize: '1.125rem',
+    lineHeight: 1.65,
+    padding: '1rem 1.125rem',
     '&::placeholder': {
       ...sharedPlaceholderStyle(theme),
     },
@@ -187,11 +197,16 @@ const useStyles = createUseStyles(theme => ({
   },
   wordCount: {
     color: theme.colors.inputWordCount,
+    opacity: 0.75,
     ...sharedWordCountStyle(theme),
   },
   errorInput: {
-    borderRadius: '0.25rem',
+    borderRadius: '0.625rem',
     ...sharedErrorStyle(theme),
+    '&:focus-visible': {
+      borderColor: theme.colors.inputErrorBorder,
+      boxShadow: 'inset 0 0.125rem 0.35rem rgba(191, 19, 0, 0.08), 0 0 0 0.15rem rgba(191, 19, 0, 0.12)',
+    },
     '&:hover': {
       ...sharedErrorStyle(theme),
     },
@@ -212,17 +227,17 @@ const useStyles = createUseStyles(theme => ({
 }))
 
 const sharedPlaceholderStyle = theme => ({
-  height: '1.5rem',
-  opacity: '50%',
-  font: theme.font.fontFamily,
-  weight: '400',
-  size: '1rem',
-  lineHeight: '1.5rem',
+  fontFamily: theme.font.fontFamily,
+  fontWeight: 400,
+  fontSize: '1rem',
+  lineHeight: 1.5,
   color: theme.colors.encivGray,
+  opacity: 0.8,
 })
 
 const sharedHoverStyle = theme => ({
-  backgroundColor: `${theme.colors.cardOutline}`,
+  borderColor: theme.colors.hoverGray,
+  boxShadow: 'inset 0 0.2rem 0.45rem rgba(26, 26, 26, 0.1)',
 })
 
 const sharedErrorStyle = theme => ({
@@ -234,10 +249,10 @@ const sharedErrorStyle = theme => ({
 const sharedWordCountStyle = theme => ({
   textAlign: 'right',
   fontFamily: theme.font.fontFamily,
-  fontSize: '0.875rem',
+  fontSize: '0.75rem',
   fontStyle: 'normal',
   fontWeight: '300',
-  lineHeight: '1.125rem',
+  lineHeight: '1rem',
 })
 
 export default PointInput

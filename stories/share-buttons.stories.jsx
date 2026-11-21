@@ -98,9 +98,9 @@ export const DarkBackground = () => {
   }
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '600px', backgroundColor: '#1a1a1a', color: 'white' }}>
-      <h3>Share on Dark Background</h3>
-      <p style={{ fontSize: '0.875rem', color: '#ccc' }}>Testing how the share buttons look on a dark background</p>
+    <div style={{ padding: '2rem', maxWidth: '600px', backgroundColor: '#1a1a1a', color: '#FFFFFF' }}>
+      <h3 style={{ color: '#FFFFFF' }}>Share on Dark Background</h3>
+      <p style={{ fontSize: '0.875rem', color: '#E5E7EB' }}>Testing how the share buttons look on a dark background</p>
       <ShareButtons url="https://enciv.org/discussion/dark" subject="Discussion on Dark Background" description="Testing visibility and contrast" copied={copied} onCopyClick={handleCopyClick} />
     </div>
   )

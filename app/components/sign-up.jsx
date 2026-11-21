@@ -96,23 +96,23 @@ function SignUp(props, ref) {
 
   // otherwise, continue showing login/sign up page
   return (
-    <div className={cx(className, classes.SignUp)} style={style} ref={ref}>
+    <div className={cx(className, classes.SignUp)} style={style} ref={ref} tabIndex={0}>
       <div className={classes.tabs}>
         <div className={cx(classes.tab, !isLogIn && classes.tabSelected)}>
-          <Button onDone={e => setIsLogIn(false)} className={cx(classes.btnClick, !isLogIn && classes.btnClickSelected)} tabIndex="1">
+          <Button onDone={e => setIsLogIn(false)} className={cx(classes.btnClick, !isLogIn && classes.btnClickSelected)}>
             Sign Up
           </Button>
         </div>
         <div className={cx(classes.tab, isLogIn && classes.tabSelected)}>
-          <Button onDone={e => setIsLogIn(true)} className={cx(classes.btnClick, isLogIn && classes.btnClickSelected)} tabIndex="1">
+          <Button onDone={e => setIsLogIn(true)} className={cx(classes.btnClick, isLogIn && classes.btnClickSelected)}>
             Log In
           </Button>
         </div>
       </div>
       <div className={cx(classes.agreeTermContainer, isLogIn && classes.disabled)}>
         <div className={classes.checkTerm}>
-          <input className={classes.checkTermBox} type="checkbox" name="agreed" onClick={e => methods.onChangeAgree(e.target.checked)} tabIndex={tabIndex} />
-          <label className={classes.agreeTermLabel}>
+          <input id="signup-agree" className={classes.checkTermBox} type="checkbox" name="agreed" onClick={e => methods.onChangeAgree(e.target.checked)} tabIndex={tabIndex} />
+          <label htmlFor="signup-agree" className={classes.agreeTermLabel}>
             Yes, I agree to the
             <a href="https://enciv.org/terms" target="_blank" className={classes.aLinkTerm} tabIndex={tabIndex}>
               Terms of Service
@@ -133,8 +133,9 @@ function SignUp(props, ref) {
       {/** this is a form to make it easier on password managers see https://goo.gl/9p2vKq */}
       <form className={cx(classes.inputContainer, isLogIn ? classes.tabRightSelected : classes.tabLeftSelected)}>
         <div className={cx(classes.inputBoxes, !firstName && (clickedOnFirst || isSubmitted) && classes.invalid, isLogIn && classes.disabled)}>
-          <p id="text">First Name</p>
+          <label htmlFor="signup-first-name" className={classes.fieldLabel}>First Name</label>
           <input
+            id="signup-first-name"
             name="first-name"
             placeholder="John"
             className={cx(classes.input, !firstName && (clickedOnFirst || isSubmitted) && classes.invalidInput, isLogIn && classes.disabled)}
@@ -144,8 +145,9 @@ function SignUp(props, ref) {
           />
         </div>
         <div className={cx(classes.inputBoxes, isLogIn && classes.disabled, !lastName && (clickedOnLast || isSubmitted) && classes.invalid)}>
-          <p id="text">Last Name</p>
+          <label htmlFor="signup-last-name" className={classes.fieldLabel}>Last Name</label>
           <input
+            id="signup-last-name"
             name="last-name"
             placeholder="Doe"
             className={cx(classes.input, isLogIn && classes.disabled, !lastName && (clickedOnLast || isSubmitted) && classes.invalidInput)}
@@ -155,8 +157,9 @@ function SignUp(props, ref) {
           />
         </div>
         <div className={cx(classes.inputBoxes, !state.email && (clickedOnEmail || isSubmitted) && classes.invalid)}>
-          <p id="text">E-mail</p>
+          <label htmlFor="signup-email" className={classes.fieldLabel}>E-mail</label>
           <input
+            id="signup-email"
             autoComplete="email"
             name="email"
             placeholder="Johndoe@gmail.com"
@@ -166,8 +169,9 @@ function SignUp(props, ref) {
           />
         </div>
         <div className={cx(classes.inputBoxes, !state.password && (clickedOnPassword || isSubmitted) && classes.invalid)}>
-          <p id="text">Password</p>
+          <label htmlFor="signup-password" className={classes.fieldLabel}>Password</label>
           <input
+            id="signup-password"
             name="password"
             type="password"
             placeholder="******"
@@ -178,8 +182,9 @@ function SignUp(props, ref) {
           />
         </div>
         <div className={cx(classes.inputBoxes, isLogIn && classes.disabled, !state.password && (clickedOnConfirm || isSubmitted) && classes.invalid)}>
-          <p id="text">Confirm Password</p>
+          <label htmlFor="signup-confirm-password" className={classes.fieldLabel}>Confirm Password</label>
           <input
+            id="signup-confirm-password"
             name="confirm"
             type="password"
             placeholder="******"
@@ -223,7 +228,7 @@ const useStyles = createUseStyles(theme => ({
     margin: 0,
     borderRadius: '1rem',
     padding: '0',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontSize: '1rem',
     fontWeight: '700',
     lineHeight: '1rem',
@@ -234,9 +239,10 @@ const useStyles = createUseStyles(theme => ({
   aLinkTerm: {
     marginLeft: '0.3rem', // add space
     marginRight: '0.3rem', // add space
-    textDecoration: 'none',
+    color: theme.colors.primaryButtonBlue,
+    textDecoration: 'underline',
+    textUnderlineOffset: '0.125rem',
     '&:hover': {
-      textDecoration: 'underline',
       cursor: 'pointer',
       color: theme.colors.mouseDownPrimeBlue,
     },
@@ -322,6 +328,10 @@ const useStyles = createUseStyles(theme => ({
     margin: '0 0.1rem',
     textAlign: 'left',
   },
+  fieldLabel: {
+    display: 'block',
+    margin: '0 0 0.5rem',
+  },
   text: {
     margin: '0 0 1rem',
   },
@@ -340,7 +350,7 @@ const useStyles = createUseStyles(theme => ({
     marginBottom: '2rem',
     borderRadius: '0.5rem !important',
     boxSizing: 'border-box !important',
-    fontFamily: 'Inter',
+    fontFamily: `${theme.font.fontFamily}, sans-serif`,
     fontSize: '1rem',
     '&::placeholder': {
       color: theme.colors.inputFieldPlaceholder,

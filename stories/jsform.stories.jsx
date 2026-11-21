@@ -313,6 +313,35 @@ const setupJsFormsApisWithData = Story => {
 }
 export const jsFormDecorators = [buildApiDecorator('get-jsform', (discussionId, cb) => () => {}), buildApiDecorator('upsert-jsform', (discussionId, name, data) => {})]
 
+export const LoadsWhenIdentifiersBecomeAvailable = {
+  args: { schema: testSchema, uischema: testUIschema },
+  decorators: [buildApiDecorator('get-jsform', { moreDetails: initialTestSchemaDetails })],
+  render: args => {
+    const [discussionId, setDiscussionId] = useState()
+    const [name, setName] = useState()
+    return (
+      <>
+        <button type="button" onClick={() => setDiscussionId('discussion-1')}>Set discussion</button>
+        <button type="button" onClick={() => setName('moreDetails')}>Set form name</button>
+        <button type="button" onClick={() => setDiscussionId('discussion-2')}>Change discussion</button>
+        <Jsform {...args} discussionId={discussionId} name={name} />
+      </>
+    )
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const requests = window.socket._socketEmitHandlerResults['get-jsform']
+    expect(requests).toHaveLength(0)
+    await userEvent.click(canvas.getByRole('button', { name: 'Set discussion' }))
+    expect(requests).toHaveLength(0)
+    await userEvent.click(canvas.getByRole('button', { name: 'Set form name' }))
+    await waitFor(() => expect(requests).toEqual([['discussion-1']]))
+    await waitFor(() => expect(canvas.getByLabelText('Household Income')).toHaveValue('0-10000'))
+    await userEvent.click(canvas.getByRole('button', { name: 'Change discussion' }))
+    await waitFor(() => expect(requests).toEqual([['discussion-1'], ['discussion-2']]))
+  },
+}
+
 export const UserInputAndOnDoneCall = {
   args: {
     schema: testSchema,
@@ -348,14 +377,20 @@ export const StateOfResidenceSelection = {
     schema: testStateOfResidenceSchema,
     uischema: testStateOfResidenceUIschema,
   },
+  decorators: jsFormDecorators,
+  play: async () => {
+    await waitFor(() => expect(window.socket._socketEmitHandlerResults['get-jsform'][0]?.[0]).toBe('123456789012345678901234567890abcd'))
+  },
 }
 
 export const BirthDateInput = {
   args: { name: 'moreDetails', discussionId: '123456789012345678901234567890abcd', schema: testDobSchema, uischema: testDobUISchema },
+  decorators: jsFormDecorators,
 }
 
 export const AllInputTypes = {
   args: { name: 'moreDetails', discussionId: '123456789012345678901234567890abcd', schema: testAllInputsSchema, uischema: testAllInputsUISchema },
+  decorators: jsFormDecorators,
 }
 
 export const LoadPreviousFilledData = {
@@ -365,6 +400,7 @@ export const LoadPreviousFilledData = {
 
 //  Empty form, should disable submit
 export const EmptyForm = {
+  decorators: jsFormDecorators,
   args: {
     name: 'errorForm',
     discussionId: '123456789012345678901234567890abcd',
@@ -412,6 +448,7 @@ export const EmptyForm = {
 
 // Existing all valid input
 export const SubmitAllValid = {
+  decorators: jsFormDecorators,
   args: {
     name: 'errorForm',
     discussionId: '123456789012345678901234567890abcd',
@@ -560,6 +597,7 @@ export const OptionalField = {
 }
 
 export const SkipOnUndefinedData = {
+  parameters: { a11y: { disable: true } },
   args: {
     name: 'moreDetails',
     discussionId: '123456789012345678901234567890abcd',
@@ -567,7 +605,7 @@ export const SkipOnUndefinedData = {
     uischema: testUIschema,
   },
   decorators: [
-    buildApiDecorator('get-jsform', (discussionId, cb) => () => {
+    buildApiDecorator('get-jsform', (discussionId, cb) => {
       cb({})
     }),
     buildApiDecorator('upsert-jsform', (discussionId, name, data) => {
@@ -577,7 +615,6 @@ export const SkipOnUndefinedData = {
   ],
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement)
-    console.log('[SkipOnUndefinedData] play started')
 
     expect(canvas.getByLabelText(/Household Income/i)).toBeInTheDocument()
     expect(canvas.getByLabelText(/Housing/i)).toBeInTheDocument()

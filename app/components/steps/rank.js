@@ -32,6 +32,24 @@ const minSelectionsTable = {
   12: { least: 1, most: 2 },
 }
 
+export function isRankDataComplete(reducedPointList, rankByParentId = {}) {
+  if (!reducedPointList) return false
+  const target = minSelectionsTable[reducedPointList.length] ?? { least: 0, most: 0 }
+  let doneCount = 0
+  const countByCategory = {}
+  for (const pointGroup of reducedPointList) {
+    const category = rankByParentId[pointGroup.point._id]?.category
+    if (!category) continue
+    doneCount++
+    countByCategory[category] = (countByCategory[category] || 0) + 1
+  }
+  const hasCategoryCountRequirements = target.most > 0 || target.least > 0
+  return (
+    doneCount === reducedPointList.length &&
+    (!hasCategoryCountRequirements || ((countByCategory.most || 0) === target.most && (countByCategory.least || 0) === target.least))
+  )
+}
+
 export default function RankStep(props) {
   const { onDone, round, ...otherProps } = props
   const { data, upsert } = useDeliberationContext()
@@ -173,7 +191,7 @@ export function RankPoints(props) {
     const mostDiscrepancy = (countByCategory.most ?? 0) - target.most
     const leastDiscrepancy = (countByCategory.least ?? 0) - target.least
 
-    const valid = (mostDiscrepancy == 0 && leastDiscrepancy == 0 && doneCount === reducedPointList.length) || (doneCount === reducedPointList.length && targetLeast == 0 && targetMost == 0) // No minimum constraint when there's a single point.
+    const valid = isRankDataComplete(reducedPointList, rankByParentId)
 
     setRankDiscrepancies({ most: mostDiscrepancy, least: leastDiscrepancy })
 
@@ -270,6 +288,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     gap: '1.25rem',
+    [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      flexDirection: 'column',
+      alignItems: 'stretch',
+    },
   },
   leftButtons: {
     display: 'flex',
@@ -277,7 +299,9 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     gap: '1rem',
     flexGrow: 1,
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
-      justifyContent: 'space-around',
+      flexDirection: 'column',
+      alignItems: 'center',
+      width: '100%',
     },
   },
   rightButtons: {
@@ -285,10 +309,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexGrow: 1,
     justifyContent: 'flex-end',
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
+      width: '100%',
+      flexGrow: 0,
       '& button': {
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        flexGrow: 0.8,
+        width: '100%',
       },
     },
   },
@@ -296,10 +320,25 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
     gap: '2rem',
+    '& > div': {
+      display: 'flex',
+      flexDirection: 'column',
+      '& > div': {
+        flex: '1 1 auto',
+        '& > div': {
+          flex: '1 1 auto',
+        },
+      },
+    },
     [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
       display: 'block',
       '& > div': {
         marginBottom: '2rem',
+        boxShadow: 'none',
+        '&:hover': {
+          boxShadow: 'none',
+          transform: 'none',
+        },
       },
       '& > div:last-child': {
         marginBottom: 0,
@@ -308,6 +347,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   },
   rank: {
     paddingTop: '1rem',
+    marginTop: 'auto',
   },
   invalidBackground: {
     backgroundColor: theme.colors.inputErrorContainer,

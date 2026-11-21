@@ -17,46 +17,67 @@ function isMobile() {
 function StepBar(props) {
   const { className, style, steps = [], current = 0, onDone = () => {}, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
-  const stepbarDebounceTime = 100
-  /* 
-  The overflow: hidden property on the last step prevents us from finding the width of the last step, which
-  messes up step width calculations. The dummy step below prevents this issue, by acting as the last step of width 0
-  */
-  const dummyStep = { name: '', title: '', complete: false, id: steps.length }
-
-  /* 
-  This component dynamically adjusts visible steps in the carousel based on container width. 
-  handleCarouselSetup, optimized with debouncing, computes steps' widths and manages shifts on arrow clicks.
-  Event listeners handle interactions and window resizing. 
-  */
-
-  /*
-  I opted for this method due to its versatility across screen sizes and step bar dimensions. 
-  Rendering only necessary steps outperforms CSS-heavy solutions, which may behave unpredictably across browsers or resolutions. 
-  This approach also offers precise control over the last visible step, crucial for truncation if cut-off. 
-  We debounce the function to prevent slowdowns caused from expensive page layout recalculations.
-  */
-
-  // Create an array of references. Each reference will be assigned to a step, allowing easy access to its visual width.
-  const [stepRefs, setStepRefs] = useState(steps.map(() => useRef(null)))
-  // Reference to the steps container, to collect the maximum width of step visibility.
+  const stepRefs = useRef([])
   const stepContainerRef = useRef(null)
-  // Reference to the select dropdown. to track click event targets that are not a descendant of the select input.
   const selectRef = useRef(null)
-  // Reference to the select dropdown's options container. To track click event targets that are not in the options container.
   const optionsContainerRef = useRef(null)
-  // State to determine whether to display the mobile or desktop view. Maintained by the window resize event listener.
-  // State to handle the select input.
-  const selectItemsContainerRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
-  // State to map each 'page' of the steps carousel to its steps.
-  const [pages, setPages] = useState(new Map())
-  // State to manage the current page of the step bar.
-  const [currentPage, setCurrentPage] = useState(1)
-  // add a unique numerical identifier to each step
+  const [isMobileLayout, setIsMobileLayout] = useState(isMobile)
   const stepsWithIds = useMemo(() => steps.map((step, i) => ({ ...step, id: i + 1 })), [steps])
-  // State to hold the steps that should be rendered on each page.
-  const [visibleSteps, setVisibleSteps] = useState([...stepsWithIds, dummyStep])
+  const [scrollState, setScrollState] = useState({ canScrollLeft: false, canScrollRight: false })
+  const isStepUnlocked = index => index === 0 || steps.slice(0, index).every(step => step.skip || step.complete)
+
+  const getCenteredScrollLeft = step => {
+    const container = stepContainerRef.current
+    if (!container || !step) return 0
+    const containerBounds = container.getBoundingClientRect()
+    const stepBounds = step.getBoundingClientRect()
+    const targetLeft = container.scrollLeft + stepBounds.left - containerBounds.left - (container.clientWidth - stepBounds.width) / 2
+    return Math.max(0, Math.min(targetLeft, container.scrollWidth - container.clientWidth))
+  }
+
+  const updateScrollState = () => {
+    const container = stepContainerRef.current
+    if (!container) return
+    const firstStep = stepRefs.current[0]
+    const lastStep = stepRefs.current[steps.length - 1]
+    const nextScrollState = {
+      canScrollLeft: container.scrollLeft > getCenteredScrollLeft(firstStep) + 1,
+      canScrollRight: container.scrollLeft < getCenteredScrollLeft(lastStep) - 1,
+    }
+    setScrollState(previous =>
+      previous.canScrollLeft === nextScrollState.canScrollLeft && previous.canScrollRight === nextScrollState.canScrollRight
+        ? previous
+        : nextScrollState
+    )
+  }
+
+  const centerCurrentStep = () => {
+    if (isMobileLayout) return
+    const container = stepContainerRef.current
+    const currentStep = stepRefs.current[current - 1]
+    if (!container || !currentStep) return
+
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+
+    container.scrollTo({
+      left: getCenteredScrollLeft(currentStep),
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+    })
+  }
+
+  const scrollSteps = direction => {
+    const container = stepContainerRef.current
+    if (!container) return
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    container.scrollBy({
+      left: direction * container.clientWidth / 3,
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+    })
+  }
+
+  const leftClick = () => scrollSteps(-1)
+  const rightClick = () => scrollSteps(1)
 
   const handleClickOutside = event => {
     // this function is added to the mouseup event handler on initial render. Rerenders will rewrite the function with the latest values of state variables,
@@ -84,136 +105,59 @@ function StepBar(props) {
     })
   }
 
-  const handleResize = () => {
-    setVisibleSteps([...stepsWithIds, dummyStep])
-    setTimeout(() => handleCarouselSetup()) // do this after the visibleSteps are rendered
-  }
-
-  const rightClick = () => {
-    if (currentPage < pages.size) {
-      setVisibleSteps(pages.get(currentPage + 1))
-      setCurrentPage(prev => prev + 1)
-    }
-  }
-
-  const leftClick = () => {
-    if (currentPage > 1) {
-      setVisibleSteps(pages.get(currentPage - 1))
-      setCurrentPage(prev => prev - 1)
-    }
-  }
-
-  /**
-   * Debounces a function to be called after a specified delay
-   * @param {Function} func - The function to debounce.
-   * @param {number} delay - The delay (in milliseconds) after which the function should be called.
-   * @returns {Function} - The debounced function.
-   */
-  function debounce(func, delay) {
-    let timeoutId
-
-    return function (...args) {
-      clearTimeout(timeoutId)
-
-      timeoutId = setTimeout(() => {
-        func.apply(this, args)
-      }, delay)
-    }
-  }
-
-  /*
-  To handle the setup of the carousel, the width of each step is calculated and compared to the total width of the container
-  */
-  const handleCarouselSetup = () => {
-    if (isMobile()) return
-    // before calling handleCarouselSetup render all the steps so that all the widths can be measured
-
-    if (!stepContainerRef?.current) return
-    let containerWidth = stepContainerRef?.current?.offsetWidth
-
-    const newMap = new Map()
-    let currentWidth = 0
-    let firstStepIndex = 0
-    let page = 1
-    let newSteps = []
-    let initialPage = 1
-
-    for (let i = 0; i < stepRefs.length; i++) {
-      if (!stepRefs[i]?.current) return
-
-      let width = stepRefs[i]?.current?.offsetWidth
-      currentWidth += width
-
-      if (i === current - 1) {
-        // if the step is the current step, then we set the initial page
-        initialPage = page
-        setCurrentPage(initialPage)
-      }
-      if (currentWidth > containerWidth) {
-        // if the current width exceeds the container width, then we are currently on the last visible step.
-        // we slice to the last visible step, which is truncated (...) if needed. we then begin the process
-        // from this step, so that it is the first step displayed on the next page.
-        newSteps = stepsWithIds.slice(firstStepIndex, i + 1)
-        newMap.set(page, newSteps)
-        page++
-        currentWidth = 0
-        firstStepIndex = i
-        i = i - 1
-      }
-      if (i === stepRefs.length - 1) {
-        // if we are on the last step, slice from the index of the first visible step
-        newSteps = stepsWithIds.slice(firstStepIndex)
-        newMap.set(page, newSteps)
-      }
-    }
-    setPages(newMap)
-    setVisibleSteps(newMap.get(initialPage))
-  }
-
   useEffect(() => {
-    const handleResizeDebounced = debounce(handleResize, stepbarDebounceTime)
-
-    window.addEventListener('resize', handleResizeDebounced)
     window.addEventListener('mouseup', handleClickOutside)
     window.addEventListener('keyup', handleClickOutside) // to close the select input when the user presses escape
 
     return () => {
-      window.removeEventListener('resize', handleResizeDebounced)
       window.removeEventListener('mouseup', handleClickOutside)
     }
   }, [])
 
-  /*
-   Any changes in fonts, padding, etc after the width calculations could present visual issues in the step bar. 
-   UseLayoutEffect ensures that widths are calculated after the layout is rendered. 
-  */
+  useEffect(() => {
+    const updateMobileLayout = () => setIsMobileLayout(isMobile())
+    window.addEventListener('resize', updateMobileLayout)
+    return () => window.removeEventListener('resize', updateMobileLayout)
+  }, [])
+
   useLayoutEffect(() => {
-    if (!isMobile()) {
-      setVisibleSteps([...stepsWithIds, dummyStep])
-      setTimeout(() => handleCarouselSetup()) // do this after the visibleSteps are rendered
-    }
-  }, [isMobile(), current])
+    centerCurrentStep()
+    updateScrollState()
+  }, [current, steps.length, isMobileLayout])
+
+  useEffect(() => {
+    const container = stepContainerRef.current
+    if (!container || isMobileLayout || !window.ResizeObserver) return
+    const resizeObserver = new window.ResizeObserver(() => {
+      centerCurrentStep()
+      updateScrollState()
+    })
+    resizeObserver.observe(container)
+    stepRefs.current.forEach(step => step && resizeObserver.observe(step))
+    return () => resizeObserver.disconnect()
+  }, [current, steps.length, isMobileLayout])
 
   /*
   NOTE that index refers to the index of the step within its array, while step.id refers to the step #. I.e, Step 2 has an id of 2.
   */
-  return !isMobile() ? (
+  return !isMobileLayout ? (
     <div className={cx(classes.container, className)} style={style}>
-      <button onClick={leftClick} className={cx(classes.resetButtonStyling, classes.svgContainer)} data-testid="leftclick" tabIndex={currentPage !== 1 ? 0 : -1}>
-        <SvgStepBarArrowDesktop className={cx({ [classes.svgColor]: currentPage === 1 })} width="1rem" height="1.2rem" style={{ transform: 'rotate(180deg)' }} />
+      <button onClick={leftClick} className={cx(classes.resetButtonStyling, classes.svgContainer)} data-testid="leftclick" aria-label="Scroll steps left" disabled={!scrollState.canScrollLeft}>
+        <SvgStepBarArrowDesktop className={cx({ [classes.svgColor]: !scrollState.canScrollLeft })} width="1rem" height="1.2rem" style={{ transform: 'rotate(180deg)' }} />
       </button>
-      <div className={classes.stepsContainer} ref={stepContainerRef}>
-        {visibleSteps.map((step, index) => {
+      <div className={classes.stepsContainer} ref={stepContainerRef} onScroll={updateScrollState}>
+        {stepsWithIds.map((step, index) => {
+          const stepUnlocked = isStepUnlocked(index)
           return (
-            <div ref={stepRefs[index]} className={cx(classes.stepDiv, { [classes.lastStep]: index === visibleSteps.length - 1 })} key={index}>
+            <div ref={element => (stepRefs.current[index] = element)} className={classes.stepDiv} key={step.id}>
               <Step
                 name={step.name}
                 title={step.title}
                 stepIndex={step.id}
-                complete={step.id < steps.length ? steps[step.id - 1].complete : false}
+                complete={steps[index].complete && stepUnlocked}
                 active={current === step.id ? true : false}
-                unlocked={steps[step.id - 1]?.seen}
-                skip={steps[step.id - 1]?.skip}
+                unlocked={stepUnlocked}
+                skip={steps[index].skip}
                 onDone={() => onDone({ valid: true, value: step.id })}
                 index={index}
                 {...otherProps}
@@ -222,47 +166,61 @@ function StepBar(props) {
           )
         })}
       </div>
-      <button onClick={rightClick} className={cx(classes.resetButtonStyling, classes.svgContainer, classes.svgContainerRight)} data-testid="rightclick" tabIndex={currentPage !== pages.size ? 0 : -1}>
-        <SvgStepBarArrowDesktop className={cx({ [classes.svgColor]: currentPage === pages.size })} width="1rem" height="1.2rem" />
+      <button onClick={rightClick} className={cx(classes.resetButtonStyling, classes.svgContainer, classes.svgContainerRight)} data-testid="rightclick" aria-label="Scroll steps right" disabled={!scrollState.canScrollRight}>
+        <SvgStepBarArrowDesktop className={cx({ [classes.svgColor]: !scrollState.canScrollRight })} width="1rem" height="1.2rem" />
       </button>
     </div>
   ) : (
     // MOBILE view
     <div className={classes.mobileContainer}>
-      <div className={classes.goTo}>Go To</div>
-      <div className={cx(classes.resetButtonStyling, classes.selectInput)} ref={selectRef} tabIndex={0} data-testid="mobile-select-bar">
-        <div className={classes.selectItemsContainer} ref={selectItemsContainerRef}>
-          <div className={classes.selectText}>{current + ': ' + steps[current - 1].name}</div>
-          {isOpen ? <SvgStepBarArrowMobile style={{ transform: 'rotate(180deg)', flexShrink: '0' }} width="13" height="13" /> : <SvgStepBarArrowMobile width="13" height="13" style={{ flexShrink: '0' }} />}
+      <div className={cx(classes.resetButtonStyling, classes.selectInput)} ref={selectRef} data-testid="mobile-select-bar" aria-expanded={isOpen}>
+        <div className={classes.selectItemsContainer}>
+          <Step
+            className={classes.selectItemsContainerStep}
+            style={{ paddingRight: '2.5rem' }}
+            name={steps[current - 1].name}
+            title={steps[current - 1].title}
+            stepIndex={current}
+            complete={steps[current - 1].complete}
+            active
+            unlocked
+            skip={steps[current - 1].skip}
+            onDone={() => setIsOpen(true)}
+            index={current - 1}
+            {...otherProps}
+          />
+          <span className={classes.selectCaret} aria-hidden="true">
+            {isOpen ? <SvgStepBarArrowMobile style={{ transform: 'rotate(180deg)' }} width="13" height="13" /> : <SvgStepBarArrowMobile width="13" height="13" />}
+          </span>
         </div>
-        {isOpen && (
-          <div className={cx(classes.dropdownContainer, classes.customScrollbar)} ref={optionsContainerRef} style={{ width: selectItemsContainerRef.current ? `calc( ${selectItemsContainerRef.current.clientWidth}px - 3rem )` : 'auto' }}>
+        <div className={cx(classes.dropdownContainer, classes.customScrollbar, { [classes.dropdownOpen]: isOpen })} ref={optionsContainerRef} aria-hidden={!isOpen} data-testid="mobile-step-options">
             <div className={classes.dropdownContent}>
               <div className={classes.stepsContainerMobile}>
                 {stepsWithIds.map((step, index) => {
+                  const stepUnlocked = isStepUnlocked(index)
                   return (
                     <Step
                       key={index}
                       stepIndex={step.id}
                       name={step.name}
                       title={step.title}
-                      complete={steps[index].complete}
+                      complete={steps[index].complete && stepUnlocked}
                       active={current === step.id ? true : false}
-                      unlocked={index > 0 && steps[index - 1].complete}
+                      unlocked={stepUnlocked}
+                      skip={steps[index].skip}
                       onDone={() => {
                         setIsOpen(false) // close the dropdown when a step is selected
                         onDone({ valid: true, value: step.id })
                       }}
                       index={index}
                       {...otherProps}
-                      ref={stepRefs[index]}
+                      ref={element => (stepRefs.current[index] = element)}
                     />
                   )
                 })}
               </div>
             </div>
-          </div>
-        )}
+        </div>
       </div>
       <div className={classes.breakStyle} />
     </div>
@@ -272,23 +230,50 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
   container: {
     display: 'flex',
     background: theme.transparent,
+    containerType: 'inline-size',
+    containerName: 'stepBar',
   },
 
   stepsContainer: {
     display: 'flex',
+    flex: '1 1 0%',
+    minWidth: 0,
     height: '5rem',
     alignItems: 'center',
-    overflow: 'hidden',
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    scrollBehavior: 'smooth',
+    scrollbarWidth: 'none',
     boxSizing: 'border-box',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+    '&::before, &::after': {
+      content: '""',
+      display: 'block',
+      flex: '0 0 33.333333%',
+    },
+    '@container stepBar (min-width: 90rem)': {
+      '&::before, &::after': {
+        flex: '0 0 40%',
+      },
+    },
   },
 
   stepDiv: {
     display: 'flex',
+    flex: '0 0 33.333333%',
+    minWidth: 0,
+    padding: '0 0.25rem',
     boxSizing: 'border-box',
+    '@container stepBar (min-width: 90rem)': {
+      flex: '0 0 20%',
+    },
   },
 
   svgContainer: {
     display: 'flex',
+    flexShrink: 0,
     alignItems: 'center',
     padding: '0 1rem',
   },
@@ -320,6 +305,10 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     '&:focus': {
       outline: theme.focusOutline,
     },
+    '&:disabled': {
+      cursor: 'default',
+      opacity: 0.4,
+    },
   },
 
   //mobile styles
@@ -328,29 +317,31 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     flexDirection: 'column',
     background: theme.colors.white,
   },
-  goTo: {
-    marginLeft: '1.56rem',
-  },
   selectInput: {
     margin: '0.44rem 1.56rem 0rem',
     display: 'flex',
-    borderRadius: '0.25rem',
-    border: '0.125rem solid #EBEBEB',
-    background: theme.colors.white,
+    position: 'relative',
+    borderRadius: '0.625rem',
+    background: 'transparent',
   },
   selectItemsContainer: {
-    display: 'inline-flex',
+    display: 'flex',
+    position: 'relative',
     width: '100%',
-    padding: '0.3125rem 0.625rem 0.3125rem 0.9375rem',
-    justifyContent: 'space-between',
+    minWidth: 0,
     alignItems: 'center',
   },
-  selectText: {
-    color: theme.colors.encivGray,
-    ...theme.font,
-    fontSize: '1rem',
-    fontWeight: '400',
-    lineHeight: '1.5rem',
+  selectItemsContainerStep: {
+    flex: '1 1 auto',
+    minWidth: 0,
+  },
+  selectCaret: {
+    position: 'absolute',
+    top: '50%',
+    right: '0.9375rem',
+    display: 'flex',
+    transform: 'translateY(-50%)',
+    pointerEvents: 'none',
   },
   breakStyle: {
     background: theme.colors.inactiveGray,
@@ -358,16 +349,35 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     marginTop: '0.94rem',
   },
   dropdownContainer: {
-    display: 'flex',
-    padding: '0.5rem',
-    alignItems: 'flex-start',
-    borderRadius: '0rem 0rem 0.25rem 0.25rem',
-    border: '0.125rem solid #EBEBEB',
+    boxSizing: 'border-box',
+    width: '100%',
+    maxHeight: 0,
+    padding: '0 0.5rem',
+    overflow: 'hidden',
+    opacity: 0,
+    transform: 'translateY(-0.4rem)',
+    visibility: 'hidden',
+    pointerEvents: 'none',
+    border: `0.0625rem solid ${theme.colors.secondaryDivider}`,
+    borderTop: '0',
+    borderRadius: '0 0 0.625rem 0.625rem',
     background: theme.colors.white,
-    margin: '0rem 1.56rem',
     position: 'absolute',
     left: '0',
+    top: '100%',
     zIndex: '1000',
+    boxShadow: '0 0.5rem 1rem rgba(26, 26, 26, 0.16)',
+    transition: 'max-height 260ms ease, opacity 180ms ease, transform 260ms ease, padding 260ms ease, visibility 260ms',
+    '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+  },
+  dropdownOpen: {
+    maxHeight: '60vh',
+    padding: '0.5rem',
+    overflowY: 'auto',
+    opacity: 1,
+    transform: 'translateY(0)',
+    visibility: 'visible',
+    pointerEvents: 'auto',
   },
   dropdownContent: {
     display: 'flex',

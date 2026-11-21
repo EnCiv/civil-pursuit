@@ -12,7 +12,7 @@ import { H, Level } from 'react-accessible-headings'
 import DemInfo from './dem-info'
 
 const Point = forwardRef((props, ref) => {
-  const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, topRow, ...otherProps } = props
+  const { point, vState = 'default', children = [], className = '', isLoading, isInvalid, topRow, demInfoTopRight = false, demInfoClassName, ...otherProps } = props
   const classes = useStylesFromThemeFunction()
   const [isHovered, setIsHovered] = useState(false)
 
@@ -28,10 +28,11 @@ const Point = forwardRef((props, ref) => {
 
   const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, {
+      const childProps = {
         className: cx(child.props.className, { isHovered: isHovered }),
-        vState: vState,
-      })
+      }
+      if (typeof child.type !== 'string' && child.type !== React.Fragment) childProps.vState = vState
+      return React.cloneElement(child, childProps)
     }
     return child
   })
@@ -39,17 +40,22 @@ const Point = forwardRef((props, ref) => {
   return (
     <div className={cx(classes.sharedBorderStyle, classes[vState + 'Border'], className)} {...otherProps} onMouseEnter={onMouseIn} onMouseLeave={onMouseOut} ref={ref}>
       <div className={classes.contentContainer}>
-        {topRow && <div className={classes.topRow}>{topRow}</div>}
+        {(topRow || demInfoTopRight) && (
+          <div className={classes.topRow}>
+            {topRow}
+            {demInfoTopRight && <DemInfo className={classes.topRightDemInfo} pointId={_id} />}
+          </div>
+        )}
         <div className={classes.informationGrid}>
-          {(isLoading || subject) && (
-            <H className={isLoading ? cx(classes.loadingAnimation, classes.loadingAnimationSubject) : cx(classes.sharedSubjectStyle, classes[vState + 'Subject'], isInvalid ? classes.invalidText : undefined)}>{isLoading ? '' : subject}</H>
+          {subject && (
+            <H className={cx(classes.sharedSubjectStyle, classes[vState + 'Subject'], isInvalid ? classes.invalidText : undefined)}>{subject}</H>
           )}
           {(isLoading || description) && (
             <p className={isLoading ? cx(classes.loadingAnimation, classes.loadingAnimationDescription) : cx(classes.sharedDescriptionStyle, classes[vState + 'Description'], isInvalid ? classes.invalidText : undefined)}>
               {isLoading ? '' : description}
             </p>
           )}
-          <DemInfo className={cx(classes[vState + 'DemInfo'])} pointId={_id} />
+          {!demInfoTopRight && <DemInfo className={cx(classes[vState + 'DemInfo'], demInfoClassName)} pointId={_id} />}
           <Level>{childrenWithProps}</Level>
         </div>
       </div>
@@ -73,6 +79,12 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     alignItems: 'flex-start',
     gap: '1rem',
     marginBottom: '0.5rem',
+  },
+
+  topRightDemInfo: {
+    marginLeft: 'auto',
+    marginRight: '2.5rem',
+    textAlign: 'right',
   },
 
   informationGrid: {
@@ -108,35 +120,17 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
       backgroundPosition: '30rem 0',
     },
   },
-  '@-webkit-keyframes loadingAnimation_keyframes': {
-    '0%': {
-      backgroundPosition: '-30rem 0',
-    },
-    '100%': {
-      backgroundPosition: '30rem 0',
-    },
-  },
-
   // border states
   defaultBorder: {
     outline: `1px solid ${theme.colors.borderGray}`,
     background: theme.colors.white,
     '&:hover': {
       outline: `0.1875rem solid ${theme.colors.success}`,
-      color: theme.colors.success,
-    },
-    '&:hover $defaultSubject': {
-      color: theme.colors.success,
-    },
-    '&:hover $defaultDescription': {
-      color: theme.colors.success,
-    },
-    '&:hover $informationGrid *': {
-      color: theme.colors.success,
     },
   },
   selectedBorder: {
     outline: `0.1875rem solid ${theme.colors.success}`,
+    borderColor: theme.colors.success,
     background: theme.colors.lightSuccess,
     '& $informationGrid': {
       color: theme.colors.success,
@@ -156,8 +150,7 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     },
   },
   secondaryBorder: {
-    borderRadius: '0 !important',
-    boxShadow: 'none !important',
+    borderRadius: '0.75rem',
   },
 
   // subject states
@@ -177,17 +170,22 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
     fontWeight: '400',
     lineHeight: '1.5rem !important',
   },
-  secondarySubject: {},
+  secondarySubject: {
+    color: theme.colors.title,
+  },
 
   // description states
   defaultDescription: {
-    color: theme.colors.title,
+    color: theme.colors.encivGray,
   },
   selectedDescription: {
     color: theme.colors.success,
   },
   disabledDescription: {
-    color: theme.colors.title,
+    color: theme.colors.encivGray,
+  },
+  secondaryDescription: {
+    color: theme.colors.encivGray,
   },
   collapsedDescription: {
     display: 'none',
@@ -209,24 +207,37 @@ const useStylesFromThemeFunction = createUseStyles(theme => ({
 
   // shared styling
   sharedBorderStyle: {
-    borderRadius: '0.9375rem',
-    boxShadow: theme.boxShadowRightBottom,
+    border: '0.0625rem solid rgba(217, 217, 217, 0.8)',
+    borderRadius: '0.75rem',
+    boxShadow: '0 0.125rem 0 rgba(26, 26, 26, 0.05), 0 0.5rem 1rem rgba(6, 51, 92, 0.1)',
     paddingBottom: '0.5rem',
+    transition: 'box-shadow 180ms ease, transform 180ms ease',
+    '&:hover': {
+      boxShadow: '0 0.2rem 0 rgba(26, 26, 26, 0.06), 0 0.75rem 1.25rem rgba(6, 51, 92, 0.14)',
+      transform: 'translateY(-0.08rem)',
+    },
+    '@media (prefers-reduced-motion: reduce)': {
+      transition: 'none',
+      '&:hover': {
+        transform: 'none',
+      },
+    },
   },
   sharedSubjectStyle: {
     ...theme.font,
-    fontSize: '1.25rem',
-    fontWeight: '400',
-    marginBlockStart: '.3925rem',
-    lineHeight: '1.5em',
-    marginBlockEnd: '.3925rem',
+    fontFamily: `${theme.font.headingFontFamily}, Georgia, serif`,
+    fontSize: '1.375rem',
+    fontWeight: 600,
+    marginBlockStart: '0.25rem',
+    lineHeight: 1.3,
+    marginBlockEnd: '0.5rem',
   },
   sharedDescriptionStyle: {
     ...theme.font,
     alignSelf: 'stretch',
-    fontSize: '1rem',
+    fontSize: '0.9375rem',
     fontWeight: '400',
-    lineHeight: '1.5rem',
+    lineHeight: 1.6,
     whiteSpace: 'pre-wrap',
     marginBottom: '0.25rem',
   },

@@ -186,6 +186,68 @@ export const DefaultStepNameTest = {
   },
 }
 
+export const StepBarNavigationDoesNotSkipVisitedSteps = {
+  args: {
+    steps: createPrimarySteps(4).map(step => ({ ...step, complete: true })),
+    children: createPanels(4),
+    defaultStepName: 'Why Most',
+  },
+  render: Template,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const currentStep = () => canvasElement.querySelector('[data-current-step]')
+    const stepBarItem = name => canvas.getAllByTestId('testClick').find(step => step.textContent.includes(name))
+    const navigateTo = async (name, index) => {
+      const step = stepBarItem(name)
+      expect(step).toHaveAttribute('tabindex', '0')
+      await userEvent.click(step)
+      await waitForStepSlider(canvasElement)
+      await waitFor(() => expect(currentStep()).toHaveAttribute('data-current-step', String(index)))
+    }
+
+    await waitFor(() => expect(currentStep()).toHaveAttribute('data-current-step', '3'))
+    await navigateTo('Answer', 0)
+    await navigateTo('Why Most', 3)
+    await navigateTo('Answer', 0)
+    await navigateTo('Why Most', 3)
+
+    await waitFor(() => {
+      expect(stepBarItem('Group')).toHaveAttribute('tabindex', '0')
+      expect(stepBarItem('Rank')).toHaveAttribute('tabindex', '0')
+    })
+  },
+}
+
+const RestoredSessionTemplate = args => {
+  const [steps, setSteps] = useState(args.steps)
+  return (
+    <>
+      <button type="button" onClick={() => setSteps(current => current.map((step, index) => ({ ...step, complete: index < 3 })))}>
+        Restore previous session
+      </button>
+      <Template {...args} steps={steps} />
+    </>
+  )
+}
+
+export const RestoredCompletedStepsCanBeSelected = {
+  args: { steps: createPrimarySteps(4), children: createPanels(4), defaultStepName: 'Answer' },
+  render: RestoredSessionTemplate,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await userEvent.click(canvas.getByRole('button', { name: 'Restore previous session' }))
+
+    const completedStep = await waitFor(() => {
+      const step = canvas.getAllByTestId('testClick').find(item => item.textContent.includes('Why Most'))
+      expect(step).toHaveAttribute('tabindex', '0')
+      return step
+    })
+    await userEvent.click(completedStep)
+    await waitForStepSlider(canvasElement)
+    await waitFor(() => expect(canvasElement.querySelector('[data-current-step]')).toHaveAttribute('data-current-step', '3'))
+  },
+}
+
 // Test for waitForStepSlider helper
 export const WaitForStepSliderTest = {
   args: { steps: createPrimarySteps(4), children: createPanels(4) },

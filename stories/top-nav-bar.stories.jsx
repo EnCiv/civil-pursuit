@@ -1,8 +1,6 @@
 import React from 'react'
 import TopNavBar from '../app/components/top-nav-bar'
-import Donate from '../app/components/donate'
-import Common from './common'
-import { userEvent, within, expect } from 'storybook/test'
+import { userEvent, within, expect, waitFor } from 'storybook/test'
 
 // Placeholder for the user-or-signup component
 const UserOrSignInUp = () => {
@@ -30,15 +28,70 @@ const menuArray = [
   [createMenuItem('Our Work'), createMenuItem('Work 1'), createMenuItem('Work 2')],
 ]
 
+const getVisibleText = (canvas, text) => {
+  const element = canvas.getAllByText(text).find(candidate => candidate.getClientRects().length > 0)
+  if (!element) throw new Error(`No visible element found with text: ${text}`)
+  return element
+}
+
+const openMobileMenu = async canvas => {
+  const menuToggle = canvas.queryByRole('button', { name: 'Open navigation menu' })
+  if (!menuToggle) return
+  await userEvent.click(menuToggle)
+  await waitFor(() => expect(menuToggle).toHaveAttribute('aria-expanded', 'true'))
+}
+
+const openAboutMenu = async canvas => {
+  const mobileMenuToggle = canvas.queryByRole('button', { name: /navigation menu/ })
+  if (mobileMenuToggle) {
+    await openMobileMenu(canvas)
+    await userEvent.click(canvas.getByRole('button', { name: /About/ }))
+  } else {
+    await userEvent.hover(canvas.getByText('About \u25BE'))
+  }
+  await waitFor(() => expect(getVisibleText(canvas, 'FAQ')).toBeVisible())
+}
+
+const TransparentPage = props => {
+  const isLight = props.mode === 'light-transparent'
+  const color = isLight ? '#202020' : '#f7f5ef'
+
+  return (
+    <div style={{ position: 'relative', minHeight: '48rem', backgroundColor: isLight ? '#f4f2ec' : '#202020', color }}>
+      <TopNavBar {...props} />
+      <main style={{ boxSizing: 'border-box', maxWidth: '75rem', margin: '0 auto', padding: '8rem 2rem 4rem' }}>
+        <p style={{ fontSize: '0.875rem', fontWeight: 700 }}>CIVIC PARTICIPATION</p>
+        <h1 style={{ maxWidth: '48rem', fontSize: '3rem', lineHeight: 1.05, color }}>A better future starts with listening.</h1>
+        <p style={{ maxWidth: '40rem', fontSize: '1.25rem', lineHeight: 1.6 }}>
+          Bring your perspective to the conversations shaping our communities. Explore ideas, hear from neighbors, and help move good work forward.
+        </p>
+        <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(12rem, 1fr))', gap: '2rem', marginTop: '6rem', paddingTop: '2rem', borderTop: `1px solid ${color}66` }}>
+          <div>
+            <h2 style={{ color }}>Listen</h2>
+            <p>Understand the experiences and priorities people bring to the table.</p>
+          </div>
+          <div>
+            <h2 style={{ color }}>Connect</h2>
+            <p>Find common ground through thoughtful, respectful discussion.</p>
+          </div>
+          <div>
+            <h2 style={{ color }}>Make progress</h2>
+            <p>Turn shared understanding into practical next steps.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  )
+}
+
 export default {
   component: TopNavBar,
-  parameters: {
     backgrounds: {
       default: 'gray',
       values: [{ name: 'gray', value: '#808080' }],
     },
-  },
-}
+};
+
 
 export const Empty = () => {
   return <TopNavBar />
@@ -131,24 +184,21 @@ export const VerifyDropDownFAQVisible = {
     },
   ],
   play: async ({ canvasElement }) => {
-    await Common.asyncSleep(1000)
     const canvas = within(canvasElement)
-    const aboutButton = canvas.getByText('About \u25BE')
+    await openMobileMenu(canvas)
 
     // Initially, FAQ should not be in the document or should be hidden
     expect(canvas.queryByText('FAQ')).toBeNull()
 
-    // Hover over the About button
-    userEvent.hover(aboutButton)
-    await Common.asyncSleep(600)
+    await openAboutMenu(canvas)
 
     // Now verify that the FAQ item is visible in the dropdown
-    const faqButton = canvas.getByText('FAQ')
+    const faqButton = await waitFor(() => getVisibleText(canvas, 'FAQ'))
     expect(faqButton).toBeVisible()
     expect(faqButton).toBeInTheDocument()
 
     // Verify that Contact is also visible
-    const contactButton = canvas.getByText('Contact')
+    const contactButton = getVisibleText(canvas, 'Contact')
     expect(contactButton).toBeVisible()
     expect(contactButton).toBeInTheDocument()
 
@@ -176,24 +226,22 @@ export const ClickMenuItem = {
     menu: menuArray,
   },
   play: async ({ canvasElement }) => {
-    await Common.asyncSleep(1000)
     const canvas = within(canvasElement)
-    const homeButton = canvas.getByText('Home')
-    userEvent.click(homeButton)
-    await Common.asyncSleep(600)
+    await openMobileMenu(canvas)
+    const homeButton = getVisibleText(canvas, 'Home')
+    await userEvent.click(homeButton)
 
     // expect the home button to be selected
-    expect(homeButton.className).toContain('selectedItem')
+    await waitFor(() => expect(homeButton.className).toContain('selectedItem'))
     // expect the other buttons to not have bottom border
-    const discussionPortalButton = canvas.getByText('Discussion Portal')
+    const discussionPortalButton = getVisibleText(canvas, 'Discussion Portal')
     expect(discussionPortalButton.className).not.toContain('selectedItem')
-    const blogButton = canvas.getByText('Blog')
+    const blogButton = getVisibleText(canvas, 'Blog')
     expect(blogButton.className).not.toContain('selectedItem')
 
     // click the discussion portal button
-    userEvent.click(discussionPortalButton)
-    await Common.asyncSleep(600)
-    expect(discussionPortalButton.className).toContain('selectedItem')
+    await userEvent.click(discussionPortalButton)
+    await waitFor(() => expect(discussionPortalButton.className).toContain('selectedItem'))
   },
 }
 
@@ -202,11 +250,8 @@ export const HoverMenuGroup = {
     menu: menuArray,
   },
   play: async ({ canvasElement }) => {
-    await Common.asyncSleep(1000)
     const canvas = within(canvasElement)
-    const aboutButton = canvas.getByText('About \u25BE')
-    userEvent.hover(aboutButton)
-    await Common.asyncSleep(600)
+    await openAboutMenu(canvas)
   },
 }
 
@@ -234,6 +279,7 @@ export const TransparentMode = {
     menu: menuArray,
     mode: 'transparent',
   },
+  render: args => <TransparentPage {...args} />,
 }
 
 export const TransparentMobileMode = {
@@ -246,6 +292,7 @@ export const TransparentMobileMode = {
       defaultViewport: 'iphonex',
     },
   },
+  render: args => <TransparentPage {...args} />,
 }
 
 export const DarkTransparentMode = {
@@ -253,6 +300,7 @@ export const DarkTransparentMode = {
     menu: menuArray,
     mode: 'dark-transparent',
   },
+  render: args => <TransparentPage {...args} />,
 }
 
 export const DarkTransparentMobileMode = {
@@ -265,6 +313,7 @@ export const DarkTransparentMobileMode = {
       defaultViewport: 'iphonex',
     },
   },
+  render: args => <TransparentPage {...args} />,
 }
 
 export const LightTransparentMode = {
@@ -272,6 +321,7 @@ export const LightTransparentMode = {
     menu: menuArray,
     mode: 'light-transparent',
   },
+  render: args => <TransparentPage {...args} />,
 }
 
 export const LightTransparentMobileMode = {
@@ -284,6 +334,7 @@ export const LightTransparentMobileMode = {
       defaultViewport: 'iphonex',
     },
   },
+  render: args => <TransparentPage {...args} />,
 }
 
 export const VariableParentDiv = () => {

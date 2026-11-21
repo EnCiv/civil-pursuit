@@ -25,30 +25,49 @@ function WhyInput(props) {
 
 const useStyles = createUseStyles(theme => ({
   container: {
-    display: 'flex',
-    gap: '1rem',
+    display: 'grid',
+    gridTemplateColumns: 'minmax(0, 0.8fr) minmax(0, 1.2fr)',
     alignItems: 'center',
+    gap: '1.5rem',
+    width: '100%',
+    boxSizing: 'border-box',
+    padding: '1.5rem',
+    border: `0.125rem solid ${theme.colors.secondaryDivider}`,
+    borderRadius: '0.75rem',
+    backgroundColor: theme.colors.white,
+    boxShadow: '0 0.125rem 0.375rem rgba(6, 51, 92, 0.06)',
+  },
+  point: {
+    width: '100%',
+    minWidth: 0,
+    paddingBottom: '0 !important',
+    border: 'none !important',
+    outline: 'none !important',
+    borderRadius: '0 !important',
+    backgroundColor: 'transparent !important',
+    boxShadow: 'none !important',
+    transform: 'none !important',
+    '& > div': {
+      padding: '0 !important',
+      gap: 0,
+    },
+    '&:hover': {
+      outline: 'none !important',
+      boxShadow: 'none !important',
+      transform: 'none !important',
+    },
+  },
+  pointInput: {
+    width: '100%',
+    minWidth: 0,
+    boxSizing: 'border-box',
   },
   [`@media (max-width: ${theme.condensedWidthBreakPoint})`]: {
     container: {
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-    },
-  },
-  point: {},
-  pointInput: {
-    padding: '0 1.875rem',
-    boxSizing: 'border-box',
-  },
-  [`@media (min-width: ${theme.condensedWidthBreakPoint})`]: {
-    point: {
-      width: '35%',
-      flexGrow: 1,
-    },
-    pointInput: {
-      width: '60%',
-      flexGrow: 1,
-      padding: 0,
+      gridTemplateColumns: 'minmax(0, 1fr)',
+      alignItems: 'start',
+      gap: '1rem',
+      padding: '1rem',
     },
   },
 }))

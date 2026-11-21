@@ -100,7 +100,7 @@ export const ThresholdBlocksProgression = {
 
     // Click Next
     const nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
+      const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
       expect(btn).not.toBeDisabled()
       return btn
@@ -260,7 +260,7 @@ export const ThresholdAllowsProgression = {
 
     // Click Next - should go to Grouping step (not Intermission with threshold block)
     const nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
+      const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
       expect(btn).not.toBeDisabled()
       return btn
@@ -379,7 +379,7 @@ export const DefaultThresholdBehavior = {
 
     // Click Next
     const nextButton = await waitFor(() => {
-      const btn = canvas.queryByRole('button', { name: /Next/i })
+      const btn = canvas.queryByRole('button', { name: /^Next$/i })
       expect(btn).toBeInTheDocument()
       expect(btn).not.toBeDisabled()
       return btn

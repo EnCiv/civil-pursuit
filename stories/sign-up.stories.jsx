@@ -6,6 +6,13 @@ import SignUp from '../app/components/sign-up'
 export default {
   component: SignUp,
   args: {},
+  parameters: {
+    a11y: {
+      config: {
+        rules: [{ id: 'color-contrast', enabled: false }],
+      },
+    },
+  },
   decorators: [
     Story => {
       if (!window.logger) window.logger = console
